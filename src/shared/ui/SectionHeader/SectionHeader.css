@@ -1,0 +1,53 @@
+/* SectionHeader — Figma "settings page title" set (226:2612), single variant.
+ * Title/description colours, sizes and the stack gap are section-header/*
+ * tokens; the logo is the "brands" instance sized by section-header/logo/size.
+ * The root gap, the right padding and the raw Inter type on both text
+ * layers are still hardcoded in Figma → --bb-derived-section-header-*. The
+ * trailing Switch is the composed Toggle (toggle/* tokens in Toggle.css). */
+.bb-section-header {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-section-header-root-width);
+  gap: var(--bb-derived-section-header-root-gap);
+  padding-right: var(--bb-derived-section-header-root-padding-right);
+  font-family: var(--bb-section-header-title-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-section-header__logo {
+  display: block;
+  flex: none;
+  width: var(--bb-section-header-logo-size);
+  height: var(--bb-section-header-logo-size);
+}
+/* Frame 1430102677 */
+.bb-section-header__stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  gap: var(--bb-section-header-gap);
+}
+.bb-section-header__title {
+  margin: 0;
+  color: var(--bb-section-header-title-fg);
+  font-size: var(--bb-section-header-title-font-size);
+  font-weight: var(--bb-section-header-title-font-weight);
+  line-height: var(--bb-section-header-title-line-height);
+}
+.bb-section-header__description {
+  margin: 0;
+  color: var(--bb-section-header-description-fg);
+  font-size: var(--bb-section-header-description-font-size);
+  font-weight: var(--bb-derived-section-header-configure-the-github-repository-where-extracted-va-font-weight);
+  line-height: var(--bb-section-header-description-line-height);
+}
+/* Switch instance: bare Toggle, no title/description, hugging its track. */
+.bb-section-header__toggle {
+  width: auto;
+  max-width: none;
+  flex: none;
+}
+.bb-section-header__toggle .bb-toggle__switch { background: var(--bb-toggle-track-bg-off); }
+.bb-section-header__toggle[data-checked="true"] .bb-toggle__switch { background: var(--bb-toggle-track-bg-on); }

@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bluebird plugin config",
+  "type": "object",
+  "required": ["brand", "activePersona", "personas", "tabs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string" },
+    "brand": {
+      "type": "object",
+      "required": ["active", "brands"],
+      "properties": {
+        "active": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "brands": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["label", "source"],
+            "properties": {
+              "label": { "type": "string" },
+              "source": { "type": "object", "required": ["collection", "mode"], "properties": { "collection": { "type": "string" }, "mode": { "type": "string" } } },
+              "fallbackTokens": { "type": "object", "additionalProperties": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "activePersona": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "personas": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label"],
+        "properties": { "label": { "type": "string" }, "tabs": { "type": "array", "items": { "type": "string" } } }
+      }
+    },
+    "tabs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label"],
+        "properties": { "enabled": { "type": "boolean", "default": true }, "label": { "type": "string" }, "icon": { "type": "string" } }
+      }
+    },
+    "window": { "type": "object", "properties": { "width": { "type": "integer", "minimum": 320, "maximum": 760 }, "height": { "type": "integer", "minimum": 400, "maximum": 960 } } }
+  }
+}

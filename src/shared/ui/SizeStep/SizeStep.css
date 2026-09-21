@@ -1,0 +1,26 @@
+/* SizeStep — Figma "Frame 1430102613" set (133:1618): Property 1 = Default /
+ * Variant2. Nothing is variable-bound in Figma yet, so every value is a
+ * --bb-derived-size-step-* token (font family via the shared Inter token). */
+.bb-size-step {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--bb-derived-size-step-root-width);
+  gap: var(--bb-derived-size-step-root-gap);
+  padding: var(--bb-derived-size-step-root-padding-top) var(--bb-derived-size-step-root-padding-right) var(--bb-derived-size-step-root-padding-bottom) var(--bb-derived-size-step-root-padding-left);
+  border-radius: var(--bb-derived-size-step-root-radius);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-derived-size-step-l-color);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-size-step-l-font-size);
+  font-weight: var(--bb-derived-size-step-l-font-weight);
+  line-height: 1;
+  user-select: none;
+  transition: background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-size-step[data-selected] {
+  background: var(--bb-derived-size-step-root-fill);
+}
+.bb-size-step__label { display: inline-block; }

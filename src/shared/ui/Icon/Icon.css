@@ -1,0 +1,14 @@
+/* Icon — Figma "Tab Icons" set (91:1959). Glyph colour flows from currentColor;
+ * `tone` maps to the icon/glyph/* tokens, sizes to icon/size/*. */
+.bb-icon {
+  display: inline-block;
+  flex: none;
+  width: var(--bb-icon-size-lg);
+  height: var(--bb-icon-size-lg);
+  vertical-align: middle;
+}
+.bb-icon[data-size="sm"] { width: var(--bb-icon-size-sm); height: var(--bb-icon-size-sm); }
+.bb-icon[data-size="md"] { width: var(--bb-icon-size-md); height: var(--bb-icon-size-md); }
+.bb-icon[data-tone="default"] { color: var(--bb-icon-glyph-default); }
+.bb-icon[data-tone="muted"] { color: var(--bb-icon-glyph-muted); }
+.bb-icon[data-tone="on-accent"] { color: var(--bb-icon-glyph-on-accent); }

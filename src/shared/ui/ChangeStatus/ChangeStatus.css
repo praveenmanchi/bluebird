@@ -1,0 +1,45 @@
+/* ChangeStatus — Figma "change status" set (86:966): Property 1 = Default
+ * (Updated) / Variant2 (Added) / Variant3 (Removed). Text colour, type size,
+ * line-height, per-state square fills, border and radius are Brand-bound
+ * (change-status/*). The MuseoModerno family, weights, square inset, stroke
+ * and the per-variant root gap are raw → --bb-derived-change-status-*. */
+.bb-change-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: var(--bb-change-status-fg);
+  font-family: var(--bb-type-family-museo), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-change-status-font-size);
+  line-height: var(--bb-change-status-line-height);
+  white-space: nowrap;
+}
+.bb-change-status[data-status="updated"] { gap: var(--bb-derived-change-status-root-property-1-default-gap); }
+.bb-change-status[data-status="added"] { gap: var(--bb-derived-change-status-root-property-1-variant2-gap); }
+.bb-change-status[data-status="removed"] { gap: var(--bb-derived-change-status-root-property-1-variant3-gap); }
+
+.bb-change-status__label {
+  display: inline-flex;
+  align-items: center;
+  font-weight: var(--bb-derived-change-status-updated-font-weight);
+}
+.bb-change-status__count {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--bb-derived-change-status-frame-1430102560-gap);
+  padding: var(--bb-derived-change-status-frame-1430102560-padding-top) var(--bb-derived-change-status-frame-1430102560-padding-right) var(--bb-derived-change-status-frame-1430102560-padding-bottom) var(--bb-derived-change-status-frame-1430102560-padding-left);
+  border: var(--bb-derived-change-status-frame-1430102560-stroke-width) solid var(--bb-change-status-border);
+  border-radius: var(--bb-change-status-radius);
+  background: var(--bb-change-status-updated-bg);
+  font-weight: var(--bb-derived-change-status-52-font-weight);
+}
+.bb-change-status[data-status="added"] .bb-change-status__count {
+  background: var(--bb-change-status-added-bg);
+  border-color: var(--bb-change-status-added-bg);
+}
+.bb-change-status[data-status="removed"] .bb-change-status__count {
+  background: var(--bb-change-status-removed-bg);
+  border-color: var(--bb-change-status-removed-bg);
+}

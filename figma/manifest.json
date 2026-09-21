@@ -1,0 +1,76 @@
+{
+  "$comment": "Source of truth for `npm run figma:pull`. Node ids come from the Figma file; code names are the exported component names in src/shared/ui.",
+  "fileKey": "WWRcH8IPLJ4iQVyoK9oDnH",
+  "fileUrl": "https://www.figma.com/design/WWRcH8IPLJ4iQVyoK9oDnH/Plugin-UI",
+  "componentsPage": {
+    "id": "40000008:9592",
+    "name": "Components"
+  },
+  "collections": {
+    "primitives": "1. Primitives",
+    "semantics": "2. Semantics",
+    "brand": "Brand"
+  },
+  "componentSets": [
+    {
+      "code": "Button",
+      "figma": "Button",
+      "id": "40000040:5139"
+    },
+    {
+      "code": "Checkbox",
+      "figma": "Checkbox",
+      "id": "40000046:5237"
+    },
+    {
+      "code": "MenuItem",
+      "figma": "Menu item",
+      "id": "40000046:5311"
+    },
+    {
+      "code": "Dropdown",
+      "figma": "Dropdown",
+      "id": "40000047:5292"
+    },
+    {
+      "code": "DropdownMenu",
+      "figma": "Dropdown menu",
+      "id": "40000047:5251"
+    },
+    {
+      "code": "Banner",
+      "figma": "Banner",
+      "id": "40000064:9910"
+    },
+    {
+      "code": "BrandLogo",
+      "figma": "brand logos",
+      "id": "40000064:9865"
+    }
+  ],
+  "iconSet": {
+    "id": "91:1959",
+    "name": "Tab Icons",
+    "variantProperty": "Tab Icon"
+  },
+  "brandShowcases": [
+    {
+      "name": "Brand comparison",
+      "id": "40000035:5096"
+    },
+    {
+      "name": "Button across brands",
+      "id": "40000041:10055"
+    },
+    {
+      "name": "Dropdown & checkbox across brands",
+      "id": "40000048:5252"
+    }
+  ],
+  "logoSet": {
+    "id": "40000064:9865",
+    "name": "brand logos",
+    "variantProperty": "Brand",
+    "boundTo": "Brand/brand logos"
+  }
+}

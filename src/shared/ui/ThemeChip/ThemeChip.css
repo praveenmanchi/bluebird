@@ -1,0 +1,43 @@
+/* Theme chip — Figma "Theme" set (419:45605): Forms / Gestures / Keyboard /
+ * Sensory / Whole Site / Wording / Zoom and Legibility. Bound:
+ * theme-card/border/default, theme-card/icon/size (and icon/glyph/default as
+ * the root fill — see figma.ts). Sub-pixel radius, stroke, gap, padding and
+ * the per-variant fixed widths are raw → --bb-derived-theme-chip-*. */
+.bb-theme-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--bb-derived-theme-chip-root-gap);
+  padding: var(--bb-derived-theme-chip-root-padding-top) var(--bb-derived-theme-chip-root-padding-right) var(--bb-derived-theme-chip-root-padding-bottom) var(--bb-derived-theme-chip-root-padding-left);
+  border: var(--bb-derived-theme-chip-root-stroke-width) solid var(--bb-theme-card-border-default);
+  border-radius: var(--bb-derived-theme-chip-root-radius);
+  background: var(--bb-theme-card-bg-default);
+  color: var(--bb-theme-card-label-fg);
+  font-family: var(--bb-theme-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-theme-card-label-font-size);
+  font-weight: var(--bb-type-weight-400);
+  line-height: var(--bb-theme-card-label-line-height);
+  white-space: nowrap;
+}
+.bb-theme-chip[data-theme="forms"] { width: var(--bb-derived-theme-chip-root-property-1-forms-width); }
+.bb-theme-chip[data-theme="gestures"] { width: var(--bb-derived-theme-chip-root-property-1-gestures-width); }
+.bb-theme-chip[data-theme="keyboard"] { width: var(--bb-derived-theme-chip-root-property-1-keyboard-width); }
+.bb-theme-chip[data-theme="sensory"] { width: var(--bb-derived-theme-chip-root-property-1-sensory-width); }
+.bb-theme-chip[data-theme="whole-site"] { width: var(--bb-derived-theme-chip-root-property-1-whole-site-width); }
+.bb-theme-chip[data-theme="wording"] { width: var(--bb-derived-theme-chip-root-property-1-wording-width); }
+.bb-theme-chip[data-theme="zoom"] { width: var(--bb-derived-theme-chip-root-property-1-zoom-and-legibility-width); }
+.bb-theme-chip__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-theme-card-icon-size);
+  height: var(--bb-theme-card-icon-size);
+  color: var(--bb-theme-card-icon-color);
+}
+.bb-theme-chip__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-theme-chip__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,23 @@
+/* Rating — Figma "Rating" set (419:40175): Rating = A / AA / AAA. Background,
+ * radius and text colour are Brand-bound (rating/*); the 34×18 geometry and
+ * the semibold caption type are raw in Figma → --bb-derived-rating-*. */
+.bb-rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--bb-derived-rating-root-width);
+  height: var(--bb-derived-rating-root-height);
+  padding-left: var(--bb-derived-rating-root-padding-left);
+  padding-right: var(--bb-derived-rating-root-padding-right);
+  border-radius: var(--bb-rating-radius);
+  background: var(--bb-rating-bg-default);
+  color: var(--bb-rating-fg-default);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-rating-font-size);
+  font-weight: var(--bb-rating-font-weight);
+  line-height: var(--bb-derived-rating-a-line-height);
+  white-space: nowrap;
+  user-select: none;
+}
+.bb-rating__label { display: inline-block; }

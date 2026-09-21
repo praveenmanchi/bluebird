@@ -1,0 +1,24 @@
+/*
+ * Tailwind ↔ token bridge. Utilities like bg-brand or rounded-md resolve to
+ * generated Figma tokens, so tabs written with Tailwind re-skin with the brand.
+ * Component CSS (src/shared/ui/<Component>/<Component>.css) reads --bb-* directly.
+ */
+@theme inline {
+  --color-brand: var(--bb-tab-indicator-color);
+  --color-brand-hover: var(--bb-button-primary-bg-hover);
+  --color-brand-soft: var(--bb-surface-accent-subtle);
+  --color-banner: var(--bb-app-header-bg-default);
+  --color-canvas: var(--bb-card-variable-bg-default);
+  --color-raised: var(--bb-card-variable-bg-hover);
+  --color-line: var(--bb-card-variable-border-default);
+  --color-fg: var(--bb-card-variable-title-fg);
+  --color-fg-muted: var(--bb-card-variable-meta-fg);
+  --color-success: var(--bb-feedback-success);
+  --color-warning: var(--bb-feedback-warning);
+  --color-danger: var(--bb-feedback-danger);
+  --radius-sm: var(--bb-radius-sm);
+  --radius-md: var(--bb-radius-md);
+  --radius-lg: var(--bb-radius-lg);
+  --radius-xl: var(--bb-radius-xl);
+  --font-sans: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+}

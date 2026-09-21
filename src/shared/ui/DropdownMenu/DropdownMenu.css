@@ -1,0 +1,21 @@
+/* Dropdown menu — Figma "Dropdown menu" (40000047:5251): the surface that
+ * holds Menu item rows and an optional divider. */
+.bb-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-menu-surface-padding);
+  gap: var(--bb-menu-surface-gap);
+  border: var(--bb-border-width-default) solid var(--bb-menu-surface-border);
+  border-radius: var(--bb-menu-surface-radius);
+  background: var(--bb-menu-surface-bg);
+  margin: 0;
+  list-style: none;
+}
+.bb-dropdown-menu__divider {
+  height: var(--bb-border-width-default);
+  margin-inline: var(--bb-menu-item-padding-x);
+  background: var(--bb-menu-divider-color);
+  border: 0;
+}

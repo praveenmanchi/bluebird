@@ -1,0 +1,22 @@
+/* DisabilityIndicator — Figma "Disability Indicator" set (419:40527):
+ * Property 1 = Auditory / Code / Cognitive / Content / Design / Physical /
+ * Visual. Border, gap and icon size are Brand-bound (disability-indicator/*);
+ * the tile background and glyph colour read the matching
+ * disability-indicator/bg|icon tokens. The fractional inset, radius and
+ * hairline stroke are raw → --bb-derived-disability-indicator-*. */
+.bb-disability-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--bb-disability-indicator-gap);
+  padding: var(--bb-derived-disability-indicator-root-padding-top) var(--bb-derived-disability-indicator-root-padding-right) var(--bb-derived-disability-indicator-root-padding-bottom) var(--bb-derived-disability-indicator-root-padding-left);
+  border: var(--bb-derived-disability-indicator-root-stroke-width) solid var(--bb-disability-indicator-border-default);
+  border-radius: var(--bb-derived-disability-indicator-root-radius);
+  background: var(--bb-disability-indicator-bg-default);
+  color: var(--bb-disability-indicator-icon-color);
+}
+.bb-disability-indicator__icon {
+  width: var(--bb-disability-indicator-icon-size);
+  height: var(--bb-disability-indicator-icon-size);
+}

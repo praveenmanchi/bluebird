@@ -1,0 +1,52 @@
+/* SegmentTab — Figma "Tab selecters" set (308:51054): Default / Selected.
+ * Bound tokens: chip-filter/font/*, chip-filter/gap, tab/fg/default (Selected
+ * text). The box height, radius, padding, the Default text colour and the
+ * Selected fill/stroke are raw in Figma → --bb-derived-segment-tab-*. */
+.bb-segment-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--bb-derived-segment-tab-root-height);
+  padding: var(--bb-derived-segment-tab-root-padding-top) var(--bb-derived-segment-tab-root-padding-right) var(--bb-derived-segment-tab-root-padding-bottom) var(--bb-derived-segment-tab-root-padding-left);
+  border: var(--bb-derived-segment-tab-root-stroke-width) solid var(--bb-surface-transparent);
+  border-radius: var(--bb-derived-segment-tab-root-radius);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-derived-segment-tab-json-color);
+  font-family: var(--bb-chip-filter-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-chip-filter-font-size);
+  font-weight: var(--bb-chip-filter-font-weight);
+  line-height: var(--bb-chip-filter-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-segment-tab:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-segment-tab__container {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-chip-filter-gap);
+  padding-inline: var(--bb-derived-segment-tab-container-padding-left) var(--bb-derived-segment-tab-container-padding-right);
+}
+.bb-segment-tab__icon {
+  display: inline-flex;
+  flex: none;
+  width: var(--bb-chip-filter-icon-size);
+  height: var(--bb-chip-filter-icon-size);
+  color: currentColor;
+}
+.bb-segment-tab__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-segment-tab__label { display: inline-block; }
+
+.bb-segment-tab:not(:disabled):not([data-selected]):is(:hover, [data-state="hover"]) { color: var(--bb-tab-fg-default); }
+.bb-segment-tab[data-selected] {
+  background: var(--bb-derived-segment-tab-root-fill);
+  border-color: var(--bb-derived-segment-tab-root-stroke);
+  color: var(--bb-tab-fg-default);
+}
+.bb-segment-tab:disabled { cursor: not-allowed; color: var(--bb-icon-glyph-muted); }

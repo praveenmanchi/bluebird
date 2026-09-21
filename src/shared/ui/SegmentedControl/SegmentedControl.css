@@ -1,0 +1,15 @@
+/* SegmentedControl — Figma "Group Tab selecters" set (308:51205): "4 level" /
+ * "2 level" (segment count). Bound token: chip-filter/radius. The dark track
+ * fill, its translucent stroke and inset are raw in Figma →
+ * --bb-derived-segmented-control-*. Segments are SegmentTab. */
+.bb-segmented-control {
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding: var(--bb-derived-segmented-control-root-padding-top) var(--bb-derived-segmented-control-root-padding-right) var(--bb-derived-segmented-control-root-padding-bottom) var(--bb-derived-segmented-control-root-padding-left);
+  border: var(--bb-derived-segmented-control-root-stroke-width) solid var(--bb-derived-segmented-control-root-stroke);
+  border-radius: var(--bb-chip-filter-radius);
+  background: var(--bb-derived-segmented-control-root-fill);
+}
+.bb-segmented-control__segment { height: auto; align-self: stretch; }
+.bb-segmented-control[data-disabled] { cursor: not-allowed; }

@@ -1,0 +1,90 @@
+/* Footer — Figma "footer" set (133:1675). Bound: footer/bg/default,
+ * footer/border/top, footer/padding-x, footer/padding-y (root),
+ * footer/segment/radius + footer/padding-x (size expander override),
+ * icon/glyph/default (divider lines, grip), icon/glyph/muted (chevron),
+ * status-pill/gap (pill rows). Group gaps, the hairline dividers, the
+ * chevron / grip boxes and the grip opacity are raw → --bb-derived-footer-*. */
+.bb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--bb-footer-padding-y) var(--bb-footer-padding-x);
+  background: var(--bb-footer-bg-default);
+  border-top: var(--bb-border-width-default) solid var(--bb-footer-border-top);
+  color: var(--bb-footer-fg-default);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-footer-font-size);
+  font-weight: var(--bb-footer-font-weight);
+  line-height: var(--bb-footer-line-height);
+}
+.bb-footer__status {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--bb-status-pill-gap);
+}
+.bb-footer__segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-derived-footer-frame-1430102682-gap);
+}
+.bb-footer__segment[data-last] { flex: 1 1 auto; }
+.bb-footer__segment[data-last] .bb-footer__pill { flex: 1 1 auto; }
+.bb-footer__divider {
+  flex: none;
+  width: var(--bb-derived-footer-line-57-stroke-width);
+  height: var(--bb-derived-footer-line-57-width);
+  background: var(--bb-icon-glyph-default);
+}
+.bb-footer__meta { flex: none; }
+.bb-footer__controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex: none;
+  gap: var(--bb-derived-footer-frame-1430102625-gap);
+}
+.bb-footer__size-group {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--bb-derived-footer-frame-1430102622-gap);
+}
+.bb-footer__size {
+  border-radius: var(--bb-footer-segment-radius);
+  padding-left: var(--bb-footer-padding-x);
+  padding-right: var(--bb-footer-padding-x);
+}
+.bb-footer__expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-derived-footer-frame-width);
+  height: var(--bb-derived-footer-frame-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-footer-segment-radius);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-icon-glyph-muted);
+  cursor: pointer;
+  appearance: none;
+}
+.bb-footer__expand:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-footer__expand > .bb-icon { width: 100%; height: 100%; }
+.bb-footer__grip {
+  display: inline-flex;
+  flex: none;
+  width: var(--bb-derived-footer-container-width);
+  height: var(--bb-derived-footer-container-height);
+  color: var(--bb-icon-glyph-default);
+  opacity: var(--bb-derived-footer-container-opacity);
+}
+.bb-footer__grip > .bb-icon { width: 100%; height: 100%; }

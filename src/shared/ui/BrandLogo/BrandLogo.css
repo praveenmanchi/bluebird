@@ -1,0 +1,17 @@
+/* Brand logo — Figma "brand logos" set (40000064:9865). In Figma the variant
+ * is driven by the Brand variable `brand logos`; here the same switch is CSS:
+ * every logo is rendered and [data-brand] reveals the matching one. Sizes are
+ * the per-variant frame sizes (derived tokens; the artwork is not tokenised). */
+.bb-brand-logo { display: none; flex: none; }
+.bb-brand-logo[data-logo="bridge"]    { width: var(--bb-derived-brand-logo-root-brand-bridge-width);    height: var(--bb-derived-brand-logo-root-brand-bridge-height); }
+.bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-root-brand-ikea-width);      height: var(--bb-derived-brand-logo-root-brand-ikea-height); }
+.bb-brand-logo[data-logo="richemont"] { width: var(--bb-derived-brand-logo-root-brand-richemont-width); height: var(--bb-derived-brand-logo-root-brand-richemont-height); }
+.bb-brand-logo[data-logo="disney"]    { width: var(--bb-derived-brand-logo-root-brand-disney-width);    height: var(--bb-derived-brand-logo-root-brand-disney-height); }
+.bb-brand-logo[data-logo="fiskars"]   { width: var(--bb-derived-brand-logo-root-brand-fiskars-width);   height: var(--bb-derived-brand-logo-root-brand-fiskars-height); }
+
+[data-brand="bridge"]    .bb-brand-logo[data-logo="bridge"],
+[data-brand="ikea"]      .bb-brand-logo[data-logo="ikea"],
+[data-brand="richemont"] .bb-brand-logo[data-logo="richemont"],
+[data-brand="disney"]    .bb-brand-logo[data-logo="disney"],
+[data-brand="fiskars"]   .bb-brand-logo[data-logo="fiskars"],
+.bb-brand-logo[data-forced] { display: block; }

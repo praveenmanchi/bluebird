@@ -1,0 +1,31 @@
+@import "tailwindcss";
+/* Generated from figma/tokens.json: primitives + semantics + the active brand (plugin.config.json → brand.active). */
+@import "../shared/brand/generated/active.css";
+@import "../shared/brand/theme.css";
+@import "../shell/shell.css";
+
+/* Legacy light-surface palette still used by src/shared/ui/legacy (to be retired as Figma counterparts get bound). */
+@theme {
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-info-text: #1d4ed8;
+  --color-info-border: #bfdbfe;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--bb-font-size-body);
+  color: var(--bb-card-variable-title-fg);
+  background: var(--bb-card-variable-bg-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: var(--bb-space-inset-xs); }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bb-card-variable-border-default); border-radius: var(--bb-radius-pill); }

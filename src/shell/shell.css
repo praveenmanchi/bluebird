@@ -1,0 +1,65 @@
+/* Shell chrome bound to Figma tokens: Banner organism (src/shared/ui/Banner), tab/*, card-variable/* (canvas). */
+.bb-app-subbar {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inset-sm) var(--bb-app-header-padding-x);
+  background: var(--bb-card-variable-bg-hover);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-font-size-caption);
+}
+.bb-app-subbar__note { flex: 1; min-width: 0; }
+.bb-app-subbar__select {
+  height: var(--bb-icon-size-lg);
+  padding-inline: var(--bb-space-inset-sm);
+  border-radius: var(--bb-radius-sm);
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  background: var(--bb-card-variable-bg-default);
+  color: var(--bb-card-variable-title-fg);
+  font-size: var(--bb-font-size-caption);
+  outline: none;
+}
+
+.bb-tabbar {
+  display: flex;
+  gap: var(--bb-tab-gap);
+  padding-inline: var(--bb-space-inset-sm);
+  background: var(--bb-tab-bar-bg);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-tab-bar-border);
+}
+.bb-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-tab-padding-y) var(--bb-tab-padding-x);
+  border: 0;
+  background-color: var(--bb-surface-transparent);
+  color: var(--bb-tab-fg-default);
+  font-family: var(--bb-tab-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-tab-font-size);
+  font-weight: var(--bb-tab-font-weight);
+  line-height: var(--bb-tab-line-height);
+  cursor: pointer;
+  opacity: 0.7; /* allow-raw: inactive tabs share tab/fg/default in Figma; only the indicator marks the active one */
+}
+.bb-tab:hover, .bb-tab[aria-selected="true"] { opacity: 1; color: var(--bb-tab-fg-active); }
+.bb-tab__icon { width: var(--bb-tab-icon-size); height: var(--bb-tab-icon-size); color: var(--bb-tab-icon-default); display: inline-flex; }
+.bb-tab__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: var(--bb-tab-padding-x);
+  right: var(--bb-tab-padding-x);
+  bottom: 0;
+  height: var(--bb-space-inset-xs);
+  border-radius: var(--bb-radius-pill);
+  background: var(--bb-tab-indicator-color);
+}
+.bb-tab:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); outline-offset: calc(-1 * var(--bb-space-inset-xs)); }
+
+.bb-canvas {
+  background: var(--bb-card-variable-bg-default);
+  color: var(--bb-card-variable-title-fg);
+}

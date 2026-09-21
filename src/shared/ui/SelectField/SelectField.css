@@ -1,0 +1,101 @@
+/* SelectField — Figma "dropdown" set (215:12201), plus the labelled alias
+ * "dropbox" (215:12356). Bound tokens: dropdown/*. Field height, padding,
+ * stroke and the chevron geometry are raw in Figma → --bb-derived-select-field-*. */
+.bb-select-field {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: var(--bb-derived-select-field-root-width);
+  gap: var(--bb-derived-select-field-root-gap);
+}
+.bb-select-field:has(.bb-select-field__label) { gap: var(--bb-dropdown-gap-label); }
+
+.bb-select-field__label {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: var(--bb-space-inline-sm);
+  color: var(--bb-dropdown-fg-label);
+  font-family: var(--bb-dropdown-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-dropdown-label-font-size);
+  font-weight: var(--bb-dropdown-label-font-weight);
+  line-height: var(--bb-dropdown-label-line-height);
+  cursor: pointer;
+}
+.bb-select-field__label-icon { width: var(--bb-icon-size-md); height: var(--bb-icon-size-md); color: var(--bb-dropdown-fg-label); }
+
+.bb-select-field__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--bb-derived-select-field-background-border-height);
+  padding-inline: var(--bb-derived-select-field-background-border-padding-left) var(--bb-derived-select-field-background-border-padding-right);
+  border: var(--bb-derived-select-field-background-border-stroke-width) solid var(--bb-dropdown-border-default);
+  border-radius: var(--bb-dropdown-radius);
+  background: var(--bb-dropdown-bg-default);
+  color: var(--bb-dropdown-fg-value);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-dropdown-font-size);
+  font-weight: var(--bb-dropdown-font-weight);
+  line-height: var(--bb-dropdown-line-height);
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  transition: background-color 120ms ease, border-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-select-field__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-select-field__value[data-placeholder] { color: var(--bb-dropdown-fg-placeholder); }
+.bb-select-field__eye { width: var(--bb-icon-size-lg); height: var(--bb-icon-size-lg); color: var(--bb-dropdown-chevron-color); }
+.bb-select-field__chevron {
+  display: inline-flex;
+  flex: none;
+  padding: var(--bb-derived-select-field-svg-padding-top) var(--bb-derived-select-field-svg-padding-right) var(--bb-derived-select-field-svg-padding-bottom) var(--bb-derived-select-field-svg-padding-left);
+  color: var(--bb-dropdown-chevron-color);
+  transition: transform 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-select-field__chevron > .bb-icon {
+  width: var(--bb-derived-select-field-vector-width);
+  height: var(--bb-derived-select-field-vector-height);
+}
+.bb-select-field[data-open] .bb-select-field__chevron { transform: rotate(180deg); }
+
+.bb-select-field:not([data-disabled]):is(:hover, [data-state="hover"]) .bb-select-field__trigger {
+  background: var(--bb-dropdown-bg-hover);
+  border-color: var(--bb-dropdown-border-hover);
+}
+.bb-select-field[data-open] .bb-select-field__trigger,
+.bb-select-field__trigger:focus-visible {
+  border-color: var(--bb-dropdown-border-focus);
+}
+.bb-select-field__trigger:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-select-field[data-disabled] .bb-select-field__trigger {
+  background: var(--bb-dropdown-bg-disabled);
+  border-color: var(--bb-dropdown-border-disabled);
+  color: var(--bb-dropdown-fg-disabled);
+  cursor: not-allowed;
+}
+.bb-select-field[data-disabled] .bb-select-field__label { cursor: not-allowed; }
+
+.bb-select-field__helper {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-derived-select-field-frame-1430102648-gap);
+  padding-left: var(--bb-derived-select-field-frame-1430102648-padding-left);
+  color: var(--bb-dropdown-fg-value);
+  font-family: var(--bb-dropdown-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-dropdown-label-font-size);
+  font-weight: var(--bb-dropdown-label-font-weight);
+  line-height: var(--bb-dropdown-label-line-height);
+}

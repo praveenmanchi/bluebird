@@ -1,0 +1,121 @@
+/* Input — Figma "Input Box" set (204:9667), single variant. Colours, type and
+ * the field height/padding/radius come from input/* tokens (default / focus /
+ * disabled / error borders as named in the Brand collection). The unnamed
+ * wrapper frames (Frame 1430102645/46/49) still carry raw gaps and paddings in
+ * Figma, so they arrive here as --bb-derived-input-*. */
+.bb-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-input-root-width);
+  gap: var(--bb-input-gap-label);
+  font-family: var(--bb-input-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-input-fg-value);
+}
+
+/* Frame 1430102645: icon + title, bottom-aligned. */
+.bb-input__label {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: var(--bb-derived-input-frame-1430102645-gap);
+  color: var(--bb-input-fg-label);
+  font-family: var(--bb-input-label-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-input-label-font-size);
+  font-weight: var(--bb-input-label-font-weight);
+  line-height: var(--bb-input-label-line-height);
+  cursor: pointer;
+}
+.bb-input__label-icon {
+  display: inline-flex;
+  flex: none;
+  width: var(--bb-input-icon-size);
+  height: var(--bb-input-icon-size);
+  color: var(--bb-input-icon-color);
+}
+.bb-input__label-icon > .bb-icon { width: 100%; height: 100%; }
+
+/* Frame 1430102646: the field row. */
+.bb-input__field {
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: var(--bb-derived-input-frame-1430102646-gap);
+}
+
+/* Background+Border */
+.bb-input__box {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--bb-input-height);
+  padding-inline: var(--bb-input-padding-x);
+  border: var(--bb-input-border-width) solid var(--bb-input-border-default);
+  border-radius: var(--bb-input-radius);
+  background: var(--bb-input-bg-default);
+  transition: border-color 120ms ease, background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-input__control {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-input-fg-value);
+  font-family: inherit;
+  font-size: var(--bb-input-font-size);
+  font-weight: var(--bb-input-font-weight);
+  line-height: var(--bb-input-line-height);
+}
+.bb-input__control::placeholder { color: var(--bb-input-fg-placeholder); }
+
+/* Figma "eye" instance (24×24, open / close). */
+.bb-input__eye {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-icon-size-lg);
+  height: var(--bb-icon-size-lg);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-input-icon-color);
+  cursor: pointer;
+  appearance: none;
+}
+.bb-input__eye > .bb-icon { width: 100%; height: 100%; }
+.bb-input__eye:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+
+/* States */
+.bb-input:not([data-disabled]):is(:focus-within, [data-state="focus"]) .bb-input__box { border-color: var(--bb-input-border-focus); }
+.bb-input[data-error] .bb-input__box { border-color: var(--bb-input-border-error); }
+.bb-input[data-disabled] .bb-input__box {
+  background: var(--bb-input-bg-disabled);
+  cursor: not-allowed;
+}
+.bb-input[data-disabled] .bb-input__control,
+.bb-input[data-disabled] .bb-input__eye,
+.bb-input[data-disabled] .bb-input__label { cursor: not-allowed; }
+
+/* Frame 1430102649: helper text. */
+.bb-input__helper {
+  box-sizing: border-box;
+  align-self: stretch;
+  margin: 0;
+  padding: var(--bb-derived-input-frame-1430102649-padding-top) var(--bb-derived-input-frame-1430102649-padding-right) var(--bb-derived-input-frame-1430102649-padding-bottom) var(--bb-derived-input-frame-1430102649-padding-left);
+  color: var(--bb-input-fg-helper);
+  font-size: var(--bb-input-helper-font-size);
+  font-weight: var(--bb-derived-input-to-store-all-tokens-in-a-single-json-file-write-the-file-name-ex-tokens-json-pro-features-like-themes-require-a-multi-file-sync-with-tokens-stored-in-a-folder-by-writing-the-folder-path-ex-tokens-font-weight);
+  line-height: var(--bb-input-helper-line-height);
+}

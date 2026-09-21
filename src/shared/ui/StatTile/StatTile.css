@@ -1,0 +1,39 @@
+/* Stat tile — Figma "Dashboard" set (135:3290). Nothing is bound in Figma:
+ * every value is raw → --bb-derived-stat-tile-*. The large glyph size is not
+ * emitted as a derived token (instance sizes are not), so it is composed
+ * from icon/size/lg + space/inline-sm (24 + 6) until a stat-tile/icon/size
+ * variable exists. */
+.bb-stat-tile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-derived-stat-tile-root-gap);
+  white-space: nowrap;
+}
+.bb-stat-tile__icon {
+  display: inline-flex;
+  flex: none;
+  width: calc(var(--bb-icon-size-lg) + var(--bb-space-inline-sm));
+  height: calc(var(--bb-icon-size-lg) + var(--bb-space-inline-sm));
+  color: var(--bb-derived-stat-tile-variables-color);
+}
+.bb-stat-tile__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-stat-tile__body {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--bb-derived-stat-tile-frame-1430102628-gap);
+}
+.bb-stat-tile__value {
+  color: var(--bb-derived-stat-tile-68-color);
+  font-family: var(--bb-type-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-stat-tile-68-font-size);
+  font-weight: var(--bb-derived-stat-tile-68-font-weight);
+  line-height: var(--bb-derived-stat-tile-68-line-height);
+}
+.bb-stat-tile__label {
+  color: var(--bb-derived-stat-tile-variables-color);
+  font-family: var(--bb-type-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-stat-tile-variables-font-size);
+  font-weight: var(--bb-derived-stat-tile-variables-font-weight);
+  line-height: var(--bb-derived-stat-tile-variables-line-height);
+}

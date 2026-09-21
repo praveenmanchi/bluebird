@@ -1,0 +1,89 @@
+/* Button — Figma "Button" set (40000040:5139). Variant = Figma "Type", state
+ * = Figma "State". Every value is a Brand token; hover/disabled follow the
+ * Hover/Disabled variants. data-state="hover" forces the hover variant for
+ * stories and visual diffs. */
+.bb-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-style: solid;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  appearance: none;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-button:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-button__label { display: inline-block; }
+.bb-button__icon { display: inline-flex; flex: none; }
+.bb-button__icon > .bb-icon { width: 100%; height: 100%; }
+
+/* ---------------------------------------------------------------- Primary */
+.bb-button[data-variant="primary"] {
+  height: var(--bb-button-primary-height);
+  padding-inline: var(--bb-button-primary-padding-x);
+  gap: var(--bb-button-primary-gap);
+  border-radius: var(--bb-button-primary-radius);
+  border-width: var(--bb-button-primary-border-width);
+  background: var(--bb-button-primary-bg-default);
+  border-color: var(--bb-button-primary-border-default);
+  color: var(--bb-button-primary-fg-default);
+  font-family: var(--bb-button-primary-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-button-primary-font-size);
+  font-weight: var(--bb-button-primary-font-weight);
+  line-height: var(--bb-button-primary-line-height);
+}
+.bb-button[data-variant="primary"] .bb-button__icon {
+  width: var(--bb-button-primary-icon-size);
+  height: var(--bb-button-primary-icon-size);
+  color: var(--bb-button-primary-icon-color);
+}
+.bb-button[data-variant="primary"]:not(:disabled):is(:hover, [data-state="hover"]) {
+  background: var(--bb-button-primary-bg-hover);
+  border-color: var(--bb-button-primary-border-hover);
+}
+.bb-button[data-variant="primary"]:disabled {
+  background: var(--bb-button-primary-bg-disabled);
+  border-color: var(--bb-button-primary-border-disabled);
+  color: var(--bb-button-primary-fg-disabled);
+  opacity: var(--bb-derived-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.bb-button[data-variant="primary"]:disabled .bb-button__icon { color: var(--bb-button-primary-icon-color-disabled); }
+
+/* -------------------------------------------------------------- Secondary */
+.bb-button[data-variant="secondary"] {
+  height: var(--bb-button-secondary-height);
+  padding-inline: var(--bb-button-secondary-padding-x);
+  gap: var(--bb-button-secondary-gap);
+  border-radius: var(--bb-button-secondary-radius);
+  border-width: var(--bb-button-secondary-border-width);
+  background: var(--bb-button-secondary-bg-default);
+  border-color: var(--bb-button-secondary-border-default);
+  color: var(--bb-button-secondary-fg-default);
+  font-family: var(--bb-button-secondary-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-button-secondary-font-size);
+  font-weight: var(--bb-button-secondary-font-weight);
+  line-height: var(--bb-button-secondary-line-height);
+}
+.bb-button[data-variant="secondary"] .bb-button__icon {
+  width: var(--bb-button-secondary-icon-size);
+  height: var(--bb-button-secondary-icon-size);
+  color: var(--bb-button-secondary-icon-color);
+}
+.bb-button[data-variant="secondary"]:not(:disabled):is(:hover, [data-state="hover"]) {
+  background: var(--bb-button-secondary-bg-hover);
+  border-color: var(--bb-button-secondary-border-hover);
+}
+.bb-button[data-variant="secondary"]:disabled {
+  background: var(--bb-button-secondary-bg-disabled);
+  border-color: var(--bb-button-secondary-border-disabled);
+  color: var(--bb-button-secondary-fg-disabled);
+  opacity: var(--bb-derived-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.bb-button[data-variant="secondary"]:disabled .bb-button__icon { color: var(--bb-button-secondary-icon-color-disabled); }

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+/* Every brand is loaded; the toolbar switches [data-brand] on <html> and on the story canvas. */
+@import "../src/shared/brand/generated/all.css";
+@import "../src/shared/brand/theme.css";
+@import "../src/shell/shell.css";
+
+body {
+  margin: 0;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-font-size-body);
+}
+/* Story canvas = the Figma component-set frame background (card-variable/bg/default). */
+.bb-story-canvas {
+  min-height: 100%;
+  padding: var(--bb-space-inset-lg);
+  background: var(--bb-card-variable-bg-default);
+  color: var(--bb-card-variable-title-fg);
+}
+.sb-show-main.sb-main-padded { padding: 0; }

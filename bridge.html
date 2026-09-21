@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bluebird · live bridge</title>
+    <style>
+      body { margin: 0; font: 12px Inter, system-ui, sans-serif; color: #18181b; background: #fafafa; padding: 16px; }
+      h1 { font-size: 13px; margin: 0 0 4px; }
+      p { color: #71717a; margin: 0 0 12px; line-height: 1.5; }
+      label { display: block; font-size: 11px; color: #52525b; margin-bottom: 4px; }
+      input { width: 100%; box-sizing: border-box; height: 32px; padding: 0 10px; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 12px; }
+      button { margin-top: 10px; height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: #0066ff; color: #fff; font-weight: 500; cursor: pointer; }
+      button:disabled { opacity: .4; cursor: default; }
+      #status { display: inline-block; margin-top: 12px; padding: 2px 8px; border-radius: 6px; background: #f4f4f5; font-size: 11px; }
+      #status[data-status="connected"] { background: #f0fdf4; color: #16a34a; }
+      #status[data-status="connecting"] { background: #fffbeb; color: #b45309; }
+      #status[data-status="disconnected"] { background: #fef2f2; color: #dc2626; }
+      code { background: #f4f4f5; padding: 1px 4px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>Live mode bridge</h1>
+    <p>Keep this open. The real UI runs in your browser at <code>localhost:5173/?mode=live</code> and talks to this file through the relay on port 4001.</p>
+    <label for="token">Relay token (optional)</label>
+    <input id="token" placeholder="leave empty unless the relay was started with --token" />
+    <button id="connect">Connect</button>
+    <div><span id="status" data-status="disconnected">disconnected</span></div>
+    <script type="module" src="/src/ui/bridge.ts"></script>
+  </body>
+</html>

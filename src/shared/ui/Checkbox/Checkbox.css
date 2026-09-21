@@ -1,0 +1,68 @@
+/* Checkbox — Figma "Checkbox" set (40000046:5237): Unchecked / Checked /
+ * Indeterminate × Default / Hover / Disabled. Root opacity for Disabled and
+ * the mark geometry are raw in Figma today → --bb-derived-checkbox-*. */
+.bb-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-checkbox-gap);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--bb-checkbox-label-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-checkbox-label-font-size);
+  font-weight: var(--bb-checkbox-label-font-weight);
+  line-height: var(--bb-checkbox-label-line-height);
+  color: var(--bb-checkbox-label-fg);
+}
+.bb-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+.bb-checkbox__box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-checkbox-box-size);
+  height: var(--bb-checkbox-box-size);
+  border-radius: var(--bb-checkbox-box-radius);
+  border: var(--bb-checkbox-box-border-width) solid var(--bb-checkbox-box-border-default);
+  background: var(--bb-checkbox-box-bg-unchecked);
+  color: var(--bb-checkbox-mark-color);
+  transition: background-color 120ms ease, border-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-checkbox:not([data-disabled]):is(:hover, [data-state="hover"]) .bb-checkbox__box {
+  border-color: var(--bb-checkbox-box-border-hover);
+}
+.bb-checkbox:is([data-checked="true"], [data-checked="mixed"]) .bb-checkbox__box {
+  background: var(--bb-checkbox-box-bg-checked);
+  border-color: var(--bb-checkbox-box-border-checked);
+}
+.bb-checkbox__input:focus-visible + .bb-checkbox__box {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-checkbox__mark {
+  width: var(--bb-checkbox-mark-size);
+  height: var(--bb-checkbox-mark-size);
+  stroke-width: var(--bb-derived-checkbox-check-stroke-width);
+}
+.bb-checkbox__dash {
+  width: var(--bb-derived-checkbox-dash-width);
+  height: var(--bb-derived-checkbox-dash-height);
+  border-radius: var(--bb-derived-checkbox-dash-radius);
+}
+.bb-checkbox[data-disabled] {
+  cursor: not-allowed;
+  color: var(--bb-checkbox-label-fg-disabled);
+  opacity: var(--bb-derived-checkbox-disabled-opacity);
+}
+.bb-checkbox[data-disabled] .bb-checkbox__box {
+  background: var(--bb-checkbox-box-bg-disabled);
+  border-color: var(--bb-checkbox-box-border-disabled);
+  color: var(--bb-checkbox-mark-color-disabled);
+}

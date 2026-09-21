@@ -1,0 +1,41 @@
+{
+  "name": "bluebird",
+  "id": "1683734359342809857",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": {
+    "main": "dist/index.html",
+    "bridge": "dist/bridge.html"
+  },
+  "menu": [
+    {
+      "name": "Open Bluebird",
+      "command": "open"
+    },
+    {
+      "separator": true
+    },
+    {
+      "name": "Dev: connect to browser (live mode)",
+      "command": "bridge"
+    }
+  ],
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:5173",
+      "ws://localhost:4001",
+      "ws://127.0.0.1:4001"
+    ],
+    "reasoning": "Loads the Noto Sans web font used by the brand type ramp."
+  }
+}

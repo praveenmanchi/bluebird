@@ -1,0 +1,61 @@
+/* FilterDropdown — Figma "filters" set (7:44569), one Default variant. Bound
+ * tokens: chip-filter/*. The 133×32 box, its 8/4 padding, the stroke and the
+ * chevron geometry are raw in Figma → --bb-derived-filter-dropdown-*. */
+.bb-filter-dropdown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--bb-derived-filter-dropdown-root-width);
+  height: var(--bb-derived-filter-dropdown-root-height);
+  padding: var(--bb-derived-filter-dropdown-root-padding-top) var(--bb-derived-filter-dropdown-root-padding-right) var(--bb-derived-filter-dropdown-root-padding-bottom) var(--bb-derived-filter-dropdown-root-padding-left);
+  gap: var(--bb-chip-filter-gap);
+  border: var(--bb-derived-filter-dropdown-root-stroke-width) solid var(--bb-chip-filter-border-default);
+  border-radius: var(--bb-chip-filter-radius);
+  background: var(--bb-chip-filter-bg-default);
+  color: var(--bb-chip-filter-fg-default);
+  font-family: var(--bb-chip-filter-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-chip-filter-font-size);
+  font-weight: var(--bb-chip-filter-font-weight);
+  line-height: var(--bb-chip-filter-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  transition: background-color 120ms ease, border-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-filter-dropdown:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-filter-dropdown__icon {
+  display: inline-flex;
+  flex: none;
+  width: var(--bb-chip-filter-icon-size);
+  height: var(--bb-chip-filter-icon-size);
+  color: var(--bb-chip-filter-fg-default);
+}
+.bb-filter-dropdown__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-filter-dropdown__label { display: inline-block; }
+.bb-filter-dropdown__chevron {
+  display: inline-flex;
+  flex: none;
+  padding: var(--bb-derived-filter-dropdown-svg-padding-top) var(--bb-derived-filter-dropdown-svg-padding-right) var(--bb-derived-filter-dropdown-svg-padding-bottom) var(--bb-derived-filter-dropdown-svg-padding-left);
+  color: var(--bb-chip-filter-fg-default);
+  transition: transform 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-filter-dropdown__chevron > .bb-icon {
+  width: var(--bb-derived-filter-dropdown-vector-width);
+  height: var(--bb-derived-filter-dropdown-vector-height);
+}
+.bb-filter-dropdown[data-open] .bb-filter-dropdown__chevron { transform: rotate(180deg); }
+
+.bb-filter-dropdown:not(:disabled):is(:hover, [data-state="hover"]) { border-color: var(--bb-chip-filter-border-hover); }
+.bb-filter-dropdown[data-open] {
+  background: var(--bb-chip-filter-bg-selected);
+  border-color: var(--bb-chip-filter-border-selected);
+  color: var(--bb-chip-filter-fg-selected);
+}
+.bb-filter-dropdown[data-open] :is(.bb-filter-dropdown__icon, .bb-filter-dropdown__chevron) { color: var(--bb-chip-filter-fg-selected); }
+.bb-filter-dropdown:disabled { cursor: not-allowed; color: var(--bb-icon-glyph-muted); }
+.bb-filter-dropdown:disabled :is(.bb-filter-dropdown__icon, .bb-filter-dropdown__chevron) { color: var(--bb-icon-glyph-muted); }

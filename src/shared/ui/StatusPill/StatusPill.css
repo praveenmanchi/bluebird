@@ -1,0 +1,27 @@
+/* StatusPill — Figma "Buttom Status" (133:1581). Gap, text colour, size and
+ * weight are Brand-bound (status-pill/*); icon colours use the matching
+ * status-pill/icon/* tokens. The horizontal inset is raw → derived. */
+.bb-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  gap: var(--bb-status-pill-gap);
+  padding-left: var(--bb-derived-status-pill-root-padding-left);
+  padding-right: var(--bb-derived-status-pill-root-padding-right);
+  color: var(--bb-status-pill-fg-default);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-status-pill-font-size);
+  font-weight: var(--bb-status-pill-font-weight);
+  line-height: var(--bb-status-pill-line-height);
+  white-space: nowrap;
+}
+.bb-status-pill__icon {
+  width: var(--bb-status-pill-icon-size);
+  height: var(--bb-status-pill-icon-size);
+}
+.bb-status-pill__label { display: inline-block; }
+.bb-status-pill[data-status="good"] .bb-status-pill__icon { color: var(--bb-status-pill-icon-good); }
+.bb-status-pill[data-status="issue"] .bb-status-pill__icon { color: var(--bb-status-pill-icon-warn); }
+.bb-status-pill[data-status="retry"] .bb-status-pill__icon { color: var(--bb-status-pill-icon-warn); }
+.bb-status-pill[data-status="error"] .bb-status-pill__icon { color: var(--bb-status-pill-icon-error); }

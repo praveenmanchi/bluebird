@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": [
+      "es2020",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": [
+      "@figma/plugin-typings",
+      "vite/client",
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@shell/*": [
+        "src/shell/*"
+      ],
+      "@config": [
+        "plugin.config.json"
+      ],
+      "@logos": [
+        "src/shared/ui/BrandLogo/generated.ts"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "scripts",
+    "tools",
+    "tests",
+    "plugin.config.json",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "eslint.config.js",
+    ".storybook"
+  ]
+}

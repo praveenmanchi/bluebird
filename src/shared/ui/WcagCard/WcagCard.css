@@ -1,0 +1,174 @@
+/* WcagCard — Figma "WCAG Card" set (419:39993). Bound: wcag-card/bg/default,
+ * wcag-card/divider/color (root stroke + Line 61), wcag-card/radius,
+ * wcag-card/title/fg (every text), wcag-card/padding (body inset + Principle
+ * padding-right), wcag-card/gap (title row + content stack), rating/padding
+ * (body / heading / row top insets), rating/radius + icon/glyph/default
+ * (preview placeholder). Header inset, the Rating / Principle overrides,
+ * the Inter and Cousine text styles, the swatch geometry and the row gaps are
+ * raw → --bb-derived-wcag-card-*. */
+.bb-wcag-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--bb-derived-wcag-card-root-width);
+  max-width: 100%;
+  border: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-wcag-card-divider-color);
+  border-radius: var(--bb-wcag-card-radius);
+  background: var(--bb-wcag-card-bg-default);
+  color: var(--bb-wcag-card-title-fg);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+}
+.bb-wcag-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  padding: var(--bb-derived-wcag-card-container-padding-top) var(--bb-derived-wcag-card-container-padding-right) var(--bb-derived-wcag-card-container-padding-bottom) var(--bb-derived-wcag-card-container-padding-left);
+}
+.bb-wcag-card__rating {
+  padding-left: var(--bb-derived-wcag-card-rating-padding-left);
+  padding-right: var(--bb-derived-wcag-card-rating-padding-right);
+}
+.bb-wcag-card__principle {
+  gap: var(--bb-derived-wcag-card-principle-gap);
+  padding: var(--bb-derived-wcag-card-principle-padding-top) var(--bb-wcag-card-padding) var(--bb-derived-wcag-card-principle-padding-bottom) var(--bb-derived-wcag-card-principle-padding-left);
+  border-radius: var(--bb-derived-wcag-card-principle-radius);
+}
+.bb-wcag-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-dimension-space-4);
+  padding: var(--bb-rating-padding) var(--bb-wcag-card-padding) 0;
+}
+.bb-wcag-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-wcag-card-gap);
+  min-width: 0;
+}
+.bb-wcag-card__code {
+  flex: none;
+  font-size: var(--bb-derived-wcag-card-1-4-3-font-size);
+  font-weight: var(--bb-derived-wcag-card-1-4-3-font-weight);
+  line-height: var(--bb-derived-wcag-card-1-4-3-line-height);
+}
+.bb-wcag-card__indicators {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--bb-derived-wcag-card-frame-1430102531-gap);
+}
+.bb-wcag-card__link {
+  display: inline-flex;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  min-width: 0;
+  gap: var(--bb-derived-wcag-card-text-gap);
+  color: var(--bb-wcag-card-title-fg);
+  font-size: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-size);
+  font-weight: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-weight);
+  line-height: var(--bb-derived-wcag-card-understanding-sc-1-4-3-line-height);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.bb-wcag-card__link:hover { text-decoration: underline; }
+.bb-wcag-card__link:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-wcag-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-wcag-card-gap);
+}
+.bb-wcag-card__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-derived-wcag-card-frame-1430102533-gap);
+}
+.bb-wcag-card__title {
+  margin: 0;
+  padding-top: var(--bb-rating-padding);
+  font-size: var(--bb-derived-wcag-card-contrast-minimum-font-size);
+  font-weight: var(--bb-derived-wcag-card-contrast-minimum-font-weight);
+  line-height: var(--bb-derived-wcag-card-contrast-minimum-line-height);
+}
+.bb-wcag-card__description {
+  margin: 0;
+  padding-top: var(--bb-rating-padding);
+  font-size: var(--bb-derived-wcag-card-a-visible-indicator-must-show-which-element-is-currently-focused-when-navigating-with-a-keyboard-font-size);
+  font-weight: var(--bb-derived-wcag-card-a-visible-indicator-must-show-which-element-is-currently-focused-when-navigating-with-a-keyboard-font-weight);
+  line-height: var(--bb-derived-wcag-card-a-visible-indicator-must-show-which-element-is-currently-focused-when-navigating-with-a-keyboard-line-height);
+}
+.bb-wcag-card__divider {
+  margin: 0;
+  border: 0;
+  border-top: var(--bb-derived-wcag-card-line-61-stroke-width) solid var(--bb-wcag-card-divider-color);
+}
+.bb-wcag-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-derived-wcag-card-frame-1430102680-gap);
+  padding: var(--bb-derived-wcag-card-frame-1430102680-padding-top) 0 var(--bb-derived-wcag-card-frame-1430102680-padding-bottom);
+}
+.bb-wcag-card__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-dimension-space-4);
+  padding-top: var(--bb-rating-padding);
+  font-size: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-size);
+  font-weight: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-weight);
+  line-height: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-line-height);
+}
+.bb-wcag-card__row-label {
+  flex: none;
+  min-width: var(--bb-dimension-space-55);
+  font-size: var(--bb-derived-wcag-card-node-font-size);
+  font-weight: var(--bb-derived-wcag-card-node-font-weight);
+  line-height: var(--bb-derived-wcag-card-node-line-height);
+}
+.bb-wcag-card__row-value {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-dimension-space-2);
+  min-width: 0;
+}
+.bb-wcag-card__row--fix .bb-wcag-card__row-value {
+  font-weight: var(--bb-derived-wcag-card-use-white-label-text-or-darken-the-fill-to-reach-4-font-weight);
+}
+.bb-wcag-card__row--themes { align-items: center; padding-top: 0; }
+.bb-wcag-card__row--themes .bb-wcag-card__row-value { gap: var(--bb-derived-wcag-card-frame-1430102681-gap); }
+.bb-wcag-card__mono {
+  font-family: var(--bb-derived-wcag-card-label-text-font-family), ui-monospace, monospace;
+  font-size: var(--bb-derived-wcag-card-label-text-font-size);
+  font-weight: var(--bb-derived-wcag-card-label-text-font-weight);
+  line-height: var(--bb-derived-wcag-card-8fb7e8-line-height);
+}
+.bb-wcag-card__on {
+  font-size: var(--bb-derived-wcag-card-on-font-size);
+  font-weight: var(--bb-derived-wcag-card-on-font-weight);
+  line-height: var(--bb-derived-wcag-card-on-line-height);
+}
+.bb-wcag-card__swatch-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-dimension-space-2);
+}
+.bb-wcag-card__swatch {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-dimension-space-12);
+  height: var(--bb-dimension-space-12);
+  border: var(--bb-derived-wcag-card-text-stroke-width) solid var(--bb-derived-wcag-card-text-stroke);
+  border-radius: var(--bb-derived-wcag-card-text-radius);
+}
+.bb-wcag-card__preview {
+  box-sizing: border-box;
+  min-height: var(--bb-derived-wcag-card-rectangle-3475057-height);
+  border-radius: var(--bb-rating-radius);
+  overflow: hidden;
+}
+.bb-wcag-card__preview[data-placeholder] { background: var(--bb-icon-glyph-default); }

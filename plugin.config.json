@@ -1,0 +1,23 @@
+{
+  "$schema": "./docs/plugin.config.schema.json",
+  "name": "Bluebird",
+  "brand": {
+    "active": "bridge",
+    "brands": {
+      "bridge":    { "label": "Bridge",    "source": { "collection": "Brand", "mode": "Bridge" } },
+      "ikea":      { "label": "Ikea",      "source": { "collection": "Brand", "mode": "Ikea" } },
+      "richemont": { "label": "Richemont", "source": { "collection": "Brand", "mode": "Richemont" } },
+      "disney":    { "label": "Disney",    "source": { "collection": "Brand", "mode": "Disney" } },
+      "fiskars":   { "label": "Fiskars",   "source": { "collection": "Brand", "mode": "Fiskars" } }
+    }
+  },
+  "activePersona": "product-designer",
+  "personas": {
+    "product-designer": { "label": "Product Designer", "tabs": ["a11y"] },
+    "design-system": { "label": "Design System", "tabs": [] }
+  },
+  "tabs": {
+    "a11y": { "enabled": true, "label": "Accessibility", "icon": "accessibility" }
+  },
+  "window": { "width": 400, "height": 580 }
+}

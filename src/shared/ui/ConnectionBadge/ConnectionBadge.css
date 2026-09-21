@@ -1,0 +1,24 @@
+/* ConnectionBadge — Figma "Connection" set (417:6735): Property 1 = Default
+ * (Retry) / Variant2 (Good) / Variant3 (Error). Border, radius and the three
+ * icon colours are Brand-bound (connection/*); the height, inset and stroke
+ * are raw → --bb-derived-connection-badge-*. The faint Figma drop shadow has
+ * no token and is not rendered. */
+.bb-connection-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  height: var(--bb-derived-connection-badge-root-height);
+  padding-left: var(--bb-derived-connection-badge-root-padding-left);
+  padding-right: var(--bb-derived-connection-badge-root-padding-right);
+  border: var(--bb-derived-connection-badge-root-stroke-width) solid var(--bb-connection-border-default);
+  border-radius: var(--bb-connection-radius);
+  background: var(--bb-connection-bg-default);
+}
+.bb-connection-badge__icon {
+  width: var(--bb-icon-size-sm);
+  height: var(--bb-icon-size-sm);
+}
+.bb-connection-badge[data-status="retry"] .bb-connection-badge__icon { color: var(--bb-connection-icon-warn); }
+.bb-connection-badge[data-status="good"] .bb-connection-badge__icon { color: var(--bb-connection-icon-ok); }
+.bb-connection-badge[data-status="error"] .bb-connection-badge__icon { color: var(--bb-connection-icon-error); }

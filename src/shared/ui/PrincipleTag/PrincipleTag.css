@@ -1,0 +1,44 @@
+/* PrincipleTag — Figma "Principle" set (419:40149): Principle = Perceivable /
+ * Operable / Understandable / Robust. Background per principle and the caption
+ * colour are Brand-bound (principle/*); the glyph reads icon/glyph/on-accent
+ * as bound on the vectors. The single rounded corner, inset, gap, the
+ * semibold caption type and the per-principle icon boxes are raw → derived. */
+.bb-principle-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  gap: var(--bb-derived-principle-tag-root-gap);
+  padding: var(--bb-derived-principle-tag-root-padding-top) var(--bb-derived-principle-tag-root-padding-right) var(--bb-derived-principle-tag-root-padding-bottom) var(--bb-derived-principle-tag-root-padding-left);
+  border-radius: var(--bb-derived-principle-tag-root-radius);
+  color: var(--bb-principle-fg);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-principle-font-size);
+  font-weight: var(--bb-derived-principle-tag-perceivable-font-weight);
+  line-height: var(--bb-derived-principle-tag-perceivable-line-height);
+  white-space: nowrap;
+  user-select: none;
+}
+.bb-principle-tag[data-principle="perceivable"] { background: var(--bb-principle-perceivable-bg); }
+.bb-principle-tag[data-principle="operable"] { background: var(--bb-principle-operable-bg); }
+.bb-principle-tag[data-principle="understandable"] { background: var(--bb-principle-understandable-bg); }
+.bb-principle-tag[data-principle="robust"] { background: var(--bb-principle-robust-bg); }
+
+.bb-principle-tag__icon { color: var(--bb-icon-glyph-on-accent); }
+.bb-principle-tag[data-principle="perceivable"] .bb-principle-tag__icon {
+  width: var(--bb-derived-principle-tag-icon-principle-perceivable-width);
+  height: var(--bb-derived-principle-tag-icon-principle-perceivable-height);
+}
+.bb-principle-tag[data-principle="operable"] .bb-principle-tag__icon {
+  width: var(--bb-derived-principle-tag-icon-principle-operable-width);
+  height: var(--bb-derived-principle-tag-icon-principle-operable-height);
+}
+.bb-principle-tag[data-principle="understandable"] .bb-principle-tag__icon {
+  width: var(--bb-derived-principle-tag-icon-principle-understandable-width);
+  height: var(--bb-derived-principle-tag-icon-principle-understandable-height);
+}
+.bb-principle-tag[data-principle="robust"] .bb-principle-tag__icon {
+  width: var(--bb-derived-principle-tag-icon-principle-robust-width);
+  height: var(--bb-derived-principle-tag-icon-principle-robust-height);
+}
+.bb-principle-tag__label { display: inline-block; }

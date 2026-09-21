@@ -1,0 +1,87 @@
+/* Banner — Figma "Banner" component (40000064:9910). Background, rule and
+ * "Powered By" colours come from Banner/* variables; everything else in the
+ * Figma layer is still raw (unnamed frames, sizes, three non-tokenised fonts)
+ * and therefore arrives here as --bb-derived-banner-* until design promotes it. */
+.bb-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--bb-derived-banner-root-gap);
+  padding: var(--bb-derived-banner-root-padding-top) var(--bb-derived-banner-root-padding-right) var(--bb-derived-banner-root-padding-bottom) var(--bb-derived-banner-root-padding-left);
+  background: var(--bb-banner-bg);
+  color: var(--bb-banner-text);
+  overflow: hidden;
+}
+.bb-banner__row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-derived-banner-frame-1430102689-gap);
+  padding-block: var(--bb-derived-banner-frame-1430102689-padding-top) var(--bb-derived-banner-frame-1430102689-padding-bottom);
+}
+.bb-banner__group {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-derived-banner-frame-1430102692-gap);
+  min-width: 0;
+}
+/* Figma "Line 62": a 30px line rotated -90°, stroked with Banner/powered by. */
+.bb-banner__rule {
+  flex: none;
+  width: var(--bb-derived-banner-line-62-stroke-width);
+  height: var(--bb-derived-banner-line-62-width);
+  background: var(--bb-banner-powered-by);
+}
+.bb-banner__stack {
+  display: flex;
+  flex-direction: column;
+  width: var(--bb-derived-banner-frame-1430102687-width);
+  min-width: 0;
+}
+.bb-banner__stack > * + * { margin-top: var(--bb-derived-banner-frame-1430102687-gap); }
+.bb-banner__title {
+  font-family: var(--bb-derived-banner-design-studio-font-family), var(--bb-type-family-museo), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-banner-design-studio-font-size);
+  font-weight: var(--bb-derived-banner-design-studio-font-weight);
+  line-height: normal;
+  color: var(--bb-banner-text);
+  white-space: nowrap;
+}
+.bb-banner__tagline {
+  font-family: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-size);
+  font-weight: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-weight);
+  line-height: var(--bb-derived-banner-connecting-gap-between-design-workflow-line-height);
+  color: var(--bb-banner-text);
+  white-space: nowrap;
+}
+/* Figma "Frame 1430102690": absolute, pinned bottom-right (constraints MAX / STRETCH). */
+.bb-banner__powered {
+  position: absolute;
+  right: 0;
+  bottom: var(--bb-derived-banner-root-padding-bottom);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-derived-banner-frame-1430102690-gap);
+  padding: var(--bb-derived-banner-frame-1430102690-padding-top) var(--bb-derived-banner-frame-1430102690-padding-right) var(--bb-derived-banner-frame-1430102690-padding-bottom) var(--bb-derived-banner-frame-1430102690-padding-left);
+}
+.bb-banner__powered-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-derived-banner-frame-1430102691-gap);
+}
+.bb-banner__powered-label {
+  font-family: var(--bb-derived-banner-powered-by-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-banner-powered-by-font-size);
+  font-weight: var(--bb-derived-banner-powered-by-font-weight);
+  line-height: normal;
+  color: var(--bb-banner-powered-by);
+  white-space: nowrap;
+}
+.bb-banner__mark {
+  display: block;
+  width: var(--bb-derived-banner-vector-width);
+  height: var(--bb-derived-banner-vector-height);
+  color: var(--bb-banner-text);
+}
