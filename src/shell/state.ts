@@ -2,6 +2,7 @@ import { signal, computed } from '@preact/signals'
 import { config, personas } from '@shared/config'
 import type { BrandTokensResult } from '@shared/brand'
 import type { TransportStatus } from '@shared/bridge'
+import type { WindowSize } from '@shared/config'
 
 // Shell-level state only: which persona and tab are active, brand status,
 // connection status. Tab-local state lives inside each feature folder.
@@ -12,6 +13,8 @@ export const activePersonaId = signal<string | null>(defaultPersona?.id ?? null)
 export const activeTabId = signal<string | null>(defaultPersona?.tabs[0]?.id ?? null)
 export const brandStatus = signal<BrandTokensResult | null>(null)
 export const connection = signal<TransportStatus>('connected')
+/** Current plugin window size; the footer's S / M / L, expand and grip all go through shell:resize. */
+export const windowSize = signal<WindowSize>({ width: config.window.width, height: config.window.height })
 
 export const activePersona = computed(() => personas.find((p) => p.id === activePersonaId.value) ?? null)
 export const visibleTabs = computed(() => activePersona.value?.tabs ?? [])

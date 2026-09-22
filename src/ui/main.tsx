@@ -1,9 +1,12 @@
 import { render } from 'preact'
 import { App } from '@shell/App'
 import { createRpcClient, createPostMessageTransport, createWebSocketTransport, createMockTransport } from '@shared/bridge'
-import { brand } from '@shared/config'
+import { brand, personas } from '@shared/config'
 import type { Transport } from '@shared/bridge'
-import { mockHandlers } from '../../tests/mocks/handlers'
+import { createMockHandlers } from '../../tests/mocks/handlers'
+import { readDevParams } from './dev-params'
+import { connection, selectPersona, windowSize } from '@shell/state'
+import { clampWindow } from '@shared/config'
 import './index.css'
 
 // Mode selection:
@@ -15,22 +18,50 @@ type Mode = 'figma' | 'mock' | 'live'
 function detectMode(): Mode {
   const param = new URLSearchParams(location.search).get('mode')
   if (param === 'mock' || param === 'live') return param
-  return window.parent !== window ? 'figma' : 'mock'
+  // Inside Figma the UI is an iframe; the dev harness (dev.html) embeds it with ?embed=1.
+  return window.parent !== window && !new URLSearchParams(location.search).has('embed') ? 'figma' : 'mock'
 }
 
-function createTransport(mode: Mode): Transport {
+const mode = detectMode()
+const dev = mode === 'mock' ? readDevParams() : null
+
+// A bare browser visit renders the plugin at full window size, which is not what
+// Figma shows. Send it to the dev harness, which frames it at the real plugin size.
+if (import.meta.env.DEV && dev && !dev.embed && window.top === window) {
+  location.replace(`/dev.html${location.search}`)
+}
+
+function createTransport(): Transport {
   if (mode === 'figma') return createPostMessageTransport()
   if (mode === 'live') {
     const token = new URLSearchParams(location.search).get('token') ?? undefined
     return createWebSocketTransport({ url: 'ws://localhost:4001', role: 'browser', token })
   }
-  return createMockTransport(mockHandlers)
+  return createMockTransport(createMockHandlers({
+    scenario: dev?.scenario,
+    brandId: dev?.brand ?? brand.id,
+    onResize: (size) => window.parent.postMessage({ type: 'bb:resize', ...size }, '*'),
+  }))
 }
 
-const mode = detectMode()
 // Generated brand CSS is scoped to [data-brand]; the sandbox resolver may still override values at runtime.
-document.documentElement.dataset.brand = brand.id
-const transport = createTransport(mode)
+document.documentElement.dataset.brand = dev?.brand ?? brand.id
+if (import.meta.env.DEV && dev?.brand) {
+  // The plugin bundle only carries the active brand; the harness can switch between all of them.
+  void import('../shared/brand/generated/all.css')
+}
+if (dev) {
+  connection.value = dev.status
+  if (dev.persona && personas.some((p) => p.id === dev.persona)) selectPersona(dev.persona)
+  if (dev.embed) {
+    window.addEventListener('message', (e: MessageEvent) => {
+      const d = e.data as { type?: string; width?: number; height?: number } | null
+      if (d?.type === 'bb:set-size' && typeof d.width === 'number' && typeof d.height === 'number') windowSize.value = clampWindow({ width: d.width, height: d.height })
+    })
+  }
+}
+
+const transport = createTransport()
 const client = createRpcClient(transport)
 document.title = mode === 'figma' ? 'Bluebird' : `Bluebird · ${mode}`
 render(<App client={client} transport={transport} />, document.getElementById('root')!)

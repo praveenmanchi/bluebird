@@ -59,6 +59,7 @@ src/
   shell/                   App, Banner, TabBar, persona/tab state, generated registry
   sandbox/main.ts          Figma-side entry
   ui/main.tsx              browser-side entry (mode detection)
+dev.html + src/dev/       browser dev harness: frames the plugin at its real window size with brand / size / fixture / persona knobs
 figma/                     manifest (node ids) + snapshot: tokens.json, components.json, icons.json, logos/*.svg
 scripts/figma-pull.ts      snapshot ← Figma (relay or REST)
 scripts/gen-tokens.ts      snapshot → generated CSS/TS

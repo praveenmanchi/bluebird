@@ -42,10 +42,10 @@ export const pluginConfigSchema = z.object({
   tabs: z.record(id(), tabSchema),
   window: z._default(
     z.object({
-      width: z._default(z.int().check(z.gte(320), z.lte(760)), 400),
-      height: z._default(z.int().check(z.gte(400), z.lte(960)), 580),
+      width: z._default(z.int().check(z.gte(360), z.lte(760)), 360),
+      height: z._default(z.int().check(z.gte(480), z.lte(960)), 480),
     }),
-    { width: 400, height: 580 },
+    { width: 360, height: 480 },
   ),
 })
 

@@ -8,10 +8,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--bb-space-inline-md);
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
   padding: var(--bb-footer-padding-y) var(--bb-footer-padding-x);
+  container-type: inline-size;
   background: var(--bb-footer-bg-default);
   border-top: var(--bb-border-width-default) solid var(--bb-footer-border-top);
   color: var(--bb-footer-fg-default);
@@ -26,7 +28,13 @@
   flex: 1 1 auto;
   min-width: 0;
   gap: var(--bb-status-pill-gap);
+  overflow: hidden; /* the Figma frame is wider than the S window; narrower windows clip the pill row instead of overlapping */
 }
+.bb-footer__segment { flex: none; white-space: nowrap; }
+.bb-footer__controls { margin-left: auto; }
+/* Below the M window the info meta yields; in the S window the pill labels collapse to their icons. */
+@container (max-width: 479px) { .bb-footer__meta { display: none; } } /* allow-raw: breakpoint = WINDOW_PRESETS.M width, not a Figma value */
+@container (max-width: 399px) { .bb-footer__pill .bb-status-pill__label { display: none; } } /* allow-raw: breakpoint between the S and M window presets */
 .bb-footer__segment {
   display: inline-flex;
   align-items: center;
@@ -102,3 +110,4 @@
   color: var(--bb-icon-glyph-default); /* the 0.3 group opacity is part of the exported glyph */
 }
 .bb-footer__grip > .bb-icon { width: 100%; height: 100%; }
+.bb-footer__grip[data-draggable] { cursor: nwse-resize; touch-action: none; }

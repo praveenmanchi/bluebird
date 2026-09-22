@@ -19,5 +19,5 @@
   "tabs": {
     "a11y": { "enabled": true, "label": "Accessibility", "icon": "accessibility" }
   },
-  "window": { "width": 400, "height": 580 }
+  "window": { "width": 360, "height": 480 }
 }

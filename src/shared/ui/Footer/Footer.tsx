@@ -38,6 +38,10 @@ export interface FooterProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'size
   onSizeChange?: (size: SizeExpanderValue) => void
   /** Click on the footer-chevron glyph (expand / collapse the panel). */
   onExpand?: () => void
+  /** Pointer drag on the grip, reported as the total offset from the drag start. */
+  onResizeDrag?: (delta: { dx: number; dy: number }, phase: 'move' | 'end') => void
+  /** Marks the expand glyph as active (panel is at its maximum size). */
+  expanded?: boolean
   /** Accessible name of the chevron button. */
   expandLabel?: string
 }
@@ -50,7 +54,25 @@ function resolvePills({ local = true, uxai = true, mcp = true, dualFile = true, 
 
 /** Figma "footer" (133:1675): status pills, an info meta line, the size expander, an expand chevron and a resize grip. */
 export function Footer(props: FooterProps) {
-  const { local: _l, uxai: _u, mcp: _m, dualFile: _d, pills: _p, meta = ['20m', 'V2.11.0'], size, onSizeChange, onExpand, expandLabel = 'Expand', class: cls, ...rest } = props
+  const { local: _l, uxai: _u, mcp: _m, dualFile: _d, pills: _p, meta = ['20m', 'V2.11.0'], size, onSizeChange, onExpand, onResizeDrag, expanded, expandLabel = 'Expand', class: cls, ...rest } = props
+
+  const startDrag = (e: PointerEvent) => {
+    if (!onResizeDrag) return
+    const target = e.currentTarget as HTMLElement
+    const origin = { x: e.clientX, y: e.clientY }
+    target.setPointerCapture(e.pointerId)
+    const move = (ev: PointerEvent) => onResizeDrag({ dx: ev.clientX - origin.x, dy: ev.clientY - origin.y }, 'move')
+    const end = (ev: PointerEvent) => {
+      target.removeEventListener('pointermove', move)
+      target.removeEventListener('pointerup', end)
+      target.removeEventListener('pointercancel', end)
+      onResizeDrag({ dx: ev.clientX - origin.x, dy: ev.clientY - origin.y }, 'end')
+    }
+    target.addEventListener('pointermove', move)
+    target.addEventListener('pointerup', end)
+    target.addEventListener('pointercancel', end)
+    e.preventDefault()
+  }
   const visible = resolvePills(props)
   return (
     <footer {...rest} class={`bb-footer ${cls ?? ''}`}>
@@ -66,11 +88,11 @@ export function Footer(props: FooterProps) {
       <div class="bb-footer__controls">
         <div class="bb-footer__size-group">
           <SizeExpander value={size} onChange={onSizeChange} class="bb-footer__size" />
-          <button type="button" class="bb-footer__expand" aria-label={expandLabel} onClick={onExpand}>
+          <button type="button" class="bb-footer__expand" aria-label={expandLabel} aria-pressed={expanded} onClick={onExpand}>
             <Icon name="footer-chevron" />
           </button>
         </div>
-        <span class="bb-footer__grip" aria-hidden="true"><Icon name="footer-grip" /></span>
+        <span class="bb-footer__grip" role={onResizeDrag ? 'separator' : undefined} aria-label={onResizeDrag ? 'Resize' : undefined} aria-hidden={onResizeDrag ? undefined : 'true'} data-draggable={onResizeDrag ? '' : undefined} onPointerDown={startDrag}><Icon name="footer-grip" /></span>
       </div>
     </footer>
   )
