@@ -3,6 +3,9 @@ export const figma = {
   setId: '419:39993',
   name: 'WCAG Card',
   props: {
+    Node: 'node',
+    'why it fails': 'whyItFails',
+    'How ti fix': 'howToFix',
     Cognitive: 'disabilities includes "cognitive"',
     Auditory: 'disabilities includes "auditory"',
     'Physical/Motor': 'disabilities includes "physical"',

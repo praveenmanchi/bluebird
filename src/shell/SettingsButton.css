@@ -6,6 +6,7 @@
   display: inline-flex;
   align-items: center;
   box-sizing: border-box;
+  height: var(--bb-derived-settings-button-root-height); /* the tab row height, so the indicator sits on the row's edge like the Tab's */
   gap: var(--bb-derived-settings-button-root-gap);
   padding: var(--bb-derived-settings-button-root-padding-top) var(--bb-derived-settings-button-root-padding-right) var(--bb-derived-settings-button-root-property-1-default-padding-bottom) var(--bb-derived-settings-button-root-padding-left);
   border: 0;

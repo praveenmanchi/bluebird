@@ -4,5 +4,5 @@ export const figma = {
   name: 'settings',
   props: { 'Property 1': 'active (Default | Variant2)' },
   figmaGaps: {},
-  notes: 'Variant2 draws a 1px bottom stroke in tab/indicator/color and grows by 2px of bottom padding; Default keeps a transparent stroke so the row height does not jump.',
+  notes: 'Both variants are fixed at the 40px tab-row height; Variant2 draws a 1px bottom stroke in tab/indicator/color (bottom side only) with 8px bottom padding. Default keeps a transparent stroke so nothing shifts.',
 } as const

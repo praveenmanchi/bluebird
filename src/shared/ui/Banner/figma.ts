@@ -2,7 +2,8 @@
 export const figma = {
   setId: '40000064:9910',
   name: 'Banner',
-  props: { 'HCL Logo': 'showPoweredBy', 'brand logos (variable-bound instance)': 'brand / [data-brand]' },
+  props: {
+    'Dual logo': 'dualLogo (rule + title/tagline stack)', 'HCL Logo': 'showPoweredBy', 'brand logos (variable-bound instance)': 'brand / [data-brand]' },
   figmaGaps: {},
   notes: [
     'Title and tagline fills are raw white in Figma; code uses Banner/Text. Bind them in Figma.',

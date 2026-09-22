@@ -3235,6 +3235,10 @@
         "HCL Logo": {
           "type": "BOOLEAN",
           "default": true
+        },
+        "Dual logo": {
+          "type": "BOOLEAN",
+          "default": true
         }
       },
       "variants": [
@@ -3865,7 +3869,7 @@
               "t": "COMPONENT",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "layout": "HORIZONTAL MIN CENTER HUG FIXED",
                 "itemSpacing": 10,
                 "paddingLeft": 6,
                 "paddingRight": 6,
@@ -3873,7 +3877,7 @@
                 "paddingBottom": 6,
                 "size": [
                   29,
-                  30
+                  40
                 ]
               }
             },
@@ -3907,7 +3911,7 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "layout": "HORIZONTAL MIN CENTER HUG FIXED",
                 "itemSpacing": 10,
                 "paddingLeft": 6,
                 "paddingRight": 6,
@@ -3915,7 +3919,7 @@
                 "paddingBottom": 8,
                 "size": [
                   29,
-                  33
+                  40
                 ]
               }
             },
@@ -7891,7 +7895,7 @@
       "name": "Theme",
       "description": "",
       "props": {
-        "Property 1": {
+        "Theme type": {
           "type": "VARIANT",
           "options": [
             "Forms",
@@ -7908,13 +7912,13 @@
       "variants": [
         {
           "id": "419:45555",
-          "name": "Property 1=Forms",
+          "name": "Theme type=Forms",
           "props": {
-            "Property 1": "Forms"
+            "Theme type": "Forms"
           },
           "nodes": [
             {
-              "p": "Property 1=Forms",
+              "p": "Theme type=Forms",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -7936,7 +7940,7 @@
               }
             },
             {
-              "p": "Property 1=Forms/Icon",
+              "p": "Theme type=Forms/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -7955,7 +7959,7 @@
               }
             },
             {
-              "p": "Property 1=Forms/Icon/form-textbox-password",
+              "p": "Theme type=Forms/Icon/form-textbox-password",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -7965,7 +7969,7 @@
               ]
             },
             {
-              "p": "Property 1=Forms/Icon/form-textbox-password/Vector",
+              "p": "Theme type=Forms/Icon/form-textbox-password/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -7975,7 +7979,7 @@
               ]
             },
             {
-              "p": "Property 1=Forms/String Translations",
+              "p": "Theme type=Forms/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -7992,7 +7996,7 @@
               }
             },
             {
-              "p": "Property 1=Forms/String Translations/String",
+              "p": "Theme type=Forms/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8014,13 +8018,13 @@
         },
         {
           "id": "419:45554",
-          "name": "Property 1=Gestures",
+          "name": "Theme type=Gestures",
           "props": {
-            "Property 1": "Gestures"
+            "Theme type": "Gestures"
           },
           "nodes": [
             {
-              "p": "Property 1=Gestures",
+              "p": "Theme type=Gestures",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8042,7 +8046,7 @@
               }
             },
             {
-              "p": "Property 1=Gestures/Icon",
+              "p": "Theme type=Gestures/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8061,7 +8065,7 @@
               }
             },
             {
-              "p": "Property 1=Gestures/Icon/gesture-double-tap",
+              "p": "Theme type=Gestures/Icon/gesture-double-tap",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8071,7 +8075,7 @@
               ]
             },
             {
-              "p": "Property 1=Gestures/Icon/gesture-double-tap/Vector",
+              "p": "Theme type=Gestures/Icon/gesture-double-tap/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8081,7 +8085,7 @@
               ]
             },
             {
-              "p": "Property 1=Gestures/String Translations",
+              "p": "Theme type=Gestures/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8098,7 +8102,7 @@
               }
             },
             {
-              "p": "Property 1=Gestures/String Translations/String",
+              "p": "Theme type=Gestures/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8120,13 +8124,13 @@
         },
         {
           "id": "419:45551",
-          "name": "Property 1=Keyboard",
+          "name": "Theme type=Keyboard",
           "props": {
-            "Property 1": "Keyboard"
+            "Theme type": "Keyboard"
           },
           "nodes": [
             {
-              "p": "Property 1=Keyboard",
+              "p": "Theme type=Keyboard",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8148,7 +8152,7 @@
               }
             },
             {
-              "p": "Property 1=Keyboard/Icon",
+              "p": "Theme type=Keyboard/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8167,7 +8171,7 @@
               }
             },
             {
-              "p": "Property 1=Keyboard/Icon/keyboard",
+              "p": "Theme type=Keyboard/Icon/keyboard",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8177,7 +8181,7 @@
               ]
             },
             {
-              "p": "Property 1=Keyboard/Icon/keyboard/Vector",
+              "p": "Theme type=Keyboard/Icon/keyboard/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8187,7 +8191,7 @@
               ]
             },
             {
-              "p": "Property 1=Keyboard/String Translations",
+              "p": "Theme type=Keyboard/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8204,7 +8208,7 @@
               }
             },
             {
-              "p": "Property 1=Keyboard/String Translations/String",
+              "p": "Theme type=Keyboard/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8226,13 +8230,13 @@
         },
         {
           "id": "419:45553",
-          "name": "Property 1=Sensory",
+          "name": "Theme type=Sensory",
           "props": {
-            "Property 1": "Sensory"
+            "Theme type": "Sensory"
           },
           "nodes": [
             {
-              "p": "Property 1=Sensory",
+              "p": "Theme type=Sensory",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8254,7 +8258,7 @@
               }
             },
             {
-              "p": "Property 1=Sensory/Icon",
+              "p": "Theme type=Sensory/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8273,7 +8277,7 @@
               }
             },
             {
-              "p": "Property 1=Sensory/Icon/motion-sensor",
+              "p": "Theme type=Sensory/Icon/motion-sensor",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8283,7 +8287,7 @@
               ]
             },
             {
-              "p": "Property 1=Sensory/Icon/motion-sensor/Vector",
+              "p": "Theme type=Sensory/Icon/motion-sensor/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8293,7 +8297,7 @@
               ]
             },
             {
-              "p": "Property 1=Sensory/String Translations",
+              "p": "Theme type=Sensory/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8310,7 +8314,7 @@
               }
             },
             {
-              "p": "Property 1=Sensory/String Translations/String",
+              "p": "Theme type=Sensory/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8332,13 +8336,13 @@
         },
         {
           "id": "419:45552",
-          "name": "Property 1=Whole Site",
+          "name": "Theme type=Whole Site",
           "props": {
-            "Property 1": "Whole Site"
+            "Theme type": "Whole Site"
           },
           "nodes": [
             {
-              "p": "Property 1=Whole Site",
+              "p": "Theme type=Whole Site",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8360,7 +8364,7 @@
               }
             },
             {
-              "p": "Property 1=Whole Site/Icon",
+              "p": "Theme type=Whole Site/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8379,7 +8383,7 @@
               }
             },
             {
-              "p": "Property 1=Whole Site/Icon/sitemap",
+              "p": "Theme type=Whole Site/Icon/sitemap",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8389,7 +8393,7 @@
               ]
             },
             {
-              "p": "Property 1=Whole Site/Icon/sitemap/Vector",
+              "p": "Theme type=Whole Site/Icon/sitemap/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8399,7 +8403,7 @@
               ]
             },
             {
-              "p": "Property 1=Whole Site/String Translations",
+              "p": "Theme type=Whole Site/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8416,7 +8420,7 @@
               }
             },
             {
-              "p": "Property 1=Whole Site/String Translations/String",
+              "p": "Theme type=Whole Site/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8438,13 +8442,13 @@
         },
         {
           "id": "419:45550",
-          "name": "Property 1=Wording",
+          "name": "Theme type=Wording",
           "props": {
-            "Property 1": "Wording"
+            "Theme type": "Wording"
           },
           "nodes": [
             {
-              "p": "Property 1=Wording",
+              "p": "Theme type=Wording",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8466,7 +8470,7 @@
               }
             },
             {
-              "p": "Property 1=Wording/Icon",
+              "p": "Theme type=Wording/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8485,7 +8489,7 @@
               }
             },
             {
-              "p": "Property 1=Wording/Icon/text-box",
+              "p": "Theme type=Wording/Icon/text-box",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8495,7 +8499,7 @@
               ]
             },
             {
-              "p": "Property 1=Wording/Icon/text-box/Vector",
+              "p": "Theme type=Wording/Icon/text-box/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8505,7 +8509,7 @@
               ]
             },
             {
-              "p": "Property 1=Wording/String Translations",
+              "p": "Theme type=Wording/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8522,7 +8526,7 @@
               }
             },
             {
-              "p": "Property 1=Wording/String Translations/String",
+              "p": "Theme type=Wording/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8544,13 +8548,13 @@
         },
         {
           "id": "419:45549",
-          "name": "Property 1=Zoom and Legibility",
+          "name": "Theme type=Zoom and Legibility",
           "props": {
-            "Property 1": "Zoom and Legibility"
+            "Theme type": "Zoom and Legibility"
           },
           "nodes": [
             {
-              "p": "Property 1=Zoom and Legibility",
+              "p": "Theme type=Zoom and Legibility",
               "t": "COMPONENT",
               "b": {
                 "fill": "icon/glyph/default",
@@ -8572,7 +8576,7 @@
               }
             },
             {
-              "p": "Property 1=Zoom and Legibility/Icon",
+              "p": "Theme type=Zoom and Legibility/Icon",
               "t": "INSTANCE",
               "b": {
                 "width": "theme-card/icon/size",
@@ -8591,7 +8595,7 @@
               }
             },
             {
-              "p": "Property 1=Zoom and Legibility/Icon/magnify-plus",
+              "p": "Theme type=Zoom and Legibility/Icon/magnify-plus",
               "t": "INSTANCE",
               "b": {},
               "o": [
@@ -8601,7 +8605,7 @@
               ]
             },
             {
-              "p": "Property 1=Zoom and Legibility/Icon/magnify-plus/Vector",
+              "p": "Theme type=Zoom and Legibility/Icon/magnify-plus/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -8611,7 +8615,7 @@
               ]
             },
             {
-              "p": "Property 1=Zoom and Legibility/String Translations",
+              "p": "Theme type=Zoom and Legibility/String Translations",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -8628,7 +8632,7 @@
               }
             },
             {
-              "p": "Property 1=Zoom and Legibility/String Translations/String",
+              "p": "Theme type=Zoom and Legibility/String Translations/String",
               "t": "TEXT",
               "b": {
                 "fill": "theme-card/icon/color"
@@ -10446,6 +10450,10 @@
         "Descrpition Text": {
           "type": "TEXT",
           "default": "To store all tokens in a single JSON file, write the file name (Ex: tokens.json). Pro features, like themes, require a multi-file sync with tokens stored in a folder by writing the folder path (Ex: tokens)."
+        },
+        "Toggle": {
+          "type": "BOOLEAN",
+          "default": true
         }
       },
       "variants": [

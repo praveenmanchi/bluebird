@@ -14,13 +14,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const v = (variant: string) => ({ figma: { variant } })
-export const Forms: Story = { args: { theme: 'forms' }, parameters: v('Property 1=Forms') }
-export const Gestures: Story = { args: { theme: 'gestures' }, parameters: v('Property 1=Gestures') }
-export const Keyboard: Story = { args: { theme: 'keyboard' }, parameters: v('Property 1=Keyboard') }
-export const Sensory: Story = { args: { theme: 'sensory' }, parameters: v('Property 1=Sensory') }
-export const WholeSite: Story = { args: { theme: 'whole-site' }, parameters: v('Property 1=Whole Site') }
-export const Wording: Story = { args: { theme: 'wording' }, parameters: v('Property 1=Wording') }
-export const ZoomAndLegibility: Story = { args: { theme: 'zoom' }, parameters: v('Property 1=Zoom and Legibility') }
+export const Forms: Story = { args: { theme: 'forms' }, parameters: v('Theme type=Forms') }
+export const Gestures: Story = { args: { theme: 'gestures' }, parameters: v('Theme type=Gestures') }
+export const Keyboard: Story = { args: { theme: 'keyboard' }, parameters: v('Theme type=Keyboard') }
+export const Sensory: Story = { args: { theme: 'sensory' }, parameters: v('Theme type=Sensory') }
+export const WholeSite: Story = { args: { theme: 'whole-site' }, parameters: v('Theme type=Whole Site') }
+export const Wording: Story = { args: { theme: 'wording' }, parameters: v('Theme type=Wording') }
+export const ZoomAndLegibility: Story = { args: { theme: 'zoom' }, parameters: v('Theme type=Zoom and Legibility') }
 
 export const AllThemes: Story = {
   render: () => (

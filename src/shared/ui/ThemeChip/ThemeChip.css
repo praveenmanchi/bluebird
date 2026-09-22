@@ -20,13 +20,13 @@
   line-height: var(--bb-theme-card-label-line-height);
   white-space: nowrap;
 }
-.bb-theme-chip[data-theme="forms"] { width: var(--bb-derived-theme-chip-root-property-1-forms-width); }
-.bb-theme-chip[data-theme="gestures"] { width: var(--bb-derived-theme-chip-root-property-1-gestures-width); }
-.bb-theme-chip[data-theme="keyboard"] { width: var(--bb-derived-theme-chip-root-property-1-keyboard-width); }
-.bb-theme-chip[data-theme="sensory"] { width: var(--bb-derived-theme-chip-root-property-1-sensory-width); }
-.bb-theme-chip[data-theme="whole-site"] { width: var(--bb-derived-theme-chip-root-property-1-whole-site-width); }
-.bb-theme-chip[data-theme="wording"] { width: var(--bb-derived-theme-chip-root-property-1-wording-width); }
-.bb-theme-chip[data-theme="zoom"] { width: var(--bb-derived-theme-chip-root-property-1-zoom-and-legibility-width); }
+.bb-theme-chip[data-theme="forms"] { width: var(--bb-derived-theme-chip-root-theme-type-forms-width); }
+.bb-theme-chip[data-theme="gestures"] { width: var(--bb-derived-theme-chip-root-theme-type-gestures-width); }
+.bb-theme-chip[data-theme="keyboard"] { width: var(--bb-derived-theme-chip-root-theme-type-keyboard-width); }
+.bb-theme-chip[data-theme="sensory"] { width: var(--bb-derived-theme-chip-root-theme-type-sensory-width); }
+.bb-theme-chip[data-theme="whole-site"] { width: var(--bb-derived-theme-chip-root-theme-type-whole-site-width); }
+.bb-theme-chip[data-theme="wording"] { width: var(--bb-derived-theme-chip-root-theme-type-wording-width); }
+.bb-theme-chip[data-theme="zoom"] { width: var(--bb-derived-theme-chip-root-theme-type-zoom-and-legibility-width); }
 .bb-theme-chip__icon {
   display: inline-flex;
   flex: none;
