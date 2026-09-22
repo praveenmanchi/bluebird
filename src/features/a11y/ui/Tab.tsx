@@ -1,13 +1,30 @@
 import { useEffect } from 'preact/hooks'
-import { Button, Card, SegmentedControl, Alert, EmptyState, Badge, useRpc } from '@shared/ui'
+import { Button, useRpc } from '@shared/ui'
 import { MSG, type ScanResult, type ScanProgress, type ScanScope } from '../messages'
-import { scope, scanning, visited, result, error, reset } from '../state'
-import { IssueRow } from './IssueRow'
+import { scope, scanning, visited, result, error, reset, level, type LevelFilter } from '../state'
+import { FilterSelect } from './FilterSelect'
+import { IssueCard, criterionFor } from './IssueCard'
+import './a11y.css'
 
-const SCOPE_LABELS: Record<ScanScope, string> = { selection: 'Selection', page: 'Whole page' }
-const SCOPES = Object.keys(SCOPE_LABELS) as ScanScope[]
-const scopeFromLabel = (label: string): ScanScope => SCOPES.find((s) => SCOPE_LABELS[s] === label) ?? 'selection'
+const SCOPES = [
+  { value: 'selection', label: 'Selection' },
+  { value: 'page', label: 'Whole page' },
+] as const satisfies readonly { value: ScanScope; label: string }[]
 
+const STANDARDS = [{ value: 'wcag22', label: 'WCAG 2.2' }] as const
+
+const LEVELS = [
+  { value: 'all', label: 'Level: All' },
+  { value: 'AA', label: 'Level AA' },
+  { value: 'AAA', label: 'Level AAA' },
+] as const satisfies readonly { value: LevelFilter; label: string }[]
+
+/**
+ * Accessibility Checker screen (Figma "accessibity UI", 40000003:5133):
+ * filter toolbar (three Dropdowns + primary Scan button) over a canvas that
+ * lists each finding as a WcagCard. Shell chrome (Banner, tab row, Footer)
+ * comes from the shell.
+ */
 export function Tab() {
   const rpc = useRpc()
 
@@ -30,47 +47,35 @@ export function Tab() {
   }
 
   const r = result.value
+  const issues = r?.issues.filter((i) => level.value === 'all' || criterionFor(i).rating === level.value) ?? []
   const fails = r?.issues.filter((i) => i.level === 'fail').length ?? 0
 
   return (
-    <div class="flex flex-col gap-3">
-      <Card padding="sm">
-        <div class="flex flex-col gap-2.5">
-          <div class="text-[11px] font-semibold text-zinc-900">Text contrast (WCAG 2.2)</div>
-          <SegmentedControl value={SCOPE_LABELS[scope.value]} options={SCOPES.map((s) => SCOPE_LABELS[s])} onChange={(label) => { scope.value = scopeFromLabel(label) }} />
-          <Button onClick={runScan} loading={scanning.value} leadingIcon="accessibility">
-            {scanning.value ? `Scanning… ${visited.value.toLocaleString()} layers` : 'Scan'}
-          </Button>
+    <div class="bb-a11y">
+      <div class="bb-a11y__toolbar" role="toolbar" aria-label="Scan options">
+        <div class="bb-a11y__filters">
+          <FilterSelect label="Scope" value={scope.value} options={SCOPES} onChange={(v) => { scope.value = v }} disabled={scanning.value} />
+          <FilterSelect label="Standard" value="wcag22" options={STANDARDS} onChange={() => undefined} disabled={scanning.value} />
+          <FilterSelect label="Level" value={level.value} options={LEVELS} onChange={(v) => { level.value = v }} />
         </div>
-      </Card>
+        <Button onClick={runScan} loading={scanning.value}>
+          {scanning.value ? `Scanning… ${visited.value.toLocaleString()}` : 'Scan'}
+        </Button>
+      </div>
 
-      {error.value && <Alert variant="error" title="Scan failed">{error.value}</Alert>}
-
-      {r && (
-        <div class="flex items-center gap-2 text-[11px] text-zinc-500">
-          <span>{r.textNodes} text layers in {r.scanned.toLocaleString()} nodes</span>
-          <span class="ml-auto">{r.durationMs} ms</span>
+      {(error.value || r) && (
+        <div class="bb-a11y__results">
+          {error.value && <p class="bb-a11y__error" role="alert">{error.value}</p>}
+          {r && (
+            <p class="bb-a11y__summary" role="status">
+              <strong>{r.issues.length} below AAA</strong>
+              {fails > 0 && <span data-tone="error">{fails} fail AA</span>}
+              <span>{r.textNodes} text layers · {r.scanned.toLocaleString()} nodes · {r.durationMs} ms</span>
+            </p>
+          )}
+          {r && r.issues.length === 0 && <p class="bb-a11y__summary">All text passes AAA in {r.scope === 'page' ? 'this page' : 'the selection'}.</p>}
+          {issues.map((issue) => <IssueCard key={issue.nodeId} issue={issue} />)}
         </div>
-      )}
-
-      {r && r.issues.length === 0 && (
-        <Alert variant="success" title="All text passes AAA">No contrast issues found in {r.scope === 'page' ? 'this page' : 'the selection'}.</Alert>
-      )}
-
-      {r && r.issues.length > 0 && (
-        <Card padding="none">
-          <div class="px-3 py-2 border-b border-zinc-200 flex items-center gap-2">
-            <span class="text-[11px] font-semibold">{r.issues.length} below AAA</span>
-            {fails > 0 && <Badge variant="red">{fails} fail AA</Badge>}
-          </div>
-          <ul class="divide-y divide-zinc-100">
-            {r.issues.map((issue) => <IssueRow key={issue.nodeId} issue={issue} />)}
-          </ul>
-        </Card>
-      )}
-
-      {!r && !scanning.value && !error.value && (
-        <EmptyState icon="◎" title="Nothing scanned yet" description="Select frames or scan the whole page to check text contrast." />
       )}
     </div>
   )

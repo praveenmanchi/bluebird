@@ -1,0 +1,37 @@
+/* Accessibility Checker screen (Figma "accessibity UI", 40000003:5133). The
+ * toolbar frame (40000087:10845) sits on the `Background` fill with a
+ * `Boader` rule; below it the results list. Tokens only. */
+.bb-a11y { display: flex; flex-direction: column; min-height: 100%; }
+.bb-a11y__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inline-md) var(--bb-space-inset-md) var(--bb-space-inset-md);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+}
+.bb-a11y__filters { display: flex; align-items: center; gap: var(--bb-space-inline-md); flex-wrap: wrap; }
+.bb-a11y__filter { position: relative; width: calc(var(--bb-dimension-size-control-32) * 4); }
+.bb-a11y__menu { position: absolute; top: calc(100% + var(--bb-space-inset-sm)); left: 0; z-index: 1; min-width: 100%; }
+.bb-a11y__results { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); padding: var(--bb-space-stack-md) var(--bb-space-inset-md); }
+.bb-a11y__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  color: var(--bb-text-tertiary);
+  font-size: var(--bb-font-size-body);
+}
+.bb-a11y__summary strong { color: var(--bb-text-primary); font-weight: var(--bb-type-weight-600); }
+.bb-a11y__summary [data-tone="error"] { color: var(--bb-status-pill-icon-error); }
+.bb-a11y__error { color: var(--bb-status-pill-icon-error); font-size: var(--bb-font-size-body); }
+.bb-a11y__preview { display: flex; align-items: center; justify-content: space-between; gap: var(--bb-space-inline-md); width: 100%; }
+.bb-a11y__sample {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: var(--bb-space-inset-md) var(--bb-space-inset-lg);
+  border-radius: var(--bb-radius-md);
+  font-size: var(--bb-font-size-title);
+}

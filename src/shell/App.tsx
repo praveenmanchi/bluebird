@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks'
-import { RpcProvider, EmptyState } from '@shared/ui'
+import { RpcProvider, EmptyState, Footer } from '@shared/ui'
 import { applyTokens } from '@shared/brand'
 import type { BrandTokensResult } from '@shared/brand'
 import type { RpcClient, Transport } from '@shared/bridge'
@@ -28,11 +28,12 @@ export function App({ client, transport }: AppProps) {
       <div class="h-full flex flex-col bb-canvas">
         <Banner />
         <TabBar />
-        <main class="flex-1 overflow-y-auto px-3 py-3">
+        <main class="flex-1 min-h-0 overflow-y-auto">
           {entry
             ? <entry.Tab key={entry.manifest.id} />
             : <EmptyState icon="◌" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
         </main>
+        <Footer />
       </div>
     </RpcProvider>
   )
