@@ -108,10 +108,11 @@
 .bb-input[data-disabled] .bb-input__eye,
 .bb-input[data-disabled] .bb-input__label { cursor: not-allowed; }
 
-/* Frame 1430102649: helper text. */
+/* Frame 1430102649: helper text. Figma fixes the row at 32px (two 14px lines + padding); code keeps that as a minimum so longer copy is not clipped. */
 .bb-input__helper {
   box-sizing: border-box;
   align-self: stretch;
+  min-height: var(--bb-derived-input-frame-1430102649-height);
   margin: 0;
   padding: var(--bb-derived-input-frame-1430102649-padding-top) var(--bb-derived-input-frame-1430102649-padding-right) var(--bb-derived-input-frame-1430102649-padding-bottom) var(--bb-derived-input-frame-1430102649-padding-left);
   color: var(--bb-input-fg-helper);

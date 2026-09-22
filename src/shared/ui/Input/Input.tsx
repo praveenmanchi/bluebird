@@ -4,7 +4,7 @@ import { Icon, type IconName } from '../Icon/Icon'
 import './Input.css'
 
 export interface InputProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'label' | 'icon' | 'value' | 'type' | 'size'> {
-  /** Figma "Title " — the label above the field. */
+  /** Figma "Title " — the label above the field. Omit it to hide the whole label row (Figma "Title" boolean). */
   label?: ComponentChildren
   /** Figma "Title icon" (+ the "Tab Icons" instance swapped in). Omit to hide the leading label icon. */
   icon?: IconName

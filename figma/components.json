@@ -9927,6 +9927,10 @@
         "Buttom Text": {
           "type": "BOOLEAN",
           "default": true
+        },
+        "Title": {
+          "type": "BOOLEAN",
+          "default": true
         }
       },
       "variants": [
@@ -9960,6 +9964,9 @@
                   83,
                   18
                 ]
+              },
+              "pr": {
+                "visible": "Title"
               }
             },
             {
@@ -10103,7 +10110,7 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL CENTER CENTER FILL HUG",
+                "layout": "HORIZONTAL CENTER CENTER FILL FIXED",
                 "itemSpacing": 10,
                 "paddingLeft": 2,
                 "paddingRight": 2,
@@ -10113,6 +10120,9 @@
                   611,
                   32
                 ]
+              },
+              "pr": {
+                "visible": "Buttom Text"
               }
             },
             {
@@ -10129,7 +10139,6 @@
                 "lineHeightPx": 14
               },
               "pr": {
-                "visible": "Buttom Text",
                 "characters": "Buttom Text "
               }
             }

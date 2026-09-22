@@ -3,6 +3,7 @@ export const figma = {
   setId: '204:9667',
   name: 'Input Box',
   props: {
+    Title: 'label !== undefined (the whole label row: icon + title)',
     'Title ': 'label',
     'Title icon': 'icon (IconName; undefined hides it)',
     'Eye ': 'password',

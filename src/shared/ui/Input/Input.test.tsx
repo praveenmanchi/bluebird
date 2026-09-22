@@ -38,4 +38,11 @@ describe('Input', () => {
     expect(screen.getByRole('button')).toBeDisabled()
     expect(container.querySelector('.bb-input')?.hasAttribute('data-disabled')).toBe(true)
   })
+  it('hides the whole label row (Figma "Title" boolean) when no label is given', () => {
+    const { container, rerender } = render(<Input aria-label="Code" icon="variables" />)
+    expect(container.querySelector('.bb-input__label')).toBeNull()
+    rerender(<Input label="Code" icon="variables" />)
+    expect(container.querySelector('.bb-input__label')).not.toBeNull()
+    expect(container.querySelector('.bb-input__label-icon')).not.toBeNull()
+  })
 })
