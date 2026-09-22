@@ -712,6 +712,15 @@ export const TOKEN_NAMES = [
   "--bb-derived-select-field-vector-fill",
   "--bb-derived-select-field-vector-height",
   "--bb-derived-select-field-vector-width",
+  "--bb-derived-settings-button-root-gap",
+  "--bb-derived-settings-button-root-padding-left",
+  "--bb-derived-settings-button-root-padding-right",
+  "--bb-derived-settings-button-root-padding-top",
+  "--bb-derived-settings-button-root-property-1-default-padding-bottom",
+  "--bb-derived-settings-button-root-property-1-variant2-padding-bottom",
+  "--bb-derived-settings-button-root-stroke-width",
+  "--bb-derived-settings-button-vector-height",
+  "--bb-derived-settings-button-vector-width",
   "--bb-derived-settings-screen-banner-gap",
   "--bb-derived-settings-screen-banner-height",
   "--bb-derived-settings-screen-banner-padding-bottom",
@@ -728,9 +737,8 @@ export const TOKEN_NAMES = [
   "--bb-derived-settings-screen-frame-1430102628-width",
   "--bb-derived-settings-screen-root-height",
   "--bb-derived-settings-screen-root-width",
-  "--bb-derived-settings-screen-settings-fill",
   "--bb-derived-settings-screen-settings-height",
-  "--bb-derived-settings-screen-settings-radius",
+  "--bb-derived-settings-screen-settings-stroke-width",
   "--bb-derived-settings-screen-settings-width",
   "--bb-derived-settings-screen-tab-height",
   "--bb-derived-settings-screen-tab-width",
@@ -1539,6 +1547,10 @@ export const COMPONENT_TOKENS = {
   SizeStep: [
 
   ],
+  SettingsButton: [
+    "--bb-icon-glyph-default",
+    "--bb-tab-indicator-color",
+  ],
   Rating: [
     "--bb-rating-bg-default",
     "--bb-rating-fg-default",
@@ -1836,6 +1848,7 @@ export const COMPONENT_TOKENS = {
     "--bb-footer-padding-y",
     "--bb-tab-gap",
     "--bb-tab-icon-default",
+    "--bb-tab-indicator-color",
     "--bb-tab-padding-x",
     "--bb-tab-padding-y",
     "--bb-toggle-gap",
@@ -1905,6 +1918,10 @@ export const FIGMA_COMPONENTS = {
   SizeStep: { id: "133:1618", name: "Frame 1430102613", variants: [
     { id: "133:1614", name: "Property 1=Default", props: {"Property 1":"Default"} },
     { id: "133:1619", name: "Property 1=Variant2", props: {"Property 1":"Variant2"} },
+  ] },
+  SettingsButton: { id: "7:44580", name: "settings", variants: [
+    { id: "7:44581", name: "Property 1=Default", props: {"Property 1":"Default"} },
+    { id: "7:44583", name: "Property 1=Variant2", props: {"Property 1":"Variant2"} },
   ] },
   Rating: { id: "419:40175", name: "Rating", variants: [
     { id: "419:40176", name: "Rating=A", props: {"Rating":"A"} },
@@ -2035,7 +2052,6 @@ export const PLANNED_COMPONENTS = {
 } as const
 /** Figma sets covered by another code component (duplicates, or glyph sources folded into Icon / BrandLogo). */
 export const ALIAS_COMPONENTS = {
-  IconSettings: { id: "7:44580", name: "settings", aliasOf: "Icon" },
   IconEye: { id: "204:9658", name: "eye", aliasOf: "Icon" },
   StatusIcon: { id: "133:1574", name: "Status error icons", aliasOf: "Icon" },
   AiServiceIcon: { id: "204:9270", name: "AI service", aliasOf: "Icon" },

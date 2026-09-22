@@ -31,19 +31,7 @@
   border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
 }
 .bb-tabbar__tabs { display: flex; align-items: center; gap: var(--bb-tab-gap); min-width: 0; overflow-x: auto; }
-.bb-tabbar__settings {
-  display: inline-flex;
-  flex: none;
-  padding: 0;
-  border: 0;
-  background: var(--bb-surface-transparent);
-  color: var(--bb-icon-glyph-default);
-  cursor: pointer;
-}
-.bb-tabbar__settings > .bb-icon { width: var(--bb-icon-size-lg); height: var(--bb-icon-size-lg); }
-/* Figma "settings / Variant2" (Settings page): translucent square behind the glyph while settings are open. */
-.bb-tabbar__settings[data-active] { background: var(--bb-derived-settings-screen-settings-fill); border-radius: var(--bb-derived-settings-screen-settings-radius); }
-.bb-tabbar__settings:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); outline-offset: var(--bb-space-inset-xs); }
+.bb-tabbar__settings { flex: none; }
 
 /* Screen root fill is the Brand variable `Background`. */
 .bb-canvas {

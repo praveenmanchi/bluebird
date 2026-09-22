@@ -3838,7 +3838,7 @@
       "status": "built"
     },
     {
-      "code": "IconSettings",
+      "code": "SettingsButton",
       "id": "7:44580",
       "name": "settings",
       "description": "",
@@ -3865,9 +3865,15 @@
               "t": "COMPONENT",
               "b": {},
               "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 6,
+                "paddingBottom": 6,
                 "size": [
-                  24,
-                  24
+                  29,
+                  30
                 ]
               }
             },
@@ -3896,13 +3902,20 @@
             {
               "p": "Property 1=Variant2",
               "t": "COMPONENT",
-              "b": {},
+              "b": {
+                "stroke": "tab/indicator/color"
+              },
               "r": {
-                "fill": "#ffffff1a",
-                "radius": 2,
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 6,
+                "paddingBottom": 8,
                 "size": [
-                  24,
-                  24
+                  29,
+                  33
                 ]
               }
             },
@@ -3922,8 +3935,8 @@
           ]
         }
       ],
-      "status": "alias",
-      "aliasOf": "Icon"
+      "status": "built",
+      "dir": "src/shell"
     },
     {
       "code": "IconEye",
@@ -15906,13 +15919,14 @@
             {
               "p": "Settings page/Frame 1430102628/Frame 1430102558/settings",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "stroke": "tab/indicator/color"
+              },
               "r": {
-                "fill": "#ffffff1a",
-                "radius": 2,
+                "strokeWeight": 1,
                 "size": [
-                  24,
-                  24
+                  29,
+                  33
                 ]
               },
               "i": "Property 1=Variant2 <settings>",

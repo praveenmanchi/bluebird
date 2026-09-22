@@ -1,4 +1,5 @@
-import { Icon, ICONS, Tab, type IconName } from '@shared/ui'
+import { ICONS, Tab, type IconName } from '@shared/ui'
+import { SettingsButton } from './SettingsButton'
 import { activeTabId, selectTab, visibleTabs } from './state'
 
 const isIconName = (name: string): name is IconName => name in ICONS
@@ -6,7 +7,7 @@ const isIconName = (name: string): name is IconName => name in ICONS
 export interface TabBarProps {
   /** The settings glyph at the right end of the row (Figma "accessibity UI" → settings instance). */
   onSettings?: () => void
-  /** Figma "settings / Variant2": the glyph sits on a translucent square while the settings screen is open. */
+  /** Figma "settings / Variant2": indicator stroke under the glyph while the settings screen is open. */
   settingsActive?: boolean
   /** Fired after a tab is selected (the shell uses it to leave the settings screen). */
   onTab?: (id: string) => void
@@ -30,9 +31,7 @@ export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProp
           </Tab>
         ))}
       </div>
-      <button type="button" class="bb-tabbar__settings" aria-label="Settings" aria-pressed={settingsActive} data-active={settingsActive || undefined} onClick={onSettings}>
-        <Icon name="settings" />
-      </button>
+      <SettingsButton class="bb-tabbar__settings" active={settingsActive} onClick={onSettings} />
     </nav>
   )
 }
