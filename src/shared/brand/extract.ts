@@ -228,15 +228,16 @@ function propDefinitions(node: ComponentNode | ComponentSetNode): ComponentSetSn
 
 async function extractSet(index: VariableIndex, code: string, id: string): Promise<ComponentSetSnapshot> {
   const node = await figma.getNodeByIdAsync(id)
-  if (!node || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) throw new Error(`Node ${id} is not a component (set)`)
-  const variantsSource = node.type === 'COMPONENT_SET' ? node.children.filter((c): c is ComponentNode => c.type === 'COMPONENT') : [node]
+  // Screens (plain frames such as the Login page) are snapshotted as single-variant sets.
+  if (!node || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT' && node.type !== 'FRAME')) throw new Error(`Node ${id} is not a component (set) or frame`)
+  const variantsSource: (ComponentNode | FrameNode)[] = node.type === 'COMPONENT_SET' ? node.children.filter((c): c is ComponentNode => c.type === 'COMPONENT') : [node]
   const variants: ComponentSetSnapshot['variants'] = []
   for (const variant of variantsSource) {
     const nodes: SnapNode[] = []
     await walk(index, variant, '', nodes)
     variants.push({ id: variant.id, name: variant.name, props: node.type === 'COMPONENT_SET' ? parseVariantName(variant.name) : {}, nodes })
   }
-  return { code, id: node.id, name: node.name, description: node.description, props: propDefinitions(node), variants }
+  return { code, id: node.id, name: node.name, description: node.type === 'FRAME' ? '' : node.description, props: node.type === 'FRAME' ? {} : propDefinitions(node), variants }
 }
 
 function coverageOf(index: VariableIndex, top: SceneNode): { bound: number; raw: number } {

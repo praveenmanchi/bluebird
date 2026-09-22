@@ -3,6 +3,7 @@ import { config, personas } from '@shared/config'
 import type { BrandTokensResult } from '@shared/brand'
 import type { TransportStatus } from '@shared/bridge'
 import type { WindowSize } from '@shared/config'
+import type { Session } from '@shared/session'
 
 // Shell-level state only: which persona and tab are active, brand status,
 // connection status. Tab-local state lives inside each feature folder.
@@ -12,6 +13,11 @@ const defaultPersona = personas.find((p) => p.id === config.activePersona) ?? pe
 export const activePersonaId = signal<string | null>(defaultPersona?.id ?? null)
 export const activeTabId = signal<string | null>(defaultPersona?.tabs[0]?.id ?? null)
 export const brandStatus = signal<BrandTokensResult | null>(null)
+
+/** Access-code session. `boot` until session:status answers; the app renders only for `app` / `settings`. */
+export type Screen = 'boot' | 'login' | 'app' | 'settings'
+export const screen = signal<Screen>('boot')
+export const session = signal<Session | null>(null)
 export const connection = signal<TransportStatus>('connected')
 /** Current plugin window size; the footer's S / M / L, expand and grip all go through shell:resize. */
 export const windowSize = signal<WindowSize>({ width: config.window.width, height: config.window.height })

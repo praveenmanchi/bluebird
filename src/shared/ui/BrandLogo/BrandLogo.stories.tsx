@@ -20,6 +20,7 @@ export const Ikea: Story = { args: { brand: 'ikea' }, parameters: v('Brand=ikea'
 export const Richemont: Story = { args: { brand: 'richemont' }, parameters: v('Brand=richemont') }
 export const Disney: Story = { args: { brand: 'disney' }, parameters: v('Brand=disney') }
 export const Fiskars: Story = { args: { brand: 'fiskars' }, parameters: v('Brand=fiskars') }
+export const Hcl: Story = { args: { logo: 'hcltech' }, parameters: v('Brand=HCL') }
 
 export const AcrossBrands: Story = {
   render: () => (

@@ -127,7 +127,7 @@ function px(n: number): string { return `${Math.round(n * 1000) / 1000}px` }
 type Raw = Record<string, unknown>
 
 /** Property → css value pairs for one node's raw values. */
-function rawDeclarationsFor(node: { p: string; t: string; b: Record<string, string>; r?: Raw }): [string, string][] {
+function rawDeclarationsFor(node: { p: string; t: string; b: Record<string, string>; r?: Raw }, options: { instanceSizes?: boolean } = {}): [string, string][] {
   const r = node.r ?? {}
   const out: [string, string][] = []
   const sizing = typeof r.layout === 'string' ? r.layout.split(' ') : []
@@ -153,7 +153,8 @@ function rawDeclarationsFor(node: { p: string; t: string; b: Record<string, stri
   for (const [k, css] of [['itemSpacing', 'gap'], ['paddingLeft', 'padding-left'], ['paddingRight', 'padding-right'], ['paddingTop', 'padding-top'], ['paddingBottom', 'padding-bottom']] as const) {
     if (typeof r[k] === 'number') out.push([css, px(r[k] as number)])
   }
-  if (Array.isArray(r.size) && node.t !== 'INSTANCE') {
+  // Screens place instances at explicit sizes (a scaled logo); inside a component an instance's size belongs to its own set.
+  if (Array.isArray(r.size) && (node.t !== 'INSTANCE' || options.instanceSizes)) {
     const [w, h] = r.size as [number, number]
     const container = node.t === 'FRAME' || node.t === 'COMPONENT'
     const fixedW = container ? sizingH === 'FIXED' || sizingH === undefined : true
@@ -179,7 +180,7 @@ export function derivedDeclarations(components: ComponentsSnapshot): Declaration
         // Layers inside an instance belong to their own set — unless this set overrides them (`o`), in which case the overridden values are this set's design.
         if (!node.o && [...instancePaths].some((ip) => node.p.startsWith(`${ip}/`))) continue
         const leaf = isRoot ? 'root' : tokenKeyFromVariableName(node.p.split('/').pop() ?? '')
-        for (const [prop, value] of rawDeclarationsFor(node)) {
+        for (const [prop, value] of rawDeclarationsFor(node, { instanceSizes: Boolean(set.dir) })) {
           const key = `${leaf}|${prop}`
           const byValue = table.get(key) ?? new Map<string, string[]>()
           byValue.set(value, [...(byValue.get(value) ?? []), slug])

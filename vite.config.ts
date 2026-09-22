@@ -30,9 +30,9 @@ export default defineConfig(({ command }) => ({
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
       '@shell': fileURLToPath(new URL('./src/shell', import.meta.url)),
       '@config': fileURLToPath(new URL('./plugin.config.json', import.meta.url)),
-      // The dev server (and its harness) can switch brands, so it loads every logo and glyph;
-      // the plugin build ships only the active brand's logo and the referenced glyphs.
-      '@logos': fileURLToPath(new URL(command === 'serve' ? './src/shared/ui/BrandLogo/generated.ts' : './src/shared/ui/BrandLogo/generated.active.ts', import.meta.url)),
+      // Every brand's logo ships: the access code picks the brand at runtime. Glyphs stay trimmed
+      // to the ones the code references in the plugin build.
+      '@logos': fileURLToPath(new URL('./src/shared/ui/BrandLogo/generated.ts', import.meta.url)),
       '@icons': fileURLToPath(new URL(command === 'serve' ? './src/shared/ui/Icon/generated.ts' : './src/shared/ui/Icon/generated.active.ts', import.meta.url)),
     },
   },

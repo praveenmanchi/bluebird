@@ -13,7 +13,8 @@ const STATUSES: TransportStatus[] = ['connected', 'connecting', 'disconnected']
 
 function Harness() {
   const initial = useMemo(() => readDevParams(), [])
-  const [brand, setBrand] = useState<BrandId>(initial.brand ?? (activeBrand.id as BrandId))
+  const [brand, setBrand] = useState<BrandId>(initial.brand ?? (initial.session && initial.session !== 'none' ? (initial.session as BrandId) : (activeBrand.id as BrandId)))
+  const [loggedIn, setLoggedIn] = useState(initial.session !== 'none')
   const [scenario, setScenario] = useState<Scenario>(initial.scenario)
   const [persona, setPersona] = useState(initial.persona ?? personas[0]?.id ?? '')
   const [status, setStatus] = useState<TransportStatus>(initial.status)
@@ -34,11 +35,11 @@ function Harness() {
   // Keep the framed plugin's own notion of its size in sync when the harness resizes it.
   useEffect(() => { document.querySelector<HTMLIFrameElement>('.dh__frame')?.contentWindow?.postMessage({ type: 'bb:set-size', ...size }, '*') }, [size])
   useEffect(() => {
-    const q = new URLSearchParams({ brand, data: scenario, persona, status })
+    const q = new URLSearchParams({ brand, session: loggedIn ? brand : 'none', data: scenario, persona, status })
     history.replaceState(null, '', `/dev.html?${q}`)
-  }, [brand, scenario, persona, status])
+  }, [brand, loggedIn, scenario, persona, status])
 
-  const src = `/?mode=mock&embed=1&brand=${brand}&data=${scenario}&persona=${persona}&status=${status}`
+  const src = `/?mode=mock&embed=1&brand=${brand}&session=${loggedIn ? brand : 'none'}&data=${scenario}&persona=${persona}&status=${status}&r=${reloadKey}`
   const preset = presetFor(size)
 
   return (
@@ -49,10 +50,12 @@ function Harness() {
           <div class="dh__hint">The plugin runs in the frame at its real window size. Brand and data come from the fixtures, not Figma.</div>
         </div>
         <label class="dh__field">
-          <span class="dh__label">Brand mode</span>
-          <select class="dh__select" value={brand} onChange={(e) => setBrand((e.currentTarget as HTMLSelectElement).value as BrandId)}>
-            {BRANDS.map((b) => <option key={b} value={b}>{BRAND_LABELS[b]}</option>)}
+          <span class="dh__label">Session · brand</span>
+          <select class="dh__select" value={loggedIn ? brand : 'none'} onChange={(e) => { const v = (e.currentTarget as HTMLSelectElement).value; if (v === 'none') setLoggedIn(false); else { setBrand(v as BrandId); setLoggedIn(true) } }}>
+            <option value="none">Logged out — access-code screen</option>
+            {BRANDS.map((b) => <option key={b} value={b}>{BRAND_LABELS[b]} (unlocked)</option>)}
           </select>
+          <span class="dh__hint">Access codes are hashed in plugin.config.json; try one on the login screen.</span>
         </label>
         <div class="dh__field">
           <span class="dh__label">Window size</span>

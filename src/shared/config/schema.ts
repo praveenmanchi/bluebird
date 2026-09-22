@@ -13,8 +13,12 @@ export const brandSourceSchema = z.object({
   mode: nonEmpty(),
 })
 
+const SHA256_HEX = /^[0-9a-f]{64}$/
+
 export const brandSchema = z.object({
   label: nonEmpty(),
+  /** SHA-256 of the brand's access code (normalised: trimmed, upper-cased). `npm run access-code -- <code>` prints it. */
+  accessCodeHash: z.string().check(z.regex(SHA256_HEX)),
   source: brandSourceSchema,
   fallbackTokens: z._default(z.record(z.string().check(z.regex(TOKEN_KEY)), nonEmpty()), {}),
 })

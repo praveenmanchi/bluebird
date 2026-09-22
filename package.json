@@ -25,7 +25,8 @@
     "figma:pull": "tsx scripts/figma-pull.ts",
     "storybook": "npm run gen:tokens && storybook dev -p 6006",
     "build-storybook": "npm run gen:tokens && storybook build",
-    "tokens:map": "tsx scripts/map-tokens.ts"
+    "tokens:map": "tsx scripts/map-tokens.ts",
+    "access-code": "tsx scripts/access-code.ts"
   },
   "dependencies": {
     "@preact/signals": "^2.2.0",

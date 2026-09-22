@@ -75,6 +75,8 @@ export interface ComponentSetSnapshot {
   status?: 'built' | 'planned' | 'alias'
   /** For status 'alias': the code component that covers this set (e.g. Icon, Button). */
   aliasOf?: string
+  /** Folder holding <code>.css and <code>.figma.ts when the code does not live in src/shared/ui/<code> (shell screens). */
+  dir?: string
 }
 
 export interface CoverageRow {

@@ -37,7 +37,7 @@ async function main() {
   const bookkeeping = new Map(existingComponents.sets.map((s) => [s.id, s]))
   snapshot.components.sets = snapshot.components.sets.map((s) => {
     const prev = bookkeeping.get(s.id)
-    return { ...s, ...(prev?.status ? { status: prev.status } : {}), ...(prev?.aliasOf ? { aliasOf: prev.aliasOf } : {}) }
+    return { ...s, ...(prev?.status ? { status: prev.status } : {}), ...(prev?.aliasOf ? { aliasOf: prev.aliasOf } : {}), ...(prev?.dir ? { dir: prev.dir } : {}) }
   })
   const components = { ...snapshot.components, ...(existingComponents.tiers ? { tiers: existingComponents.tiers } : {}), ...(existingComponents.standaloneIcons ? { standaloneIcons: existingComponents.standaloneIcons } : {}) }
   write('figma/tokens.json', snapshot.tokens)

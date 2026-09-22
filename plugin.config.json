@@ -4,20 +4,70 @@
   "brand": {
     "active": "bridge",
     "brands": {
-      "bridge":    { "label": "Bridge",    "source": { "collection": "Brand", "mode": "Bridge" } },
-      "ikea":      { "label": "Ikea",      "source": { "collection": "Brand", "mode": "Ikea" } },
-      "richemont": { "label": "Richemont", "source": { "collection": "Brand", "mode": "Richemont" } },
-      "disney":    { "label": "Disney",    "source": { "collection": "Brand", "mode": "Disney" } },
-      "fiskars":   { "label": "Fiskars",   "source": { "collection": "Brand", "mode": "Fiskars" } }
+      "bridge": {
+        "label": "Bridge",
+        "accessCodeHash": "6cf8adf31074b0c70c8171b8fa6687d571063989d5dd943fa0759d0e4f4e70f9",
+        "source": {
+          "collection": "Brand",
+          "mode": "Bridge"
+        }
+      },
+      "ikea": {
+        "label": "Ikea",
+        "accessCodeHash": "772b93492111426e2c71e8f4e831e02c763e5432da991af6c1ee62bcf42da92d",
+        "source": {
+          "collection": "Brand",
+          "mode": "Ikea"
+        }
+      },
+      "richemont": {
+        "label": "Richemont",
+        "accessCodeHash": "befc12be9b11c22edb1d940a302240e169d9bf1fe5f3b792045c69f68b740624",
+        "source": {
+          "collection": "Brand",
+          "mode": "Richemont"
+        }
+      },
+      "disney": {
+        "label": "Disney",
+        "accessCodeHash": "a399f6987cdc072eca9071441ccb9b12942e0ab9ac5ace642986e9073e066483",
+        "source": {
+          "collection": "Brand",
+          "mode": "Disney"
+        }
+      },
+      "fiskars": {
+        "label": "Fiskars",
+        "accessCodeHash": "9f81f02453c606871fa84256f439fd334b4e47a402cb1edacd80ebf4f9796577",
+        "source": {
+          "collection": "Brand",
+          "mode": "Fiskars"
+        }
+      }
     }
   },
   "activePersona": "product-designer",
   "personas": {
-    "product-designer": { "label": "Product Designer", "tabs": ["a11y"] },
-    "design-system": { "label": "Design System", "tabs": [] }
+    "product-designer": {
+      "label": "Product Designer",
+      "tabs": [
+        "a11y"
+      ]
+    },
+    "design-system": {
+      "label": "Design System",
+      "tabs": []
+    }
   },
   "tabs": {
-    "a11y": { "enabled": true, "label": "Accessibility", "icon": "accessibility" }
+    "a11y": {
+      "enabled": true,
+      "label": "Accessibility",
+      "icon": "accessibility"
+    }
   },
-  "window": { "width": 360, "height": 480 }
+  "window": {
+    "width": 360,
+    "height": 480
+  }
 }

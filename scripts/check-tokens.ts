@@ -52,8 +52,7 @@ export function findUnknownVars(source: string, file: string, known: Set<string>
 
 interface FigmaMeta { figmaGaps?: Record<string, string> }
 
-async function loadFigmaMeta(dir: string): Promise<FigmaMeta> {
-  const file = resolve(dir, 'figma.ts')
+async function loadFigmaMeta(file: string): Promise<FigmaMeta> {
   if (!existsSync(file)) return {}
   const mod = (await import(file)) as { figma?: FigmaMeta }
   return mod.figma ?? {}
@@ -64,11 +63,11 @@ export async function checkComponentCoverage(root = ROOT): Promise<Finding[]> {
   const findings: Finding[] = []
   for (const set of components.sets) {
     if (set.status === 'planned' || set.status === 'alias') continue
-    const dir = resolve(root, 'src/shared/ui', set.code)
+    const dir = set.dir ? resolve(root, set.dir) : resolve(root, 'src/shared/ui', set.code)
     const cssFile = resolve(dir, `${set.code}.css`)
     if (!existsSync(cssFile)) { findings.push({ rule: 'missing-component', file: relative(root, cssFile), message: `Figma set "${set.name}" has no code component` }); continue }
     const css = readFileSync(cssFile, 'utf8')
-    const meta = await loadFigmaMeta(dir)
+    const meta = await loadFigmaMeta(set.dir ? resolve(dir, `${set.code}.figma.ts`) : resolve(dir, 'figma.ts'))
     const bound = new Set<string>()
     for (const v of set.variants) for (const n of v.nodes) for (const name of Object.values(n.b)) bound.add(name)
     for (const name of bound) {

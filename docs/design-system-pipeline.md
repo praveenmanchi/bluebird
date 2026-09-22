@@ -78,6 +78,8 @@ Where Figma still hardcodes a value, the component reads a `--bb-derived-*` toke
 | Molecules | MenuItem, Dropdown, DropdownMenu, SizeExpander, Chip, InfoMeta, CountBadge, ThemeChip, StatTile, PageFilter, Input, SearchBar, Toggle, ButtonGroup, SectionHeader, SelectField, Tab, FilterDropdown, SegmentTab, SegmentedControl, VariableCard, VariableCardExpanded |
 | Organisms | Banner, Footer, Navbar, WcagCard, TeamBanner, PersonaCard |
 
+Screens (`Login Page` 40000100:13204, `Settings page` 40000100:13084) are snapshotted like sets, as single-variant frames with `dir: src/shell`; their raw values (28px title, gaps, the scaled HCL mark) become `--bb-derived-login-screen-*` / `--bb-derived-settings-screen-*`, and their bindings are enforced by the gate with the composed components declared as gaps in `<Code>.figma.ts`. Since 2026-09-22 every brand ships (access-code login picks it at runtime), so `index.css` imports `all.css` and `@logos` is never trimmed.
+
 Legacy primitives left in `src/shared/ui/legacy/ui.tsx`: Card, Badge, Alert, Spinner, EmptyState, Divider (no Figma set). `Input` and `SegmentedControl` now come from their Figma sets.
 
 Bundle: the single-file plugin UI is ~335 KB; the plugin ships only the glyphs referenced from `src/` and `plugin.config.json` (`Icon/generated.active.ts` via the `@icons` alias; Storybook and tests load the full table) (budget 360 KB in `scripts/check-size.ts`): ~85 KB icon glyphs, ~55 KB artwork, the rest components + tokens. SVG path data is rounded to two decimals by the generator; a simplified Bridge wordmark in Figma or per-tab code splitting are the next levers.

@@ -8,17 +8,19 @@ export type { LogoName }
 export interface BrandLogoProps {
   /** Figma "Brand" variant. Omit to follow the surrounding [data-brand] (how the Figma variable `brand logos` works). */
   brand?: BrandId
+  /** Figma "Brand=HCL" and other non-client artwork: force a specific logo regardless of the brand. */
+  logo?: LogoName
   title?: string
   class?: string
 }
 
 /**
  * Figma "brand logos" (40000064:9865). Renders one logo per brand and lets CSS
- * pick the active one, or a single forced logo when `brand` is given.
- * The plugin bundle only contains the active brand's artwork (see @logos alias).
+ * pick the active one, or a single forced logo when `brand` / `logo` is given.
  */
-export function BrandLogo({ brand, title, class: cls }: BrandLogoProps) {
-  const names = brand ? [brand] : BRANDS
+export function BrandLogo({ brand, logo, title, class: cls }: BrandLogoProps) {
+  const forced = logo ?? brand
+  const names: readonly string[] = forced ? [forced] : BRANDS
   return (
     <>
       {names.map((name) => {
@@ -29,7 +31,7 @@ export function BrandLogo({ brand, title, class: cls }: BrandLogoProps) {
             key={name}
             class={`bb-brand-logo ${cls ?? ''}`}
             data-logo={name}
-            data-forced={brand ? '' : undefined}
+            data-forced={forced ? '' : undefined}
             viewBox={art.viewBox}
             fill="none"
             role={title ? 'img' : 'presentation'}

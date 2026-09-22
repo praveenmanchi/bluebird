@@ -4,6 +4,7 @@ Persona-based, multi-tab, multi-brand Figma plugin. Speed and accuracy first.
 
 - **One JSON switchboard.** `plugin.config.json` decides the active brand, personas, and which tabs are on. Disabled tabs are excluded from the bundle, not just hidden.
 - **Each tab is its own codebase.** `src/features/<tab>/` owns its UI, sandbox logic, state, messages, mocks, and tests. Cross-tab imports are a lint error.
+- **One plugin, many clients: access codes.** The plugin opens on a login screen; each brand in `plugin.config.json` carries the SHA-256 of its access code (`npm run access-code -- <code>` prints the hash). A valid code unlocks that brand for the Figma user (stored in `figma.clientStorage`); the settings gear offers *Logoff session* and *Reset all Settings*. The code is a theme selector, not access control: every brand's tokens and logos ship in the bundle.
 - **Brand from Figma variables.** `figma/tokens.json` is a snapshot of the file's three collections (Primitives → Semantics → Brand with five modes). `npm run gen:tokens` turns it into `--bb-*` custom properties; components read only those. Storybook shows every brand; the plugin ships the one in `brand.active`. See [docs/design-system-pipeline.md](docs/design-system-pipeline.md).
 - **Three dev modes** that share one code path: browser with fixtures, browser connected to real Figma, and the real plugin panel.
 

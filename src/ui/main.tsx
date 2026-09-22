@@ -40,16 +40,15 @@ function createTransport(): Transport {
   return createMockTransport(createMockHandlers({
     scenario: dev?.scenario,
     brandId: dev?.brand ?? brand.id,
+    sessionBrand: dev?.session === 'none' ? null : dev?.session,
+    persist: true,
     onResize: (size) => window.parent.postMessage({ type: 'bb:resize', ...size }, '*'),
   }))
 }
 
 // Generated brand CSS is scoped to [data-brand]; the sandbox resolver may still override values at runtime.
+// The session flow re-stamps this once session:status answers; the config default covers the login screen.
 document.documentElement.dataset.brand = dev?.brand ?? brand.id
-if (import.meta.env.DEV && dev?.brand) {
-  // The plugin bundle only carries the active brand; the harness can switch between all of them.
-  void import('../shared/brand/generated/all.css')
-}
 if (dev) {
   connection.value = dev.status
   if (dev.persona && personas.some((p) => p.id === dev.persona)) selectPersona(dev.persona)

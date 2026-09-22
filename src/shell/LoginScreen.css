@@ -1,0 +1,64 @@
+/* Login page — Figma "Login Page" (40000100:13204). Root fill is the Brand
+ * variable `Background`; the mark, heading and form geometry are raw in the
+ * frame → --bb-derived-login-screen-*. The input and button are the Input and
+ * Button components (their tokens are consumed there). */
+.bb-login {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: var(--bb-space-inset-lg);
+  background: var(--bb-background);
+}
+.bb-brand-logo.bb-login__mark {
+  position: absolute;
+  top: var(--bb-space-stack-md);
+  left: var(--bb-space-stack-md);
+  /* The instance is scaled to 180×52 on the login frame. */
+  width: var(--bb-derived-login-screen-brand-logos-width);
+  height: var(--bb-derived-login-screen-brand-logos-height);
+}
+.bb-login__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-derived-login-screen-form-gap);
+  width: 100%;
+  max-width: var(--bb-derived-login-screen-form-width);
+}
+.bb-login__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-derived-login-screen-heading-gap);
+  max-width: var(--bb-derived-login-screen-heading-width);
+  text-align: center;
+}
+.bb-login__title {
+  margin: 0;
+  color: var(--bb-derived-login-screen-title-color);
+  font-family: var(--bb-derived-login-screen-title-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-login-screen-title-font-size);
+  font-weight: var(--bb-derived-login-screen-title-font-weight);
+  line-height: var(--bb-derived-login-screen-title-line-height);
+}
+.bb-login__subtitle {
+  margin: 0;
+  color: var(--bb-derived-login-screen-subtitle-color);
+  font-family: var(--bb-derived-login-screen-subtitle-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-login-screen-subtitle-font-size);
+  font-weight: var(--bb-derived-login-screen-subtitle-font-weight);
+  line-height: var(--bb-derived-login-screen-subtitle-line-height);
+}
+.bb-login__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-derived-login-screen-code-row-gap);
+  width: 100%;
+}
+.bb-login__field { flex: 1 1 auto; min-width: 0; }
+/* The Figma field and button are 37px tall (input/height is 32); keep the design's height. */
+.bb-login__row .bb-input__control, .bb-login__row .bb-button { height: var(--bb-derived-login-screen-background-border-height); }

@@ -9,6 +9,8 @@
 /* Disney's frame hugs its vector (2px / 5px padding) instead of carrying a fixed size. */
 .bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + 2 * var(--bb-derived-brand-logo-root-padding-left)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + 2 * var(--bb-derived-brand-logo-root-padding-top)); }
 .bb-brand-logo[data-logo="fiskars"]   { width: var(--bb-derived-brand-logo-root-brand-fiskars-width);   height: var(--bb-derived-brand-logo-root-brand-fiskars-height); }
+/* Brand=HCL is the company mark, not a client brand: a single-colour glyph bound to Banner/Text, used by the login screen and the Banner's "Powered by". */
+.bb-brand-logo[data-logo="hcltech"]   { width: var(--bb-derived-brand-logo-root-brand-hcl-width);       height: var(--bb-derived-brand-logo-root-brand-hcl-height); color: var(--bb-banner-text); }
 
 [data-brand="bridge"]    .bb-brand-logo[data-logo="bridge"],
 [data-brand="ikea"]      .bb-brand-logo[data-logo="ikea"],

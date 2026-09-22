@@ -1,4 +1,4 @@
-export { applyTokens } from './apply'
+export { applyTokens, clearTokens } from './apply'
 export { tokenKeyFromVariableName, mergeTokens, toCssVariables, CSS_VAR_PREFIX } from './tokens'
 export type { TokenMap, BrandTokensResult } from './tokens'
 export { cssVarName, cssValueFor, brandIdFromMode } from './snapshot'

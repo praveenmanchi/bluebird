@@ -1,5 +1,7 @@
 // Figma sandbox entry. Has access to the `figma` global, no DOM.
 import { config, brand, clampWindow, type WindowSize } from '@shared/config'
+import { createSessionHandlers, clientStorageStore, SESSION_KEY } from './session'
+import type { Session } from '@shared/session'
 import { createRouter, type HandlerMap } from '@shared/bridge'
 import { resolveBrandTokens } from '@shared/brand/resolve'
 import { extractAll, type ExtractManifest } from '@shared/brand/extract'
@@ -7,8 +9,19 @@ import { handlers as featureHandlers } from './registry.generated'
 
 const TOKEN_KEY = 'bluebird:relay-token'
 
+const store = clientStorageStore()
+
+/** Brand tokens for the requested brand, else the session's brand, else the config default. */
+async function brandTokens(payload?: { brandId?: string }) {
+  const session = (await store.get(SESSION_KEY)) as Session | undefined
+  const id = payload?.brandId ?? session?.brandId ?? brand.id
+  const b = config.brand.brands[id] ?? brand
+  return resolveBrandTokens({ id, ...b.source, fallbackTokens: b.fallbackTokens })
+}
+
 const coreHandlers: HandlerMap = {
-  'brand:tokens': () => resolveBrandTokens({ id: brand.id, ...brand.source, fallbackTokens: brand.fallbackTokens }),
+  'brand:tokens': brandTokens,
+  ...createSessionHandlers(config, store),
   'shell:close': () => { figma.closePlugin() },
   'shell:resize': (size: WindowSize) => { const { width, height } = clampWindow(size); figma.ui.resize(width, height) },
   // Design-token snapshot for scripts/figma-pull.ts (plugin backend). Read-only.

@@ -20,6 +20,12 @@ export function loadConfig(raw: unknown): PluginConfig {
   if (!config.brand.brands[config.brand.active]) {
     errors.push(`brand.active "${config.brand.active}" is not defined in brand.brands`)
   }
+  const hashes = new Map<string, string>()
+  for (const [brandId, b] of Object.entries(config.brand.brands)) {
+    const other = hashes.get(b.accessCodeHash)
+    if (other) errors.push(`brands "${other}" and "${brandId}" share the same access code`)
+    hashes.set(b.accessCodeHash, brandId)
+  }
   if (!config.personas[config.activePersona]) {
     errors.push(`activePersona "${config.activePersona}" is not defined in personas`)
   }

@@ -41,6 +41,8 @@
   cursor: pointer;
 }
 .bb-tabbar__settings > .bb-icon { width: var(--bb-icon-size-lg); height: var(--bb-icon-size-lg); }
+/* Figma "settings / Variant2" (Settings page): translucent square behind the glyph while settings are open. */
+.bb-tabbar__settings[data-active] { background: var(--bb-derived-settings-screen-settings-fill); border-radius: var(--bb-derived-settings-screen-settings-radius); }
 .bb-tabbar__settings:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); outline-offset: var(--bb-space-inset-xs); }
 
 /* Screen root fill is the Brand variable `Background`. */

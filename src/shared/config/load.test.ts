@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { loadConfig, resolvePersonas, ConfigError } from './load'
 
 const valid = {
-  brand: { active: 'bluebird', brands: { bluebird: { label: 'Bluebird', source: { collection: 'Brand', mode: 'Bluebird' }, fallbackTokens: { 'color-brand': '#0066ff' } } } },
+  brand: { active: 'bluebird', brands: { bluebird: { label: 'Bluebird', accessCodeHash: 'a'.repeat(64), source: { collection: 'Brand', mode: 'Bluebird' }, fallbackTokens: { 'color-brand': '#0066ff' } } } },
   activePersona: 'product-designer',
   personas: {
     'product-designer': { label: 'Product Designer', tabs: ['a11y', 'off'] },
@@ -23,6 +23,11 @@ describe('loadConfig', () => {
 
   it('rejects an unknown active brand', () => {
     expect(() => loadConfig({ ...valid, brand: { ...valid.brand, active: 'nope' } })).toThrow(ConfigError)
+  })
+
+  it('rejects two brands sharing an access code', () => {
+    const dup = { ...valid, brand: { active: 'bluebird', brands: { bluebird: valid.brand.brands.bluebird, other: { ...valid.brand.brands.bluebird, label: 'Other' } } } }
+    expect(() => loadConfig(dup)).toThrow(/share the same access code/)
   })
 
   it('rejects an unknown active persona', () => {

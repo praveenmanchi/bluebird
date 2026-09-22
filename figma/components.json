@@ -2919,7 +2919,8 @@
             "disney",
             "fiskars",
             "bridge",
-            "ikea"
+            "ikea",
+            "HCL"
           ],
           "default": "ikea"
         }
@@ -3160,6 +3161,50 @@
                 "size": [
                   152,
                   37.2
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000100:13634",
+          "name": "Brand=HCL",
+          "props": {
+            "Brand": "HCL"
+          },
+          "nodes": [
+            {
+              "p": "Brand=HCL",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  103,
+                  30
+                ]
+              }
+            },
+            {
+              "p": "Brand=HCL/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  103.6,
+                  17.5
+                ]
+              }
+            },
+            {
+              "p": "Brand=HCL/Frame/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "Banner/Text"
+              },
+              "r": {
+                "size": [
+                  97.2,
+                  17.5
                 ]
               }
             }
@@ -14971,6 +15016,453 @@
         }
       ],
       "status": "built"
+    },
+    {
+      "code": "LoginScreen",
+      "id": "40000100:13204",
+      "name": "Login Page",
+      "description": "",
+      "props": {},
+      "variants": [
+        {
+          "id": "40000100:13204",
+          "name": "Login Page",
+          "props": {},
+          "nodes": [
+            {
+              "p": "Login Page",
+              "t": "FRAME",
+              "b": {
+                "fill": "Background"
+              },
+              "r": {
+                "size": [
+                  1074,
+                  868
+                ]
+              }
+            },
+            {
+              "p": "Login Page/brand logos",
+              "t": "INSTANCE",
+              "b": {},
+              "r": {
+                "size": [
+                  179.7,
+                  52.3
+                ]
+              },
+              "i": "Brand=HCL <brand logos>",
+              "cp": {
+                "Brand": "HCL"
+              }
+            },
+            {
+              "p": "Login Page/Form",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN CENTER FIXED HUG",
+                "itemSpacing": 38,
+                "size": [
+                  619,
+                  146
+                ]
+              }
+            },
+            {
+              "p": "Login Page/Form/Heading",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN CENTER FIXED HUG",
+                "itemSpacing": 15,
+                "size": [
+                  410,
+                  71
+                ]
+              }
+            },
+            {
+              "p": "Login Page/Form/Heading/Title",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "text": "Design studio",
+                "fontSize": 28,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 36
+              }
+            },
+            {
+              "p": "Login Page/Form/Heading/Subtitle",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "text": "HSKJDVSSCAVSDDFGFNFBDSSSVDBFDNGFFBDVSVDFDVSCFGR",
+                "fontSize": 13,
+                "font": "Inter",
+                "style": "Medium",
+                "lineHeightPx": 20
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 10,
+                "size": [
+                  619,
+                  37
+                ]
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row/Background+Border",
+              "t": "FRAME",
+              "b": {
+                "fill": "input/bg/default",
+                "stroke": "input/border/default",
+                "radius": "input/radius"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "size": [
+                  501,
+                  37
+                ]
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row/Background+Border/Container",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL FILL",
+                "size": [
+                  451,
+                  35
+                ]
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row/Background+Border/Container/Access code",
+              "t": "TEXT",
+              "b": {
+                "fill": "input/fg/value",
+                "fontSize": "input/font/size",
+                "fontWeight": "input/font/weight"
+              },
+              "r": {
+                "text": "Access code",
+                "font": "Inter",
+                "style": "Regular"
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row/Background+Border/eye",
+              "t": "INSTANCE",
+              "b": {},
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              },
+              "i": "Property 1=open <eye>",
+              "cp": {
+                "Property 1": "open"
+              }
+            },
+            {
+              "p": "Login Page/Form/Code row/Background+Border/eye/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "input/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Login Page/Form/Code row/Button",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "button/primary/bg/default",
+                "stroke": "button/primary/border/default",
+                "radius": "button/primary/radius",
+                "itemSpacing": "button/primary/gap",
+                "paddingLeft": "button/primary/padding-x",
+                "paddingRight": "button/primary/padding-x"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  108,
+                  37
+                ]
+              },
+              "i": "Type=Primary, State=Default <Button>",
+              "cp": {
+                "Trailing icon": "91:1958",
+                "Leading icon": "91:1958",
+                "Show trailing icon": false,
+                "Show leading icon": false,
+                "Label": "Submit",
+                "Type": "Primary",
+                "State": "Default"
+              }
+            }
+          ]
+        }
+      ],
+      "status": "built",
+      "dir": "src/shell"
+    },
+    {
+      "code": "SettingsScreen",
+      "id": "40000100:13084",
+      "name": "Settings page",
+      "description": "",
+      "props": {},
+      "variants": [
+        {
+          "id": "40000100:13084",
+          "name": "Settings page",
+          "props": {},
+          "nodes": [
+            {
+              "p": "Settings page",
+              "t": "FRAME",
+              "b": {
+                "fill": "Background"
+              },
+              "r": {
+                "size": [
+                  1074,
+                  868
+                ]
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102627",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "footer/bg/default",
+                "stroke": "footer/border/top",
+                "paddingLeft": "footer/padding-x",
+                "paddingRight": "footer/padding-x",
+                "paddingTop": "footer/padding-y",
+                "paddingBottom": "footer/padding-y"
+              },
+              "r": {
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
+                "size": [
+                  1074,
+                  27
+                ]
+              },
+              "i": "footer",
+              "cp": {
+                "Dual File": false,
+                "MCP": false,
+                "UXAI": false,
+                "Local": false
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102628",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  1074,
+                  117
+                ]
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Banner",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "Banner/bg"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 4,
+                "paddingRight": 4,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  1074,
+                  77
+                ]
+              },
+              "i": "Banner",
+              "cp": {
+                "HCL Logo": true
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Frame 1430102558",
+              "t": "FRAME",
+              "b": {
+                "stroke": "Boader"
+              },
+              "r": {
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 266,
+                "paddingRight": 12,
+                "size": [
+                  1074,
+                  40
+                ]
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Frame 1430102558/Tab",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "tab/gap",
+                "paddingLeft": "tab/padding-x",
+                "paddingRight": "tab/padding-x",
+                "paddingTop": "tab/padding-y",
+                "paddingBottom": "tab/padding-y"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  162,
+                  40
+                ]
+              },
+              "i": "Property 1=Default <Tab>",
+              "cp": {
+                "Variant 3 text": false,
+                "Icon": "91:1958",
+                "Show Header Icons": true,
+                "Label": "Accessibility Checker",
+                "Property 1": "Default"
+              }
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Frame 1430102558/Tab/Tab Icons/Frame/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "tab/icon/default"
+              },
+              "o": [
+                "boundVariables",
+                "fills",
+                "opacity"
+              ]
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Frame 1430102558/settings",
+              "t": "INSTANCE",
+              "b": {},
+              "r": {
+                "fill": "#ffffff1a",
+                "radius": 2,
+                "size": [
+                  24,
+                  24
+                ]
+              },
+              "i": "Property 1=Variant2 <settings>",
+              "cp": {
+                "Property 1": "Variant2"
+              }
+            },
+            {
+              "p": "Settings page/Container",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "button/secondary/padding-x"
+              },
+              "r": {
+                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "size": [
+                  1053,
+                  32
+                ]
+              },
+              "i": "Container",
+              "cp": {
+                "Seconndary butto": true,
+                "Primary Button": true
+              }
+            },
+            {
+              "p": "Settings page/Container/Test Connection",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "componentProperties"
+              ],
+              "cp": {
+                "Trailing icon": "91:1958",
+                "Show trailing icon": false,
+                "Show leading icon": false,
+                "Leading icon": "91:1958",
+                "Label": "Logoff session",
+                "Type": "Secondary",
+                "State": "Default"
+              }
+            },
+            {
+              "p": "Settings page/Container/Save Configuration",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "componentProperties"
+              ],
+              "cp": {
+                "Trailing icon": "91:1958",
+                "Leading icon": "91:1958",
+                "Show trailing icon": false,
+                "Show leading icon": false,
+                "Label": "Reset all Settings",
+                "Type": "Primary",
+                "State": "Default"
+              }
+            },
+            {
+              "p": "Settings page/Toggle",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "toggle/gap"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  1051,
+                  37
+                ]
+              },
+              "i": "Toggle",
+              "cp": {
+                "Toggle": false,
+                "Descrpition Text": "To store all tokens in a single JSON file, write the file name (Ex: tokens.json). Pro features, like themes, require a multi-file sync with tokens stored in a folder by writing the folder path (Ex: tokens).",
+                "Title": "[ Label ]"
+              }
+            }
+          ]
+        }
+      ],
+      "status": "built",
+      "dir": "src/shell"
     }
   ],
   "coverage": [
@@ -15392,7 +15884,9 @@
     "264:10472": "Organisms",
     "7:44400": "Organisms",
     "83:940": "Other",
-    "84:1043": "Other"
+    "84:1043": "Other",
+    "40000100:13204": "Screens",
+    "40000100:13084": "Screens"
   },
   "standaloneIcons": [
     {

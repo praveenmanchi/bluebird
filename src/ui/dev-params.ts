@@ -18,6 +18,8 @@ export interface DevParams {
   scenario: Scenario
   persona?: string
   status: TransportStatus
+  /** Pre-unlocked brand; 'none' forces the login screen; absent keeps whatever the (persisted) mock session holds. */
+  session?: BrandId | 'none'
   /** true when rendered inside the harness iframe. */
   embed: boolean
 }
@@ -32,6 +34,7 @@ export function readDevParams(search = location.search): DevParams {
     scenario: SCENARIOS.includes(scenario as Scenario) ? (scenario as Scenario) : 'default',
     persona: q.get('persona') ?? undefined,
     status: status === 'connecting' || status === 'disconnected' ? status : 'connected',
+    session: q.get('session') === 'none' ? 'none' : BRANDS.includes(q.get('session') as BrandId) ? (q.get('session') as BrandId) : undefined,
     embed: q.get('embed') === '1',
   }
 }

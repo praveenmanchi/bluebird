@@ -1,0 +1,15 @@
+/* Settings page — Figma "Settings page" (40000100:13084). Sits inside the
+ * normal chrome (Banner, tab row with the settings glyph active, Footer with
+ * the pills hidden). Root fill is `Background`; the Toggle and the button
+ * group are composed components; the frame's raw gaps are derived tokens. */
+.bb-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-md);
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: var(--bb-space-stack-md) var(--bb-space-inset-md);
+  background: var(--bb-background);
+}
+.bb-settings__row { width: 100%; }
+.bb-settings__actions { width: 100%; }

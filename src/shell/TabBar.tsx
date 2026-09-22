@@ -6,10 +6,14 @@ const isIconName = (name: string): name is IconName => name in ICONS
 export interface TabBarProps {
   /** The settings glyph at the right end of the row (Figma "accessibity UI" → settings instance). */
   onSettings?: () => void
+  /** Figma "settings / Variant2": the glyph sits on a translucent square while the settings screen is open. */
+  settingsActive?: boolean
+  /** Fired after a tab is selected (the shell uses it to leave the settings screen). */
+  onTab?: (id: string) => void
 }
 
 /** Tab row from the Figma screen: Tab instances (Active / Default) left, the settings icon right, `Boader` rule below. */
-export function TabBar({ onSettings }: TabBarProps) {
+export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProps) {
   const tabs = visibleTabs.value
   const active = activeTabId.value
   return (
@@ -18,15 +22,15 @@ export function TabBar({ onSettings }: TabBarProps) {
         {tabs.map((tab) => (
           <Tab
             key={tab.id}
-            variant={tab.id === active ? 'active' : 'default'}
+            variant={tab.id === active && !settingsActive ? 'active' : 'default'}
             icon={isIconName(tab.icon) ? tab.icon : 'variables'}
-            onClick={() => selectTab(tab.id)}
+            onClick={() => { selectTab(tab.id); onTab?.(tab.id) }}
           >
             {tab.label}
           </Tab>
         ))}
       </div>
-      <button type="button" class="bb-tabbar__settings" aria-label="Settings" onClick={onSettings}>
+      <button type="button" class="bb-tabbar__settings" aria-label="Settings" aria-pressed={settingsActive} data-active={settingsActive || undefined} onClick={onSettings}>
         <Icon name="settings" />
       </button>
     </nav>

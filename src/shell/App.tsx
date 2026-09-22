@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'preact/hooks'
 import { RpcProvider, EmptyState, Footer } from '@shared/ui'
-import { applyTokens } from '@shared/brand'
-import type { BrandTokensResult } from '@shared/brand'
 import type { RpcClient, Transport } from '@shared/bridge'
 import { features } from './registry.generated'
 import { Banner } from './Banner'
 import { TabBar } from './TabBar'
-import { activeTabId, brandStatus, connection, windowSize } from './state'
+import { activeTabId, brandStatus, connection, screen, session, windowSize } from './state'
+import { LoginScreen } from './LoginScreen'
+import { SettingsScreen } from './SettingsScreen'
+import { bootSession, login, logout, reset } from './session'
 import { WINDOW_PRESETS, WINDOW_MAX, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 
 export interface AppProps { client: RpcClient; transport: Transport }
@@ -14,11 +15,7 @@ export interface AppProps { client: RpcClient; transport: Transport }
 export function App({ client, transport }: AppProps) {
   useEffect(() => {
     const offStatus = transport.onStatus?.((s) => { connection.value = s })
-    client.call<BrandTokensResult>('brand:tokens')
-      .then((result) => { brandStatus.value = result; applyTokens(result.tokens) })
-      .catch((error: unknown) => {
-        brandStatus.value = { brandId: 'unknown', source: 'fallback', tokens: {}, note: `Brand tokens unavailable: ${error instanceof Error ? error.message : 'unknown error'}` }
-      })
+    void bootSession(client)
     return () => offStatus?.()
   }, [client, transport])
 
@@ -47,17 +44,31 @@ export function App({ client, transport }: AppProps) {
     if (phase === 'end') dragStart.current = null
   }
 
+  const current = screen.value
+  if (current === 'boot') return <div class="h-full bb-canvas" aria-busy="true" />
+  if (current === 'login') {
+    return (
+      <RpcProvider client={client}>
+        <div class="h-full flex flex-col bb-canvas">
+          <LoginScreen onSubmit={(code) => login(client, code)} />
+        </div>
+      </RpcProvider>
+    )
+  }
+  const inSettings = current === 'settings'
   return (
     <RpcProvider client={client}>
       <div class="h-full flex flex-col bb-canvas">
         <Banner />
-        <TabBar />
+        <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
-          {entry
-            ? <entry.Tab key={entry.manifest.id} />
-            : <EmptyState icon="◌" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
+          {inSettings
+            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} />
+            : entry
+              ? <entry.Tab key={entry.manifest.id} />
+              : <EmptyState icon="◌" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
         </main>
-        <Footer size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} />
+        <Footer size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} local={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} />
       </div>
     </RpcProvider>
   )
