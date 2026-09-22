@@ -804,10 +804,10 @@ Uses instances of: `Principle=Perceivable <Principle>`, `Property 1=Auditory <Di
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Node | lineHeight | `12.600000381469727` | **new variable** | none |  |
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Node | fontFamily | `Inter` | `type/family/inter` | exact | every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps "Inter" |
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Node | fontWeight | `600` | `badge-count/font/weight` | exact (alt: `app-header/wordmark/font-weight`, `rating/font/weight`, `font/weight-strong`) |  |
-| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT) | fontSize | `10` | `wcag-card/meta/font-size` | family (alt: `section-header/description/font-size`, `toggle/description/font-size`, `input/helper/font-size`) |  |
-| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT) | lineHeight | `15` | **new variable** | none |  |
-| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT) | fontFamily | `Cousine` | **new variable** | none | every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps "Cousine" |
-| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT) | fontWeight | `400` | `input/font/weight` | exact (alt: `dropdown/font/weight`, `search-bar/font/weight`, `status-pill/font/weight`) |  |
+| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label | fontSize | `10` | `wcag-card/meta/font-size` | family (alt: `section-header/description/font-size`, `toggle/description/font-size`, `input/helper/font-size`) |  |
+| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label | lineHeight | `15` | **new variable** | none |  |
+| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label | fontFamily | `Cousine` | **new variable** | none | every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps "Cousine" |
+| Container/Frame 1430102532/Frame 1430102680/Container/Text/Label | fontWeight | `400` | `input/font/weight` | exact (alt: `dropdown/font/weight`, `search-bar/font/weight`, `status-pill/font/weight`) |  |
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Colors | fontSize | `9` | **new variable** | none |  |
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Colors | lineHeight | `12.600000381469727` | **new variable** | none |  |
 | Container/Frame 1430102532/Frame 1430102680/Container/Text/Colors | fontFamily | `Inter` | `type/family/inter` | exact | every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps "Inter" |

@@ -10803,6 +10803,18 @@
         "Visual": {
           "type": "BOOLEAN",
           "default": true
+        },
+        "Node": {
+          "type": "TEXT",
+          "default": "Label"
+        },
+        "why it fails": {
+          "type": "TEXT",
+          "default": "Descripition"
+        },
+        "How ti fix": {
+          "type": "TEXT",
+          "default": "Descripition"
         }
       },
       "variants": [
@@ -11405,7 +11417,7 @@
                 "layout": "HORIZONTAL MIN MIN HUG FIXED",
                 "itemSpacing": 4,
                 "size": [
-                  157,
+                  115,
                   19
                 ]
               }
@@ -11443,23 +11455,26 @@
               "r": {
                 "layout": "GRID MIN MIN HUG FILL",
                 "size": [
-                  73,
+                  31,
                   15
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT)",
+              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "Label (TEXT)",
+                "text": "Label",
                 "fontSize": 10,
                 "font": "Cousine",
                 "style": "Regular",
                 "lineHeightPx": 15
+              },
+              "pr": {
+                "characters": "Node"
               }
             },
             {
@@ -11696,11 +11711,14 @@
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "Body text must reach a 4.5:1 contrast ratio against its background.",
+                "text": "Descripition",
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Regular",
                 "lineHeightPx": 13.5
+              },
+              "pr": {
+                "characters": "why it fails"
               }
             },
             {
@@ -11713,7 +11731,7 @@
                 "layout": "HORIZONTAL MIN MIN HUG HUG",
                 "itemSpacing": 4,
                 "size": [
-                  304,
+                  136,
                   17.5
                 ]
               }
@@ -11751,7 +11769,7 @@
               "r": {
                 "layout": "GRID MIN MIN HUG FIXED",
                 "size": [
-                  220,
+                  52,
                   13.5
                 ]
               }
@@ -11763,11 +11781,14 @@
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "Use white label text or darken the fill to reach 4.5:1.",
+                "text": "Descripition",
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Medium",
                 "lineHeightPx": 13.5
+              },
+              "pr": {
+                "characters": "How ti fix"
               }
             },
             {

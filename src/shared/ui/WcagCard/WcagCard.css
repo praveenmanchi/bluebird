@@ -141,9 +141,9 @@
 .bb-wcag-card__row--themes { align-items: center; padding-top: 0; }
 .bb-wcag-card__row--themes .bb-wcag-card__row-value { gap: var(--bb-derived-wcag-card-frame-1430102681-gap); }
 .bb-wcag-card__mono {
-  font-family: var(--bb-derived-wcag-card-label-text-font-family), ui-monospace, monospace;
-  font-size: var(--bb-derived-wcag-card-label-text-font-size);
-  font-weight: var(--bb-derived-wcag-card-label-text-font-weight);
+  font-family: var(--bb-derived-wcag-card-label-font-family), ui-monospace, monospace;
+  font-size: var(--bb-derived-wcag-card-label-font-size);
+  font-weight: var(--bb-derived-wcag-card-label-font-weight);
   line-height: var(--bb-derived-wcag-card-8fb7e8-line-height);
 }
 .bb-wcag-card__on {

@@ -46,5 +46,5 @@
 /* Screen root fill is the Brand variable `Background`. */
 .bb-canvas {
   background: var(--bb-background);
-  color: var(--bb-text-primary);
+  color: var(--bb-card-variable-title-fg);
 }

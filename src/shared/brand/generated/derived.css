@@ -635,10 +635,10 @@
   --bb-derived-wcag-card-how-to-fix-font-size: 9px;
   --bb-derived-wcag-card-how-to-fix-font-weight: 600;
   --bb-derived-wcag-card-how-to-fix-line-height: 12.6px;
-  --bb-derived-wcag-card-label-text-font-family: "Cousine";
-  --bb-derived-wcag-card-label-text-font-size: 10px;
-  --bb-derived-wcag-card-label-text-font-weight: 400;
-  --bb-derived-wcag-card-label-text-line-height: 15px;
+  --bb-derived-wcag-card-label-font-family: "Cousine";
+  --bb-derived-wcag-card-label-font-size: 10px;
+  --bb-derived-wcag-card-label-font-weight: 400;
+  --bb-derived-wcag-card-label-line-height: 15px;
   --bb-derived-wcag-card-line-61-height: 0px;
   --bb-derived-wcag-card-line-61-stroke-width: 0.5px;
   --bb-derived-wcag-card-line-61-width: 439px;

@@ -5122,7 +5122,7 @@
         },
         {
           "variant": "WCAG Card",
-          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT)",
+          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
           "property": "fontSize",
           "value": 10,
           "suggestion": "wcag-card/meta/font-size",
@@ -5135,7 +5135,7 @@
         },
         {
           "variant": "WCAG Card",
-          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT)",
+          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
           "property": "lineHeight",
           "value": 15,
           "suggestion": null,
@@ -5144,7 +5144,7 @@
         },
         {
           "variant": "WCAG Card",
-          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT)",
+          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
           "property": "fontFamily",
           "value": "Cousine",
           "suggestion": null,
@@ -5154,7 +5154,7 @@
         },
         {
           "variant": "WCAG Card",
-          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label (TEXT)",
+          "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
           "property": "fontWeight",
           "value": 400,
           "suggestion": "input/font/weight",

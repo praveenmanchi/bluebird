@@ -18,10 +18,10 @@
   display: flex;
   align-items: center;
   gap: var(--bb-space-inline-md);
-  color: var(--bb-text-tertiary);
+  color: var(--bb-card-variable-meta-fg);
   font-size: var(--bb-font-size-body);
 }
-.bb-a11y__summary strong { color: var(--bb-text-primary); font-weight: var(--bb-type-weight-600); }
+.bb-a11y__summary strong { color: var(--bb-card-variable-title-fg); font-weight: var(--bb-type-weight-600); }
 .bb-a11y__summary [data-tone="error"] { color: var(--bb-status-pill-icon-error); }
 .bb-a11y__error { color: var(--bb-status-pill-icon-error); font-size: var(--bb-font-size-body); }
 .bb-a11y__preview { display: flex; align-items: center; justify-content: space-between; gap: var(--bb-space-inline-md); width: 100%; }

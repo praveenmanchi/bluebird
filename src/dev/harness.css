@@ -5,8 +5,8 @@ html, body, #root { height: 100%; margin: 0; }
 body {
   font-family: var(--bb-footer-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-font-size-body);
-  color: var(--bb-text-primary);
-  background: var(--bb-surface-canvas);
+  color: var(--bb-card-variable-title-fg);
+  background: var(--bb-card-variable-bg-default);
 }
 .dh { display: grid; grid-template-columns: max-content 1fr; height: 100%; }
 .dh__panel {
@@ -20,9 +20,9 @@ body {
   overflow-y: auto;
 }
 .dh__title { font-size: var(--bb-font-size-label); font-weight: var(--bb-type-weight-600); }
-.dh__hint { color: var(--bb-text-tertiary); font-size: var(--bb-font-size-caption); }
+.dh__hint { color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); }
 .dh__field { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); }
-.dh__label { color: var(--bb-text-tertiary); font-size: var(--bb-font-size-caption); text-transform: uppercase; letter-spacing: 0.04em; }
+.dh__label { color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); text-transform: uppercase; letter-spacing: 0.04em; }
 .dh__select, .dh__input {
   height: var(--bb-dropdown-height);
   padding-inline: var(--bb-space-inset-md);
@@ -37,7 +37,7 @@ body {
 .dh__select:focus-visible, .dh__input:focus-visible { border-color: var(--bb-dropdown-border-focus); }
 .dh__row { display: flex; gap: var(--bb-space-inline-md); align-items: center; }
 .dh__row > * { flex: 1; min-width: 0; }
-.dh__size { font-variant-numeric: tabular-nums; color: var(--bb-text-secondary); }
+.dh__size { font-variant-numeric: tabular-nums; color: var(--bb-card-variable-title-fg); }
 .dh__stage { display: grid; place-items: center; overflow: auto; padding: var(--bb-space-inset-lg); }
 .dh__window {
   display: flex;
@@ -53,9 +53,9 @@ body {
   justify-content: space-between;
   height: var(--bb-dimension-size-control-32);
   padding-inline: var(--bb-space-inset-md);
-  background: var(--bb-surface-raised);
+  background: var(--bb-card-variable-bg-hover);
   border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
   font-size: var(--bb-font-size-body);
-  color: var(--bb-text-secondary);
+  color: var(--bb-card-variable-title-fg);
 }
 .dh__frame { display: block; border: 0; background: var(--bb-background); }
