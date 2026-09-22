@@ -1,6 +1,5 @@
 import type { ComponentChildren, JSX } from 'preact'
 import { Icon, type IconName } from '../Icon/Icon'
-import { Spinner } from '../legacy/ui'
 import './Button.css'
 
 export type ButtonVariant = 'primary' | 'secondary'
@@ -32,9 +31,19 @@ export function Button({ variant = 'primary', leadingIcon, trailingIcon, loading
       data-state={state}
       class={`bb-button ${cls ?? ''}`}
     >
-      {loading ? <span class="bb-button__icon"><Spinner size={12} /></span> : leadingIcon && <span class="bb-button__icon"><Icon name={leadingIcon} /></span>}
+      {loading ? <span class="bb-button__icon"><Spinner /></span> : leadingIcon && <span class="bb-button__icon"><Icon name={leadingIcon} /></span>}
       {children !== undefined && <span class="bb-button__label">{children}</span>}
       {trailingIcon && <span class="bb-button__icon"><Icon name={trailingIcon} /></span>}
     </button>
+  )
+}
+
+/** Loading indicator: the icon slot's size, stroked in currentColor. */
+function Spinner() {
+  return (
+    <svg class="bb-button__spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.2" />
+      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+    </svg>
   )
 }

@@ -4,17 +4,6 @@
 @import "../shared/brand/theme.css";
 @import "../shell/shell.css";
 
-/* Legacy light-surface palette still used by src/shared/ui/legacy (to be retired as Figma counterparts get bound). */
-@theme {
-  --color-success-bg: #f0fdf4;
-  --color-success-border: #bbf7d0;
-  --color-warning-bg: #fffbeb;
-  --color-warning-border: #fde68a;
-  --color-danger-bg: #fef2f2;
-  --color-danger-border: #fecaca;
-  --color-info-text: #1d4ed8;
-  --color-info-border: #bfdbfe;
-}
 
 html, body, #root { height: 100%; }
 body {
@@ -27,5 +16,5 @@ body {
 }
 
 ::-webkit-scrollbar { width: var(--bb-space-inset-xs); }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-track { background: var(--bb-surface-transparent); }
 ::-webkit-scrollbar-thumb { background: var(--bb-card-variable-border-default); border-radius: var(--bb-radius-pill); }

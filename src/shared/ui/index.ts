@@ -81,9 +81,7 @@ export type { PersonaCardProps, PersonaCardTab } from './PersonaCard/PersonaCard
 export { Icon, Mark, ICONS } from './Icon/Icon'
 export type { IconName, IconProps, IconSize, IconTone } from './Icon/Icon'
 
-// Legacy primitives without a Figma counterpart (Card, Badge, Alert, Spinner,
-// EmptyState, Divider). Input and SegmentedControl now come from their Figma
-// sets above; see docs/design-system-pipeline.md.
-export { Card, Badge, Alert, Spinner, EmptyState, Divider } from './legacy/ui'
-export type { CardProps } from './legacy/ui'
+// Token-driven but without a Figma component set yet.
+export { EmptyState } from './EmptyState/EmptyState'
+export type { EmptyStateProps } from './EmptyState/EmptyState'
 export { RpcProvider, useRpc } from './rpc-context'

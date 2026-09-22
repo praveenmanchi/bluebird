@@ -1,0 +1,18 @@
+/* Empty state — Brand tokens empty-state/* (no Figma component set yet). */
+.bb-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-empty-state-gap);
+  box-sizing: border-box;
+  padding: var(--bb-space-inset-lg);
+  border: var(--bb-border-width-default) solid var(--bb-empty-state-border-default);
+  border-radius: var(--bb-empty-state-radius);
+  background: var(--bb-empty-state-bg-default);
+  text-align: center;
+  font-family: var(--bb-empty-state-title-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-empty-state__icon.bb-icon { width: var(--bb-icon-size-lg); height: var(--bb-icon-size-lg); color: var(--bb-empty-state-hint-fg); }
+.bb-empty-state__title { margin: 0; color: var(--bb-empty-state-title-fg); font-size: var(--bb-empty-state-title-font-size); font-weight: var(--bb-empty-state-title-font-weight); line-height: var(--bb-empty-state-title-line-height); }
+.bb-empty-state__body { margin: 0; color: var(--bb-empty-state-body-fg); font-size: var(--bb-empty-state-body-font-size); line-height: var(--bb-empty-state-body-line-height); }
+.bb-empty-state__hint { margin: 0; color: var(--bb-empty-state-hint-fg); font-size: var(--bb-empty-state-hint-font-size); }

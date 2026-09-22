@@ -66,7 +66,7 @@ export function App({ client, transport }: AppProps) {
             ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} />
             : entry
               ? <entry.Tab key={entry.manifest.id} />
-              : <EmptyState icon="◌" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
+              : <EmptyState icon="inspect" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
         </main>
         <Footer size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} local={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} />
       </div>

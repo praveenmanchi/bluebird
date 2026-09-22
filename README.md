@@ -55,7 +55,6 @@ src/
     brand/                 snapshot types, extractor (runs in Figma), generated/ CSS+TS, theme.css
     figma/                 color math, chunked traversal, paint helpers
     ui/<Component>/        one folder per Figma component set: .tsx .css figma.ts .stories.tsx .test.tsx
-    ui/legacy/             primitives without a bound Figma counterpart yet
   features/<tab>/          one folder per tab — see docs/adding-a-tab.md
   shell/                   App, Banner, TabBar, persona/tab state, generated registry
   sandbox/main.ts          Figma-side entry

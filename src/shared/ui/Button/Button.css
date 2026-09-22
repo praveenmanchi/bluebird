@@ -20,7 +20,9 @@
 }
 .bb-button__label { display: inline-block; }
 .bb-button__icon { display: inline-flex; flex: none; }
-.bb-button__icon > .bb-icon { width: 100%; height: 100%; }
+.bb-button__icon > .bb-icon, .bb-button__icon > .bb-button__spinner { width: 100%; height: 100%; }
+.bb-button__spinner { animation: bb-button-spin 800ms linear infinite; } /* allow-raw: motion is not tokenised in Figma */
+@keyframes bb-button-spin { to { transform: rotate(1turn); } }
 
 /* ---------------------------------------------------------------- Primary */
 .bb-button[data-variant="primary"] {

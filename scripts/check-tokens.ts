@@ -24,7 +24,7 @@ function walkFiles(dir: string, out: string[] = []): string[] {
   if (!existsSync(dir)) return out
   for (const entry of readdirSync(dir)) {
     const p = join(dir, entry)
-    if (entry === 'legacy' || entry === 'generated') continue
+    if (entry === 'generated') continue
     if (statSync(p).isDirectory()) walkFiles(p, out)
     else out.push(p)
   }
