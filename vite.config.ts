@@ -22,7 +22,7 @@ const target = process.env.BB_TARGET === 'bridge' ? 'bridge' : 'index'
 // UI build. Produces dist/index.html (main plugin UI) and dist/bridge.html
 // (thin WebSocket bridge used in "live" dev mode). Everything is inlined:
 // Figma loads the UI from a single HTML string.
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [preact(), tailwindcss(), brandAttribute(), viteSingleFile({ removeViteModuleLoader: true })],
   resolve: {
     alias: {
@@ -30,8 +30,10 @@ export default defineConfig({
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
       '@shell': fileURLToPath(new URL('./src/shell', import.meta.url)),
       '@config': fileURLToPath(new URL('./plugin.config.json', import.meta.url)),
-      '@logos': fileURLToPath(new URL('./src/shared/ui/BrandLogo/generated.active.ts', import.meta.url)),
-      '@icons': fileURLToPath(new URL('./src/shared/ui/Icon/generated.active.ts', import.meta.url)),
+      // The dev server (and its harness) can switch brands, so it loads every logo and glyph;
+      // the plugin build ships only the active brand's logo and the referenced glyphs.
+      '@logos': fileURLToPath(new URL(command === 'serve' ? './src/shared/ui/BrandLogo/generated.ts' : './src/shared/ui/BrandLogo/generated.active.ts', import.meta.url)),
+      '@icons': fileURLToPath(new URL(command === 'serve' ? './src/shared/ui/Icon/generated.ts' : './src/shared/ui/Icon/generated.active.ts', import.meta.url)),
     },
   },
   build: {
@@ -45,4 +47,4 @@ export default defineConfig({
     },
   },
   server: { port: 5173, strictPort: true },
-})
+}))
