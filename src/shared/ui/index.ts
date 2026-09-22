@@ -1,6 +1,6 @@
 // Token-driven components (one folder each, mirrored from Figma component sets).
 export { Button } from './Button/Button'
-export type { ButtonProps, ButtonVariant } from './Button/Button'
+export type { ButtonProps, ButtonVariant, ButtonSize } from './Button/Button'
 export { Checkbox } from './Checkbox/Checkbox'
 export type { CheckboxProps, CheckboxChecked } from './Checkbox/Checkbox'
 export { MenuItem } from './MenuItem/MenuItem'

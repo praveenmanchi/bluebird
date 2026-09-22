@@ -1,7 +1,9 @@
 /* Button — Figma "Button" set (40000040:5139). Variant = Figma "Type", state
- * = Figma "State". Every value is a Brand token; hover/disabled follow the
- * Hover/Disabled variants. data-state="hover" forces the hover variant for
- * stories and visual diffs. */
+ * = Figma "State", data-size = Figma "Size" (Medium / Large). Every value is a
+ * Brand token; hover/disabled follow the Hover/Disabled variants.
+ * data-state="hover" forces the hover variant for stories and visual diffs.
+ * The set's frames are fixed at width-md / width-lg but every instance in the
+ * screens hugs its label, so the frame width is opt-in (data-width="fixed"). */
 .bb-button {
   display: inline-flex;
   align-items: center;
@@ -56,6 +58,15 @@
   cursor: not-allowed;
 }
 .bb-button[data-variant="primary"]:disabled .bb-button__icon { color: var(--bb-button-primary-icon-color-disabled); }
+.bb-button[data-variant="primary"][data-width="fixed"] { width: var(--bb-button-primary-width-md); }
+.bb-button[data-variant="primary"][data-size="lg"][data-width="fixed"] { width: var(--bb-button-primary-width-lg); }
+.bb-button[data-variant="primary"][data-size="lg"] {
+  height: var(--bb-button-primary-height-lg);
+  padding-inline: var(--bb-button-primary-padding-x-lg);
+  font-size: var(--bb-button-primary-font-size-lg);
+  line-height: var(--bb-button-primary-line-height-lg);
+}
+.bb-button[data-variant="primary"][data-size="lg"] .bb-button__icon { width: var(--bb-button-primary-icon-size-lg); height: var(--bb-button-primary-icon-size-lg); }
 
 /* -------------------------------------------------------------- Secondary */
 .bb-button[data-variant="secondary"] {
@@ -89,3 +100,12 @@
   cursor: not-allowed;
 }
 .bb-button[data-variant="secondary"]:disabled .bb-button__icon { color: var(--bb-button-secondary-icon-color-disabled); }
+.bb-button[data-variant="secondary"][data-width="fixed"] { width: var(--bb-button-secondary-width-md); }
+.bb-button[data-variant="secondary"][data-size="lg"][data-width="fixed"] { width: var(--bb-button-secondary-width-lg); }
+.bb-button[data-variant="secondary"][data-size="lg"] {
+  height: var(--bb-button-secondary-height-lg);
+  padding-inline: var(--bb-button-secondary-padding-x-lg);
+  font-size: var(--bb-button-secondary-font-size-lg);
+  line-height: var(--bb-button-secondary-line-height-lg);
+}
+.bb-button[data-variant="secondary"][data-size="lg"] .bb-button__icon { width: var(--bb-button-secondary-icon-size-lg); height: var(--bb-button-secondary-icon-size-lg); }

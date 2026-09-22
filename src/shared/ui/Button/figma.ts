@@ -3,9 +3,10 @@ export const figma = {
   setId: '40000040:5139',
   name: 'Button',
   /** Figma prop → code prop. */
-  props: { Type: 'variant', State: 'state | disabled', Label: 'children', 'Leading icon': 'leadingIcon', 'Trailing icon': 'trailingIcon' },
+  props: { Type: 'variant', State: 'state | disabled', Size: 'size (md | lg)', 'width-md / width-lg': 'width="fixed"', Label: 'children', 'Leading icon': 'leadingIcon', 'Trailing icon': 'trailingIcon' },
   /** Tokens the Figma set binds that the code deliberately does not read, with the reason. */
   figmaGaps: {
     'icon/glyph/default': 'The icon instance inside the set is bound to the generic glyph colour; code uses button/<type>/icon/color (+ -disabled), which exist in the Brand collection for this purpose. Rebind the icon vector in Figma to close the gap.',
   },
+  notes: 'Figma fixes the set frames to width-md (120) / width-lg (160) while every instance in the screens hugs its label; code hugs by default and `width="fixed"` reproduces the frame width (the variant stories use it). The Large variants do not expose the Label / icon component properties (not wired in Figma yet); code treats both sizes identically.',
 } as const

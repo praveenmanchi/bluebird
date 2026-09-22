@@ -373,4 +373,18 @@
   --bb-brand-logos: ikea;
   --bb-boader: #cccccc;
   --bb-background: #ffffff;
+  --bb-button-primary-height-lg: 40px;
+  --bb-button-primary-icon-size-lg: 20px;
+  --bb-button-primary-font-size-lg: 13px;
+  --bb-button-primary-line-height-lg: 13px;
+  --bb-button-primary-width-md: 120px;
+  --bb-button-primary-width-lg: 160px;
+  --bb-button-primary-padding-x-lg: 16px;
+  --bb-button-secondary-height-lg: 40px;
+  --bb-button-secondary-icon-size-lg: 20px;
+  --bb-button-secondary-font-size-lg: 13px;
+  --bb-button-secondary-line-height-lg: 13px;
+  --bb-button-secondary-width-md: 120px;
+  --bb-button-secondary-width-lg: 160px;
+  --bb-button-secondary-padding-x-lg: 12px;
 }

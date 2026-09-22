@@ -248,4 +248,12 @@
   --bb-size-checkbox: 16px;
   --bb-size-checkbox-mark: 10px;
   --bb-size-menu-item-height: 28px;
+  --bb-size-control-height-lg: 40px;
+  --bb-space-inset-xl: 16px;
+  --bb-size-icon-control-lg: 20px;
+  --bb-font-size-body-lg: 13px;
+  --bb-font-line-tight-lg: 13px;
+  --bb-size-control-width-md: 120px;
+  --bb-size-control-width-lg: 160px;
+  --bb-space-inset-lg-alt: 12px;
 }

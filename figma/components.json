@@ -48,19 +48,28 @@
             "Disabled"
           ],
           "default": "Default"
+        },
+        "Size": {
+          "type": "VARIANT",
+          "options": [
+            "Medium",
+            "Large"
+          ],
+          "default": "Medium"
         }
       },
       "variants": [
         {
           "id": "40000040:5103",
-          "name": "Type=Primary, State=Default",
+          "name": "Type=Primary, State=Default, Size=Medium",
           "props": {
             "Type": "Primary",
-            "State": "Default"
+            "State": "Default",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Primary, State=Default",
+              "p": "Type=Primary, State=Default, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/primary/bg/default",
@@ -69,19 +78,20 @@
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
                 "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md",
                 "height": "button/primary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  87,
+                  120,
                   32
                 ]
               }
             },
             {
-              "p": "Type=Primary, State=Default/Leading icon",
+              "p": "Type=Primary, State=Default, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -103,7 +113,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Default/Label",
+              "p": "Type=Primary, State=Default, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/primary/fg/default",
@@ -120,7 +130,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Default/Trailing icon",
+              "p": "Type=Primary, State=Default, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -146,14 +156,15 @@
         },
         {
           "id": "40000040:5110",
-          "name": "Type=Primary, State=Hover",
+          "name": "Type=Primary, State=Hover, Size=Medium",
           "props": {
             "Type": "Primary",
-            "State": "Hover"
+            "State": "Hover",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Primary, State=Hover",
+              "p": "Type=Primary, State=Hover, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/primary/bg/hover",
@@ -162,19 +173,20 @@
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
                 "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md",
                 "height": "button/primary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  87,
+                  120,
                   32
                 ]
               }
             },
             {
-              "p": "Type=Primary, State=Hover/Leading icon",
+              "p": "Type=Primary, State=Hover, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -196,7 +208,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Hover/Label",
+              "p": "Type=Primary, State=Hover, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/primary/fg/default",
@@ -213,7 +225,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Hover/Trailing icon",
+              "p": "Type=Primary, State=Hover, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -239,14 +251,15 @@
         },
         {
           "id": "40000040:5117",
-          "name": "Type=Primary, State=Disabled",
+          "name": "Type=Primary, State=Disabled, Size=Medium",
           "props": {
             "Type": "Primary",
-            "State": "Disabled"
+            "State": "Disabled",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Primary, State=Disabled",
+              "p": "Type=Primary, State=Disabled, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/primary/bg/disabled",
@@ -255,20 +268,21 @@
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
                 "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md",
                 "height": "button/primary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  87,
+                  120,
                   32
                 ],
                 "opacity": 0.55
               }
             },
             {
-              "p": "Type=Primary, State=Disabled/Leading icon",
+              "p": "Type=Primary, State=Disabled, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -290,7 +304,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Disabled/Label",
+              "p": "Type=Primary, State=Disabled, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/primary/fg/disabled",
@@ -307,7 +321,7 @@
               }
             },
             {
-              "p": "Type=Primary, State=Disabled/Trailing icon",
+              "p": "Type=Primary, State=Disabled, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/primary/icon/size",
@@ -333,14 +347,15 @@
         },
         {
           "id": "40000040:5124",
-          "name": "Type=Secondary, State=Default",
+          "name": "Type=Secondary, State=Default, Size=Medium",
           "props": {
             "Type": "Secondary",
-            "State": "Default"
+            "State": "Default",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Secondary, State=Default",
+              "p": "Type=Secondary, State=Default, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/secondary/bg/default",
@@ -349,19 +364,20 @@
                 "itemSpacing": "button/secondary/gap",
                 "paddingLeft": "button/secondary/padding-x",
                 "paddingRight": "button/secondary/padding-x",
+                "width": "button/secondary/width-md",
                 "height": "button/secondary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  79,
+                  120,
                   32
                 ]
               }
             },
             {
-              "p": "Type=Secondary, State=Default/Leading icon",
+              "p": "Type=Secondary, State=Default, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -383,7 +399,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Default/Label",
+              "p": "Type=Secondary, State=Default, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/secondary/fg/default",
@@ -400,7 +416,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Default/Trailing icon",
+              "p": "Type=Secondary, State=Default, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -426,14 +442,15 @@
         },
         {
           "id": "40000040:5131",
-          "name": "Type=Secondary, State=Hover",
+          "name": "Type=Secondary, State=Hover, Size=Medium",
           "props": {
             "Type": "Secondary",
-            "State": "Hover"
+            "State": "Hover",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Secondary, State=Hover",
+              "p": "Type=Secondary, State=Hover, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/secondary/bg/hover",
@@ -442,19 +459,20 @@
                 "itemSpacing": "button/secondary/gap",
                 "paddingLeft": "button/secondary/padding-x",
                 "paddingRight": "button/secondary/padding-x",
+                "width": "button/secondary/width-md",
                 "height": "button/secondary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  79,
+                  120,
                   32
                 ]
               }
             },
             {
-              "p": "Type=Secondary, State=Hover/Leading icon",
+              "p": "Type=Secondary, State=Hover, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -476,7 +494,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Hover/Label",
+              "p": "Type=Secondary, State=Hover, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/secondary/fg/default",
@@ -493,7 +511,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Hover/Trailing icon",
+              "p": "Type=Secondary, State=Hover, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -519,14 +537,15 @@
         },
         {
           "id": "40000040:5138",
-          "name": "Type=Secondary, State=Disabled",
+          "name": "Type=Secondary, State=Disabled, Size=Medium",
           "props": {
             "Type": "Secondary",
-            "State": "Disabled"
+            "State": "Disabled",
+            "Size": "Medium"
           },
           "nodes": [
             {
-              "p": "Type=Secondary, State=Disabled",
+              "p": "Type=Secondary, State=Disabled, Size=Medium",
               "t": "COMPONENT",
               "b": {
                 "fill": "button/secondary/bg/disabled",
@@ -535,20 +554,21 @@
                 "itemSpacing": "button/secondary/gap",
                 "paddingLeft": "button/secondary/padding-x",
                 "paddingRight": "button/secondary/padding-x",
+                "width": "button/secondary/width-md",
                 "height": "button/secondary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  79,
+                  120,
                   32
                 ],
                 "opacity": 0.55
               }
             },
             {
-              "p": "Type=Secondary, State=Disabled/Leading icon",
+              "p": "Type=Secondary, State=Disabled, Size=Medium/Leading icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -570,7 +590,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Disabled/Label",
+              "p": "Type=Secondary, State=Disabled, Size=Medium/Label",
               "t": "TEXT",
               "b": {
                 "fill": "button/secondary/fg/disabled",
@@ -587,7 +607,7 @@
               }
             },
             {
-              "p": "Type=Secondary, State=Disabled/Trailing icon",
+              "p": "Type=Secondary, State=Disabled, Size=Medium/Trailing icon",
               "t": "INSTANCE",
               "b": {
                 "width": "button/secondary/icon/size",
@@ -607,6 +627,512 @@
               "pr": {
                 "visible": "Show trailing icon",
                 "mainComponent": "Trailing icon"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4955",
+          "name": "Type=Primary, State=Default, Size=Large",
+          "props": {
+            "Type": "Primary",
+            "State": "Default",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Primary, State=Default, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/primary/bg/default",
+                "stroke": "button/primary/border/default",
+                "radius": "button/primary/radius",
+                "itemSpacing": "button/primary/gap",
+                "paddingLeft": "button/primary/padding-x-lg",
+                "paddingRight": "button/primary/padding-x-lg",
+                "width": "button/primary/width-lg",
+                "height": "button/primary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ]
+              }
+            },
+            {
+              "p": "Type=Primary, State=Default, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Default, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/primary/fg/default",
+                "fontSize": "button/primary/font/size-lg",
+                "fontFamily": "button/primary/font/family",
+                "fontWeight": "button/primary/font/weight",
+                "lineHeight": "button/primary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Default, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4960",
+          "name": "Type=Primary, State=Hover, Size=Large",
+          "props": {
+            "Type": "Primary",
+            "State": "Hover",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Primary, State=Hover, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/primary/bg/hover",
+                "stroke": "button/primary/border/hover",
+                "radius": "button/primary/radius",
+                "itemSpacing": "button/primary/gap",
+                "paddingLeft": "button/primary/padding-x-lg",
+                "paddingRight": "button/primary/padding-x-lg",
+                "width": "button/primary/width-lg",
+                "height": "button/primary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ]
+              }
+            },
+            {
+              "p": "Type=Primary, State=Hover, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Hover, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/primary/fg/default",
+                "fontSize": "button/primary/font/size-lg",
+                "fontFamily": "button/primary/font/family",
+                "fontWeight": "button/primary/font/weight",
+                "lineHeight": "button/primary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Hover, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4965",
+          "name": "Type=Primary, State=Disabled, Size=Large",
+          "props": {
+            "Type": "Primary",
+            "State": "Disabled",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Primary, State=Disabled, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/primary/bg/disabled",
+                "stroke": "button/primary/border/disabled",
+                "radius": "button/primary/radius",
+                "itemSpacing": "button/primary/gap",
+                "paddingLeft": "button/primary/padding-x-lg",
+                "paddingRight": "button/primary/padding-x-lg",
+                "width": "button/primary/width-lg",
+                "height": "button/primary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ],
+                "opacity": 0.55
+              }
+            },
+            {
+              "p": "Type=Primary, State=Disabled, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Disabled, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/primary/fg/disabled",
+                "fontSize": "button/primary/font/size-lg",
+                "fontFamily": "button/primary/font/family",
+                "fontWeight": "button/primary/font/weight",
+                "lineHeight": "button/primary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Primary, State=Disabled, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/primary/icon/size-lg",
+                "height": "button/primary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4970",
+          "name": "Type=Secondary, State=Default, Size=Large",
+          "props": {
+            "Type": "Secondary",
+            "State": "Default",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Secondary, State=Default, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/secondary/bg/default",
+                "stroke": "button/secondary/border/default",
+                "radius": "button/secondary/radius",
+                "itemSpacing": "button/secondary/gap",
+                "paddingLeft": "button/secondary/padding-x-lg",
+                "paddingRight": "button/secondary/padding-x-lg",
+                "width": "button/secondary/width-lg",
+                "height": "button/secondary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ]
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Default, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Default, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/secondary/fg/default",
+                "fontSize": "button/secondary/font/size-lg",
+                "fontFamily": "button/secondary/font/family",
+                "fontWeight": "button/secondary/font/weight",
+                "lineHeight": "button/secondary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Default, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4975",
+          "name": "Type=Secondary, State=Hover, Size=Large",
+          "props": {
+            "Type": "Secondary",
+            "State": "Hover",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Secondary, State=Hover, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/secondary/bg/hover",
+                "stroke": "button/secondary/border/hover",
+                "radius": "button/secondary/radius",
+                "itemSpacing": "button/secondary/gap",
+                "paddingLeft": "button/secondary/padding-x-lg",
+                "paddingRight": "button/secondary/padding-x-lg",
+                "width": "button/secondary/width-lg",
+                "height": "button/secondary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ]
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Hover, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Hover, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/secondary/fg/default",
+                "fontSize": "button/secondary/font/size-lg",
+                "fontFamily": "button/secondary/font/family",
+                "fontWeight": "button/secondary/font/weight",
+                "lineHeight": "button/secondary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Hover, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000112:4980",
+          "name": "Type=Secondary, State=Disabled, Size=Large",
+          "props": {
+            "Type": "Secondary",
+            "State": "Disabled",
+            "Size": "Large"
+          },
+          "nodes": [
+            {
+              "p": "Type=Secondary, State=Disabled, Size=Large",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "button/secondary/bg/disabled",
+                "stroke": "button/secondary/border/disabled",
+                "radius": "button/secondary/radius",
+                "itemSpacing": "button/secondary/gap",
+                "paddingLeft": "button/secondary/padding-x-lg",
+                "paddingRight": "button/secondary/padding-x-lg",
+                "width": "button/secondary/width-lg",
+                "height": "button/secondary/height-lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "size": [
+                  160,
+                  40
+                ],
+                "opacity": 0.55
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Disabled, Size=Large/Leading icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ]
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Disabled, Size=Large/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "button/secondary/fg/disabled",
+                "fontSize": "button/secondary/font/size-lg",
+                "fontFamily": "button/secondary/font/family",
+                "fontWeight": "button/secondary/font/weight",
+                "lineHeight": "button/secondary/line-height-lg"
+              },
+              "r": {
+                "text": "Button"
+              }
+            },
+            {
+              "p": "Type=Secondary, State=Disabled, Size=Large/Trailing icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "button/secondary/icon/size-lg",
+                "height": "button/secondary/icon/size-lg"
+              },
+              "r": {
+                "size": [
+                  20,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Tab Icon=Variables <Tab Icons>",
+              "cp": {
+                "Tab Icon": "Variables"
               }
             }
           ]

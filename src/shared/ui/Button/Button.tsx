@@ -3,10 +3,15 @@ import { Icon, type IconName } from '../Icon/Icon'
 import './Button.css'
 
 export type ButtonVariant = 'primary' | 'secondary'
+export type ButtonSize = 'md' | 'lg'
 
 export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'icon'> {
   /** Figma "Type". */
   variant?: ButtonVariant
+  /** Figma "Size": Medium (default) or Large. */
+  size?: ButtonSize
+  /** Figma fixes the set's frames at width-md / width-lg while instances hug their label. `fixed` reproduces the frame width. */
+  width?: 'hug' | 'fixed'
   /** Figma "Leading icon" (+ "Show leading icon" when set). */
   leadingIcon?: IconName
   /** Figma "Trailing icon" (+ "Show trailing icon" when set). */
@@ -19,8 +24,8 @@ export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonEle
   children?: ComponentChildren
 }
 
-/** Figma "Button" (40000040:5139): Primary / Secondary × Default / Hover / Disabled. */
-export function Button({ variant = 'primary', leadingIcon, trailingIcon, loading = false, state, disabled, children, class: cls, type = 'button', ...rest }: ButtonProps) {
+/** Figma "Button" (40000040:5139): Primary / Secondary × Default / Hover / Disabled × Medium / Large. */
+export function Button({ variant = 'primary', size = 'md', width = 'hug', leadingIcon, trailingIcon, loading = false, state, disabled, children, class: cls, type = 'button', ...rest }: ButtonProps) {
   return (
     <button
       {...rest}
@@ -28,6 +33,8 @@ export function Button({ variant = 'primary', leadingIcon, trailingIcon, loading
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       data-variant={variant}
+      data-size={size}
+      data-width={width}
       data-state={state}
       class={`bb-button ${cls ?? ''}`}
     >
