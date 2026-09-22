@@ -15,6 +15,7 @@
   font-family: var(--bb-section-header-title-font-family), ui-sans-serif, system-ui, sans-serif;
 }
 .bb-section-header__logo {
+  color: var(--bb-icon-glyph-default); /* override on the (monochrome) logo glyph */
   display: block;
   flex: none;
   width: var(--bb-section-header-logo-size);

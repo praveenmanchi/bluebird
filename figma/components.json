@@ -4,7 +4,7 @@
   "id": "40000008:9592",
   "name": "Components"
  },
- "pulledAt": "2026-09-21",
+ "pulledAt": "2026-09-22",
  "$comment": "sets[]: node-level variable bindings for the token-bound component sets. Each node: p=path, t=type, b=bound properties → Brand variable name, r=raw (unbound) values, i=instance of, pr=component property refs, cp=instance property overrides. coverage[]: bound-vs-raw audit of every component on the page. status: built = code component exists and the drift gate enforces its bindings; planned = mapped only (see docs/figma-token-mapping.md).",
  "sets": [
   {
@@ -4124,6 +4124,33 @@
         "Language": "- (Default)",
         "Size": "Default"
        }
+      },
+      {
+       "p": "Property 1=Auditory/Disabilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "counterAxisSizingMode",
+        "fills",
+        "layoutAlign",
+        "layoutGrow",
+        "primaryAxisAlignItems",
+        "primaryAxisSizingMode",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=Auditory/Disabilities/Icon/ear-hearing/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4169,6 +4196,16 @@
         ]
        },
        "i": "head-cog"
+      },
+      {
+       "p": "Property 1=Cognitive/head-cog/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4214,6 +4251,16 @@
         ]
        },
        "i": "human"
+      },
+      {
+       "p": "Property 1=Physical/human/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4262,6 +4309,33 @@
         "Language": "- (Default)",
         "Size": "Default"
        }
+      },
+      {
+       "p": "Property 1=Visual/Disabilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "counterAxisSizingMode",
+        "fills",
+        "layoutAlign",
+        "layoutGrow",
+        "primaryAxisAlignItems",
+        "primaryAxisSizingMode",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=Visual/Disabilities/Icon/eye/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4308,6 +4382,28 @@
         "Language": "- (Default)",
         "Size": "Default"
        }
+      },
+      {
+       "p": "Property 1=Code/Responsibilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=Code/Responsibilities/Icon/xml/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4353,6 +4449,16 @@
         ]
        },
        "i": "file-document"
+      },
+      {
+       "p": "Property 1=Content/file-document/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -4399,6 +4505,33 @@
         "Language": "- (Default)",
         "Size": "Default"
        }
+      },
+      {
+       "p": "Property 1=Design/Responsibilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "counterAxisSizingMode",
+        "fills",
+        "layoutAlign",
+        "layoutGrow",
+        "primaryAxisAlignItems",
+        "primaryAxisSizingMode",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=Design/Responsibilities/Icon/pencil-ruler/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -4913,7 +5046,7 @@
        "p": "size expander",
        "t": "COMPONENT",
        "b": {
-        "fill": "status-pill/fg/default"
+        "fill": "Background"
        },
        "r": {
         "radius": 4,
@@ -4952,6 +5085,18 @@
        }
       },
       {
+       "p": "size expander/Frame 1430102614/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "status-pill/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "textAlignHorizontal"
+       ]
+      },
+      {
        "p": "size expander/Frame 1430102615",
        "t": "INSTANCE",
        "b": {},
@@ -4974,6 +5119,23 @@
        }
       },
       {
+       "p": "size expander/Frame 1430102615/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "status-pill/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments",
+        "textAlignHorizontal"
+       ],
+       "r": {
+        "text": "M"
+       }
+      },
+      {
        "p": "size expander/Frame 1430102616",
        "t": "INSTANCE",
        "b": {},
@@ -4993,6 +5155,23 @@
        "i": "Property 1=Default <Frame 1430102613>",
        "cp": {
         "Property 1": "Default"
+       }
+      },
+      {
+       "p": "size expander/Frame 1430102616/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "status-pill/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments",
+        "textAlignHorizontal"
+       ],
+       "r": {
+        "text": "S"
        }
       }
      ]
@@ -5105,6 +5284,18 @@
        "pr": {
         "characters": "Text"
        }
+      },
+      {
+       "p": "Filiters/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "chip-filter/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
       }
      ]
     }
@@ -5187,6 +5378,16 @@
         "font": "Inter",
         "style": "Regular"
        }
+      },
+      {
+       "p": "info/Component/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -5738,6 +5939,16 @@
          5.1
         ]
        }
+      },
+      {
+       "p": "pages/Button/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "chip-filter/fg/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -5920,6 +6131,35 @@
         "Language": "EN",
         "Attribute": "Theme/Forms"
        }
+      },
+      {
+       "p": "Property 1=Forms/Icon/form-textbox-password/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Forms/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
+       }
       }
      ]
     },
@@ -5986,6 +6226,35 @@
        "cp": {
         "Language": "EN",
         "Attribute": "Theme/Gestures"
+       }
+      },
+      {
+       "p": "Property 1=Gestures/Icon/gesture-double-tap/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Gestures/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
        }
       }
      ]
@@ -6054,6 +6323,35 @@
         "Language": "EN",
         "Attribute": "Theme/Keyboard"
        }
+      },
+      {
+       "p": "Property 1=Keyboard/Icon/keyboard/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Keyboard/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
+       }
       }
      ]
     },
@@ -6120,6 +6418,35 @@
        "cp": {
         "Language": "EN",
         "Attribute": "Theme/Sensory"
+       }
+      },
+      {
+       "p": "Property 1=Sensory/Icon/motion-sensor/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Sensory/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
        }
       }
      ]
@@ -6188,6 +6515,35 @@
         "Language": "EN",
         "Attribute": "Theme/Site"
        }
+      },
+      {
+       "p": "Property 1=Whole Site/Icon/sitemap/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Whole Site/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
+       }
       }
      ]
     },
@@ -6255,6 +6611,35 @@
         "Language": "EN",
         "Attribute": "Theme/Wording"
        }
+      },
+      {
+       "p": "Property 1=Wording/Icon/text-box/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Wording/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
+       }
       }
      ]
     },
@@ -6321,6 +6706,35 @@
        "cp": {
         "Language": "EN",
         "Attribute": "Theme/Zoom"
+       }
+      },
+      {
+       "p": "Property 1=Zoom and Legibility/Icon/magnify-plus/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Zoom and Legibility/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "theme-card/icon/color"
+       },
+       "o": [
+        "fills",
+        "fontName",
+        "fontSize",
+        "lineHeight",
+        "textStyleId"
+       ],
+       "r": {
+        "fontSize": 9.75,
+        "font": "Inter",
+        "style": "Semi Bold"
        }
       }
      ]
@@ -6582,6 +6996,18 @@
        "pr": {
         "characters": "Label"
        }
+      },
+      {
+       "p": "Property 1=Default/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
       }
      ]
     },
@@ -6664,6 +7090,16 @@
        "pr": {
         "characters": "Label"
        }
+      },
+      {
+       "p": "Property 1=Variant3/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -6736,6 +7172,18 @@
        "pr": {
         "characters": "Label"
        }
+      },
+      {
+       "p": "Property 1=Active/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
       }
      ]
     }
@@ -6854,6 +7302,28 @@
          4.8
         ]
        }
+      },
+      {
+       "p": "Property 1=Default/component/Mask group/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "chip-filter/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=Default/component/Mask group/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "chip-filter/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
       }
      ]
     }
@@ -6948,6 +7418,16 @@
         "fill": "#b3b3b3",
         "text": "JSON"
        }
+      },
+      {
+       "p": "Property 1=Default/Container/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -7021,6 +7501,16 @@
        "pr": {
         "characters": "Select Text"
        }
+      },
+      {
+       "p": "Property 1=Selected/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -7159,6 +7649,70 @@
         "Select Text": "Label",
         "Property 1": "Default"
        }
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Container/JSON",
+       "t": "TEXT",
+       "b": {},
+       "o": [
+        "characters",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Debug"
+       }
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Container/JSON",
+       "t": "TEXT",
+       "b": {},
+       "o": [
+        "characters",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Visualization"
+       }
+      },
+      {
+       "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -7233,6 +7787,28 @@
        "cp": {
         "Select Text": "Label",
         "Property 1": "Default"
+       }
+      },
+      {
+       "p": "Property 1=2 level/Tab selecters/Container/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=2 level/Tab selecters/Container/JSON",
+       "t": "TEXT",
+       "b": {},
+       "o": [
+        "characters",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Debug"
        }
       }
      ]
@@ -7614,6 +8190,28 @@
         "visible": "Buttom Text",
         "characters": "Buttom Text "
        }
+      },
+      {
+       "p": "Input Box/Frame 1430102645/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "input/icon/color"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Input Box/Frame 1430102646/Background+Border/eye/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "input/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -7858,6 +8456,27 @@
        "pr": {
         "visible": "Toggle"
        }
+      },
+      {
+       "p": "settings page title/brands/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "settings page title/Switch/Switch",
+       "t": "FRAME",
+       "b": {
+        "fill": "toggle/knob/bg"
+       },
+       "o": [
+        "fillStyleId",
+        "fills"
+       ]
       }
      ]
     }
@@ -7966,6 +8585,17 @@
         "Title": "No",
         "Copy": "No"
        }
+      },
+      {
+       "p": "Toggle/Frame 1430102650/Switch/Switch",
+       "t": "FRAME",
+       "b": {
+        "fill": "toggle/knob/bg"
+       },
+       "o": [
+        "fillStyleId",
+        "fills"
+       ]
       }
      ]
     }
@@ -8497,6 +9127,243 @@
          2.4
         ]
        }
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102682/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102682/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102682/Buttom Status/Value",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102683/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102683/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102683/Buttom Status/Value",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102684/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102684/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Frame 1430102684/Buttom Status/Value",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Buttom Status/Status error icons/Group/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "connection/icon/ok"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102623/Buttom Status/Value",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102621/Component/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/muted"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102621/20m",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102621/|",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102621/V2.11.0",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614",
+       "t": "INSTANCE",
+       "b": {
+        "fill": "app-header/bg/default",
+        "radius": "footer/segment/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "name"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "textAlignHorizontal"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102615",
+       "t": "INSTANCE",
+       "b": {
+        "radius": "footer/segment/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102615/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102616",
+       "t": "INSTANCE",
+       "b": {
+        "radius": "footer/segment/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius"
+       ]
+      },
+      {
+       "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102616/L",
+       "t": "TEXT",
+       "b": {
+        "fill": "footer/fg/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
       }
      ]
     }
@@ -9444,6 +10311,216 @@
          164
         ]
        }
+      },
+      {
+       "p": "WCAG Card/Container/Rating/A",
+       "t": "TEXT",
+       "b": {
+        "fill": "wcag-card/title/fg"
+       },
+       "o": [
+        "annotations",
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Icon/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Principle/Text/Perceivable",
+       "t": "TEXT",
+       "b": {
+        "fill": "wcag-card/title/fg"
+       },
+       "o": [
+        "annotations",
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default",
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon/ear-hearing/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/head-cog/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/human/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon",
+       "t": "FRAME",
+       "b": {
+        "fill": "icon/glyph/default",
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon/eye/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13/Icon/form-textbox-password/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "rating/bg/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14/Icon/gesture-double-tap/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "rating/bg/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15/Icon/keyboard/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "disability-indicator/icon/color"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15/String Translations/String",
+       "t": "TEXT",
+       "b": {
+        "fill": "rating/bg/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -9676,6 +10753,28 @@
         "fill": "#ffffff",
         "text": "Built with Care by the Gap Design System",
         "fontSize": 10
+       }
+      },
+      {
+       "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102658/Fabric Logo /Logo - Text/FABRIC",
+       "t": "TEXT",
+       "b": {},
+       "o": [
+        "fills"
+       ],
+       "r": {
+        "fill": "#ffffff"
+       }
+      },
+      {
+       "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102658/Fabric Logo /Logo - Text/DESIGN SYSTEM",
+       "t": "TEXT",
+       "b": {},
+       "o": [
+        "fills"
+       ],
+       "r": {
+        "fill": "#ffffff"
        }
       }
      ]
@@ -10225,6 +11324,120 @@
         "Label": "Change Log",
         "Property 1": "Default"
        }
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon",
+       "t": "BOOLEAN_OPERATION",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon/Union",
+       "t": "BOOLEAN_OPERATION",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon/Union/Rectangle 3257",
+       "t": "VECTOR",
+       "b": {
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "strokes"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon/Vector 3420",
+       "t": "VECTOR",
+       "b": {
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "strokes"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon/Union/Vector 3423",
+       "t": "VECTOR",
+       "b": {
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "strokes"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Icon/Union/Vector 3424",
+       "t": "VECTOR",
+       "b": {
+        "stroke": "icon/glyph/default"
+       },
+       "o": [
+        "strokes"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Navbar/Tab/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "tab/icon/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -10419,6 +11632,80 @@
        "cp": {
         "Tab Icon": "Dropdown- down"
        }
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102566/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102567/Frame 1430102562/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Usage No."
+       }
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102567/Frame 1430102562/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102567/Frame 1430102562/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102567/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=variable/Frame 1430102567/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     },
@@ -10594,6 +11881,80 @@
        "cp": {
         "Tab Icon": "Dropdown- down"
        }
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102566/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102567/Frame 1430102562/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Usage No."
+       }
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102567/Frame 1430102562/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102567/Frame 1430102562/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102567/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Property 1=text style/Frame 1430102567/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
       }
      ]
     }
@@ -11398,6 +12759,544 @@
        "cp": {
         "Tab Icon": "show"
        }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills",
+        "opacity"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102576/Frame 1430102568/Frame 1430102562/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Usage No."
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102576/Frame 1430102568/Frame 1430102562/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102576/Frame 1430102568/Frame 1430102562/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102576/Frame 1430102568/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102562/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Total No. of Usage No."
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102562/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102562/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "Total No. of Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame/Frame 1430102678/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102559/multiple component 3/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102679/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": " Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102679/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102679/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102590/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102559/multiple component 3/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102679/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": " Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102679/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102679/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "52 "
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102597/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102559/multiple component 3/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102679/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": " Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102679/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102679/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "52 "
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102598/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102559/multiple component 3/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102679/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": " Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102679/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102679/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102596/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102559/multiple component 3/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102679/Frame 1430102572/Frame 1430102559/Updated",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": " Nodes  Using"
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102679/Frame 1430102572/Frame 1430102560",
+       "t": "FRAME",
+       "b": {
+        "fill": "badge-count/bg/default",
+        "stroke": "badge-count/border/default",
+        "radius": "badge-count/radius"
+       },
+       "o": [
+        "boundVariables",
+        "cornerRadius",
+        "fills",
+        "strokes"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102679/Frame 1430102572/Frame 1430102560/52",
+       "t": "TEXT",
+       "b": {
+        "fill": "card-variable/title/fg"
+       },
+       "o": [
+        "boundVariables",
+        "characters",
+        "fills",
+        "styledTextSegments"
+       ],
+       "r": {
+        "text": "52 "
+       }
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
+      },
+      {
+       "p": "Variable search card expand/Frame 1430102599/Frame 1430102679/Tab Icons/Vector",
+       "t": "VECTOR",
+       "b": {
+        "fill": "icon/glyph/default"
+       },
+       "o": [
+        "boundVariables",
+        "fills"
+       ]
       }
      ]
     }

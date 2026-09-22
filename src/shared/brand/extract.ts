@@ -110,6 +110,22 @@ function firstVisible<T extends { visible?: boolean }>(paints: readonly T[] | Pl
   return Array.isArray(paints) ? paints.find((p) => p.visible !== false) : undefined
 }
 
+/** Figma `overriddenFields` names → the snapshot keys they affect (b + r). */
+const OVERRIDE_KEYS: Record<string, string[]> = {
+  fills: ['fill'], strokes: ['stroke'], strokeWeight: ['strokeWeight'],
+  cornerRadius: ['radius'], topLeftRadius: ['radius'], topRightRadius: ['radius'], bottomLeftRadius: ['radius'], bottomRightRadius: ['radius'],
+  itemSpacing: ['itemSpacing'], paddingLeft: ['paddingLeft'], paddingRight: ['paddingRight'], paddingTop: ['paddingTop'], paddingBottom: ['paddingBottom'],
+  width: ['width', 'size'], height: ['height', 'size'], opacity: ['opacity'], visible: ['hidden'],
+  characters: ['text'], fontSize: ['fontSize'], fontName: ['font', 'style'], fontFamily: ['font'], fontWeight: ['style'], lineHeight: ['lineHeightPx', 'lineHeightPercent'],
+  componentProperties: ['cp'], mainComponent: ['i'],
+}
+
+function paintHex(paint: Paint): string | undefined {
+  if (paint.type !== 'SOLID' || !paint.color) return undefined
+  const alpha = paint.opacity ?? 1
+  return rgbaToHex({ ...paint.color, a: alpha })
+}
+
 function describeNode(index: VariableIndex, node: SceneNode, path: string): SnapNode {
   const bv = (node.boundVariables ?? {}) as Record<string, Bound>
   const b: Record<string, string> = {}
@@ -118,17 +134,20 @@ function describeNode(index: VariableIndex, node: SceneNode, path: string): Snap
 
   if ('fills' in node) {
     const fill = firstVisible(node.fills as readonly Paint[])
-    if (fill) { const n = boundName(index, (fill as SolidPaint).boundVariables?.color); if (n) b.fill = n; else if (fill.type === 'SOLID') r.fill = 'RAW' }
+    if (fill) { const n = boundName(index, (fill as SolidPaint).boundVariables?.color); if (n) b.fill = n; else { const hex = paintHex(fill); if (hex) r.fill = hex } }
   }
   if ('strokes' in node) {
     const stroke = firstVisible(node.strokes)
     if (stroke) {
-      const n = boundName(index, (stroke as SolidPaint).boundVariables?.color); if (n) b.stroke = n; else r.stroke = 'RAW'
+      const n = boundName(index, (stroke as SolidPaint).boundVariables?.color); if (n) b.stroke = n; else { const hex = paintHex(stroke); if (hex) r.stroke = hex }
       const w = boundName(index, bv.strokeWeight); if (w) b.strokeWeight = w; else if (typeof node.strokeWeight === 'number') r.strokeWeight = node.strokeWeight
     }
   }
   if ('cornerRadius' in node && node.cornerRadius !== 0) {
-    const n = boundName(index, bv.topLeftRadius); if (n) b.radius = n; else r.radius = node.cornerRadius
+    const n = boundName(index, bv.topLeftRadius)
+    if (n) b.radius = n
+    else if (typeof node.cornerRadius === 'number') r.radius = node.cornerRadius
+    else if ('topLeftRadius' in node) r.radius = [node.topLeftRadius, node.topRightRadius, node.bottomRightRadius, node.bottomLeftRadius]
   }
   if ('layoutMode' in node && node.layoutMode !== 'NONE') {
     r.layout = [node.layoutMode, node.primaryAxisAlignItems, node.counterAxisAlignItems, node.layoutSizingHorizontal, node.layoutSizingVertical].join(' ')
@@ -138,12 +157,16 @@ function describeNode(index: VariableIndex, node: SceneNode, path: string): Snap
   }
   bind('width', boundName(index, bv.width))
   bind('height', boundName(index, bv.height))
-  if (node.type !== 'TEXT') r.size = [Math.round(node.width), Math.round(node.height)]
+  if (node.type !== 'TEXT') r.size = [Math.round(node.width * 10) / 10, Math.round(node.height * 10) / 10]
   if (node.type === 'TEXT') {
     r.text = node.characters
     for (const k of ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight'] as const) bind(k, boundName(index, bv[k]))
     if (!bv.fontSize && typeof node.fontSize === 'number') r.fontSize = node.fontSize
-    if (!bv.fontFamily && typeof node.fontName === 'object') r.font = `${node.fontName.family} ${node.fontName.style}`
+    if (!bv.fontFamily && typeof node.fontName === 'object') { r.font = node.fontName.family; r.style = node.fontName.style }
+    if (!bv.lineHeight && typeof node.lineHeight === 'object') {
+      if (node.lineHeight.unit === 'PIXELS') r.lineHeightPx = node.lineHeight.value
+      else if (node.lineHeight.unit === 'PERCENT') r.lineHeightPercent = node.lineHeight.value
+    }
   }
   if ('opacity' in node && node.opacity !== 1) r.opacity = Math.round(node.opacity * 100) / 100
   if (!node.visible) r.hidden = true
@@ -164,11 +187,35 @@ function describeNode(index: VariableIndex, node: SceneNode, path: string): Snap
   return entry
 }
 
+/** Keep only the b/r keys that the instance actually overrides, so override nodes carry overrides and nothing else. */
+function pruneToOverrides(entry: SnapNode, fields: readonly string[]): SnapNode {
+  const keep = new Set(fields.flatMap((f) => OVERRIDE_KEYS[f] ?? []))
+  const b = Object.fromEntries(Object.entries(entry.b).filter(([k]) => keep.has(k)))
+  const r = Object.fromEntries(Object.entries(entry.r ?? {}).filter(([k]) => keep.has(k)))
+  const out: SnapNode = { p: entry.p, t: entry.t, b, o: [...fields] }
+  if (Object.keys(r).length) out.r = r
+  if (keep.has('i') && entry.i) out.i = entry.i
+  if (keep.has('cp') && entry.cp) out.cp = entry.cp
+  return out
+}
+
 function walk(index: VariableIndex, node: SceneNode, path: string, out: SnapNode[]): void {
   const p = path ? `${path}/${node.name}` : node.name
   out.push(describeNode(index, node, p))
-  // Instances belong to their own component set; record them as references only.
-  if ('children' in node && node.type !== 'INSTANCE') for (const child of node.children) walk(index, child, p, out)
+  if (!('children' in node)) return
+  if (node.type !== 'INSTANCE') { for (const child of node.children) walk(index, child, p, out); return }
+  // Instances belong to their own component set. Record only what this
+  // instance overrides on its descendants (fills, radii, text…), flagged `o`,
+  // so the generator can emit derived tokens for the overridden values.
+  const overrides = new Map<string, readonly string[]>()
+  for (const ov of node.overrides ?? []) if (ov.id !== node.id) overrides.set(ov.id, ov.overriddenFields)
+  if (overrides.size === 0) return
+  const visit = (child: SceneNode, childPath: string) => {
+    const fields = overrides.get(child.id)
+    if (fields && fields.length) out.push(pruneToOverrides(describeNode(index, child, childPath), fields))
+    if ('children' in child) for (const grand of child.children) visit(grand, `${childPath}/${grand.name}`)
+  }
+  for (const child of node.children) visit(child, `${p}/${child.name}`)
 }
 
 function propDefinitions(node: ComponentNode | ComponentSetNode): ComponentSetSnapshot['props'] {

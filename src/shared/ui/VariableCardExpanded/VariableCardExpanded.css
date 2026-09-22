@@ -137,3 +137,9 @@
   outline: var(--bb-border-width-default) solid var(--bb-border-focus);
   outline-offset: var(--bb-space-inset-xs);
 }
+/* Figma overrides the count square inside the change-status instance to the count-badge tokens. */
+.bb-variable-card-expanded__chip .bb-change-status__count {
+  background: var(--bb-badge-count-bg-default);
+  border: var(--bb-border-width-default) solid var(--bb-badge-count-border-default);
+  border-radius: var(--bb-badge-count-radius);
+}

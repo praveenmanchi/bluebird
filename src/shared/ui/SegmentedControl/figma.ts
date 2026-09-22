@@ -3,6 +3,9 @@ export const figma = {
   setId: '308:51205',
   name: 'Group Tab selecters',
   props: { 'Property 1': 'options.length (4 level = 4 options, 2 level = 2 options)', 'Tab selecters › Select Text': 'options[]', 'Tab selecters › Property 1=Selected': 'value' },
-  figmaGaps: {},
+  figmaGaps: {
+    'tab/icon/default': 'consumed by the composed SegmentTab (glyph fill override on each Tab Icons instance)',
+    'icon/glyph/muted': 'Figma overrides the unselected segments’ glyphs to the muted glyph colour; SegmentTab renders one icon colour and dims unselected segments through tab/fg/default instead.',
+  },
   notes: 'Track fill (#383838) and stroke (#ffffff33) are raw in Figma → derived tokens; bind to color/neutral/400 and a new border variable to close the gap. Segment visuals come from SegmentTab.',
 } as const

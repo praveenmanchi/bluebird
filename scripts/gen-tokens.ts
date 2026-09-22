@@ -148,7 +148,8 @@ export function derivedDeclarations(components: ComponentsSnapshot): Declaration
       const instancePaths = new Set(variant.nodes.filter((n) => n.t === 'INSTANCE').map((n) => n.p))
       for (const node of variant.nodes) {
         const isRoot = !node.p.includes('/')
-        if ([...instancePaths].some((ip) => node.p.startsWith(`${ip}/`))) continue
+        // Layers inside an instance belong to their own set — unless this set overrides them (`o`), in which case the overridden values are this set's design.
+        if (!node.o && [...instancePaths].some((ip) => node.p.startsWith(`${ip}/`))) continue
         const leaf = isRoot ? 'root' : tokenKeyFromVariableName(node.p.split('/').pop() ?? '')
         for (const [prop, value] of rawDeclarationsFor(node)) {
           const key = `${leaf}|${prop}`

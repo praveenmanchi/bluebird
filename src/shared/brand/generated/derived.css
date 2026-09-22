@@ -419,6 +419,8 @@
   --bb-derived-tab-uxai-as-assister-font-weight: 500;
   --bb-derived-team-banner-built-with-care-by-the-gap-design-system-team-color: #ffffff;
   --bb-derived-team-banner-built-with-care-by-the-gap-design-system-team-font-size: 10px;
+  --bb-derived-team-banner-design-system-color: #ffffff;
+  --bb-derived-team-banner-fabric-color: #ffffff;
   --bb-derived-team-banner-frame-1430102640-gap: 7px;
   --bb-derived-team-banner-frame-1430102641-gap: 2px;
   --bb-derived-team-banner-frame-1430102643-gap: 16px;
@@ -467,6 +469,9 @@
   --bb-derived-theme-chip-root-property-1-zoom-and-legibility-width: 119.8px;
   --bb-derived-theme-chip-root-radius: 2.786px;
   --bb-derived-theme-chip-root-stroke-width: 0.696px;
+  --bb-derived-theme-chip-string-font-family: "Inter";
+  --bb-derived-theme-chip-string-font-size: 9.75px;
+  --bb-derived-theme-chip-string-font-weight: 600;
   --bb-derived-toggle-frame-1430102650-gap: 55px;
   --bb-derived-toggle-label-font-family: "Inter";
   --bb-derived-toggle-label-font-weight: 500;

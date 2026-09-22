@@ -1,7 +1,7 @@
 /* Size expander — Figma "size expander" set (133:1628). Three SizeStep
  * ("Frame 1430102613") instances in a padded pill. Figma binds only
- * status-pill/fg/default (as the root fill — read here as the step text
- * colour); geometry is raw → --bb-derived-size-expander-*. The Variant2 step
+ * Background (root fill) and status-pill/fg/default (step text, an instance
+ * override on each L/M/S text); geometry is raw → --bb-derived-size-expander-*. The Variant2 step
  * fill is the color/neutral/655 primitive. */
 .bb-size-expander {
   display: inline-flex;
@@ -10,7 +10,7 @@
   gap: var(--bb-derived-size-expander-root-gap);
   padding: var(--bb-derived-size-expander-root-padding-top) var(--bb-derived-size-expander-root-padding-right) var(--bb-derived-size-expander-root-padding-bottom) var(--bb-derived-size-expander-root-padding-left);
   border-radius: var(--bb-derived-size-expander-root-radius);
-  background: var(--bb-surface-transparent);
+  background: var(--bb-background);
   color: var(--bb-status-pill-fg-default);
 }
 .bb-size-expander__step {

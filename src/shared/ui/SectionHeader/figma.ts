@@ -10,7 +10,9 @@ export const figma = {
     'brands (Property 1)': 'logo',
     Toggle: 'toggle (+ checked / onToggle)',
   },
-  figmaGaps: {},
+  figmaGaps: {
+    'toggle/knob/bg': 'consumed by the composed Toggle (knob fill override on the Switch instance)',
+  },
   notes: [
     'The Switch instance is hidden by default in Figma; `toggle` defaults to false accordingly and renders the composed Toggle.',
     'The Figma instance is "Property 1=githib" (typo in the design file); code maps it to the `github` artwork.',

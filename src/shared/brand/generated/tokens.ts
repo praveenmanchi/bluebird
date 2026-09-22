@@ -698,6 +698,8 @@ export const TOKEN_NAMES = [
   "--bb-derived-tab-uxai-as-assister-font-weight",
   "--bb-derived-team-banner-built-with-care-by-the-gap-design-system-team-color",
   "--bb-derived-team-banner-built-with-care-by-the-gap-design-system-team-font-size",
+  "--bb-derived-team-banner-design-system-color",
+  "--bb-derived-team-banner-fabric-color",
   "--bb-derived-team-banner-frame-1430102640-gap",
   "--bb-derived-team-banner-frame-1430102641-gap",
   "--bb-derived-team-banner-frame-1430102643-gap",
@@ -746,6 +748,9 @@ export const TOKEN_NAMES = [
   "--bb-derived-theme-chip-root-property-1-zoom-and-legibility-width",
   "--bb-derived-theme-chip-root-radius",
   "--bb-derived-theme-chip-root-stroke-width",
+  "--bb-derived-theme-chip-string-font-family",
+  "--bb-derived-theme-chip-string-font-size",
+  "--bb-derived-theme-chip-string-font-weight",
   "--bb-derived-toggle-frame-1430102650-gap",
   "--bb-derived-toggle-label-font-family",
   "--bb-derived-toggle-label-font-weight",
@@ -1431,6 +1436,7 @@ export const COMPONENT_TOKENS = {
   DisabilityIndicator: [
     "--bb-disability-indicator-border-default",
     "--bb-disability-indicator-gap",
+    "--bb-disability-indicator-icon-color",
     "--bb-disability-indicator-icon-size",
     "--bb-icon-glyph-default",
   ],
@@ -1449,6 +1455,7 @@ export const COMPONENT_TOKENS = {
     "--bb-status-pill-gap",
   ],
   SizeExpander: [
+    "--bb-background",
     "--bb-status-pill-fg-default",
   ],
   Chip: [
@@ -1462,6 +1469,7 @@ export const COMPONENT_TOKENS = {
     "--bb-chip-filter-padding-x",
   ],
   InfoMeta: [
+    "--bb-icon-glyph-muted",
     "--bb-status-pill-fg-default",
     "--bb-status-pill-font-size",
     "--bb-status-pill-gap",
@@ -1485,6 +1493,7 @@ export const COMPONENT_TOKENS = {
   ThemeChip: [
     "--bb-icon-glyph-default",
     "--bb-theme-card-border-default",
+    "--bb-theme-card-icon-color",
     "--bb-theme-card-icon-size",
   ],
   SelectField: [
@@ -1506,6 +1515,7 @@ export const COMPONENT_TOKENS = {
     "--bb-tab-fg-default",
     "--bb-tab-font-size",
     "--bb-tab-gap",
+    "--bb-tab-icon-default",
     "--bb-tab-indicator-color",
     "--bb-tab-line-height",
     "--bb-tab-padding-x",
@@ -1528,9 +1538,12 @@ export const COMPONENT_TOKENS = {
     "--bb-chip-filter-gap",
     "--bb-chip-filter-line-height",
     "--bb-tab-fg-default",
+    "--bb-tab-icon-default",
   ],
   SegmentedControl: [
     "--bb-chip-filter-radius",
+    "--bb-icon-glyph-muted",
+    "--bb-tab-icon-default",
   ],
   Input: [
     "--bb-input-bg-default",
@@ -1541,6 +1554,7 @@ export const COMPONENT_TOKENS = {
     "--bb-input-font-size",
     "--bb-input-font-weight",
     "--bb-input-gap-label",
+    "--bb-input-icon-color",
     "--bb-input-label-font-family",
     "--bb-input-label-font-size",
     "--bb-input-label-font-weight",
@@ -1559,17 +1573,20 @@ export const COMPONENT_TOKENS = {
     "--bb-search-bar-radius",
   ],
   SectionHeader: [
+    "--bb-icon-glyph-default",
     "--bb-section-header-description-fg",
     "--bb-section-header-description-font-size",
     "--bb-section-header-gap",
     "--bb-section-header-title-fg",
     "--bb-section-header-title-font-size",
+    "--bb-toggle-knob-bg",
     "--bb-toggle-track-bg-on",
   ],
   Toggle: [
     "--bb-toggle-description-fg",
     "--bb-toggle-description-font-size",
     "--bb-toggle-gap",
+    "--bb-toggle-knob-bg",
     "--bb-toggle-label-fg",
     "--bb-toggle-label-font-size",
     "--bb-toggle-track-bg-on",
@@ -1589,8 +1606,11 @@ export const COMPONENT_TOKENS = {
     "--bb-button-secondary-radius",
   ],
   Footer: [
+    "--bb-app-header-bg-default",
+    "--bb-connection-icon-ok",
     "--bb-footer-bg-default",
     "--bb-footer-border-top",
+    "--bb-footer-fg-default",
     "--bb-footer-padding-x",
     "--bb-footer-padding-y",
     "--bb-footer-segment-radius",
@@ -1603,6 +1623,7 @@ export const COMPONENT_TOKENS = {
     "--bb-disability-indicator-icon-color",
     "--bb-icon-glyph-default",
     "--bb-principle-perceivable-bg",
+    "--bb-rating-bg-default",
     "--bb-rating-padding",
     "--bb-rating-radius",
     "--bb-theme-card-border-default",
@@ -1625,11 +1646,16 @@ export const COMPONENT_TOKENS = {
     "--bb-tab-padding-y",
   ],
   Navbar: [
+    "--bb-icon-glyph-default",
     "--bb-tab-gap",
+    "--bb-tab-icon-default",
     "--bb-tab-padding-x",
     "--bb-tab-padding-y",
   ],
   VariableCard: [
+    "--bb-badge-count-bg-default",
+    "--bb-badge-count-border-default",
+    "--bb-badge-count-radius",
     "--bb-card-variable-border-default",
     "--bb-card-variable-meta-font-size",
     "--bb-card-variable-meta-line-height",
@@ -1639,8 +1665,12 @@ export const COMPONENT_TOKENS = {
     "--bb-card-variable-title-font-size",
     "--bb-card-variable-title-font-weight",
     "--bb-card-variable-title-line-height",
+    "--bb-icon-glyph-default",
   ],
   VariableCardExpanded: [
+    "--bb-badge-count-bg-default",
+    "--bb-badge-count-border-default",
+    "--bb-badge-count-radius",
     "--bb-card-variable-border-default",
     "--bb-card-variable-meta-font-size",
     "--bb-card-variable-meta-line-height",
@@ -1649,6 +1679,7 @@ export const COMPONENT_TOKENS = {
     "--bb-card-variable-title-font-size",
     "--bb-card-variable-title-font-weight",
     "--bb-card-variable-title-line-height",
+    "--bb-icon-glyph-default",
   ],
 } as const
 export type ComponentCode = keyof typeof COMPONENT_TOKENS

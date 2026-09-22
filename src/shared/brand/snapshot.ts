@@ -45,6 +45,8 @@ export interface ComponentNode {
   pr?: Record<string, string>
   /** Instance property overrides. */
   cp?: Record<string, unknown>
+  /** Present on descendants of an instance: the fields this instance overrides on that layer (Figma `overriddenFields`). */
+  o?: string[]
 }
 
 export interface ComponentVariant {
