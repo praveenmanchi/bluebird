@@ -2,7 +2,8 @@ import type { JSX } from 'preact'
 import './SizeExpander.css'
 
 export type SizeExpanderValue = 'S' | 'M' | 'L'
-export const SIZE_EXPANDER_STEPS: readonly SizeExpanderValue[] = ['S', 'M', 'L']
+/** Figma order, left to right: L · M · S. */
+export const SIZE_EXPANDER_STEPS: readonly SizeExpanderValue[] = ['L', 'M', 'S']
 
 export interface SizeExpanderProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** Figma "size expander" is three "Frame 1430102613" (SizeStep) instances; the active step maps to its Variant2 (filled) state. */

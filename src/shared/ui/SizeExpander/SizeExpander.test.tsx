@@ -6,7 +6,7 @@ describe('SizeExpander', () => {
   it('renders three size steps as a labelled radiogroup', () => {
     render(<SizeExpander />)
     expect(screen.getByRole('radiogroup', { name: 'Plugin size' })).toBeInTheDocument()
-    expect(screen.getAllByRole('radio').map((r) => r.textContent)).toEqual(['S', 'M', 'L'])
+    expect(screen.getAllByRole('radio').map((r) => r.textContent)).toEqual(['L', 'M', 'S'])
   })
   it('marks the active step through aria-checked and data-selected', () => {
     render(<SizeExpander value="L" />)

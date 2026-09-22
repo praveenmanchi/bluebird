@@ -53,10 +53,23 @@
   align-items: flex-end;
   gap: var(--bb-derived-footer-frame-1430102622-gap);
 }
+/* The size expander instance is overridden in the footer (Figma 133:1629):
+ * raised field surface with a hairline border, and each step a filled pill —
+ * brand blue when active, strong-border grey otherwise. */
 .bb-footer__size {
   border-radius: var(--bb-footer-segment-radius);
   padding-left: var(--bb-footer-padding-x);
   padding-right: var(--bb-footer-padding-x);
+  background: var(--bb-surface-field);
+  box-shadow: inset 0 0 0 var(--bb-border-width-hairline) var(--bb-border-default);
+}
+.bb-footer__size .bb-size-expander__step {
+  border-radius: var(--bb-footer-segment-radius);
+  background: var(--bb-border-strong);
+  color: var(--bb-text-primary);
+}
+.bb-footer__size .bb-size-expander__step[data-selected] {
+  background: var(--bb-surface-brand-banner);
 }
 .bb-footer__expand {
   display: inline-flex;
@@ -84,7 +97,6 @@
   flex: none;
   width: var(--bb-derived-footer-container-width);
   height: var(--bb-derived-footer-container-height);
-  color: var(--bb-icon-glyph-default);
-  opacity: var(--bb-derived-footer-container-opacity);
+  color: var(--bb-icon-glyph-default); /* the 0.3 group opacity is part of the exported glyph */
 }
 .bb-footer__grip > .bb-icon { width: 100%; height: 100%; }
