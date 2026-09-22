@@ -1,4 +1,4 @@
-import { Button, WcagCard, useRpc } from '@shared/ui'
+import { WcagCard, useRpc } from '@shared/ui'
 import { MSG, type ContrastIssue } from '../messages'
 
 /** WCAG criterion a contrast issue is reported against. `fail` breaks 1.4.3 (AA); everything else below AAA breaks 1.4.6. */
@@ -28,15 +28,16 @@ export function IssueCard({ issue }: { issue: ContrastIssue }) {
       disabilities={['visual']}
       node={`${issue.name} [TEXT]`}
       colors={{ fg: issue.foreground, bg: issue.background }}
+      actual={`${issue.ratio.toFixed(2)}:1`}
+      required={`${c.needs}:1 (${c.rating})`}
       whyItFails={`“${issue.text || issue.name}” (${issue.fontSize}px${issue.isBold ? ' bold' : ''}) measures ${issue.ratio.toFixed(2)}:1 against its background; ${c.rating} needs ${c.needs}:1.`}
       howToFix={`Darken the text or lighten the fill until the ratio reaches ${c.needs}:1, or increase the type size so the large-text threshold applies.`}
       themes={['zoom']}
-      preview={(
-        <div class="bb-a11y__preview">
-          <span class="bb-a11y__sample" style={{ color: issue.foreground, background: issue.background }} aria-hidden="true">{issue.text || 'Aa'}</span>
-          <Button variant="secondary" onClick={focus}>Select layer</Button>
-        </div>
-      )}
+      link={{ label: `Understanding SC ${c.code} ↗`, href: `https://www.w3.org/WAI/WCAG22/Understanding/${c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced'}.html` }}
+      sampleText={issue.text || 'Aa'}
+      ratio={{ value: `${issue.ratio.toFixed(2)}:1`, requirement: `needs ${c.needs}:1` }}
+      checks={['design']}
+      onSelect={focus}
     />
   )
 }

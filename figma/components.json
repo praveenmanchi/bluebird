@@ -11416,6 +11416,30 @@
         "How ti fix": {
           "type": "TEXT",
           "default": "Descripition"
+        },
+        "WCAG": {
+          "type": "TEXT",
+          "default": "Value"
+        },
+        "Actual": {
+          "type": "TEXT",
+          "default": "Value"
+        },
+        "Requried": {
+          "type": "TEXT",
+          "default": "Value"
+        },
+        "Check content": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "check code": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "check Design": {
+          "type": "BOOLEAN",
+          "default": true
         }
       },
       "variants": [
@@ -11437,12 +11461,12 @@
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   465,
-                  433
+                  576
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container",
+              "p": "WCAG Card/Header",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11453,12 +11477,12 @@
                 "paddingBottom": 2,
                 "size": [
                   463,
-                  30
+                  34
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Rating",
+              "p": "WCAG Card/Header/Rating",
               "t": "INSTANCE",
               "b": {
                 "fill": "disability-indicator/icon/color",
@@ -11479,7 +11503,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Rating/A",
+              "p": "WCAG Card/Header/Rating/A",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11491,19 +11515,13 @@
               ]
             },
             {
-              "p": "WCAG Card/Container/Principle",
+              "p": "WCAG Card/Header/Principle",
               "t": "INSTANCE",
               "b": {
                 "fill": "principle/perceivable/bg",
                 "paddingRight": "wcag-card/padding"
               },
               "r": {
-                "radius": [
-                  0,
-                  0,
-                  12,
-                  0
-                ],
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 6,
                 "paddingLeft": 10,
@@ -11520,15 +11538,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Principle/Icon",
-              "t": "FRAME",
-              "b": {},
-              "o": [
-                "boundVariables"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
+              "p": "WCAG Card/Header/Principle/Icon/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -11538,65 +11548,7 @@
               ]
             },
             {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Icon/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Text",
-              "t": "FRAME",
-              "b": {},
-              "o": [
-                "boundVariables"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Principle/Text/Perceivable",
+              "p": "WCAG Card/Header/Principle/Text/Perceivable",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11608,7 +11560,7 @@
               ]
             },
             {
-              "p": "WCAG Card/Container",
+              "p": "WCAG Card/Body",
               "t": "FRAME",
               "b": {
                 "paddingLeft": "wcag-card/padding",
@@ -11616,81 +11568,85 @@
                 "paddingTop": "rating/padding"
               },
               "r": {
-                "layout": "VERTICAL MIN MIN FILL HUG",
+                "layout": "VERTICAL MIN MIN FILL FIXED",
                 "itemSpacing": 4,
                 "size": [
                   463,
-                  401
+                  497
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Container",
-              "t": "FRAME",
-              "b": {
-                "itemSpacing": "wcag-card/gap"
-              },
-              "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
-                "size": [
-                  437,
-                  30
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Container/Text",
+              "p": "WCAG Card/Body/Summary",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 108,
                 "size": [
-                  37,
-                  16
+                  437,
+                  32
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Text/1.4.3",
+              "p": "WCAG Card/Body/Summary/Criterion",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 7,
+                "size": [
+                  217,
+                  32
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Summary/Criterion/Value",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "1.4.3",
-                "fontSize": 16,
+                "text": "Value",
+                "fontSize": 24,
                 "font": "Inter",
-                "style": "Black",
-                "lineHeightPx": 16
+                "style": "Bold",
+                "lineHeightPx": 32
+              },
+              "pr": {
+                "characters": "WCAG"
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531",
+              "p": "WCAG Card/Body/Summary/Criterion/Disabilities",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL CENTER MIN FIXED HUG",
-                "itemSpacing": 16,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  163,
+                  144,
                   30
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator",
+              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.6428571343421936,
-                "radius": 2.5,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
-                "paddingLeft": 2.5714285373687744,
-                "paddingRight": 2.5714285373687744,
-                "paddingTop": 2.5714285373687744,
-                "paddingBottom": 2.5714285373687744,
+                "strokeWeight": 0.643,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.571,
+                "paddingRight": 2.571,
+                "paddingTop": 2.571,
+                "paddingBottom": 2.571,
                 "size": [
                   30,
                   30
@@ -11705,51 +11661,20 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities",
-              "t": "INSTANCE",
-              "b": {},
-              "o": [
-                "boundVariables"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default",
-                "stroke": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "fills",
-                "strokes"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon/ear-hearing/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator",
+              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.6428571343421936,
-                "radius": 2.5,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
-                "paddingLeft": 2.5714285373687744,
-                "paddingRight": 2.5714285373687744,
-                "paddingTop": 2.5714285373687744,
-                "paddingBottom": 2.5714285373687744,
+                "strokeWeight": 0.643,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.571,
+                "paddingRight": 2.571,
+                "paddingTop": 2.571,
+                "paddingBottom": 2.571,
                 "size": [
                   30,
                   30
@@ -11764,30 +11689,20 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/head-cog/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator",
+              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.6428571343421936,
-                "radius": 2.5,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
-                "paddingLeft": 2.5714285373687744,
-                "paddingRight": 2.5714285373687744,
-                "paddingTop": 2.5714285373687744,
-                "paddingBottom": 2.5714285373687744,
+                "strokeWeight": 0.643,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.571,
+                "paddingRight": 2.571,
+                "paddingTop": 2.571,
+                "paddingBottom": 2.571,
                 "size": [
                   30,
                   30
@@ -11802,32 +11717,23 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/human/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator",
+              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.6428571343421936,
-                "radius": 2.5,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
-                "paddingLeft": 2.5714285373687744,
-                "paddingRight": 2.5714285373687744,
-                "paddingTop": 2.5714285373687744,
-                "paddingBottom": 2.5714285373687744,
+                "strokeWeight": 0.643,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.571,
+                "paddingRight": 2.571,
+                "paddingTop": 2.571,
+                "paddingBottom": 2.571,
                 "size": [
-                  16.9,
-                  16.9
+                  30,
+                  30
                 ]
               },
               "i": "Property 1=Visual <Disability Indicator>",
@@ -11839,51 +11745,20 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities",
-              "t": "INSTANCE",
-              "b": {},
-              "o": [
-                "boundVariables"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default",
-                "stroke": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "fills",
-                "strokes"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Frame 1430102531/Disability Indicator/Disabilities/Icon/eye/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Container/Text",
+              "p": "WCAG Card/Body/Summary/Reference",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER FIXED FIXED",
                 "itemSpacing": 10,
                 "size": [
-                  223,
-                  14
+                  112,
+                  32
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Container/Text/Understanding SC 1.4.3 ↗",
+              "p": "WCAG Card/Body/Summary/Reference/Understanding SC",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11897,21 +11772,21 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532",
+              "p": "WCAG Card/Body/Sections",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "wcag-card/gap"
               },
               "r": {
-                "layout": "VERTICAL MIN MIN FILL FIXED",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "size": [
                   437,
-                  363
+                  393.7
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102533",
+              "p": "WCAG Card/Body/Sections/Heading",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11924,7 +11799,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102533/Container",
+              "p": "WCAG Card/Body/Sections/Heading/Title box",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11938,7 +11813,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102533/Container/Contrast (Minimum)",
+              "p": "WCAG Card/Body/Sections/Heading/Title box/Contrast (Minimum)",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11952,7 +11827,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102533/Container",
+              "p": "WCAG Card/Body/Sections/Heading/Description box",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11966,7 +11841,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102533/Container/A visible indicator must show which element is currently focused when navigating with a keyboard.",
+              "p": "WCAG Card/Body/Sections/Heading/Description box/Description",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11980,7 +11855,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Line 61",
+              "p": "WCAG Card/Body/Sections/Line 61",
               "t": "LINE",
               "b": {
                 "stroke": "wcag-card/divider/color"
@@ -11994,7 +11869,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680",
+              "p": "WCAG Card/Body/Sections/Details",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12004,39 +11879,39 @@
                 "paddingBottom": 2,
                 "size": [
                   437,
-                  120.7
+                  168.7
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container",
+              "p": "WCAG Card/Body/Sections/Details/Row Node",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN HUG FIXED",
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  115,
-                  19
+                  437,
+                  18
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row Node/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
                 "layout": "GRID MIN MIN FIXED FILL",
                 "size": [
                   80,
-                  15
+                  14
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Node",
+              "p": "WCAG Card/Body/Sections/Details/Row Node/Row label/Node",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12046,23 +11921,23 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.600000381469727
+                "lineHeightPx": 12.6
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row Node/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN HUG FILL",
+                "layout": "GRID MIN MIN FIXED HUG",
                 "size": [
-                  31,
-                  15
+                  355,
+                  14
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Label",
+              "p": "WCAG Card/Body/Sections/Details/Row Node/Row value/Value",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12079,181 +11954,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container",
-              "t": "FRAME",
-              "b": {
-                "paddingTop": "rating/padding"
-              },
-              "r": {
-                "layout": "HORIZONTAL MIN MIN HUG FIXED",
-                "itemSpacing": 4,
-                "size": [
-                  214,
-                  16.6
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "GRID MIN MIN FIXED FILL",
-                "size": [
-                  80,
-                  12.6
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Colors",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "Colors",
-                "fontSize": 9,
-                "font": "Inter",
-                "style": "Semi Bold",
-                "lineHeightPx": 12.600000381469727
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "GRID MIN MIN HUG HUG",
-                "size": [
-                  130,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
-                "itemSpacing": 2,
-                "size": [
-                  130,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Text",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "fill": "#8fb7e8",
-                "stroke": "#ffffff4d",
-                "strokeWeight": 1,
-                "radius": 2,
-                "size": [
-                  12,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
-                "size": [
-                  43,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container/#8FB7E8",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "#8FB7E8",
-                "fontSize": 10,
-                "font": "Cousine",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
-                "size": [
-                  12,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container/on",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "on",
-                "fontSize": 10,
-                "font": "Inter",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Text",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "fill": "#0c8ce9",
-                "stroke": "#ffffff4d",
-                "strokeWeight": 1,
-                "radius": 2,
-                "size": [
-                  12,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
-                "size": [
-                  43,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Container/Container/#0C8CE9",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "#0C8CE9",
-                "fontSize": 10,
-                "font": "Cousine",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container",
+              "p": "WCAG Card/Body/Sections/Details/Row Actual",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -12268,7 +11969,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12280,21 +11981,21 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Why it fails",
+              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row label/Actual",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "Why it fails",
+                "text": "Actual",
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.600000381469727
+                "lineHeightPx": 12.6
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12306,7 +12007,147 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Body text must reach a 4.5:1 contrast ratio agains",
+              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row value/Value",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Value",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              },
+              "pr": {
+                "characters": "Actual"
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Required",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Required/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Required/Row label/Required",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Required",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Required/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED HUG",
+                "size": [
+                  355,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Required/Row value/Value",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Value",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              },
+              "pr": {
+                "characters": "Requried"
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Why it fails",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row label/Why it fails",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Why it fails",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED HUG",
+                "size": [
+                  355,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row value/Value",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12323,34 +12164,34 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container",
+              "p": "WCAG Card/Body/Sections/Details/Row How to fix",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  136,
-                  17.5
+                  437,
+                  18
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN FIXED FIXED",
+                "layout": "GRID MIN MIN FIXED FILL",
                 "size": [
                   80,
-                  13.5
+                  14
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/How to fix",
+              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row label/How to fix",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12360,23 +12201,23 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.600000381469727
+                "lineHeightPx": 12.6
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN HUG FIXED",
+                "layout": "GRID MIN MIN FIXED HUG",
                 "size": [
-                  52,
-                  13.5
+                  355,
+                  14
                 ]
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/Use white label text or darken the fill to reach 4",
+              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row value/Value",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12393,7 +12234,145 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container",
+              "p": "WCAG Card/Body/Sections/Details/Row Colors",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG FIXED",
+                "itemSpacing": 4,
+                "size": [
+                  214,
+                  16.6
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  12.6
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row label/Colors",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Colors",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN HUG HUG",
+                "size": [
+                  130,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 2,
+                "size": [
+                  130,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Swatch fg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg/#8FB7E8",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#8FB7E8",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/On/on",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "on",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Swatch bg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg/#0C8CE9",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#0C8CE9",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Sections/Details/Row Themes",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12406,7 +12385,7 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12418,21 +12397,21 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Text/How to fix",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Row label/Themes",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
               },
               "r": {
-                "text": "How to fix",
+                "text": "Themes",
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.600000381469727
+                "lineHeightPx": 12.6
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12445,178 +12424,476 @@
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 13",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.6964285969734192,
-                "radius": 2.7857143878936768,
+                "strokeWeight": 0.696,
+                "radius": 2.786,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.7857143878936768,
-                "paddingLeft": 5.5714287757873535,
-                "paddingRight": 5.5714287757873535,
-                "paddingTop": 2.7857143878936768,
-                "paddingBottom": 2.7857143878936768,
+                "itemSpacing": 2.786,
+                "paddingLeft": 5.571,
+                "paddingRight": 5.571,
+                "paddingTop": 2.786,
+                "paddingBottom": 2.786,
                 "size": [
                   75,
                   21.6
                 ]
               },
-              "i": "Property 1=Forms <Theme>",
+              "i": "Theme type=Forms <Theme>",
               "cp": {
-                "Property 1": "Forms"
+                "Theme type": "Forms"
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13/Icon/form-textbox-password",
-              "t": "INSTANCE",
-              "b": {},
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13/Icon/form-textbox-password/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 13/String Translations/String",
-              "t": "TEXT",
-              "b": {
-                "fill": "rating/bg/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 14",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.6964285969734192,
-                "radius": 2.7857143878936768,
+                "strokeWeight": 0.696,
+                "radius": 2.786,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.7857143878936768,
-                "paddingLeft": 5.5714287757873535,
-                "paddingRight": 5.5714287757873535,
-                "paddingTop": 2.7857143878936768,
-                "paddingBottom": 2.7857143878936768,
+                "itemSpacing": 2.786,
+                "paddingLeft": 5.571,
+                "paddingRight": 5.571,
+                "paddingTop": 2.786,
+                "paddingBottom": 2.786,
                 "size": [
                   75,
                   21.6
                 ]
               },
-              "i": "Property 1=Gestures <Theme>",
+              "i": "Theme type=Gestures <Theme>",
               "cp": {
-                "Property 1": "Gestures"
+                "Theme type": "Gestures"
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14/Icon/gesture-double-tap",
-              "t": "INSTANCE",
-              "b": {},
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14/Icon/gesture-double-tap/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 14/String Translations/String",
-              "t": "TEXT",
-              "b": {
-                "fill": "rating/bg/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15",
+              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 15",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.6964285969734192,
-                "radius": 2.7857143878936768,
+                "strokeWeight": 0.696,
+                "radius": 2.786,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.7857143878936768,
-                "paddingLeft": 5.5714287757873535,
-                "paddingRight": 5.5714287757873535,
-                "paddingTop": 2.7857143878936768,
-                "paddingBottom": 2.7857143878936768,
+                "itemSpacing": 2.786,
+                "paddingLeft": 5.571,
+                "paddingRight": 5.571,
+                "paddingTop": 2.786,
+                "paddingBottom": 2.786,
                 "size": [
                   75,
                   21.6
                 ]
               },
-              "i": "Property 1=Keyboard <Theme>",
+              "i": "Theme type=Keyboard <Theme>",
               "cp": {
-                "Property 1": "Keyboard"
+                "Theme type": "Keyboard"
               }
             },
             {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15/Icon/keyboard",
-              "t": "INSTANCE",
-              "b": {},
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15/Icon/keyboard/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "disability-indicator/icon/color"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Frame 1430102680/Container/Frame 1430102681/Component 15/String Translations/String",
-              "t": "TEXT",
-              "b": {
-                "fill": "rating/bg/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "p": "WCAG Card/Container/Frame 1430102532/Rectangle 3475057",
+              "p": "WCAG Card/Body/Sections/Placeholder",
               "t": "RECTANGLE",
               "b": {
-                "fill": "empty-state/bg/default",
                 "radius": "rating/radius"
               },
               "r": {
+                "fill": "#3a3939",
                 "size": [
                   437,
                   164
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN CENTER FILL HUG",
+                "paddingTop": 4,
+                "size": [
+                  437,
+                  46.9
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER FILL HUG",
+                "itemSpacing": 20,
+                "size": [
+                  437,
+                  42.9
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Sample",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#444444",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
+                "itemSpacing": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "paddingTop": 10,
+                "paddingBottom": 10,
+                "size": [
+                  301,
+                  42.9
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Sample/Sample text/Aa",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "text": "Aa",
+                "fontSize": 20,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 20
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Sample/Sample text/Sample caption box/Caption",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "text": "Sample of this exact pair",
+                "fontSize": 11,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 15.4
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Ratio",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "radius": 4,
+                "layout": "HORIZONTAL MIN CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  116,
+                  42
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Ratio/Ratio mark/✕",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#b91c1c",
+                "text": "✕",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 14
+              }
+            },
+            {
+              "p": "WCAG Card/Body/Preview/Preview row/Ratio/Ratio value",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#000000",
+                "text": "2.4:1 · needs 4.5:1",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 14
+              }
+            },
+            {
+              "p": "WCAG Card/Footer",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#2c2c2c",
+                "stroke": "#444444",
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 4,
+                "paddingLeft": 10,
+                "paddingRight": 10,
+                "paddingTop": 8,
+                "paddingBottom": 8,
+                "size": [
+                  463,
+                  43
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  58,
+                  13
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check label/Check With :",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#f5f5f5",
+                "text": "Check With :",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check icons",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "itemSpacing": 8.421,
+                "size": [
+                  80,
+                  21.1
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451,
+                "radius": 2.105,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.805,
+                "paddingRight": 1.805,
+                "paddingTop": 1.805,
+                "paddingBottom": 1.805,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Content <Disability Indicator>",
+              "cp": {
+                "Property 1": "Content"
+              },
+              "pr": {
+                "visible": "Check content"
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451,
+                "radius": 2.105,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.805,
+                "paddingRight": 1.805,
+                "paddingTop": 1.805,
+                "paddingBottom": 1.805,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Design <Disability Indicator>",
+              "cp": {
+                "Property 1": "Design"
+              },
+              "pr": {
+                "visible": "check Design"
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451,
+                "radius": 2.105,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.805,
+                "paddingRight": 1.805,
+                "paddingTop": 1.805,
+                "paddingBottom": 1.805,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Code <Disability Indicator>",
+              "cp": {
+                "Property 1": "Code"
+              },
+              "pr": {
+                "visible": "check code"
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Spacer",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  142,
+                  0
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Ignore button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "stroke": "#757575",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  46,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Ignore button/Ignore",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#f5f5f5",
+                "text": "Ignore",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Annotation button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#0c8ce9",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  67,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Annotation button/Annotation",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "text": "Annotation",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.6
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Select button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#0c8ce9",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  30,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Select button/Icon",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              }
+            },
+            {
+              "p": "WCAG Card/Footer/Select button/Icon/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  12,
+                  12
                 ]
               }
             }
