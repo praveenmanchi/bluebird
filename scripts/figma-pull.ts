@@ -46,7 +46,7 @@ function write(rel: string, data: unknown) {
 function pullPlugin(): Promise<Snapshot> {
   const tokenIdx = args.indexOf('--token')
   const token = tokenIdx >= 0 ? args[tokenIdx + 1] : undefined
-  const url = new URL('ws://127.0.0.1:4001')
+  const url = new URL('ws://localhost:4001')
   url.searchParams.set('role', 'browser')
   if (token) url.searchParams.set('token', token)
   return new Promise((resolvePromise, reject) => {

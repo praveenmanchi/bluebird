@@ -1,6 +1,6 @@
 // Local WebSocket relay for live mode.
 //   browser UI (role=browser)  ⇄  relay  ⇄  bridge page inside Figma (role=figma)
-// Binds to 127.0.0.1 only. Optional shared token: `npm run dev:relay -- --token abc`.
+// Binds to localhost only (clients dial ws://localhost:4001 — Figma's manifest validator rejects IP-form ws URLs). Optional shared token: `npm run dev:relay -- --token abc`.
 import { WebSocketServer, WebSocket } from 'ws'
 import { randomBytes } from 'node:crypto'
 
@@ -12,10 +12,10 @@ const token = tokenIndex >= 0 ? (args[tokenIndex + 1] ?? randomBytes(6).toString
 type Role = 'browser' | 'figma'
 const peers: Record<Role, WebSocket | null> = { browser: null, figma: null }
 
-const wss = new WebSocketServer({ host: '127.0.0.1', port: PORT })
+const wss = new WebSocketServer({ host: 'localhost', port: PORT })
 
 wss.on('connection', (socket, request) => {
-  const url = new URL(request.url ?? '/', `http://127.0.0.1:${PORT}`)
+  const url = new URL(request.url ?? '/', `http://localhost:${PORT}`)
   const role = url.searchParams.get('role')
   if (role !== 'browser' && role !== 'figma') return socket.close(4000, 'role must be browser or figma')
   if (token && url.searchParams.get('token') !== token) return socket.close(4001, 'bad token')
@@ -36,7 +36,7 @@ wss.on('connection', (socket, request) => {
   })
 })
 
-console.log(`[relay] ws://127.0.0.1:${PORT}${token ? `  token=${token}` : '  (no token)'}`)
+console.log(`[relay] ws://localhost:${PORT}${token ? `  token=${token}` : '  (no token)'}`)
 console.log('[relay] 1. In Figma: Plugins → Development → bluebird → "Dev: connect to browser"')
 console.log(`[relay] 2. In browser: http://localhost:5173/?mode=live${token ? `&token=${token}` : ''}`)
 

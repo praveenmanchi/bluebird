@@ -22,7 +22,7 @@ function createTransport(mode: Mode): Transport {
   if (mode === 'figma') return createPostMessageTransport()
   if (mode === 'live') {
     const token = new URLSearchParams(location.search).get('token') ?? undefined
-    return createWebSocketTransport({ url: 'ws://127.0.0.1:4001', role: 'browser', token })
+    return createWebSocketTransport({ url: 'ws://localhost:4001', role: 'browser', token })
   }
   return createMockTransport(mockHandlers)
 }

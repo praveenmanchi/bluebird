@@ -33,8 +33,7 @@
     ],
     "devAllowedDomains": [
       "http://localhost:5173",
-      "ws://localhost:4001",
-      "ws://127.0.0.1:4001"
+      "ws://localhost:4001"
     ],
     "reasoning": "Loads the Noto Sans web font used by the brand type ramp."
   }

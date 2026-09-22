@@ -9,7 +9,7 @@ const tokenEl = document.getElementById('token') as HTMLInputElement
 const connectEl = document.getElementById('connect') as HTMLButtonElement
 
 function connect(token: string | undefined) {
-  const ws = createWebSocketTransport({ url: 'ws://127.0.0.1:4001', role: 'figma', token })
+  const ws = createWebSocketTransport({ url: 'ws://localhost:4001', role: 'figma', token })
   ws.onStatus?.((s: TransportStatus) => {
     statusEl.textContent = s
     statusEl.dataset.status = s
