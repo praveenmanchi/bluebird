@@ -8,5 +8,5 @@ export const brand = activeBrand(config)
 export { loadConfig, resolvePersonas, activeBrand, ConfigError } from './load'
 export type { PluginConfig, BrandConfig, PersonaConfig, TabConfig } from './schema'
 export type { ResolvedTab, ResolvedPersona } from './load'
-export { WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_MAX, clampWindow, presetFor } from './window'
+export { WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor } from './window'
 export type { WindowPreset, WindowSize } from './window'

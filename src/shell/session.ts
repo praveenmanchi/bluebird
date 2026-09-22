@@ -2,7 +2,7 @@
 // session:* handlers and swaps the brand (data-brand + resolved tokens).
 import type { RpcClient } from '@shared/bridge'
 import { applyTokens, clearTokens, type BrandTokensResult } from '@shared/brand'
-import { config, personas, WINDOW_PRESETS } from '@shared/config'
+import { config, personas, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
 import { SESSION_MSG, type Session } from '@shared/session'
 import { brandStatus, screen, session, selectPersona, windowSize } from './state'
 
@@ -46,8 +46,8 @@ export async function logout(client: RpcClient): Promise<void> {
 export async function reset(client: RpcClient): Promise<void> {
   await client.call(SESSION_MSG.reset)
   selectPersona(personas.find((p) => p.id === config.activePersona)?.id ?? personas[0]?.id ?? '')
-  windowSize.value = WINDOW_PRESETS.S
-  void client.call('shell:resize', WINDOW_PRESETS.S).catch(() => undefined)
+  windowSize.value = WINDOW_PRESETS[WINDOW_DEFAULT]
+  void client.call('shell:resize', WINDOW_PRESETS[WINDOW_DEFAULT]).catch(() => undefined)
   leave()
 }
 

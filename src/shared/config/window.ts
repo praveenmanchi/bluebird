@@ -11,6 +11,9 @@ export const WINDOW_PRESETS: Record<WindowPreset, WindowSize> = {
 }
 
 /** S is the minimum; the expand button jumps to the maximum. */
+/** Window the plugin opens with (and returns to after a reset / expand-restore). */
+export const WINDOW_DEFAULT: WindowPreset = 'M'
+
 export const WINDOW_BOUNDS = { minWidth: 360, maxWidth: 760, minHeight: 480, maxHeight: 960 } as const
 export const WINDOW_MAX: WindowSize = { width: WINDOW_BOUNDS.maxWidth, height: WINDOW_BOUNDS.maxHeight }
 

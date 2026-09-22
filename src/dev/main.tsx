@@ -4,7 +4,7 @@
 import { render } from 'preact'
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { BRANDS, BRAND_LABELS, type BrandId } from '@shared/brand'
-import { brand as activeBrand, personas, WINDOW_PRESETS, WINDOW_BOUNDS, clampWindow, presetFor, type WindowSize } from '@shared/config'
+import { brand as activeBrand, personas, WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_DEFAULT, clampWindow, presetFor, type WindowSize } from '@shared/config'
 import { readDevParams, SCENARIOS, SCENARIO_LABELS, type Scenario } from '../ui/dev-params'
 import type { TransportStatus } from '@shared/bridge'
 import './harness.css'
@@ -18,7 +18,7 @@ function Harness() {
   const [scenario, setScenario] = useState<Scenario>(initial.scenario)
   const [persona, setPersona] = useState(initial.persona ?? personas[0]?.id ?? '')
   const [status, setStatus] = useState<TransportStatus>(initial.status)
-  const [size, setSize] = useState<WindowSize>(WINDOW_PRESETS.S)
+  const [size, setSize] = useState<WindowSize>(WINDOW_PRESETS[WINDOW_DEFAULT])
   const [reloadKey, setReloadKey] = useState(0)
 
   // The framed plugin sends shell:resize through the mock transport → bb:resize here.

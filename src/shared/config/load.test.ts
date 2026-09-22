@@ -17,7 +17,7 @@ const valid = {
 describe('loadConfig', () => {
   it('accepts a valid config and applies defaults', () => {
     const config = loadConfig(valid)
-    expect(config.window).toEqual({ width: 360, height: 480 })
+    expect(config.window).toEqual({ width: 480, height: 640 })
     expect(config.tabs.off?.icon).toBe('circle')
   })
 

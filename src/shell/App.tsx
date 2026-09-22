@@ -8,7 +8,7 @@ import { activeTabId, brandStatus, connection, screen, session, windowSize } fro
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
 import { bootSession, login, logout, reset } from './session'
-import { WINDOW_PRESETS, WINDOW_MAX, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
+import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 
 export interface AppProps { client: RpcClient; transport: Transport }
 
@@ -34,7 +34,7 @@ export function App({ client, transport }: AppProps) {
   }
   const onPreset = (preset: WindowPreset) => { beforeExpand.current = null; resize(WINDOW_PRESETS[preset]) }
   const onExpand = () => {
-    if (isMax) { resize(beforeExpand.current ?? WINDOW_PRESETS.S); beforeExpand.current = null; return }
+    if (isMax) { resize(beforeExpand.current ?? WINDOW_PRESETS[WINDOW_DEFAULT]); beforeExpand.current = null; return }
     beforeExpand.current = size
     resize(WINDOW_MAX)
   }
