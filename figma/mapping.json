@@ -7,7 +7,7 @@
       "name": "Button",
       "tier": "Molecules",
       "variants": 6,
-      "coverage": 93,
+      "coverage": 94,
       "bound": [
         "button/primary/bg/default",
         "button/primary/bg/disabled",
@@ -80,7 +80,7 @@
       "name": "Checkbox",
       "tier": "Atoms",
       "variants": 9,
-      "coverage": 82,
+      "coverage": 87,
       "bound": [
         "checkbox/box/bg/checked",
         "checkbox/box/bg/disabled",
@@ -200,7 +200,7 @@
       "name": "Dropdown",
       "tier": "Organisms",
       "variants": 8,
-      "coverage": 90,
+      "coverage": 93,
       "bound": [
         "dropdown/bg/default",
         "dropdown/bg/disabled",
@@ -258,9 +258,15 @@
       "name": "Dropdown menu",
       "tier": "Organisms",
       "variants": 1,
-      "coverage": 90,
+      "coverage": 97,
       "bound": [
         "menu/divider/color",
+        "menu/item/bg/default",
+        "menu/item/bg/selected",
+        "menu/item/gap",
+        "menu/item/height",
+        "menu/item/padding-x",
+        "menu/item/radius",
         "menu/surface/bg",
         "menu/surface/border",
         "menu/surface/gap",
@@ -437,6 +443,19 @@
         {
           "variant": "Banner",
           "layer": "Frame 1430102689/Frame 1430102692/Frame 1430102687/Design Studio",
+          "property": "fill",
+          "value": "#ffffff",
+          "suggestion": "Banner/Text",
+          "alternatives": [
+            "Banner/powered by",
+            "button/primary/fg/default",
+            "input/fg/value"
+          ],
+          "confidence": "family"
+        },
+        {
+          "variant": "Banner",
+          "layer": "Frame 1430102689/Frame 1430102692/Frame 1430102687/Design Studio",
           "property": "fontSize",
           "value": 18.690011978149414,
           "suggestion": null,
@@ -447,11 +466,11 @@
           "variant": "Banner",
           "layer": "Frame 1430102689/Frame 1430102692/Frame 1430102687/Design Studio",
           "property": "fontFamily",
-          "value": "MuseoModerno ExtraBold",
-          "suggestion": null,
+          "value": "MuseoModerno",
+          "suggestion": "type/family/museo",
           "alternatives": [],
-          "confidence": "none",
-          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"MuseoModerno ExtraBold\""
+          "confidence": "exact",
+          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"MuseoModerno\""
         },
         {
           "variant": "Banner",
@@ -461,6 +480,19 @@
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
+        },
+        {
+          "variant": "Banner",
+          "layer": "Frame 1430102689/Frame 1430102692/Frame 1430102687/Connecting Gap between design workflow",
+          "property": "fill",
+          "value": "#ffffff",
+          "suggestion": "Banner/Text",
+          "alternatives": [
+            "Banner/powered by",
+            "button/primary/fg/default",
+            "input/fg/value"
+          ],
+          "confidence": "family"
         },
         {
           "variant": "Banner",
@@ -475,11 +507,11 @@
           "variant": "Banner",
           "layer": "Frame 1430102689/Frame 1430102692/Frame 1430102687/Connecting Gap between design workflow",
           "property": "fontFamily",
-          "value": "IBM Plex Sans Regular",
+          "value": "IBM Plex Sans",
           "suggestion": null,
           "alternatives": [],
           "confidence": "none",
-          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"IBM Plex Sans Regular\""
+          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"IBM Plex Sans\""
         },
         {
           "variant": "Banner",
@@ -579,11 +611,11 @@
           "variant": "Banner",
           "layer": "Frame 1430102690/Frame 1430102691/Powered By",
           "property": "fontFamily",
-          "value": "Michroma Regular",
+          "value": "Michroma",
           "suggestion": null,
           "alternatives": [],
           "confidence": "none",
-          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"Michroma Regular\""
+          "note": "every font/family-* semantic resolves to Noto Sans; binding to a primitive type/family/* keeps \"Michroma\""
         },
         {
           "variant": "Banner",
@@ -610,14 +642,159 @@
       "name": "brand logos",
       "tier": "Atoms",
       "variants": 5,
-      "coverage": null,
-      "bound": [],
-      "family": null,
-      "raw": [],
+      "coverage": 6,
+      "bound": [
+        "lib:VariableID:dba1a00ef0462e7a62aeafbbe92f8339949f0a40/124:2029"
+      ],
+      "family": "lib:VariableID:dba1a00ef0462e7a62aeafbbe92f8339949f0a40",
+      "raw": [
+        {
+          "variant": "Brand=ikea",
+          "layer": "(root)",
+          "property": "fill",
+          "value": "#2360a5",
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=ikea",
+          "layer": "Vector",
+          "property": "fill",
+          "value": "#f6d33c",
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=ikea",
+          "layer": "Vector",
+          "property": "fill",
+          "value": "#2360a5",
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=richemont",
+          "layer": "Group/Vector",
+          "property": "fill",
+          "value": "#a8996e",
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=richemont",
+          "layer": "Vector",
+          "property": "fill",
+          "value": "#ffffff",
+          "suggestion": "button/primary/fg/default",
+          "alternatives": [
+            "input/fg/value",
+            "dropdown/fg/value",
+            "search-bar/fg/value"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=disney",
+          "layer": "(root)",
+          "property": "gap",
+          "value": 10,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=disney",
+          "layer": "(root)",
+          "property": "paddingLeft",
+          "value": 2,
+          "suggestion": "wcag-card/indicator/padding",
+          "alternatives": [
+            "disability-indicator/padding",
+            "theme-card/padding",
+            "section-item/padding"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=disney",
+          "layer": "(root)",
+          "property": "paddingRight",
+          "value": 2,
+          "suggestion": "wcag-card/indicator/padding",
+          "alternatives": [
+            "disability-indicator/padding",
+            "theme-card/padding",
+            "section-item/padding"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=disney",
+          "layer": "(root)",
+          "property": "paddingTop",
+          "value": 5,
+          "suggestion": "dimension/space/5",
+          "alternatives": [],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=disney",
+          "layer": "(root)",
+          "property": "paddingBottom",
+          "value": 5,
+          "suggestion": "dimension/space/5",
+          "alternatives": [],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=fiskars",
+          "layer": "Group 14741/Vector",
+          "property": "fill",
+          "value": "#000000",
+          "suggestion": "color/neutral/0",
+          "alternatives": [
+            "brand/richemont/neutral/1000"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Brand=fiskars",
+          "layer": "Group 14741/Vector",
+          "property": "stroke",
+          "value": "#de8a2e",
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=fiskars",
+          "layer": "Group 14741/Vector",
+          "property": "strokeWeight",
+          "value": 1.5913190841674805,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Brand=fiskars",
+          "layer": "Group 14741/Vector",
+          "property": "fill",
+          "value": "#ffffff",
+          "suggestion": "button/primary/fg/default",
+          "alternatives": [
+            "input/fg/value",
+            "dropdown/fg/value",
+            "search-bar/fg/value"
+          ],
+          "confidence": "exact"
+        }
+      ],
       "instances": [],
-      "notes": [
-        "No token family of its own: nothing but shared icon/glyph tokens is bound."
-      ]
+      "notes": []
     },
     {
       "code": "SizeStep",
@@ -956,7 +1133,7 @@
       "variants": 10,
       "coverage": null,
       "bound": [],
-      "family": null,
+      "family": "section-item",
       "raw": [],
       "instances": [
         "Add min width",
@@ -970,9 +1147,7 @@
         "text resize width",
         "vector paint"
       ],
-      "notes": [
-        "No token family of its own: nothing but shared icon/glyph tokens is bound."
-      ]
+      "notes": []
     },
     {
       "code": "Rating",
@@ -1194,16 +1369,6 @@
             "dimension/space/8"
           ],
           "confidence": "exact"
-        },
-        {
-          "variant": "Property 1=Default",
-          "layer": "(root)",
-          "property": "effect",
-          "value": "DROP_SHADOW:#00000008",
-          "suggestion": null,
-          "confidence": "none",
-          "alternatives": [],
-          "note": "shadow colour is raw; no effect tokens exist"
         }
       ],
       "instances": [
@@ -1216,7 +1381,7 @@
     {
       "code": "ChangeStatus",
       "id": "86:966",
-      "name": "change status",
+      "name": "change status ",
       "tier": "Atoms",
       "variants": 3,
       "coverage": 45,
@@ -1442,7 +1607,7 @@
       "name": "Disability Indicator",
       "tier": "Atoms",
       "variants": 7,
-      "coverage": 48,
+      "coverage": 34,
       "bound": [
         "disability-indicator/border/default",
         "disability-indicator/gap",
@@ -1461,9 +1626,36 @@
           "confidence": "none"
         },
         {
-          "variant": "Property 1=Cognitive",
+          "variant": "Property 1=Auditory",
           "layer": "(root)",
-          "property": "radius",
+          "property": "paddingLeft",
+          "value": 2.5714285373687744,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Property 1=Auditory",
+          "layer": "(root)",
+          "property": "paddingRight",
+          "value": 2.5714285373687744,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Property 1=Auditory",
+          "layer": "(root)",
+          "property": "paddingTop",
+          "value": 2.5714285373687744,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
+        },
+        {
+          "variant": "Property 1=Auditory",
+          "layer": "(root)",
+          "property": "paddingBottom",
           "value": 2.5714285373687744,
           "suggestion": null,
           "alternatives": [],
@@ -1472,35 +1664,8 @@
         {
           "variant": "Property 1=Cognitive",
           "layer": "(root)",
-          "property": "paddingLeft",
-          "value": 2.57,
-          "suggestion": null,
-          "alternatives": [],
-          "confidence": "none"
-        },
-        {
-          "variant": "Property 1=Cognitive",
-          "layer": "(root)",
-          "property": "paddingRight",
-          "value": 2.57,
-          "suggestion": null,
-          "alternatives": [],
-          "confidence": "none"
-        },
-        {
-          "variant": "Property 1=Cognitive",
-          "layer": "(root)",
-          "property": "paddingTop",
-          "value": 2.57,
-          "suggestion": null,
-          "alternatives": [],
-          "confidence": "none"
-        },
-        {
-          "variant": "Property 1=Cognitive",
-          "layer": "(root)",
-          "property": "paddingBottom",
-          "value": 2.57,
+          "property": "radius",
+          "value": 2.5714285373687744,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -1847,7 +2012,7 @@
       "variants": 1,
       "coverage": 14,
       "bound": [
-        "status-pill/fg/default"
+        "Background"
       ],
       "family": "status-pill",
       "raw": [
@@ -2319,7 +2484,7 @@
           "variant": "Dashboard",
           "layer": "Frame 1430102628/68",
           "property": "lineHeight",
-          "value": 15.4,
+          "value": 15.399999618530273,
           "suggestion": "tab/line-height",
           "alternatives": [
             "toggle/label/line-height",
@@ -2381,7 +2546,7 @@
           "variant": "Dashboard",
           "layer": "Frame 1430102628/Variables",
           "property": "lineHeight",
-          "value": 15.4,
+          "value": 15.399999618530273,
           "suggestion": "tab/line-height",
           "alternatives": [
             "toggle/label/line-height",
@@ -3019,7 +3184,7 @@
           "variant": "Property 1=Forms",
           "layer": "(root)",
           "property": "gap",
-          "value": 2.79,
+          "value": 2.7857143878936768,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -3028,7 +3193,7 @@
           "variant": "Property 1=Forms",
           "layer": "(root)",
           "property": "paddingLeft",
-          "value": 5.57,
+          "value": 5.5714287757873535,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -3037,7 +3202,7 @@
           "variant": "Property 1=Forms",
           "layer": "(root)",
           "property": "paddingRight",
-          "value": 5.57,
+          "value": 5.5714287757873535,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -3046,7 +3211,7 @@
           "variant": "Property 1=Forms",
           "layer": "(root)",
           "property": "paddingTop",
-          "value": 2.79,
+          "value": 2.7857143878936768,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -3055,7 +3220,7 @@
           "variant": "Property 1=Forms",
           "layer": "(root)",
           "property": "paddingBottom",
-          "value": 2.79,
+          "value": 2.7857143878936768,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -3617,7 +3782,7 @@
       "name": "Group Tab selecters",
       "tier": "Molecules",
       "variants": 2,
-      "coverage": 13,
+      "coverage": 12,
       "bound": [
         "chip-filter/radius"
       ],
@@ -3650,6 +3815,19 @@
           "alternatives": [
             "border-width/default",
             "dimension/stroke/1"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "Property 1=4 level",
+          "layer": "(root)",
+          "property": "gap",
+          "value": 4,
+          "suggestion": "input/gap/label",
+          "alternatives": [
+            "tab/gap",
+            "disability-indicator/gap",
+            "space/stack-xs"
           ],
           "confidence": "exact"
         },
@@ -4191,7 +4369,7 @@
           "variant": "settings page title",
           "layer": "Frame 1430102677/Label Title",
           "property": "lineHeight",
-          "value": 16.8,
+          "value": 16.799999237060547,
           "suggestion": "section-header/title/line-height",
           "alternatives": [
             "input/label/line-height",
@@ -4287,7 +4465,7 @@
           "variant": "Toggle",
           "layer": "[ Label ]",
           "property": "lineHeight",
-          "value": 15.4,
+          "value": 15.399999618530273,
           "suggestion": "toggle/label/line-height",
           "alternatives": [
             "tab/line-height",
@@ -4405,8 +4583,10 @@
       "name": "footer",
       "tier": "Organisms",
       "variants": 1,
-      "coverage": 74,
+      "coverage": 72,
       "bound": [
+        "Background",
+        "Boader",
         "footer/bg/default",
         "footer/border/top",
         "footer/padding-x",
@@ -4420,7 +4600,20 @@
       "raw": [
         {
           "variant": "footer",
-          "layer": "Frame 1430102623",
+          "layer": "Frame 1430102693",
+          "property": "gap",
+          "value": 8,
+          "suggestion": "dropdown/gap/label",
+          "alternatives": [
+            "checkbox/gap",
+            "menu/item/gap",
+            "dropdown/gap"
+          ],
+          "confidence": "exact"
+        },
+        {
+          "variant": "footer",
+          "layer": "Frame 1430102693/Frame 1430102623",
           "property": "gap",
           "value": 6,
           "suggestion": "status-pill/gap",
@@ -4433,7 +4626,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102682",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102682",
           "property": "gap",
           "value": 6,
           "suggestion": "status-pill/gap",
@@ -4446,7 +4639,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102682/Line 57",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102682/Line 57",
           "property": "strokeWeight",
           "value": 0.5,
           "suggestion": null,
@@ -4455,7 +4648,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102683",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102683",
           "property": "gap",
           "value": 6,
           "suggestion": "status-pill/gap",
@@ -4468,7 +4661,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102683/Line 58",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102683/Line 58",
           "property": "strokeWeight",
           "value": 0.5,
           "suggestion": null,
@@ -4477,7 +4670,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102684",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102684",
           "property": "gap",
           "value": 6,
           "suggestion": "status-pill/gap",
@@ -4490,7 +4683,7 @@
         },
         {
           "variant": "footer",
-          "layer": "Frame 1430102623/Frame 1430102684/Line 59",
+          "layer": "Frame 1430102693/Frame 1430102623/Frame 1430102684/Line 59",
           "property": "strokeWeight",
           "value": 0.5,
           "suggestion": null,
@@ -4543,6 +4736,7 @@
       "bound": [
         "disability-indicator/border/default",
         "disability-indicator/icon/color",
+        "empty-state/bg/default",
         "icon/glyph/default",
         "principle/perceivable/bg",
         "rating/padding",
@@ -4676,14 +4870,10 @@
           "variant": "WCAG Card",
           "layer": "Container/Container/Frame 1430102531",
           "property": "gap",
-          "value": 7,
-          "suggestion": "wcag-card/gap",
-          "alternatives": [
-            "chip-filter/gap",
-            "toggle/gap",
-            "section-header/gap"
-          ],
-          "confidence": "family"
+          "value": 16,
+          "suggestion": null,
+          "alternatives": [],
+          "confidence": "none"
         },
         {
           "variant": "WCAG Card",
@@ -4763,7 +4953,7 @@
           "variant": "WCAG Card",
           "layer": "Container/Frame 1430102532/Frame 1430102533/Container/Contrast (Minimum)",
           "property": "lineHeight",
-          "value": 15.13,
+          "value": 15.125,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -4902,7 +5092,7 @@
           "variant": "WCAG Card",
           "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Node",
           "property": "lineHeight",
-          "value": 12.6,
+          "value": 12.600000381469727,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -4988,7 +5178,7 @@
           "variant": "WCAG Card",
           "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Colors",
           "property": "lineHeight",
-          "value": 12.6,
+          "value": 12.600000381469727,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -5232,7 +5422,7 @@
           "variant": "WCAG Card",
           "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/Why it fails",
           "property": "lineHeight",
-          "value": 12.6,
+          "value": 12.600000381469727,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -5314,7 +5504,7 @@
           "variant": "WCAG Card",
           "layer": "Container/Frame 1430102532/Frame 1430102680/Container/Text/How to fix",
           "property": "lineHeight",
-          "value": 12.6,
+          "value": 12.600000381469727,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -5510,7 +5700,7 @@
           "variant": "team Banner",
           "layer": "Frame 1430102643/Frame 1430102640/Frame 1430102658",
           "property": "gap",
-          "value": 5.95,
+          "value": 5.949497222900391,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -5863,7 +6053,7 @@
           "variant": "Frame 1430102664",
           "layer": "Frame 1430102662/Frame 1430102661/Frame 1430102660/Design System",
           "property": "lineHeight",
-          "value": 16.8,
+          "value": 16.799999237060547,
           "suggestion": "input/label/line-height",
           "alternatives": [
             "dropdown/label/line-height",
@@ -6005,7 +6195,7 @@
           "variant": "Frame 1430102664",
           "layer": "Frame 1430102663/Choose your role to customize the toolset. Design ",
           "property": "lineHeight",
-          "value": 17.6,
+          "value": 17.600000381469727,
           "suggestion": null,
           "alternatives": [],
           "confidence": "none"
@@ -6185,7 +6375,7 @@
         },
         {
           "variant": "Property 1=variable",
-          "layer": "Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
+          "layer": "Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
           "property": "fontFamily",
           "value": "Gap Sans",
           "suggestion": null,
@@ -6195,7 +6385,7 @@
         },
         {
           "variant": "Property 1=variable",
-          "layer": "Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
+          "layer": "Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
           "property": "fontWeight",
           "value": 300,
           "suggestion": null,
@@ -6217,7 +6407,7 @@
           "variant": "Property 1=variable",
           "layer": "Frame 1430102567/12 Days ago",
           "property": "lineHeight",
-          "value": 15.4,
+          "value": 15.399999618530273,
           "suggestion": "card-variable/title/line-height",
           "alternatives": [
             "card-variable/meta/line-height",
@@ -6363,7 +6553,7 @@
         },
         {
           "variant": "Variable search card expand",
-          "layer": "Frame 1430102576/Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
+          "layer": "Frame 1430102576/Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
           "property": "fontFamily",
           "value": "Gap Inc Sans",
           "suggestion": "type/family/brand",
@@ -6373,7 +6563,7 @@
         },
         {
           "variant": "Variable search card expand",
-          "layer": "Frame 1430102576/Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
+          "layer": "Frame 1430102576/Frame 1430102566/Frame 1430102565/Universal ToolkitUsed by 52 components Affects 1 mode/brands",
           "property": "fontWeight",
           "value": 400,
           "suggestion": "input/font/weight",

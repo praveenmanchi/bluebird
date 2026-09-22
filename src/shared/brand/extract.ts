@@ -126,7 +126,7 @@ function paintHex(paint: Paint): string | undefined {
   return rgbaToHex({ ...paint.color, a: alpha })
 }
 
-function describeNode(index: VariableIndex, node: SceneNode, path: string): SnapNode {
+async function describeNode(index: VariableIndex, node: SceneNode, path: string): Promise<SnapNode> {
   const bv = (node.boundVariables ?? {}) as Record<string, Bound>
   const b: Record<string, string> = {}
   const r: Record<string, unknown> = {}
@@ -174,7 +174,7 @@ function describeNode(index: VariableIndex, node: SceneNode, path: string): Snap
   const entry: SnapNode = { p: path, t: node.type, b }
   if (Object.keys(r).length) entry.r = r
   if (node.type === 'INSTANCE') {
-    const main = node.mainComponent
+    const main = await node.getMainComponentAsync()
     entry.i = main ? `${main.name}${main.parent?.type === 'COMPONENT_SET' ? ` <${main.parent.name}>` : ''}` : 'unknown'
     const cp: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(node.componentProperties)) cp[k.split('#')[0] ?? k] = v.value
@@ -199,23 +199,23 @@ function pruneToOverrides(entry: SnapNode, fields: readonly string[]): SnapNode 
   return out
 }
 
-function walk(index: VariableIndex, node: SceneNode, path: string, out: SnapNode[]): void {
+async function walk(index: VariableIndex, node: SceneNode, path: string, out: SnapNode[]): Promise<void> {
   const p = path ? `${path}/${node.name}` : node.name
-  out.push(describeNode(index, node, p))
+  out.push(await describeNode(index, node, p))
   if (!('children' in node)) return
-  if (node.type !== 'INSTANCE') { for (const child of node.children) walk(index, child, p, out); return }
+  if (node.type !== 'INSTANCE') { for (const child of node.children) await walk(index, child, p, out); return }
   // Instances belong to their own component set. Record only what this
   // instance overrides on its descendants (fills, radii, text…), flagged `o`,
   // so the generator can emit derived tokens for the overridden values.
   const overrides = new Map<string, readonly string[]>()
   for (const ov of node.overrides ?? []) if (ov.id !== node.id) overrides.set(ov.id, ov.overriddenFields)
   if (overrides.size === 0) return
-  const visit = (child: SceneNode, childPath: string) => {
+  const visit = async (child: SceneNode, childPath: string): Promise<void> => {
     const fields = overrides.get(child.id)
-    if (fields && fields.length) out.push(pruneToOverrides(describeNode(index, child, childPath), fields))
-    if ('children' in child) for (const grand of child.children) visit(grand, `${childPath}/${grand.name}`)
+    if (fields && fields.length) out.push(pruneToOverrides(await describeNode(index, child, childPath), fields))
+    if ('children' in child) for (const grand of child.children) await visit(grand, `${childPath}/${grand.name}`)
   }
-  for (const child of node.children) visit(child, `${p}/${child.name}`)
+  for (const child of node.children) await visit(child, `${p}/${child.name}`)
 }
 
 function propDefinitions(node: ComponentNode | ComponentSetNode): ComponentSetSnapshot['props'] {
@@ -230,11 +230,12 @@ async function extractSet(index: VariableIndex, code: string, id: string): Promi
   const node = await figma.getNodeByIdAsync(id)
   if (!node || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT')) throw new Error(`Node ${id} is not a component (set)`)
   const variantsSource = node.type === 'COMPONENT_SET' ? node.children.filter((c): c is ComponentNode => c.type === 'COMPONENT') : [node]
-  const variants = variantsSource.map((variant) => {
+  const variants: ComponentSetSnapshot['variants'] = []
+  for (const variant of variantsSource) {
     const nodes: SnapNode[] = []
-    walk(index, variant, '', nodes)
-    return { id: variant.id, name: variant.name, props: node.type === 'COMPONENT_SET' ? parseVariantName(variant.name) : {}, nodes }
-  })
+    await walk(index, variant, '', nodes)
+    variants.push({ id: variant.id, name: variant.name, props: node.type === 'COMPONENT_SET' ? parseVariantName(variant.name) : {}, nodes })
+  }
   return { code, id: node.id, name: node.name, description: node.description, props: propDefinitions(node), variants }
 }
 

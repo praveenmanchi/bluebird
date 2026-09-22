@@ -6,6 +6,9 @@
   --bb-button-primary-fg-default: #ffffff;
   --bb-button-primary-fg-disabled: #757575;
   --bb-button-primary-border-default: #0c8ce9;
+  --bb-banner-bg: #0b57d0;
+  --bb-banner-text: #ffffff;
+  --bb-banner-powered-by: #ffffff;
   --bb-button-primary-border-width: 1px;
   --bb-button-primary-radius: 6px;
   --bb-button-primary-padding-x: 13px;
@@ -367,10 +370,7 @@
   --bb-dropdown-fg-disabled: #757575;
   --bb-dropdown-chevron-size: 16px;
   --bb-dropdown-gap: 8px;
-  --bb-banner-bg: #0b57d0;
-  --bb-banner-text: #ffffff;
-  --bb-banner-powered-by: #ffffff;
   --bb-brand-logos: bridge;
-  --bb-background: #2c2c2c;
   --bb-boader: #444444;
+  --bb-background: #2c2c2c;
 }

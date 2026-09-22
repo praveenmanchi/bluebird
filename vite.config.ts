@@ -31,6 +31,7 @@ export default defineConfig({
       '@shell': fileURLToPath(new URL('./src/shell', import.meta.url)),
       '@config': fileURLToPath(new URL('./plugin.config.json', import.meta.url)),
       '@logos': fileURLToPath(new URL('./src/shared/ui/BrandLogo/generated.active.ts', import.meta.url)),
+      '@icons': fileURLToPath(new URL('./src/shared/ui/Icon/generated.active.ts', import.meta.url)),
     },
   },
   build: {

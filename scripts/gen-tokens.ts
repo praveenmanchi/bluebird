@@ -20,6 +20,7 @@ import { tokenKeyFromVariableName } from '../src/shared/brand/tokens'
 export const ROOT = resolve(import.meta.dirname, '..')
 const GEN_DIR = 'src/shared/brand/generated'
 const ICON_GEN = 'src/shared/ui/Icon/generated.ts'
+const ICON_ACTIVE_GEN = 'src/shared/ui/Icon/generated.active.ts'
 const LOGO_GEN = 'src/shared/ui/BrandLogo/generated.ts'
 const LOGO_DIR = 'figma/logos'
 /** Single-colour artwork in figma/logos that should follow currentColor (everything else keeps its fills). */
@@ -34,6 +35,8 @@ export interface GenInputs {
   /** figma/logos/<name>.svg — brand logos (artwork, colours kept) and marks. */
   logos: Record<string, string>
   activeBrand: string
+  /** Repo root, for the icon usage scan. */
+  root?: string
 }
 
 export function readInputs(root = ROOT): GenInputs {
@@ -48,10 +51,35 @@ export function readInputs(root = ROOT): GenInputs {
     icons: json<IconsSnapshot>('figma/icons.json'),
     logos,
     activeBrand: config.brand.active,
+    root,
   }
 }
 
 interface Declaration { name: string; value: string }
+
+/**
+ * Glyph names the plugin bundle can reach: string literals in src (components, shell,
+ * features — not stories/tests/generated) and tab icons in plugin.config.json, plus every
+ * name matching a template prefix like `disability-${kind}`. Storybook and tests still load
+ * the full table through the @icons alias → generated.ts.
+ */
+export function usedIconNames(root: string, all: readonly string[]): string[] {
+  const sources: string[] = []
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = resolve(dir, entry.name)
+      if (entry.isDirectory()) { if (entry.name !== 'generated' && entry.name !== 'node_modules') walk(p); continue }
+      if (!/\.(ts|tsx)$/.test(entry.name) || /\.(stories|test)\.tsx?$/.test(entry.name) || /generated(\.active)?\.ts$/.test(entry.name)) continue
+      sources.push(readFileSync(p, 'utf8'))
+    }
+  }
+  walk(resolve(root, 'src'))
+  sources.push(readFileSync(resolve(root, 'plugin.config.json'), 'utf8'))
+  const text = sources.join('\n')
+  const literals = new Set([...text.matchAll(/['"`]([a-z0-9]+(?:-[a-z0-9]+)*)['"`]/g)].map((m) => m[1]!))
+  const prefixes = [...text.matchAll(/`([a-z0-9-]+-)\$\{/g)].map((m) => m[1]!)
+  return all.filter((name) => literals.has(name) || prefixes.some((prefix) => name.startsWith(prefix)))
+}
 
 function declarationsFor(input: GenInputs, collectionKey: string, mode: string): Declaration[] {
   const collection = input.tokens.collections.find((c) => c.key === collectionKey)
@@ -179,7 +207,7 @@ export function derivedDeclarations(components: ComponentsSnapshot): Declaration
 
 function boundTokensOf(set: ComponentSetSnapshot): string[] {
   const names = new Set<string>()
-  for (const variant of set.variants) for (const node of variant.nodes) for (const v of Object.values(node.b)) names.add(v)
+  for (const variant of set.variants) for (const node of variant.nodes) for (const v of Object.values(node.b)) if (!v.startsWith('lib:')) names.add(v)
   return [...names].sort()
 }
 
@@ -291,6 +319,15 @@ export function generate(input: GenInputs): Record<string, string> {
     `export type IconName = keyof typeof ICONS\n` +
     `export const MARKS = {\n${markEntries.join('\n')}\n} as const satisfies Record<string, Glyph>\n` +
     `export type MarkName = keyof typeof MARKS\n`
+  // The plugin bundle inlines everything, so it ships only the glyphs the code can reference.
+  const used = new Set(usedIconNames(input.root ?? ROOT, Object.keys(input.icons.icons)))
+  const activeIconEntries = iconEntries.filter((line) => used.has(/^ {2}"([^"]+)"/.exec(line)?.[1] ?? ''))
+  files[ICON_ACTIVE_GEN] = TS_HEADER +
+    `// Glyphs referenced from src/ and plugin.config.json only (${activeIconEntries.length} of ${iconEntries.length}). Storybook and tests alias @icons to ./generated.ts instead.\n` +
+    `import type { Glyph, IconName, MarkName } from './generated'\n` +
+    `export type { Glyph, IconName, MarkName }\n` +
+    `export const ICONS: Partial<Record<IconName, Glyph>> = {\n${activeIconEntries.join('\n')}\n}\n` +
+    `export const MARKS: Record<MarkName, Glyph> = {\n${markEntries.join('\n')}\n}\n`
 
   return files
 }

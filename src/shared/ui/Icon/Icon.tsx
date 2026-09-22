@@ -1,5 +1,5 @@
 import type { JSX } from 'preact'
-import { ICONS, MARKS, type IconName, type MarkName } from './generated'
+import { ICONS, MARKS, type IconName, type MarkName } from '@icons'
 import './Icon.css'
 
 export type { IconName, MarkName }
@@ -20,6 +20,7 @@ export interface IconProps extends Omit<JSX.SVGAttributes<SVGSVGElement>, 'size'
 /** Glyphs exported from the Figma "Tab Icons" set; colour and size come from tokens. */
 export function Icon({ name, size, tone, title, class: cls, ...rest }: IconProps) {
   const glyph = ICONS[name]
+  if (!glyph) return null // not shipped in this bundle (see Icon/generated.active.ts)
   return (
     <svg
       {...rest}

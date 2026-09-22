@@ -6,6 +6,8 @@
   --bb-button-primary-fg-default: #f9f9f9;
   --bb-button-primary-fg-disabled: #b4b5b9;
   --bb-button-primary-border-default: #0063e5;
+  --bb-banner-bg: #0d3c7a;
+  --bb-banner-text: #ffffff;
   --bb-button-primary-border-width: 1px;
   --bb-button-primary-radius: 64px;
   --bb-button-primary-padding-x: 13px;
@@ -367,10 +369,7 @@
   --bb-dropdown-fg-disabled: #b4b5b9;
   --bb-dropdown-chevron-size: 16px;
   --bb-dropdown-gap: 8px;
-  --bb-banner-bg: #0d3c7a;
-  --bb-banner-text: #ffffff;
-  --bb-banner-powered-by: #ffffff80;
   --bb-brand-logos: disney;
-  --bb-background: #2c2c2c;
   --bb-boader: #444444;
+  --bb-background: #2c2c2c;
 }

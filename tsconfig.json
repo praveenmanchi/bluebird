@@ -39,6 +39,9 @@
       ],
       "@logos": [
         "src/shared/ui/BrandLogo/generated.ts"
+      ],
+      "@icons": [
+        "src/shared/ui/Icon/generated.ts"
       ]
     }
   },

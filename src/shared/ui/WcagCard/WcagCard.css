@@ -171,4 +171,4 @@
   border-radius: var(--bb-rating-radius);
   overflow: hidden;
 }
-.bb-wcag-card__preview[data-placeholder] { background: var(--bb-icon-glyph-default); }
+.bb-wcag-card__preview[data-placeholder] { background: var(--bb-empty-state-bg-default); }

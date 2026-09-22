@@ -30,7 +30,7 @@ const innerBox = { id: 'ib', type: 'FRAME', name: 'Box', visible: true, opacity:
 const untouched = { id: 'iu', type: 'FRAME', name: 'Untouched', visible: true, opacity: 1, width: 4, height: 4, cornerRadius: 0, boundVariables: {}, fills: [{ type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 1 }], strokes: [], children: [] }
 const instance = {
   id: 'inst', type: 'INSTANCE', name: 'Step', visible: true, opacity: 1, width: 16, height: 13, cornerRadius: 0, boundVariables: {}, fills: [], strokes: [],
-  mainComponent: { name: 'Property 1=Default', parent: { type: 'COMPONENT_SET', name: 'SizeStep' } }, componentProperties: { 'Property 1': { value: 'Default' } }, componentPropertyReferences: null,
+  getMainComponentAsync: async () => ({ name: 'Property 1=Default', parent: { type: 'COMPONENT_SET', name: 'SizeStep' } }), componentProperties: { 'Property 1': { value: 'Default' } }, componentPropertyReferences: null,
   overrides: [{ id: 'inst', overriddenFields: ['name'] }, { id: 'ib', overriddenFields: ['fills', 'cornerRadius'] }, { id: 'it', overriddenFields: ['characters', 'fills'] }],
   children: [innerBox, untouched],
 }

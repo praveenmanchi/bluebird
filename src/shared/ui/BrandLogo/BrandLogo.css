@@ -6,7 +6,8 @@
 .bb-brand-logo[data-logo="bridge"]    { width: var(--bb-derived-brand-logo-root-brand-bridge-width);    height: var(--bb-derived-brand-logo-root-brand-bridge-height); }
 .bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-root-brand-ikea-width);      height: var(--bb-derived-brand-logo-root-brand-ikea-height); }
 .bb-brand-logo[data-logo="richemont"] { width: var(--bb-derived-brand-logo-root-brand-richemont-width); height: var(--bb-derived-brand-logo-root-brand-richemont-height); }
-.bb-brand-logo[data-logo="disney"]    { width: var(--bb-derived-brand-logo-root-brand-disney-width);    height: var(--bb-derived-brand-logo-root-brand-disney-height); }
+/* Disney's frame hugs its vector (2px / 5px padding) instead of carrying a fixed size. */
+.bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + 2 * var(--bb-derived-brand-logo-root-padding-left)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + 2 * var(--bb-derived-brand-logo-root-padding-top)); }
 .bb-brand-logo[data-logo="fiskars"]   { width: var(--bb-derived-brand-logo-root-brand-fiskars-width);   height: var(--bb-derived-brand-logo-root-brand-fiskars-height); }
 
 [data-brand="bridge"]    .bb-brand-logo[data-logo="bridge"],

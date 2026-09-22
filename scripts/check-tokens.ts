@@ -72,6 +72,7 @@ export async function checkComponentCoverage(root = ROOT): Promise<Finding[]> {
     const bound = new Set<string>()
     for (const v of set.variants) for (const n of v.nodes) for (const name of Object.values(n.b)) bound.add(name)
     for (const name of bound) {
+      if (name.startsWith('lib:')) continue // remote library variable: no local value to generate a token from; listed in docs/figma-token-mapping.md
       if (meta.figmaGaps?.[name]) continue
       if (!css.includes(`var(${cssVarName(name)})`)) {
         findings.push({ rule: 'figma-token-unused', file: relative(root, cssFile), message: `Figma binds "${name}" but the component never reads ${cssVarName(name)}` })

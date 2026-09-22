@@ -28,10 +28,20 @@ interface Snapshot { tokens: TokenSnapshot; components: ComponentsSnapshot; icon
 async function main() {
   const snapshot = backend === 'rest' ? await pullRest() : await pullPlugin()
   const existingIcons = JSON.parse(readFileSync(resolve(root, 'figma/icons.json'), 'utf8')) as IconsSnapshot
-  // Checkbox marks are not part of the icon set; keep the committed exports.
+  const existingComponents = JSON.parse(readFileSync(resolve(root, 'figma/components.json'), 'utf8')) as ComponentsSnapshot & { tiers?: unknown; standaloneIcons?: unknown }
+  // Only the "Tab Icons" set is re-exported; glyphs exported by hand from other sets
+  // (status, section, toolbar, principle… see docs) and the checkbox marks are kept.
+  snapshot.icons.icons = { ...existingIcons.icons, ...snapshot.icons.icons }
   snapshot.icons.marks = Object.keys(snapshot.icons.marks).length ? snapshot.icons.marks : existingIcons.marks
+  // Code-side bookkeeping (status/aliasOf per set, tiers, standalone icons) lives only in the committed file.
+  const bookkeeping = new Map(existingComponents.sets.map((s) => [s.id, s]))
+  snapshot.components.sets = snapshot.components.sets.map((s) => {
+    const prev = bookkeeping.get(s.id)
+    return { ...s, ...(prev?.status ? { status: prev.status } : {}), ...(prev?.aliasOf ? { aliasOf: prev.aliasOf } : {}) }
+  })
+  const components = { ...snapshot.components, ...(existingComponents.tiers ? { tiers: existingComponents.tiers } : {}), ...(existingComponents.standaloneIcons ? { standaloneIcons: existingComponents.standaloneIcons } : {}) }
   write('figma/tokens.json', snapshot.tokens)
-  write('figma/components.json', snapshot.components)
+  write('figma/components.json', components)
   write('figma/icons.json', snapshot.icons)
   console.log(`[figma:pull] ${backend}: ${snapshot.tokens.collections.map((c) => `${c.name}=${c.variables.length}`).join(' ')} · ${snapshot.components.sets.length} sets · ${Object.keys(snapshot.icons.icons).length} icons`)
   console.log('[figma:pull] next: npm run gen:tokens && npm run tokens:check')
@@ -52,7 +62,7 @@ function pullPlugin(): Promise<Snapshot> {
   return new Promise((resolvePromise, reject) => {
     const ws = new WebSocket(url.toString())
     const id = `pull${Date.now().toString(36)}`
-    const timer = setTimeout(() => { ws.close(); reject(new Error('Timed out waiting for Figma. Is the relay running and the bridge plugin open?')) }, 120_000)
+    const timer = setTimeout(() => { ws.close(); reject(new Error('Timed out waiting for Figma. Is the relay running and the bridge plugin open?')) }, 600_000)
     ws.on('open', () => ws.send(JSON.stringify({ kind: 'request', id, type: 'figma:snapshot', payload: manifest })))
     ws.on('message', (data) => {
       const message = JSON.parse(data.toString()) as { kind: string; id?: string; ok?: boolean; data?: Snapshot; error?: string }

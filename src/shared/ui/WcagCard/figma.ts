@@ -18,6 +18,7 @@ export const figma = {
   },
   figmaGaps: {
     'principle/perceivable/bg': 'consumed by the composed PrincipleTag',
+    'icon/glyph/default': 'glyph fills/strokes inside the composed PrincipleTag and DisabilityIndicator instances; the composed components colour their glyphs through their own icon tokens',
     'rating/bg/default': 'the three theme-chip labels are overridden to the rating background colour in Figma (a mis-binding: text painted in the chip-background blue); the composed ThemeChip keeps theme-card/label/fg. Rebind in Figma to close.',
     'disability-indicator/border/default': 'consumed by the composed DisabilityIndicator',
     'disability-indicator/icon/color': 'Figma overrides the Rating instance fill with the disability glyph colour; code keeps rating/bg/default from the composed Rating so the level chip stays brand-coloured.',

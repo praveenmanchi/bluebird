@@ -6,6 +6,8 @@
   --bb-button-primary-fg-default: #ffffff;
   --bb-button-primary-fg-disabled: #c6c7c8;
   --bb-button-primary-border-default: #004165;
+  --bb-banner-bg: #004165;
+  --bb-banner-text: #ffffff;
   --bb-button-primary-border-width: 1px;
   --bb-button-primary-radius: 0px;
   --bb-button-primary-padding-x: 13px;
@@ -367,10 +369,7 @@
   --bb-dropdown-fg-disabled: #c6c7c8;
   --bb-dropdown-chevron-size: 16px;
   --bb-dropdown-gap: 8px;
-  --bb-banner-bg: #004165;
-  --bb-banner-text: #ffffff;
-  --bb-banner-powered-by: #ffffff80;
   --bb-brand-logos: richemont;
-  --bb-background: #2c2c2c;
   --bb-boader: #444444;
+  --bb-background: #2c2c2c;
 }

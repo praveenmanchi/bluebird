@@ -46,6 +46,216 @@
       "code": "BrandLogo",
       "figma": "brand logos",
       "id": "40000064:9865"
+    },
+    {
+      "code": "SizeStep",
+      "figma": "Frame 1430102613",
+      "id": "133:1618"
+    },
+    {
+      "code": "IconSettings",
+      "figma": "settings",
+      "id": "7:44580"
+    },
+    {
+      "code": "IconEye",
+      "figma": "eye",
+      "id": "204:9658"
+    },
+    {
+      "code": "StatusIcon",
+      "figma": "Status error icons",
+      "id": "133:1574"
+    },
+    {
+      "code": "AiServiceIcon",
+      "figma": "AI service",
+      "id": "204:9270"
+    },
+    {
+      "code": "ToolbarIcon",
+      "figma": "icons",
+      "id": "419:39977"
+    },
+    {
+      "code": "IntegrationLogo",
+      "figma": "brands",
+      "id": "226:3580"
+    },
+    {
+      "code": "SectionIcon",
+      "figma": "Sections to include",
+      "id": "383:7581"
+    },
+    {
+      "code": "Rating",
+      "figma": "Rating",
+      "id": "419:40175"
+    },
+    {
+      "code": "ConnectionBadge",
+      "figma": "Connection",
+      "id": "417:6735"
+    },
+    {
+      "code": "ChangeStatus",
+      "figma": "change status",
+      "id": "86:966"
+    },
+    {
+      "code": "DisabilityIndicator",
+      "figma": "Disability Indicator",
+      "id": "419:40527"
+    },
+    {
+      "code": "PrincipleTag",
+      "figma": "Principle",
+      "id": "419:40149"
+    },
+    {
+      "code": "StatusPill",
+      "figma": "Buttom Status",
+      "id": "133:1581"
+    },
+    {
+      "code": "SizeExpander",
+      "figma": "size expander",
+      "id": "133:1628"
+    },
+    {
+      "code": "Chip",
+      "figma": "Filiters",
+      "id": "197:1696"
+    },
+    {
+      "code": "InfoMeta",
+      "figma": "info",
+      "id": "133:1647"
+    },
+    {
+      "code": "TabLegacy",
+      "figma": "Tab",
+      "id": "419:39986"
+    },
+    {
+      "code": "StatTile",
+      "figma": "Dashboard",
+      "id": "135:3290"
+    },
+    {
+      "code": "ButtonWrapper",
+      "figma": "variable button",
+      "id": "7:44536"
+    },
+    {
+      "code": "CountBadgeIcon",
+      "figma": "Frame 1430102563",
+      "id": "83:746"
+    },
+    {
+      "code": "PageFilter",
+      "figma": "pages",
+      "id": "7:44524"
+    },
+    {
+      "code": "CountBadge",
+      "figma": "Frame 1430102586",
+      "id": "86:1891"
+    },
+    {
+      "code": "ThemeChip",
+      "figma": "Theme",
+      "id": "419:45605"
+    },
+    {
+      "code": "SelectField",
+      "figma": "dropdown",
+      "id": "215:12201"
+    },
+    {
+      "code": "Tab",
+      "figma": "Tab",
+      "id": "91:1989"
+    },
+    {
+      "code": "FilterDropdown",
+      "figma": "filters",
+      "id": "7:44569"
+    },
+    {
+      "code": "SegmentTab",
+      "figma": "Tab selecters",
+      "id": "308:51054"
+    },
+    {
+      "code": "SegmentedControl",
+      "figma": "Group Tab selecters",
+      "id": "308:51205"
+    },
+    {
+      "code": "SelectFieldLabeled",
+      "figma": "dropbox",
+      "id": "215:12356"
+    },
+    {
+      "code": "Input",
+      "figma": "Input Box",
+      "id": "204:9667"
+    },
+    {
+      "code": "SearchBar",
+      "figma": "search bar",
+      "id": "7:44532"
+    },
+    {
+      "code": "SectionHeader",
+      "figma": "settings page title",
+      "id": "226:2612"
+    },
+    {
+      "code": "Toggle",
+      "figma": "Toggle",
+      "id": "215:12515"
+    },
+    {
+      "code": "ButtonGroup",
+      "figma": "Container",
+      "id": "215:12537"
+    },
+    {
+      "code": "Footer",
+      "figma": "footer",
+      "id": "133:1675"
+    },
+    {
+      "code": "WcagCard",
+      "figma": "WCAG Card",
+      "id": "419:39993"
+    },
+    {
+      "code": "TeamBanner",
+      "figma": "team Banner",
+      "id": "204:7270"
+    },
+    {
+      "code": "PersonaCard",
+      "figma": "Frame 1430102664",
+      "id": "264:10472"
+    },
+    {
+      "code": "Navbar",
+      "figma": "Navbar",
+      "id": "7:44400"
+    },
+    {
+      "code": "VariableCard",
+      "figma": "Variable search card",
+      "id": "83:940"
+    },
+    {
+      "code": "VariableCardExpanded",
+      "figma": "Variable search card expand",
+      "id": "84:1043"
     }
   ],
   "iconSet": {

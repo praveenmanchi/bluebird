@@ -61,7 +61,7 @@ real variable, the generator moves it and `tokens:check` points at the code to u
 - `npm run verify` = typecheck + lint + tokens:check + tests + build.
 
 ### Phase 1 — automate the loop
-1. Pick the pull backend. `--rest` needs a personal access token **and** an Enterprise plan for `/variables/local`; the relay backend works on every plan but needs Figma desktop open. Recommended: relay locally, REST in CI if/when Enterprise.
+1. Pull backend: the relay backend is proven (2026-09-22: full pull of 621 variables, 49 sets and the Tab Icons set in ~45 s). Flow: `npm run build` → `npm run dev:relay` → in Figma desktop run *Dev: connect to browser (live mode)* → `npm run figma:pull` → `npm run gen:tokens && npm run tokens:check`. The pull keeps the code-side bookkeeping (`status`/`aliasOf`, tiers, hand-exported glyphs). `--rest` needs a personal access token **and** an Enterprise plan for `/variables/local`. Recommended: relay locally, REST in CI if/when Enterprise.
 2. CI job: `figma:pull → gen:tokens → tokens:check → test → build-storybook`, opening a PR when `figma/*.json` changed. Storybook is the review surface for the diff.
 3. Visual parity gate: export each Figma variant via `GET /v1/images/:key?ids=…` (works on all plans) and diff against Storybook renders per brand (Playwright + pixelmatch). Story ↔ node pairing already exists through `parameters.figma.variant` and `FIGMA_COMPONENTS`.
 
@@ -80,7 +80,7 @@ Where Figma still hardcodes a value, the component reads a `--bb-derived-*` toke
 
 Legacy primitives left in `src/shared/ui/legacy/ui.tsx`: Card, Badge, Alert, Spinner, EmptyState, Divider (no Figma set). `Input` and `SegmentedControl` now come from their Figma sets.
 
-Bundle: the single-file plugin UI is ~340 KB (budget 360 KB in `scripts/check-size.ts`): ~85 KB icon glyphs, ~55 KB artwork, the rest components + tokens. SVG path data is rounded to two decimals by the generator; a simplified Bridge wordmark in Figma or per-tab code splitting are the next levers.
+Bundle: the single-file plugin UI is ~335 KB; the plugin ships only the glyphs referenced from `src/` and `plugin.config.json` (`Icon/generated.active.ts` via the `@icons` alias; Storybook and tests load the full table) (budget 360 KB in `scripts/check-size.ts`): ~85 KB icon glyphs, ~55 KB artwork, the rest components + tokens. SVG path data is rounded to two decimals by the generator; a simplified Bridge wordmark in Figma or per-tab code splitting are the next levers.
 
 ### Phase 3 — tabs composed from components
 New tabs (see `docs/adding-a-tab.md`) use only `@shared/ui` components and Tailwind utilities from `theme.css`. `tokens:check` can then be widened from `src/shared/ui` + `src/shell` to `src/features`.

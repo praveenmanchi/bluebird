@@ -6,6 +6,8 @@
   --bb-button-primary-fg-default: #2b2b2b;
   --bb-button-primary-fg-disabled: #78766f;
   --bb-button-primary-border-default: #ff8e00;
+  --bb-banner-bg: #ff8e00;
+  --bb-banner-text: #ffffff;
   --bb-button-primary-border-width: 1px;
   --bb-button-primary-radius: 6px;
   --bb-button-primary-padding-x: 13px;
@@ -367,10 +369,7 @@
   --bb-dropdown-fg-disabled: #78766f;
   --bb-dropdown-chevron-size: 16px;
   --bb-dropdown-gap: 8px;
-  --bb-banner-bg: #ff8e00;
-  --bb-banner-text: #ffffff;
-  --bb-banner-powered-by: #ffffff80;
   --bb-brand-logos: fiskars;
-  --bb-background: #2c2c2c;
   --bb-boader: #444444;
+  --bb-background: #2c2c2c;
 }
