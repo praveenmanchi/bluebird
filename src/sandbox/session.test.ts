@@ -40,22 +40,9 @@ describe('session handlers', () => {
     await expect(call(h, SESSION_MSG.login, { code: '' })).rejects.toThrow(/Enter the access code/)
     await expect(call(h, SESSION_MSG.login, { code: 'wrong' })).rejects.toThrow(/not recognised/)
   })
-  it('"Keep me signed in" off keeps the session for the current run only', async () => {
-    const store = memoryStore()
-    const run1 = createSessionHandlers(config, store, 'run-1')
-    await call(run1, SESSION_MSG.login, { code: 'a-code' })
-    await call(run1, SESSION_MSG.update, { keepSignedIn: false })
-    expect(await call(run1, SESSION_MSG.status)).toMatchObject({ brandId: 'a', keepSignedIn: false })
-    const run2 = createSessionHandlers(config, store, 'run-2')
-    expect(await call(run2, SESSION_MSG.status)).toBeNull()
-    await call(run2, SESSION_MSG.login, { code: 'b-code' })
-    await call(run2, SESSION_MSG.update, { keepSignedIn: true })
-    expect(await call(createSessionHandlers(config, store, 'run-3'), SESSION_MSG.status)).toMatchObject({ brandId: 'b', keepSignedIn: true })
-  })
-
   it('reset clears every bluebird key and ignores stale brands', async () => {
     const store = memoryStore()
-    store.data.set(SESSION_KEY, { brandId: 'gone', since: '', keepSignedIn: true })
+    store.data.set(SESSION_KEY, { brandId: 'gone', since: '' })
     store.data.set('bluebird:relay-token', 'x')
     store.data.set('other', 1)
     const h = createSessionHandlers(config, store)

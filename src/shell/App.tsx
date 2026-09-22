@@ -7,7 +7,7 @@ import { TabBar } from './TabBar'
 import { activeTabId, brandStatus, connection, screen, session, windowSize } from './state'
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
-import { bootSession, login, logout, reset, setKeepSignedIn } from './session'
+import { bootSession, login, logout, reset } from './session'
 import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 
 export interface AppProps { client: RpcClient; transport: Transport }
@@ -63,7 +63,7 @@ export function App({ client, transport }: AppProps) {
         <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
           {inSettings
-            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} onKeepSignedIn={(keep) => setKeepSignedIn(client, keep)} />
+            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} />
             : entry
               ? <entry.Tab key={entry.manifest.id} />
               : <EmptyState icon="inspect" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}

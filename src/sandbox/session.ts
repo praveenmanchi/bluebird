@@ -2,7 +2,7 @@
 // figma.clientStorage (per user, per plugin) so it survives plugin reopens.
 import type { HandlerMap } from '@shared/bridge'
 import type { PluginConfig } from '@shared/config'
-import { hashAccessCode, SESSION_MSG, type Session, type SessionLoginRequest, type SessionUpdateRequest } from '@shared/session'
+import { hashAccessCode, SESSION_MSG, type Session, type SessionLoginRequest } from '@shared/session'
 
 export const SESSION_KEY = 'bluebird:session'
 
@@ -33,21 +33,13 @@ function isSession(v: unknown): v is Session {
 }
 
 /**
- * session:status | login | logout | reset | update — same HandlerMap shape as
- * the other core handlers. `runToken` identifies one plugin run; a session
- * saved with "Keep me signed in" off carries it and is dropped by the next run.
+ * session:status | login | logout | reset — same HandlerMap shape as the other
+ * core handlers. A session persists across plugin runs until logout or reset.
  */
-export function createSessionHandlers(config: PluginConfig, store: SessionStore, runToken = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`): HandlerMap {
+export function createSessionHandlers(config: PluginConfig, store: SessionStore): HandlerMap {
   const current = async (): Promise<Session | null> => {
     const v = await store.get(SESSION_KEY)
-    if (!isSession(v) || !config.brand.brands[v.brandId]) return null // unknown brand = logged out
-    if (v.keepSignedIn === false && v.runToken !== runToken) { await store.delete(SESSION_KEY); return null }
-    return v
-  }
-  const save = async (session: Session): Promise<Session> => {
-    const stored: Session = session.keepSignedIn ? { ...session, runToken: undefined } : { ...session, runToken }
-    await store.set(SESSION_KEY, stored)
-    return stored
+    return isSession(v) && config.brand.brands[v.brandId] ? v : null // unknown brand = logged out
   }
   return {
     [SESSION_MSG.status]: current,
@@ -56,12 +48,9 @@ export function createSessionHandlers(config: PluginConfig, store: SessionStore,
       if (!code.trim()) throw new Error('Enter the access code you received from your design-system team.')
       const brandId = brandForCode(config, code)
       if (!brandId) throw new Error('That access code is not recognised.')
-      return save({ brandId, since: new Date().toISOString(), keepSignedIn: payload.keepSignedIn ?? true })
-    },
-    [SESSION_MSG.update]: async (payload: SessionUpdateRequest): Promise<Session> => {
-      const session = await current()
-      if (!session) throw new Error('Not signed in.')
-      return save({ ...session, keepSignedIn: Boolean(payload?.keepSignedIn) })
+      const session: Session = { brandId, since: new Date().toISOString() }
+      await store.set(SESSION_KEY, session)
+      return session
     },
     [SESSION_MSG.logout]: async () => { await store.delete(SESSION_KEY) },
     // Reset clears everything this plugin stored for the user (session, relay token, future prefs).

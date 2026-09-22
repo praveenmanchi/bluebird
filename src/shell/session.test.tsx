@@ -39,17 +39,6 @@ describe('access-code session', () => {
     expect(await dom.findByLabelText('Access code')).toBeInTheDocument()
   })
 
-  it('"Keep me signed in" round-trips through session:update', async () => {
-    mount('bridge')
-    await waitFor(() => expect(screen.value).toBe('app'))
-    fireEvent.click(dom.getByRole('button', { name: 'Settings' }))
-    const toggle = await dom.findByRole('switch', { name: 'Keep me signed in' })
-    expect(toggle).toHaveAttribute('aria-checked', 'true')
-    fireEvent.click(toggle)
-    await waitFor(() => expect(session.value?.keepSignedIn).toBe(false))
-    expect(dom.getByRole('switch', { name: 'Keep me signed in' })).toHaveAttribute('aria-checked', 'false')
-  })
-
   it('reset asks for confirmation, then returns to login', async () => {
     mount('disney')
     await waitFor(() => expect(screen.value).toBe('app'))
