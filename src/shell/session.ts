@@ -37,6 +37,11 @@ export async function login(client: RpcClient, code: string): Promise<void> {
   await enter(client, next)
 }
 
+/** Settings → "Keep me signed in". */
+export async function setKeepSignedIn(client: RpcClient, keepSignedIn: boolean): Promise<void> {
+  session.value = await client.call<Session>(SESSION_MSG.update, { keepSignedIn })
+}
+
 export async function logout(client: RpcClient): Promise<void> {
   await client.call(SESSION_MSG.logout)
   leave()

@@ -34,7 +34,7 @@ export function mockSessionStore(persist = false): SessionStore {
 export function createMockHandlers({ scenario = 'default', brandId = 'bridge', sessionBrand, persist = false, onResize }: MockOptions = {}): HandlerMap {
   const store = mockSessionStore(persist)
   if (sessionBrand !== undefined) {
-    if (sessionBrand) void store.set('bluebird:session', { brandId: sessionBrand, since: new Date().toISOString() })
+    if (sessionBrand) void store.set('bluebird:session', { brandId: sessionBrand, since: new Date().toISOString(), keepSignedIn: true })
     else void store.delete('bluebird:session')
   }
   const shell: HandlerMap = {
