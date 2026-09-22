@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks'
-import { ButtonGroup, Toggle } from '@shared/ui'
+import { ButtonGroup } from '@shared/ui'
 import type { BrandTokensResult } from '@shared/brand'
 import { config } from '@shared/config'
 import type { Session } from '@shared/session'
@@ -13,10 +13,11 @@ export interface SettingsScreenProps {
 }
 
 /**
- * Figma "Settings page" (40000100:13084): a Toggle row (title + description)
- * above a right-aligned button group "Logoff session" / "Reset all Settings".
- * The design's toggle copy is placeholder text; the row shows the unlocked
- * brand and where its tokens come from.
+ * Figma "Settings page" (40000100:13084): a title + description row above a
+ * right-aligned button group "Logoff session" / "Reset all Settings". The
+ * design draws that row as a Toggle with placeholder copy ("[ Label ]"); until
+ * the preference it controls is defined, the row is plain session info in the
+ * same type tokens, without a switch.
  */
 export function SettingsScreen({ session, brand, onLogout, onReset }: SettingsScreenProps) {
   const [busy, setBusy] = useState<'logout' | 'reset' | null>(null)
@@ -28,14 +29,10 @@ export function SettingsScreen({ session, brand, onLogout, onReset }: SettingsSc
 
   return (
     <section class="bb-settings" aria-label="Settings">
-      <Toggle
-        class="bb-settings__row"
-        title={`Signed in as ${label}`}
-        description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. Logging off returns to the access-code screen; resetting also forgets window size and preferences.`}
-        checked={session !== null}
-        disabled
-        label="Session"
-      />
+      <div class="bb-settings__row">
+        <p class="bb-settings__title">Signed in as {label}</p>
+        <p class="bb-settings__description">Brand unlocked with an access code{since ? ` on ${since}` : ''} · {source}. Logging off returns to the access-code screen; resetting also forgets window size and preferences.</p>
+      </div>
       {confirmReset ? (
         <ButtonGroup
           class="bb-settings__actions"
