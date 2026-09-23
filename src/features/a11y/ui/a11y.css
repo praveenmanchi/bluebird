@@ -35,3 +35,53 @@
   border-radius: var(--bb-radius-md);
   font-size: var(--bb-font-size-title);
 }
+
+.bb-a11y__summary [data-tone="warn"] { color: var(--bb-status-pill-icon-warn); }
+
+/* Text whose backdrop we refuse to guess at — listed so it is visibly excluded
+ * rather than silently dropped from the count. */
+.bb-a11y__unmeasurable {
+  padding: var(--bb-space-inset-md);
+  border: var(--bb-border-width-default) solid var(--bb-color-status-warning-500);
+  border-radius: var(--bb-radius-lg);
+  background: var(--bb-surface-sunken);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-11);
+  line-height: var(--bb-type-line-14);
+  color: var(--bb-text-secondary);
+}
+.bb-a11y__unmeasurable summary {
+  font-weight: var(--bb-type-weight-600);
+  color: var(--bb-color-status-warning-400);
+  cursor: pointer;
+}
+.bb-a11y__unmeasurable ul {
+  margin: var(--bb-space-inset-sm) 0 0;
+  padding-left: var(--bb-space-inset-md);
+}
+.bb-a11y__unmeasurable button {
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-text-accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Export row — the artifact an auditor reads, in two formats. */
+.bb-a11y__export {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-sm);
+  flex-wrap: wrap;
+}
+.bb-a11y__export-label {
+  margin-right: auto;
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+  text-transform: uppercase;
+}

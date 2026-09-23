@@ -1,0 +1,11 @@
+/* ManualReviewItem — Figma "Manual Review Item" (40000162:7275). */
+.bb-manual-review-item {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-sm);
+}
+.bb-manual-review-item__icon { flex: none; }
+.bb-manual-review-item[data-done] .bb-checkbox__label {
+  color: var(--bb-text-tertiary);
+  text-decoration: line-through;
+}

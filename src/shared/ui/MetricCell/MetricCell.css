@@ -1,0 +1,19 @@
+/* MetricCell — Figma "Metric Cell" (40000157:7207). */
+.bb-metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-xs);
+  min-width: 0;
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-metric-cell__label {
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+}
+.bb-metric-cell__value {
+  font-size: var(--bb-type-size-11);
+  font-weight: var(--bb-type-weight-500);
+  line-height: var(--bb-type-line-14);
+  color: var(--bb-text-primary);
+}

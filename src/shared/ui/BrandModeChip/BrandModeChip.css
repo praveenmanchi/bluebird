@@ -1,0 +1,28 @@
+/* BrandModeChip — Figma "Brand Mode Chip" (40000158:7224). */
+.bb-brand-mode-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inline-xs);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
+  border: var(--bb-border-width-default) solid var(--bb-color-status-danger-500);
+  border-radius: var(--bb-radius-pill);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-color-status-danger-400);
+  white-space: nowrap;
+}
+.bb-brand-mode-chip[data-pass] {
+  border-color: var(--bb-color-status-success-500);
+  color: var(--bb-color-status-success-400);
+}
+.bb-brand-mode-chip[data-current] {
+  background: var(--bb-surface-sunken);
+  font-weight: var(--bb-type-weight-600);
+}
+.bb-brand-mode-chip__icon {
+  width: var(--bb-status-pill-icon-size);
+  height: var(--bb-status-pill-icon-size);
+  flex: none;
+}
+.bb-brand-mode-chip__ratio { color: var(--bb-text-tertiary); }

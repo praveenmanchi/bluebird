@@ -1,0 +1,7 @@
+/* ThumbnailPair — Figma "Thumbnail Pair" (40000159:7067). */
+.bb-thumbnail-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--bb-space-inline-sm);
+}
+.bb-thumbnail-pair[data-pair] { grid-template-columns: 1fr 1fr; }

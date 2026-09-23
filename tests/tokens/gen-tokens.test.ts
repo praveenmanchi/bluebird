@@ -81,9 +81,11 @@ describe('generate()', () => {
     const a = derivedDeclarations(inputs.components).map((d) => d.name)
     const b = derivedDeclarations(inputs.components).map((d) => d.name)
     expect(a).toEqual(b)
-    // The Button's icon vector lives inside an instance and must not leak; the Banner's own vector (HCLTech mark) legitimately does.
+    // The Button's icon vector lives inside an instance and must not leak; a set's own vector does.
+    // (This used to assert on the Banner's HCLTech mark, but Figma replaced that inline vector with a
+    // `brand logos` instance on 2026-09-23, so the Banner no longer owns a vector.)
     expect(a.some((n) => n.includes('leading-icon'))).toBe(false)
-    expect(a).toContain('--bb-derived-banner-vector-width')
+    expect(a).toContain('--bb-derived-settings-button-vector-width')
   })
   it('normalises svg exports to currentColor bodies', () => {
     const { viewBox, body } = normalizeSvg('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 1" fill="#F5F5F5"/>\n<rect stroke="white"/></svg>')

@@ -7,6 +7,9 @@ export type VariableType = 'COLOR' | 'FLOAT' | 'STRING' | 'BOOLEAN'
 export type ResolvedValue = string | number | boolean | null
 
 export interface SnapshotVariable {
+  /** Figma's VariableID. Recorded so a REST pull can resolve node bindings to names when the
+   *  file's plan denies /variables/local (Enterprise-only) — see scripts/figma-pull.ts. */
+  id?: string
   name: string
   type: VariableType
   /** Resolved (alias-followed) value per mode name. */

@@ -21,7 +21,10 @@ Figma file WWRcH8IPLJ4iQVyoK9oDnH
               Storybook loads all.css + brand toolbar                     │
               plugin loads active.css + <html data-brand>                 │
                                                                           ▼
-   npm run tokens:check   (CI gate: stale generated files · unknown vars · raw values · Figma bindings not consumed)
+   npm run tokens:check   (CI gate: stale generated files · unknown vars · raw values · Figma bindings
+                           not consumed · derived geometry not consumed · Figma props not mapped)
+   npm run figma:diff     (what moved in Figma since the last pull, without overwriting the snapshot)
+   npm run figma:visual   (Figma's render of each variant next to Storybook's, per brand)
 ```
 
 ## Layers and who owns what
@@ -43,7 +46,8 @@ FLOATs become `px` except weights and opacities; font families are quoted.
 Each folder mirrors one Figma component set (ids live in `figma/manifest.json`):
 
 - `Name.css` uses only `var(--bb-…)`. `tokens:check` fails on any hex, `rgb()`, `px` or named colour. Motion is the one exception, marked `/* allow-raw */`.
-- `figma.ts` maps Figma props → code props and lists `figmaGaps`: tokens the Figma set binds that the code intentionally does not read, each with a reason. Anything not listed there must be consumed, or CI fails.
+- `figma.ts` maps Figma props → code props and lists `figmaGaps`: tokens the Figma set binds that the code intentionally does not read, each with a reason. Anything not listed there must be consumed, or CI fails. Every key of the set's `componentPropertyDefinitions` must appear in `props` (or `gapProps`, or `propGaps` when it maps to a composed child rather than a code prop), and each mapping must name a real prop of `<Code>Props` — so a property added in Figma cannot pass unnoticed. `setId` is checked against both `figma/components.json` and `figma/manifest.json`.
+- `derivedGaps` is the same idea for the generated `--bb-derived-*` geometry: raw widths, paddings and gaps the component deliberately does not read. The 369 that no component reads today are recorded **with their values** in `figma/derived-baseline.json`; when Figma later moves one of those values the gate raises `derived-token-drifted`, because a design change reaching no code is exactly the drift this is for. The baseline only shrinks — `derived-baseline-stale` fires on an entry that is now read or no longer generated.
 - `Name.stories.tsx` has one story per Figma variant, tagged `parameters.figma.variant = 'Type=Primary, State=Default'`. `tests/tokens/figma-story-coverage.test.ts` fails when a Figma variant has no story. `Matrix` mirrors the component-set frame; `AcrossBrands` mirrors the Figma "across brands" sections.
 - Forced states for visual tests: `state="hover"` (`[data-state="hover"]` selects the same rules as `:hover`).
 
@@ -61,9 +65,31 @@ real variable, the generator moves it and `tokens:check` points at the code to u
 - `npm run verify` = typecheck + lint + tokens:check + tests + build.
 
 ### Phase 1 — automate the loop
-1. Pull backend: the relay backend is proven (2026-09-22: full pull of 621 variables, 49 sets and the Tab Icons set in ~45 s). Flow: `npm run build` → `npm run dev:relay` → in Figma desktop run *Dev: connect to browser (live mode)* → `npm run figma:pull` → `npm run gen:tokens && npm run tokens:check`. The pull keeps the code-side bookkeeping (`status`/`aliasOf`, tiers, hand-exported glyphs). `--rest` needs a personal access token **and** an Enterprise plan for `/variables/local`. Recommended: relay locally, REST in CI if/when Enterprise.
+0. **Drift report: done (2026-09-23).** `npm run figma:diff` pulls into memory, never touching `figma/*.json`, and prints what moved since the last pull grouped by component — variables per mode, component properties, variants, layers, bindings, raw geometry — each annotated with the generated CSS var it lands on and whether any component reads it. `figma/drift.json` carries the same as data. Exit 2 (pull failed) is distinct from exit 1 (`--fail-on-drift`) so CI never calls a dead relay "drift". `/figma-sync` drives the whole loop: diff → review → edit → pull → gate.
+0b. **The Enterprise gate on REST, and the way round it (2026-09-23).**
+   `GET /v1/files/:key/variables/local` is Enterprise-only, and without it REST returns node
+   bindings as ids (`VariableID:40000012:5102`) with no way to name them — so a REST diff reported
+   every layer as rebound (2426 findings on a file with 16 real changes). Two independent problems
+   and two fixes:
+
+   1. **Naming.** Figma variable ids are stable for the life of the file, so `extract.ts` now
+      records `id` alongside `name` in `figma/tokens.json`. One relay pull seeds the map and every
+      later REST pull resolves bindings from it offline. Variables created or deleted since that
+      pull are unknown ids, and are reported rather than silently labelled `lib:`.
+   2. **Extractor parity.** `extract.ts` and the REST `describe()` are two implementations of one
+      contract, and they had diverged: fills/strokes recorded as `'RAW'` instead of the hex, sizes
+      rounded to integers instead of one decimal, no instance-override walk, no `cp`, and instance
+      identity as a raw `componentId` instead of the main component's name. All now mirror
+      `extract.ts`, sharing its `OVERRIDE_KEYS` and `pruneToOverrides` so a third copy cannot drift.
+
+   Until parity is **measured**, `figma:diff` refuses to compare layers across backends and says so.
+   `npm run figma:parity` pulls both at the same moment and diffs them: every finding is an
+   extractor difference, never a design change. Zero is the licence to pass
+   `--allow-cross-extractor`. That refusal is the guard against re-shipping the 2426-finding bug.
+
+1. Pull backend: the relay backend is proven (2026-09-22: full pull of 621 variables, 49 sets and the Tab Icons set in ~45 s). Flow: `npm run build` → `npm run dev:relay` → in Figma desktop run *Dev: connect to browser (live mode)* → `npm run figma:pull` → `npm run gen:tokens && npm run tokens:check`. The pull keeps the code-side bookkeeping (`status`/`aliasOf`, tiers, hand-exported glyphs). `--rest` needs a personal access token; `/variables/local` additionally needs Enterprise, but see 0b — after one relay pull, REST resolves bindings from the recorded variable ids. Variable *values* still need the relay (or Enterprise); components, properties, bindings and geometry do not.
 2. CI job: `figma:pull → gen:tokens → tokens:check → test → build-storybook`, opening a PR when `figma/*.json` changed. Storybook is the review surface for the diff.
-3. Visual parity gate: export each Figma variant via `GET /v1/images/:key?ids=…` (works on all plans) and diff against Storybook renders per brand (Playwright + pixelmatch). Story ↔ node pairing already exists through `parameters.figma.variant` and `FIGMA_COMPONENTS`.
+3. Visual parity: **done (2026-09-23)** — `npm run figma:visual` exports each variant via `GET /v1/images/:key?ids=…` (all plans, `FIGMA_TOKEN` only), screenshots the paired story per brand with Playwright, and pixelmatches the two into `figma/visual/report.html`. Pairing comes from `parameters.figma.setId`/`.variant` read out of Storybook's own preview at runtime — index.json carries no parameters, and story names ("Primary Default") do not resemble variant names ("Type=Primary, State=Default, Size=Medium"), so name-guessing pairs under half of them. All 107 variants pair. It reports only by default and stays out of `npm run verify`: Figma rasterises text itself, so the percentage is a sort order, not a verdict — it earns its keep on structural drift (wrong size, moved element, missing layer).
 
 ### Phase 2 — components built, Figma bindings still to close (2026-09-21)
 Every component set on the Components page now has a code counterpart under `src/shared/ui` (38 built, 11 aliases). `figma/components.json` carries `status: built | alias` per set; `alias` sets are covered by another component (`aliasOf`): the six icon-only sets and the toolbar/section icons feed the `Icon` glyph table (`figma/icons.json`, 69 glyphs), `brands` / integration logos feed `BrandLogo` (`figma/logos/*.svg`), and the duplicates ButtonWrapper→Button, TabLegacy→Tab, SelectFieldLabeled→SelectField, CountBadgeIcon→CountBadge are folded into props.
@@ -82,7 +108,7 @@ Screens (`Login Page` 40000100:13204, `Settings page` 40000100:13084) are snapsh
 
 The legacy primitives and their raw light palette are gone (2026-09-22). `EmptyState` remains as a token-only component on `empty-state/*` without a Figma set; everything else maps to a set.
 
-Bundle: the single-file plugin UI is ~335 KB; the plugin ships only the glyphs referenced from `src/` and `plugin.config.json` (`Icon/generated.active.ts` via the `@icons` alias; Storybook and tests load the full table) (budget 360 KB in `scripts/check-size.ts`): ~85 KB icon glyphs, ~55 KB artwork, the rest components + tokens. SVG path data is rounded to two decimals by the generator; a simplified Bridge wordmark in Figma or per-tab code splitting are the next levers.
+Bundle: the single-file plugin UI is ~488 KB; the plugin ships only the glyphs referenced from `src/` and `plugin.config.json` (`Icon/generated.active.ts` via the `@icons` alias; Storybook and tests load the full table) (budget 520 KB in `scripts/check-size.ts`): ~85 KB icon glyphs, ~55 KB artwork, the rest components + tokens. SVG path data is rounded to two decimals by the generator; a simplified Bridge wordmark in Figma or per-tab code splitting are the next levers.
 
 ### Phase 3 — tabs composed from components
 New tabs (see `docs/adding-a-tab.md`) use only `@shared/ui` components and Tailwind utilities from `theme.css`. `tokens:check` can then be widened from `src/shared/ui` + `src/shell` to `src/features`.
@@ -101,10 +127,14 @@ New tabs (see `docs/adding-a-tab.md`) use only `@shared/ui` components and Tailw
 ## Commands
 
 ```bash
+npm run figma:diff            # what changed in Figma since the last pull (writes nothing but figma/drift.json)
+npm run figma:parity          # do the relay and REST extractors describe the file identically?
+npm run figma:visual          # Figma renders vs Storybook renders → figma/visual/report.html (needs FIGMA_TOKEN)
 npm run figma:pull            # relay backend (needs `npm run dev:relay` + bridge plugin open in Figma)
 npm run figma:pull -- --rest  # REST backend (FIGMA_TOKEN, Enterprise for variables)
 npm run gen:tokens            # regenerate CSS/TS from figma/*.json
 npm run tokens:check          # drift gate
+npm run tokens:check -- --write-baseline   # re-accept unread derived tokens as debt (last resort)
 npm run tokens:map            # mapping report for unbuilt components → docs/figma-token-mapping.md
 npm run storybook             # http://localhost:6006, Brand switcher in the toolbar
 npm run verify                # everything CI runs

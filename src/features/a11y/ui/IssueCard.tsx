@@ -1,5 +1,7 @@
 import { WcagCard, useRpc } from '@shared/ui'
+import { annotationForContrast } from '../annotate'
 import { MSG, type ContrastIssue } from '../messages'
+import { useAnnotate } from './useAnnotate'
 
 /** WCAG criterion a contrast issue is reported against. `fail` breaks 1.4.3 (AA); everything else below AAA breaks 1.4.6. */
 export function criterionFor(issue: ContrastIssue): { code: string; title: string; rating: 'AA' | 'AAA'; needs: number } {
@@ -17,7 +19,17 @@ const DESCRIPTION: Record<string, string> = {
 export function IssueCard({ issue }: { issue: ContrastIssue }) {
   const rpc = useRpc()
   const c = criterionFor(issue)
+  const { annotation, onAnnotate } = useAnnotate(
+    issue.nodeId, issue.nodeIds, annotationForContrast(issue, c.code, c.needs).label,
+  )
   const focus = () => { void rpc.call(MSG.focus, { nodeId: issue.nodeId }).catch(() => undefined) }
+  const selectAll = issue.occurrences > 1
+    ? () => { void rpc.call(MSG.selectAll, { nodeIds: issue.nodeIds }).catch(() => undefined) }
+    : undefined
+  // One click rebinds every layer that shares the pair, not just the focused one.
+  const applyFix = issue.fix
+    ? () => { void rpc.call(MSG.applyFix, { nodeIds: issue.nodeIds, variableId: issue.fix!.tokenId }).catch(() => undefined) }
+    : undefined
   return (
     <WcagCard
       code={c.code}
@@ -27,16 +39,43 @@ export function IssueCard({ issue }: { issue: ContrastIssue }) {
       principle="perceivable"
       disabilities={['visual']}
       node={`${issue.name} [TEXT]`}
-      colors={{ fg: issue.foreground, bg: issue.background }}
+      occurrences={issue.occurrences > 1
+        ? { count: issue.occurrences, onSelectAll: selectAll }
+        : undefined}
+      colors={{
+        fg: issue.foreground,
+        bg: issue.background,
+        fgToken: issue.fgToken && { name: issue.fgToken.name, mode: issue.fgToken.mode },
+        bgToken: issue.bgToken && { name: issue.bgToken.name, mode: issue.bgToken.mode },
+      }}
+      nodeToken={issue.fgToken && { name: issue.fgToken.name, mode: issue.fgToken.mode }}
+      brandModes={issue.brandModes?.map((m) => ({
+        brand: m.brand,
+        pass: m.pass,
+        ratio: `${m.ratio.toFixed(2)}:1`,
+        current: m.brand === issue.fgToken?.mode,
+      }))}
+      fix={issue.fix && {
+        token: { name: issue.fix.tokenName, mode: issue.fix.mode },
+        value: issue.fix.hex,
+        on: issue.background,
+        ratio: `${issue.fix.ratio.toFixed(2)}:1`,
+        onApply: applyFix,
+      }}
       actual={`${issue.ratio.toFixed(2)}:1`}
       required={`${c.needs}:1 (${c.rating})`}
-      whyItFails={`“${issue.text || issue.name}” (${issue.fontSize}px${issue.isBold ? ' bold' : ''}) measures ${issue.ratio.toFixed(2)}:1 against its background; ${c.rating} needs ${c.needs}:1.`}
-      howToFix={`Darken the text or lighten the fill until the ratio reaches ${c.needs}:1, or increase the type size so the large-text threshold applies.`}
+      whyItFails={`“${issue.text || issue.name}” (${issue.fontSize}px${issue.isBold ? ' bold' : ''}) measures ${issue.ratio.toFixed(2)}:1 against ${issue.assumedBackground ? 'an assumed white background — nothing opaque sits behind it' : 'its background'}; ${c.rating} needs ${c.needs}:1.${issue.occurrences > 1 ? ` ${issue.occurrences} layers share this pair.` : ''}`}
+      severity={issue.assumedBackground ? 'moderate' : issue.level === 'fail' ? 'critical' : 'serious'}
+      howToFix={issue.fix
+        ? `Rebind the text to ${issue.fix.tokenName}, the nearest token in the ${issue.fix.mode} palette that reaches ${issue.fix.ratio.toFixed(2)}:1.`
+        : `Darken the text or lighten the fill until the ratio reaches ${c.needs}:1, or increase the type size so the large-text threshold applies.`}
       themes={['zoom']}
       link={{ label: `Understanding SC ${c.code} ↗`, href: `https://www.w3.org/WAI/WCAG22/Understanding/${c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced'}.html` }}
       sampleText={issue.text || 'Aa'}
       ratio={{ value: `${issue.ratio.toFixed(2)}:1`, requirement: `needs ${c.needs}:1` }}
       checks={['design']}
+      annotation={annotation}
+      onAnnotate={onAnnotate}
       onSelect={focus}
     />
   )

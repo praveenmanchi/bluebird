@@ -1,0 +1,40 @@
+/* IgnoreBanner — Figma "Ignore Banner" (40000160:7255). */
+.bb-ignore-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-space-inset-md);
+  border: var(--bb-border-width-default) solid var(--bb-color-status-warning-500);
+  border-radius: var(--bb-radius-lg);
+  background: var(--bb-surface-sunken);
+}
+.bb-ignore-banner__icon {
+  width: var(--bb-wcag-card-icon-size);
+  height: var(--bb-wcag-card-icon-size);
+  flex: none;
+  color: var(--bb-color-status-warning-400);
+}
+.bb-ignore-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-xs);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bb-ignore-banner__reason {
+  margin: 0;
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-11);
+  line-height: var(--bb-type-line-14);
+  color: var(--bb-text-primary);
+}
+.bb-ignore-banner__meta {
+  display: flex;
+  gap: var(--bb-space-inline-sm);
+  margin: 0;
+  flex-wrap: wrap;
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+}

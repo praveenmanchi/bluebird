@@ -4,7 +4,7 @@
     "id": "40000008:9592",
     "name": "Components"
   },
-  "pulledAt": "2026-09-22",
+  "pulledAt": "2026-09-23",
   "sets": [
     {
       "code": "Button",
@@ -1375,7 +1375,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  98,
+                  102,
                   16
                 ]
               }
@@ -1391,9 +1391,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  12,
+                  16,
                   16
                 ]
               }
@@ -1449,7 +1449,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  98,
+                  102,
                   16
                 ]
               }
@@ -1465,9 +1465,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  12,
+                  16,
                   16
                 ]
               }
@@ -1523,7 +1523,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  98,
+                  102,
                   16
                 ],
                 "opacity": 0.6
@@ -1540,9 +1540,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  12,
+                  16,
                   16
                 ]
               }
@@ -1598,7 +1598,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  97,
+                  102,
                   16
                 ]
               }
@@ -1614,9 +1614,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  11,
+                  16,
                   16
                 ]
               }
@@ -1672,7 +1672,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  97,
+                  102,
                   16
                 ]
               }
@@ -1688,9 +1688,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  11,
+                  16,
                   16
                 ]
               }
@@ -1746,7 +1746,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  97,
+                  102,
                   16
                 ],
                 "opacity": 0.6
@@ -1763,9 +1763,9 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  11,
+                  16,
                   16
                 ]
               }
@@ -2368,7 +2368,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  12,
+                  16,
                   16
                 ]
               },
@@ -3310,7 +3310,23 @@
               }
             },
             {
-              "p": "Banner/Frame 1430102689/Frame 1430102692/Line 62",
+              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102695",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 6,
+                "size": [
+                  139.4,
+                  32
+                ]
+              },
+              "pr": {
+                "visible": "Dual logo"
+              }
+            },
+            {
+              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102695/Line 62",
               "t": "LINE",
               "b": {
                 "stroke": "Banner/powered by"
@@ -3324,7 +3340,7 @@
               }
             },
             {
-              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102687",
+              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102695/Frame 1430102687",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -3337,7 +3353,7 @@
               }
             },
             {
-              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102687/Design Studio",
+              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102695/Frame 1430102687/Design Studio",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -3349,7 +3365,7 @@
               }
             },
             {
-              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102687/Connecting Gap between design workflow",
+              "p": "Banner/Frame 1430102689/Frame 1430102692/Frame 1430102695/Frame 1430102687/Connecting Gap between design workflow",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -3371,10 +3387,10 @@
                 "paddingLeft": 4,
                 "paddingRight": 4,
                 "paddingTop": 2,
-                "paddingBottom": 4,
+                "paddingBottom": 2,
                 "size": [
-                  61.6,
-                  21.1
+                  59.8,
+                  23.3
                 ]
               },
               "pr": {
@@ -3387,15 +3403,29 @@
               "b": {},
               "r": {
                 "layout": "VERTICAL MIN MIN HUG HUG",
-                "itemSpacing": 2,
                 "size": [
-                  53.6,
-                  15.1
+                  51.8,
+                  19.3
                 ]
               }
             },
             {
-              "p": "Banner/Frame 1430102690/Frame 1430102691/Powered By",
+              "p": "Banner/Frame 1430102690/Frame 1430102691/Frame 1430102694",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 4,
+                "paddingRight": 4,
+                "size": [
+                  32,
+                  4
+                ]
+              }
+            },
+            {
+              "p": "Banner/Frame 1430102690/Frame 1430102691/Frame 1430102694/Powered By",
               "t": "TEXT",
               "b": {
                 "fill": "Banner/powered by"
@@ -3408,27 +3438,18 @@
               }
             },
             {
-              "p": "Banner/Frame 1430102690/Frame 1430102691/Frame",
-              "t": "FRAME",
+              "p": "Banner/Frame 1430102690/Frame 1430102691/brand logos",
+              "t": "INSTANCE",
               "b": {},
               "r": {
                 "size": [
-                  53.6,
-                  9.1
+                  51.8,
+                  15.3
                 ]
-              }
-            },
-            {
-              "p": "Banner/Frame 1430102690/Frame 1430102691/Frame/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "Banner/Text"
               },
-              "r": {
-                "size": [
-                  50.3,
-                  9.1
-                ]
+              "i": "Brand=HCL <brand logos>",
+              "cp": {
+                "Brand": "HCL"
               }
             }
           ]
@@ -3469,9 +3490,11 @@
               "b": {},
               "r": {
                 "fill": "#2360a5",
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 10,
                 "size": [
-                  162.7,
-                  48
+                  106.3,
+                  35
                 ]
               }
             },
@@ -3482,8 +3505,8 @@
               "r": {
                 "fill": "#f6d33c",
                 "size": [
-                  109.6,
-                  36.1
+                  106.3,
+                  35
                 ]
               }
             },
@@ -3494,8 +3517,8 @@
               "r": {
                 "fill": "#2360a5",
                 "size": [
-                  84.7,
-                  15
+                  82.1,
+                  14.6
                 ]
               }
             }
@@ -3910,7 +3933,6 @@
                 "stroke": "tab/indicator/color"
               },
               "r": {
-                "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG FIXED",
                 "itemSpacing": 10,
                 "paddingLeft": 6,
@@ -5886,11 +5908,13 @@
               "p": "Property 1=Auditory",
               "t": "COMPONENT",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -5902,48 +5926,22 @@
               }
             },
             {
-              "p": "Property 1=Auditory/Disabilities",
+              "p": "Property 1=Auditory/ear-hearing",
               "t": "INSTANCE",
               "b": {
-                "itemSpacing": "disability-indicator/gap"
+                "width": "dimension/size/icon-24",
+                "height": "dimension/size/icon-24"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN FILL FIXED",
                 "size": [
-                  24.9,
+                  24,
                   24
                 ]
               },
-              "i": "Language=- (Default), Size=Default <Disabilities>",
-              "cp": {
-                "Speech": false,
-                "Physical/Motor": false,
-                "Cognitive": false,
-                "Auditory": true,
-                "Visual": false,
-                "Language": "- (Default)",
-                "Size": "Default"
-              }
+              "i": "ear-hearing"
             },
             {
-              "p": "Property 1=Auditory/Disabilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "counterAxisSizingMode",
-                "fills",
-                "layoutAlign",
-                "layoutGrow",
-                "primaryAxisAlignItems",
-                "primaryAxisSizingMode",
-                "strokes"
-              ]
-            },
-            {
-              "p": "Property 1=Auditory/Disabilities/Icon/ear-hearing/Vector",
+              "p": "Property 1=Auditory/ear-hearing/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "disability-indicator/icon/color"
@@ -5970,8 +5968,8 @@
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "radius": 2.5714285373687744,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6025,8 +6023,8 @@
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "radius": 2.5714285373687744,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6075,11 +6073,13 @@
               "p": "Property 1=Visual",
               "t": "COMPONENT",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6091,48 +6091,22 @@
               }
             },
             {
-              "p": "Property 1=Visual/Disabilities",
+              "p": "Property 1=Visual/eye",
               "t": "INSTANCE",
               "b": {
-                "itemSpacing": "disability-indicator/gap"
+                "width": "dimension/size/icon-24",
+                "height": "dimension/size/icon-24"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN FIXED FIXED",
                 "size": [
                   24,
                   24
                 ]
               },
-              "i": "Language=- (Default), Size=Default <Disabilities>",
-              "cp": {
-                "Speech": false,
-                "Physical/Motor": false,
-                "Cognitive": false,
-                "Auditory": false,
-                "Visual": true,
-                "Language": "- (Default)",
-                "Size": "Default"
-              }
+              "i": "eye"
             },
             {
-              "p": "Property 1=Visual/Disabilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "counterAxisSizingMode",
-                "fills",
-                "layoutAlign",
-                "layoutGrow",
-                "primaryAxisAlignItems",
-                "primaryAxisSizingMode",
-                "strokes"
-              ]
-            },
-            {
-              "p": "Property 1=Visual/Disabilities/Icon/eye/Vector",
+              "p": "Property 1=Visual/eye/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "disability-indicator/icon/color"
@@ -6154,11 +6128,13 @@
               "p": "Property 1=Code",
               "t": "COMPONENT",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6170,41 +6146,22 @@
               }
             },
             {
-              "p": "Property 1=Code/Responsibilities",
+              "p": "Property 1=Code/xml",
               "t": "INSTANCE",
               "b": {
-                "itemSpacing": "disability-indicator/gap"
+                "width": "lib:VariableID:077f3751ce83314f116d6370b8a26c5791ff724b/1755:299",
+                "height": "lib:VariableID:077f3751ce83314f116d6370b8a26c5791ff724b/1755:299"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
                 "size": [
-                  24,
-                  24
+                  20,
+                  20
                 ]
               },
-              "i": "Language=- (Default), Size=Default <Responsibilities>",
-              "cp": {
-                "Content": false,
-                "Development": true,
-                "Design": false,
-                "Language": "- (Default)",
-                "Size": "Default"
-              }
+              "i": "xml"
             },
             {
-              "p": "Property 1=Code/Responsibilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "fills",
-                "strokes"
-              ]
-            },
-            {
-              "p": "Property 1=Code/Responsibilities/Icon/xml/Vector",
+              "p": "Property 1=Code/xml/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "disability-indicator/icon/color"
@@ -6231,8 +6188,8 @@
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "radius": 2.5714285373687744,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6281,11 +6238,13 @@
               "p": "Property 1=Design",
               "t": "COMPONENT",
               "b": {
+                "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
                 "strokeWeight": 0.6428571343421936,
-                "layout": "HORIZONTAL MIN CENTER FIXED FIXED",
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "paddingLeft": 2.5714285373687744,
                 "paddingRight": 2.5714285373687744,
                 "paddingTop": 2.5714285373687744,
@@ -6297,46 +6256,22 @@
               }
             },
             {
-              "p": "Property 1=Design/Responsibilities",
+              "p": "Property 1=Design/pencil-ruler",
               "t": "INSTANCE",
               "b": {
-                "itemSpacing": "disability-indicator/gap"
+                "width": "dimension/size/icon-24",
+                "height": "dimension/size/icon-24"
               },
               "r": {
-                "layout": "HORIZONTAL MIN MIN FIXED FIXED",
                 "size": [
                   24,
                   24
                 ]
               },
-              "i": "Language=- (Default), Size=Default <Responsibilities>",
-              "cp": {
-                "Content": false,
-                "Development": false,
-                "Design": true,
-                "Language": "- (Default)",
-                "Size": "Default"
-              }
+              "i": "pencil-ruler"
             },
             {
-              "p": "Property 1=Design/Responsibilities/Icon",
-              "t": "FRAME",
-              "b": {
-                "fill": "icon/glyph/default"
-              },
-              "o": [
-                "boundVariables",
-                "counterAxisSizingMode",
-                "fills",
-                "layoutAlign",
-                "layoutGrow",
-                "primaryAxisAlignItems",
-                "primaryAxisSizingMode",
-                "strokes"
-              ]
-            },
-            {
-              "p": "Property 1=Design/Responsibilities/Icon/pencil-ruler/Vector",
+              "p": "Property 1=Design/pencil-ruler/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "disability-indicator/icon/color"
@@ -7502,7 +7437,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  100,
+                  120,
                   32
                 ]
               }
@@ -7517,17 +7452,18 @@
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
                 "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md",
                 "height": "button/primary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  100,
+                  120,
                   32
                 ]
               },
-              "i": "Type=Primary, State=Default <Button>",
+              "i": "Type=Primary, State=Default, Size=Medium <Button>",
               "cp": {
                 "Trailing icon": "91:1958",
                 "Leading icon": "91:1958",
@@ -7535,7 +7471,8 @@
                 "Show leading icon": true,
                 "Label": "Text Here",
                 "Type": "Primary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
               }
             }
           ]
@@ -10542,6 +10479,9 @@
                 "Status": "On",
                 "Title": "No",
                 "Copy": "No"
+              },
+              "pr": {
+                "visible": "Toggle"
               }
             },
             {
@@ -10565,7 +10505,16 @@
       "id": "215:12537",
       "name": "Container",
       "description": "",
-      "props": {},
+      "props": {
+        "Primary Button": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Seconndary butto": {
+          "type": "BOOLEAN",
+          "default": true
+        }
+      },
       "variants": [
         {
           "id": "215:12537",
@@ -10596,17 +10545,18 @@
                 "itemSpacing": "button/secondary/gap",
                 "paddingLeft": "button/secondary/padding-x",
                 "paddingRight": "button/secondary/padding-x",
+                "width": "button/secondary/width-md",
                 "height": "button/secondary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  105,
+                  120,
                   32
                 ]
               },
-              "i": "Type=Secondary, State=Default <Button>",
+              "i": "Type=Secondary, State=Default, Size=Medium <Button>",
               "cp": {
                 "Trailing icon": "91:1958",
                 "Show trailing icon": false,
@@ -10614,7 +10564,11 @@
                 "Leading icon": "91:1958",
                 "Label": "Test Connection",
                 "Type": "Secondary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
+              },
+              "pr": {
+                "visible": "Seconndary butto"
               }
             },
             {
@@ -10627,17 +10581,18 @@
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
                 "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md",
                 "height": "button/primary/height"
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  129,
+                  120,
                   32
                 ]
               },
-              "i": "Type=Primary, State=Default <Button>",
+              "i": "Type=Primary, State=Default, Size=Medium <Button>",
               "cp": {
                 "Trailing icon": "91:1958",
                 "Leading icon": "91:1958",
@@ -10645,7 +10600,11 @@
                 "Show leading icon": false,
                 "Label": "Save Configuration",
                 "Type": "Primary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
+              },
+              "pr": {
+                "visible": "Primary Button"
               }
             }
           ]
@@ -11385,7 +11344,7 @@
     },
     {
       "code": "WcagCard",
-      "id": "419:39993",
+      "id": "40000141:9570",
       "name": "WCAG Card",
       "description": "",
       "props": {
@@ -11440,16 +11399,74 @@
         "check Design": {
           "type": "BOOLEAN",
           "default": true
+        },
+        "Show severity": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show change": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show occurrences": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show tokens": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show fix": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show brand modes": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show metrics": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show thumbnails": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show manual review": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show snippet": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Show ignored": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Annotated": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Mode": {
+          "type": "VARIANT",
+          "options": [
+            "Text",
+            "colors"
+          ],
+          "default": "colors"
         }
       },
       "variants": [
         {
           "id": "419:39993",
-          "name": "WCAG Card",
-          "props": {},
+          "name": "Mode=colors",
+          "props": {
+            "Mode": "colors"
+          },
           "nodes": [
             {
-              "p": "WCAG Card",
+              "p": "Mode=colors",
               "t": "COMPONENT",
               "b": {
                 "fill": "wcag-card/bg/default",
@@ -11459,14 +11476,15 @@
               "r": {
                 "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
+                "itemSpacing": 4,
                 "size": [
                   465,
-                  576
+                  1108
                 ]
               }
             },
             {
-              "p": "WCAG Card/Header",
+              "p": "Mode=colors/Header",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11482,7 +11500,82 @@
               }
             },
             {
-              "p": "WCAG Card/Header/Rating",
+              "p": "Mode=colors/Header/Frame 1430102696",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "itemSpacing": 4,
+                "size": [
+                  245,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Header/Frame 1430102696/Change",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "border/accent",
+                "radius": "radius/pill",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  154,
+                  17
+                ]
+              },
+              "i": "Tone=Accent <Meta Badge>",
+              "cp": {
+                "Show meta": true,
+                "Meta": "passed on 21 Sep",
+                "Label": "Regressed",
+                "Tone": "Accent"
+              },
+              "pr": {
+                "visible": "Show change"
+              }
+            },
+            {
+              "p": "Mode=colors/Header/Frame 1430102696/Severity",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "color/status/danger/500",
+                "radius": "radius/pill",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  49,
+                  17
+                ]
+              },
+              "i": "Tone=Danger <Meta Badge>",
+              "cp": {
+                "Show meta": false,
+                "Meta": "Meta",
+                "Label": "Critical",
+                "Tone": "Danger"
+              },
+              "pr": {
+                "visible": "Show severity"
+              }
+            },
+            {
+              "p": "Mode=colors/Header/Frame 1430102696/Rating",
               "t": "INSTANCE",
               "b": {
                 "fill": "disability-indicator/icon/color",
@@ -11503,7 +11596,7 @@
               }
             },
             {
-              "p": "WCAG Card/Header/Rating/A",
+              "p": "Mode=colors/Header/Frame 1430102696/Rating/A",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11515,13 +11608,19 @@
               ]
             },
             {
-              "p": "WCAG Card/Header/Principle",
+              "p": "Mode=colors/Header/Principle",
               "t": "INSTANCE",
               "b": {
                 "fill": "principle/perceivable/bg",
                 "paddingRight": "wcag-card/padding"
               },
               "r": {
+                "radius": [
+                  0,
+                  0,
+                  12,
+                  0
+                ],
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 6,
                 "paddingLeft": 10,
@@ -11538,7 +11637,15 @@
               }
             },
             {
-              "p": "WCAG Card/Header/Principle/Icon/Vector",
+              "p": "Mode=colors/Header/Principle/Icon",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "boundVariables"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -11548,7 +11655,65 @@
               ]
             },
             {
-              "p": "WCAG Card/Header/Principle/Text/Perceivable",
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Text",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "boundVariables"
+              ]
+            },
+            {
+              "p": "Mode=colors/Header/Principle/Text/Perceivable",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11560,29 +11725,30 @@
               ]
             },
             {
-              "p": "WCAG Card/Body",
+              "p": "Mode=colors/Body",
               "t": "FRAME",
               "b": {
                 "paddingLeft": "wcag-card/padding",
                 "paddingRight": "wcag-card/padding",
-                "paddingTop": "rating/padding"
+                "paddingTop": "rating/padding",
+                "paddingBottom": "dimension/space/8"
               },
               "r": {
-                "layout": "VERTICAL MIN MIN FILL FIXED",
-                "itemSpacing": 4,
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "itemSpacing": 6,
                 "size": [
                   463,
-                  497
+                  1021
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Summary",
+              "p": "Mode=colors/Body/Frame 1430102698",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
-                "itemSpacing": 108,
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 19,
                 "size": [
                   437,
                   32
@@ -11590,20 +11756,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "HORIZONTAL MIN CENTER HUG HUG",
-                "itemSpacing": 7,
-                "size": [
-                  217,
-                  32
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Summary/Criterion/Value",
+              "p": "Mode=colors/Body/Frame 1430102698/Value",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11620,33 +11773,35 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion/Disabilities",
+              "p": "Mode=colors/Body/Frame 1430102698/Disabilities",
               "t": "FRAME",
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
                 "size": [
-                  144,
+                  168,
                   30
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "p": "Mode=colors/Body/Frame 1430102698/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.643,
+                "strokeWeight": 0.6428571343421936,
                 "radius": 3,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 2.571,
-                "paddingRight": 2.571,
-                "paddingTop": 2.571,
-                "paddingBottom": 2.571,
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
                 "size": [
                   30,
                   30
@@ -11661,20 +11816,20 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "p": "Mode=colors/Body/Frame 1430102698/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.643,
+                "strokeWeight": 0.6428571343421936,
                 "radius": 3,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 2.571,
-                "paddingRight": 2.571,
-                "paddingTop": 2.571,
-                "paddingBottom": 2.571,
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
                 "size": [
                   30,
                   30
@@ -11689,20 +11844,20 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "p": "Mode=colors/Body/Frame 1430102698/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.643,
+                "strokeWeight": 0.6428571343421936,
                 "radius": 3,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 2.571,
-                "paddingRight": 2.571,
-                "paddingTop": 2.571,
-                "paddingBottom": 2.571,
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
                 "size": [
                   30,
                   30
@@ -11717,20 +11872,20 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "p": "Mode=colors/Body/Frame 1430102698/Disabilities/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.643,
+                "strokeWeight": 0.6428571343421936,
                 "radius": 3,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 2.571,
-                "paddingRight": 2.571,
-                "paddingTop": 2.571,
-                "paddingBottom": 2.571,
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
                 "size": [
                   30,
                   30
@@ -11745,20 +11900,42 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Reference",
+              "p": "Mode=colors/Body/Frame 1430102698/Frame 1430102697",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED FIXED",
-                "itemSpacing": 10,
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "itemSpacing": 6,
                 "size": [
-                  112,
-                  32
+                  142,
+                  31
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Summary/Reference/Understanding SC",
+              "p": "Mode=colors/Body/Frame 1430102698/Frame 1430102697/Occurrences",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "size": [
+                  142,
+                  11
+                ]
+              },
+              "i": "Occurrences",
+              "cp": {
+                "Label": "affected layers",
+                "Count": "×37"
+              },
+              "pr": {
+                "visible": "Show occurrences"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Frame 1430102698/Frame 1430102697/Understanding SC 1.4.3 ↗",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11772,7 +11949,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections",
+              "p": "Mode=colors/Body/Sections",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "wcag-card/gap"
@@ -11781,12 +11958,12 @@
                 "layout": "VERTICAL MIN MIN FILL HUG",
                 "size": [
                   437,
-                  393.7
+                  703.7
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Heading",
+              "p": "Mode=colors/Body/Sections/Heading",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11799,7 +11976,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Heading/Title box",
+              "p": "Mode=colors/Body/Sections/Heading/Title box",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11813,7 +11990,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Heading/Title box/Contrast (Minimum)",
+              "p": "Mode=colors/Body/Sections/Heading/Title box/Contrast (Minimum)",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11827,7 +12004,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Heading/Description box",
+              "p": "Mode=colors/Body/Sections/Heading/Description box",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11841,7 +12018,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Heading/Description box/Description",
+              "p": "Mode=colors/Body/Sections/Heading/Description box/A visible indicator must show which element is currently focused when navigating with a keyboard.",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11855,7 +12032,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Line 61",
+              "p": "Mode=colors/Body/Sections/Line 61",
               "t": "LINE",
               "b": {
                 "stroke": "wcag-card/divider/color"
@@ -11863,13 +12040,13 @@
               "r": {
                 "strokeWeight": 0.5,
                 "size": [
-                  439,
+                  437,
                   0
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details",
+              "p": "Mode=colors/Body/Sections/Details",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11879,12 +12056,12 @@
                 "paddingBottom": 2,
                 "size": [
                   437,
-                  168.7
+                  183.7
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Node",
+              "p": "Mode=colors/Body/Sections/Details/Row Node",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11894,24 +12071,24 @@
                 "itemSpacing": 4,
                 "size": [
                   437,
-                  18
+                  34
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Node/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row Node/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN FIXED FILL",
+                "layout": "GRID MIN MIN FIXED FIXED",
                 "size": [
                   80,
-                  14
+                  15
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Node/Row label/Node",
+              "p": "Mode=colors/Body/Sections/Details/Row Node/Row label/Node",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11921,23 +12098,23 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Node/Row value",
+              "p": "Mode=colors/Body/Sections/Details/Row Node/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN FIXED HUG",
+                "layout": "GRID MIN MIN HUG HUG",
                 "size": [
-                  355,
-                  14
+                  166,
+                  30
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Node/Row value/Value",
+              "p": "Mode=colors/Body/Sections/Details/Row Node/Row value/Label",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11954,7 +12131,262 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Actual",
+              "p": "Mode=colors/Body/Sections/Details/Row Node/Row value/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  166,
+                  15
+                ]
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Text/Secondary"
+              },
+              "pr": {
+                "visible": "Show tokens"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL FIXED",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  16.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  12.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row label/Colors",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Colors",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  166,
+                  12.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "itemSpacing": 2,
+                "size": [
+                  166,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Swatch fg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  43,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg/#8FB7E8",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#8FB7E8",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/On",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/On/on",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "on",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Swatch bg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  43,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg/#0C8CE9",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#0C8CE9",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Tokens",
+              "t": "FRAME",
+              "b": {
+                "itemSpacing": "space/inset-xs"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  166,
+                  32
+                ]
+              },
+              "pr": {
+                "visible": "Show tokens"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Tokens/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  166,
+                  15
+                ],
+                "hidden": true
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Text/Secondary"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Colors/Row value/Tokens/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  165,
+                  15
+                ],
+                "hidden": true
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Surface/Accent"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Actual",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -11969,7 +12401,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row Actual/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -11981,7 +12413,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row label/Actual",
+              "p": "Mode=colors/Body/Sections/Details/Row Actual/Row label/Actual",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -11991,11 +12423,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row value",
+              "p": "Mode=colors/Body/Sections/Details/Row Actual/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12007,7 +12439,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Actual/Row value/Value",
+              "p": "Mode=colors/Body/Sections/Details/Row Actual/Row value/Body text must reach a 4.5:1 contrast ratio agains",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12024,7 +12456,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Required",
+              "p": "Mode=colors/Body/Sections/Details/Row Required",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -12039,7 +12471,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Required/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row Required/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12051,7 +12483,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Required/Row label/Required",
+              "p": "Mode=colors/Body/Sections/Details/Row Required/Row label/Required",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12061,11 +12493,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Required/Row value",
+              "p": "Mode=colors/Body/Sections/Details/Row Required/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12077,7 +12509,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Required/Row value/Value",
+              "p": "Mode=colors/Body/Sections/Details/Row Required/Row value/Body text must reach a 4.5:1 contrast ratio agains",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12094,7 +12526,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Why it fails",
+              "p": "Mode=colors/Body/Sections/Details/Row Why it fails",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -12109,7 +12541,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row Why it fails/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12121,7 +12553,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row label/Why it fails",
+              "p": "Mode=colors/Body/Sections/Details/Row Why it fails/Row label/Why it fails",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12131,11 +12563,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row value",
+              "p": "Mode=colors/Body/Sections/Details/Row Why it fails/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12147,7 +12579,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Why it fails/Row value/Value",
+              "p": "Mode=colors/Body/Sections/Details/Row Why it fails/Row value/Body text must reach a 4.5:1 contrast ratio agains",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12164,7 +12596,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row How to fix",
+              "p": "Mode=colors/Body/Sections/Details/Row How to fix",
               "t": "FRAME",
               "b": {
                 "paddingTop": "rating/padding"
@@ -12174,24 +12606,24 @@
                 "itemSpacing": 4,
                 "size": [
                   437,
-                  18
+                  17.5
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row How to fix/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN FIXED FILL",
+                "layout": "GRID MIN MIN FIXED FIXED",
                 "size": [
                   80,
-                  14
+                  13.5
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row label/How to fix",
+              "p": "Mode=colors/Body/Sections/Details/Row How to fix/Row label/How to fix",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12201,23 +12633,23 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row value",
+              "p": "Mode=colors/Body/Sections/Details/Row How to fix/Row value",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "GRID MIN MIN FIXED HUG",
+                "layout": "GRID MIN MIN HUG FIXED",
                 "size": [
-                  355,
-                  14
+                  52,
+                  13.5
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row How to fix/Row value/Value",
+              "p": "Mode=colors/Body/Sections/Details/Row How to fix/Row value/Use white label text or darken the fill to reach 4",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12234,145 +12666,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors",
-              "t": "FRAME",
-              "b": {
-                "paddingTop": "rating/padding"
-              },
-              "r": {
-                "layout": "HORIZONTAL MIN MIN HUG FIXED",
-                "itemSpacing": 4,
-                "size": [
-                  214,
-                  16.6
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row label",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "GRID MIN MIN FIXED FILL",
-                "size": [
-                  80,
-                  12.6
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row label/Colors",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "Colors",
-                "fontSize": 9,
-                "font": "Inter",
-                "style": "Semi Bold",
-                "lineHeightPx": 12.6
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "GRID MIN MIN HUG HUG",
-                "size": [
-                  130,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
-                "itemSpacing": 2,
-                "size": [
-                  130,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Swatch fg",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "fill": "#8fb7e8",
-                "stroke": "#ffffff4d",
-                "strokeWeight": 1,
-                "radius": 2,
-                "size": [
-                  12,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg/#8FB7E8",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "#8FB7E8",
-                "fontSize": 10,
-                "font": "Cousine",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/On/on",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "on",
-                "fontSize": 10,
-                "font": "Inter",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Swatch bg",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "fill": "#0c8ce9",
-                "stroke": "#ffffff4d",
-                "strokeWeight": 1,
-                "radius": 2,
-                "size": [
-                  12,
-                  12
-                ]
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg/#0C8CE9",
-              "t": "TEXT",
-              "b": {
-                "fill": "wcag-card/title/fg"
-              },
-              "r": {
-                "text": "#0C8CE9",
-                "fontSize": 10,
-                "font": "Cousine",
-                "style": "Regular",
-                "lineHeightPx": 12
-              }
-            },
-            {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12385,7 +12679,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Row label",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Row label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12397,7 +12691,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Row label/Themes",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Row label/Themes",
               "t": "TEXT",
               "b": {
                 "fill": "wcag-card/title/fg"
@@ -12407,11 +12701,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12424,21 +12718,21 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 13",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 13",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.696,
-                "radius": 2.786,
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.786,
-                "paddingLeft": 5.571,
-                "paddingRight": 5.571,
-                "paddingTop": 2.786,
-                "paddingBottom": 2.786,
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
                 "size": [
                   75,
                   21.6
@@ -12450,21 +12744,49 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 14",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 13/Icon/form-textbox-password",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 13/Icon/form-textbox-password/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 13/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 14",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.696,
-                "radius": 2.786,
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.786,
-                "paddingLeft": 5.571,
-                "paddingRight": 5.571,
-                "paddingTop": 2.786,
-                "paddingBottom": 2.786,
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
                 "size": [
                   75,
                   21.6
@@ -12476,21 +12798,49 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Details/Row Themes/Theme chips/Component 15",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 14/Icon/gesture-double-tap",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 14/Icon/gesture-double-tap/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 14/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 15",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "theme-card/border/default"
               },
               "r": {
-                "strokeWeight": 0.696,
-                "radius": 2.786,
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
                 "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
-                "itemSpacing": 2.786,
-                "paddingLeft": 5.571,
-                "paddingRight": 5.571,
-                "paddingTop": 2.786,
-                "paddingBottom": 2.786,
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
                 "size": [
                   75,
                   21.6
@@ -12502,7 +12852,117 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Sections/Placeholder",
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 15/Icon/keyboard",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 15/Icon/keyboard/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Details/Row Themes/Theme chips/Component 15/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Metrics",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "radius/lg",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 28,
+                "size": [
+                  437,
+                  78
+                ]
+              },
+              "i": "Metrics Panel",
+              "pr": {
+                "visible": "Show metrics"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Line 62",
+              "t": "LINE",
+              "b": {
+                "stroke": "wcag-card/divider/color"
+              },
+              "r": {
+                "strokeWeight": 0.5,
+                "size": [
+                  437,
+                  0
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Brand modes",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inset-md",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  68
+                ]
+              },
+              "i": "Brand Modes",
+              "pr": {
+                "visible": "Show brand modes"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Brand modes/List",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "layoutAlign",
+                "primaryAxisSizingMode"
+              ]
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Thumbnails",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-sm"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  120
+                ]
+              },
+              "i": "Thumbnail Pair",
+              "pr": {
+                "visible": "Show thumbnails"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Sections/Placeholder",
               "t": "RECTANGLE",
               "b": {
                 "radius": "rating/radius"
@@ -12516,20 +12976,21 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview",
+              "p": "Mode=colors/Body/Preview",
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN CENTER FILL HUG",
+                "layout": "VERTICAL CENTER CENTER FILL HUG",
                 "paddingTop": 4,
+                "paddingBottom": 4,
                 "size": [
                   437,
-                  46.9
+                  50.9
                 ]
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row",
+              "p": "Mode=colors/Body/Preview/Preview row",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12542,7 +13003,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Sample",
+              "p": "Mode=colors/Body/Preview/Preview row/Sample",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12550,7 +13011,7 @@
                 "stroke": "#444444",
                 "strokeWeight": 1,
                 "radius": 4,
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
                 "itemSpacing": 8,
                 "paddingLeft": 12,
                 "paddingRight": 12,
@@ -12563,7 +13024,18 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Sample/Sample text/Aa",
+              "p": "Mode=colors/Body/Preview/Preview row/Sample/Sample text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  164.4,
+                  20.9
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Preview/Preview row/Sample/Sample text/Aa",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12576,7 +13048,19 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Sample/Sample text/Sample caption box/Caption",
+              "p": "Mode=colors/Body/Preview/Preview row/Sample/Sample text/Sample caption box",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED FIXED",
+                "size": [
+                  128.4,
+                  15.4
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Preview/Preview row/Sample/Sample text/Sample caption box/Sample of this exact pair",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12585,11 +13069,11 @@
                 "fontSize": 11,
                 "font": "Inter",
                 "style": "Regular",
-                "lineHeightPx": 15.4
+                "lineHeightPx": 15.399999618530273
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Ratio",
+              "p": "Mode=colors/Body/Preview/Preview row/Ratio",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12608,7 +13092,19 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Ratio/Ratio mark/✕",
+              "p": "Mode=colors/Body/Preview/Preview row/Ratio/Ratio mark",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  9,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Preview/Preview row/Ratio/Ratio mark/✕",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12621,7 +13117,7 @@
               }
             },
             {
-              "p": "WCAG Card/Body/Preview/Preview row/Ratio/Ratio value",
+              "p": "Mode=colors/Body/Preview/Preview row/Ratio/2.4:1 · needs 4.5:1",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12634,13 +13130,104 @@
               }
             },
             {
-              "p": "WCAG Card/Footer",
+              "p": "Mode=colors/Body/Fix",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "radius/lg",
+                "itemSpacing": "space/inline-sm",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  51
+                ]
+              },
+              "i": "Fix Row",
+              "cp": {
+                "Ratio": "5.12:1",
+                "Hex": "#FFFFFF",
+                "Label": "Rebind to Brand/Text/OnAccent"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Line 64",
+              "t": "LINE",
+              "b": {
+                "stroke": "wcag-card/divider/color"
+              },
+              "r": {
+                "strokeWeight": 0.5,
+                "size": [
+                  437,
+                  0
+                ]
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Snippet",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "border/subtle",
+                "radius": "radius/lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  87
+                ]
+              },
+              "i": "Code Snippet",
+              "cp": {
+                "Code": ".field__label {\n  color: var(--brand-text-on-accent);\n}",
+                "Language": "CSS"
+              },
+              "pr": {
+                "visible": "Show snippet"
+              }
+            },
+            {
+              "p": "Mode=colors/Body/Ignored",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "color/status/warning/500",
+                "radius": "radius/lg",
+                "itemSpacing": "space/inline-sm",
+                "paddingLeft": "space/inset-md",
+                "paddingRight": "space/inset-md",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  47
+                ]
+              },
+              "i": "Ignore Banner",
+              "cp": {
+                "Expires": "expires 2026-12-01",
+                "Scope": "Applies to this colour pair",
+                "Author": "by Praveen",
+                "Reason": "Decorative watermark, exempt under 1.4.3"
+              },
+              "pr": {
+                "visible": "Show ignored"
+              }
+            },
+            {
+              "p": "Mode=colors/Footer",
               "t": "FRAME",
               "b": {},
               "r": {
                 "fill": "#2c2c2c",
                 "stroke": "#444444",
-                "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "itemSpacing": 4,
                 "paddingLeft": 10,
@@ -12654,7 +13241,7 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Check label",
+              "p": "Mode=colors/Footer/Check label",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12666,7 +13253,7 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Check label/Check With :",
+              "p": "Mode=colors/Footer/Check label/Check With :",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12675,16 +13262,16 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Footer/Check icons",
+              "p": "Mode=colors/Footer/Check icons",
               "t": "FRAME",
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "itemSpacing": 8.421,
+                "itemSpacing": 8.421052932739258,
                 "size": [
                   80,
                   21.1
@@ -12692,20 +13279,20 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "p": "Mode=colors/Footer/Check icons/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.451,
-                "radius": 2.105,
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 1.805,
-                "paddingRight": 1.805,
-                "paddingTop": 1.805,
-                "paddingBottom": 1.805,
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
                 "size": [
                   21.1,
                   21.1
@@ -12720,20 +13307,20 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "p": "Mode=colors/Footer/Check icons/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.451,
-                "radius": 2.105,
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 1.805,
-                "paddingRight": 1.805,
-                "paddingTop": 1.805,
-                "paddingBottom": 1.805,
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
                 "size": [
                   21.1,
                   21.1
@@ -12748,20 +13335,20 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Check icons/Disability Indicator",
+              "p": "Mode=colors/Footer/Check icons/Disability Indicator",
               "t": "INSTANCE",
               "b": {
                 "fill": "icon/glyph/default",
                 "stroke": "disability-indicator/border/default"
               },
               "r": {
-                "strokeWeight": 0.451,
-                "radius": 2.105,
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
-                "paddingLeft": 1.805,
-                "paddingRight": 1.805,
-                "paddingTop": 1.805,
-                "paddingBottom": 1.805,
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
                 "size": [
                   21.1,
                   21.1
@@ -12776,18 +13363,18 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Spacer",
+              "p": "Mode=colors/Footer/Spacer",
               "t": "FRAME",
               "b": {},
               "r": {
                 "size": [
-                  142,
+                  124,
                   0
                 ]
               }
             },
             {
-              "p": "WCAG Card/Footer/Ignore button",
+              "p": "Mode=colors/Footer/Ignore button",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12807,7 +13394,7 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Ignore button/Ignore",
+              "p": "Mode=colors/Footer/Ignore button/Ignore",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12816,11 +13403,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Footer/Annotation button",
+              "p": "Mode=colors/Footer/Annotation button",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12835,13 +13422,31 @@
                 "paddingTop": 2,
                 "paddingBottom": 2,
                 "size": [
-                  67,
+                  85,
                   26
                 ]
               }
             },
             {
-              "p": "WCAG Card/Footer/Annotation button/Annotation",
+              "p": "Mode=colors/Footer/Annotation button/Annotated tick",
+              "t": "INSTANCE",
+              "b": {},
+              "r": {
+                "size": [
+                  14,
+                  14
+                ]
+              },
+              "i": "Status=Good <Status error icons>",
+              "cp": {
+                "Status": "Good"
+              },
+              "pr": {
+                "visible": "Annotated"
+              }
+            },
+            {
+              "p": "Mode=colors/Footer/Annotation button/Annotation",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -12850,11 +13455,11 @@
                 "fontSize": 9,
                 "font": "Inter",
                 "style": "Semi Bold",
-                "lineHeightPx": 12.6
+                "lineHeightPx": 12.600000381469727
               }
             },
             {
-              "p": "WCAG Card/Footer/Select button",
+              "p": "Mode=colors/Footer/Select button",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12875,7 +13480,7 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Select button/Icon",
+              "p": "Mode=colors/Footer/Select button/Icon",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -12886,7 +13491,1992 @@
               }
             },
             {
-              "p": "WCAG Card/Footer/Select button/Icon/Vector",
+              "p": "Mode=colors/Footer/Select button/Icon/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40000141:9571",
+          "name": "Mode=Text",
+          "props": {
+            "Mode": "Text"
+          },
+          "nodes": [
+            {
+              "p": "Mode=Text",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "wcag-card/bg/default",
+                "stroke": "wcag-card/divider/color",
+                "radius": "wcag-card/radius"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  465,
+                  603.7
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Header",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MAX MIN FILL FIXED",
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 8,
+                "paddingBottom": 2,
+                "size": [
+                  463,
+                  34
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Meta",
+              "t": "FRAME",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  154,
+                  17
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Meta/Change",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "border/accent",
+                "radius": "radius/pill",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  154,
+                  17
+                ],
+                "hidden": true
+              },
+              "i": "Tone=Accent <Meta Badge>",
+              "cp": {
+                "Show meta": true,
+                "Meta": "passed on 21 Sep",
+                "Label": "Regressed",
+                "Tone": "Accent"
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Meta/Severity",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "color/status/danger/500",
+                "radius": "radius/pill",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  49,
+                  17
+                ],
+                "hidden": true
+              },
+              "i": "Tone=Danger <Meta Badge>",
+              "cp": {
+                "Show meta": false,
+                "Meta": "Meta",
+                "Label": "Critical",
+                "Tone": "Danger"
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Rating",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "disability-indicator/icon/color",
+                "radius": "rating/radius"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "size": [
+                  34,
+                  18
+                ]
+              },
+              "i": "Rating=A <Rating>",
+              "cp": {
+                "Rating": "A"
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Rating/A",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "o": [
+                "annotations",
+                "boundVariables",
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "principle/perceivable/bg",
+                "paddingRight": "wcag-card/padding"
+              },
+              "r": {
+                "radius": [
+                  0,
+                  0,
+                  12,
+                  0
+                ],
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 6,
+                "paddingLeft": 10,
+                "paddingTop": 6,
+                "paddingBottom": 6,
+                "size": [
+                  101,
+                  26
+                ]
+              },
+              "i": "Principle=Perceivable <Principle>",
+              "cp": {
+                "Principle": "Perceivable"
+              }
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "boundVariables"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Text",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "boundVariables"
+              ]
+            },
+            {
+              "p": "Mode=Text/Header/Principle/Text/Perceivable",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "o": [
+                "annotations",
+                "boundVariables",
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body",
+              "t": "FRAME",
+              "b": {
+                "paddingLeft": "wcag-card/padding",
+                "paddingRight": "wcag-card/padding",
+                "paddingTop": "rating/padding",
+                "paddingBottom": "dimension/space/6"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  463,
+                  524.7
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 108,
+                "size": [
+                  437,
+                  32
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 7,
+                "size": [
+                  217,
+                  32
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Value",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Value",
+                "fontSize": 24,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 32
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Disabilities",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
+                "size": [
+                  144,
+                  30
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6428571343421936,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
+                "size": [
+                  30,
+                  30
+                ]
+              },
+              "i": "Property 1=Auditory <Disability Indicator>",
+              "cp": {
+                "Property 1": "Auditory"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6428571343421936,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
+                "size": [
+                  30,
+                  30
+                ]
+              },
+              "i": "Property 1=Cognitive <Disability Indicator>",
+              "cp": {
+                "Property 1": "Cognitive"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6428571343421936,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
+                "size": [
+                  30,
+                  30
+                ]
+              },
+              "i": "Property 1=Physical <Disability Indicator>",
+              "cp": {
+                "Property 1": "Physical"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Disabilities/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6428571343421936,
+                "radius": 3,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 2.5714285373687744,
+                "paddingRight": 2.5714285373687744,
+                "paddingTop": 2.5714285373687744,
+                "paddingBottom": 2.5714285373687744,
+                "size": [
+                  30,
+                  30
+                ]
+              },
+              "i": "Property 1=Visual <Disability Indicator>",
+              "cp": {
+                "Property 1": "Visual"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Criterion/Occurrences",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  142,
+                  11
+                ],
+                "hidden": true
+              },
+              "i": "Occurrences",
+              "cp": {
+                "Label": "affected layers",
+                "Count": "×37"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Reference",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MAX CENTER FILL FIXED",
+                "itemSpacing": 10,
+                "size": [
+                  112,
+                  32
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Summary/Reference/Understanding SC 1.4.3 ↗",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Understanding SC 1.4.3 ↗",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections",
+              "t": "FRAME",
+              "b": {
+                "itemSpacing": "wcag-card/gap"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  478.7
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Heading",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL FIXED",
+                "itemSpacing": 2,
+                "size": [
+                  437,
+                  39
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Heading/Title box",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED FIXED",
+                "size": [
+                  322,
+                  20
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Heading/Title box/Contrast (Minimum)",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Contrast (Minimum)",
+                "fontSize": 11,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 15.125
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Heading/Description box",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  437,
+                  13
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Heading/Description box/A visible indicator must show which element is currently focused when navigating with a keyboard.",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "A visible indicator must show which element is currently focused when navigating with a keyboard.",
+                "fontSize": 8,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 9
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Line 61",
+              "t": "LINE",
+              "b": {
+                "stroke": "wcag-card/divider/color"
+              },
+              "r": {
+                "strokeWeight": 0.5,
+                "size": [
+                  437,
+                  0
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "itemSpacing": 6,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  437,
+                  168.7
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG FIXED",
+                "itemSpacing": 4,
+                "size": [
+                  115,
+                  19
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  15
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node/Row label/Node",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Node",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN HUG FILL",
+                "size": [
+                  31,
+                  15
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node/Row value/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Label",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 15
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Node/Row value/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  166,
+                  15
+                ],
+                "hidden": true
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Text/Secondary"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG FIXED",
+                "itemSpacing": 4,
+                "size": [
+                  214,
+                  16.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  12.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row label/Colors",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Colors",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN HUG HUG",
+                "size": [
+                  130,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 2,
+                "size": [
+                  130,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Swatch fg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  43,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Hex fg/#8FB7E8",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#8FB7E8",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/On",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/On/on",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "on",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Swatch bg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#ffffff4d",
+                "strokeWeight": 1,
+                "radius": 2,
+                "size": [
+                  12,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  43,
+                  12
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Pair/Hex bg/#0C8CE9",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "#0C8CE9",
+                "fontSize": 10,
+                "font": "Cousine",
+                "style": "Regular",
+                "lineHeightPx": 12
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Tokens",
+              "t": "FRAME",
+              "b": {
+                "itemSpacing": "space/inset-xs"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  166,
+                  32
+                ],
+                "hidden": true
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Tokens/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  166,
+                  15
+                ],
+                "hidden": true
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Text/Secondary"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Colors/Row value/Tokens/Token",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  165,
+                  15
+                ],
+                "hidden": true
+              },
+              "i": "Token Ref",
+              "cp": {
+                "Show mode": true,
+                "Mode": "Bridge",
+                "Name": "Brand/Surface/Accent"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Actual",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Actual/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Actual/Row label/Actual",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Actual",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Actual/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED HUG",
+                "size": [
+                  355,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Actual/Row value/Body text must reach a 4.5:1 contrast ratio agains",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Value",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Required",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Required/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Required/Row label/Required",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Required",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Required/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED HUG",
+                "size": [
+                  355,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Required/Row value/Body text must reach a 4.5:1 contrast ratio agains",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Value",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Why it fails",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
+                "itemSpacing": 4,
+                "size": [
+                  437,
+                  18
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Why it fails/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FILL",
+                "size": [
+                  80,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Why it fails/Row label/Why it fails",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Why it fails",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Why it fails/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED HUG",
+                "size": [
+                  355,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Why it fails/Row value/Body text must reach a 4.5:1 contrast ratio agains",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Descripition",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 13.5
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row How to fix",
+              "t": "FRAME",
+              "b": {
+                "paddingTop": "rating/padding"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "itemSpacing": 4,
+                "size": [
+                  136,
+                  17.5
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row How to fix/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FIXED",
+                "size": [
+                  80,
+                  13.5
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row How to fix/Row label/How to fix",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "How to fix",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row How to fix/Row value",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN HUG FIXED",
+                "size": [
+                  52,
+                  13.5
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row How to fix/Row value/Use white label text or darken the fill to reach 4",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Descripition",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Medium",
+                "lineHeightPx": 13.5
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 4,
+                "size": [
+                  323,
+                  21.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Row label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "GRID MIN MIN FIXED FIXED",
+                "size": [
+                  80,
+                  13.5
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Row label/Themes",
+              "t": "TEXT",
+              "b": {
+                "fill": "wcag-card/title/fg"
+              },
+              "r": {
+                "text": "Themes",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "itemSpacing": 7,
+                "size": [
+                  239,
+                  21.6
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 13",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "theme-card/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
+                "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
+                "size": [
+                  75,
+                  21.6
+                ]
+              },
+              "i": "Theme type=Forms <Theme>",
+              "cp": {
+                "Theme type": "Forms"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 13/Icon/form-textbox-password",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 13/Icon/form-textbox-password/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 13/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 14",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "theme-card/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
+                "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
+                "size": [
+                  75,
+                  21.6
+                ]
+              },
+              "i": "Theme type=Gestures <Theme>",
+              "cp": {
+                "Theme type": "Gestures"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 14/Icon/gesture-double-tap",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 14/Icon/gesture-double-tap/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 14/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 15",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "theme-card/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.6964285969734192,
+                "radius": 2.7857143878936768,
+                "layout": "HORIZONTAL CENTER CENTER FIXED HUG",
+                "itemSpacing": 2.7857143878936768,
+                "paddingLeft": 5.5714287757873535,
+                "paddingRight": 5.5714287757873535,
+                "paddingTop": 2.7857143878936768,
+                "paddingBottom": 2.7857143878936768,
+                "size": [
+                  75,
+                  21.6
+                ]
+              },
+              "i": "Theme type=Keyboard <Theme>",
+              "cp": {
+                "Theme type": "Keyboard"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 15/Icon/keyboard",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 15/Icon/keyboard/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "disability-indicator/icon/color"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Details/Row Themes/Theme chips/Component 15/String Translations/String",
+              "t": "TEXT",
+              "b": {
+                "fill": "rating/bg/default"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Brand modes",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inset-sm"
+              },
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  55
+                ],
+                "hidden": true
+              },
+              "i": "Brand Modes"
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Metrics",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "radius/lg",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "itemSpacing": 28,
+                "size": [
+                  437,
+                  78
+                ]
+              },
+              "i": "Metrics Panel"
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Thumbnails",
+              "t": "INSTANCE",
+              "b": {
+                "itemSpacing": "space/inline-sm"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  120
+                ],
+                "hidden": true
+              },
+              "i": "Thumbnail Pair"
+            },
+            {
+              "p": "Mode=Text/Body/Sections/Placeholder",
+              "t": "RECTANGLE",
+              "b": {
+                "radius": "rating/radius"
+              },
+              "r": {
+                "fill": "#3a3939",
+                "size": [
+                  437,
+                  164
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN CENTER FIXED HUG",
+                "paddingTop": 4,
+                "size": [
+                  437,
+                  46.9
+                ],
+                "hidden": true
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER FILL HUG",
+                "itemSpacing": 20,
+                "size": [
+                  437,
+                  42.9
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Sample",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#444444",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "paddingTop": 10,
+                "paddingBottom": 10,
+                "size": [
+                  301,
+                  42.9
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Sample/Sample text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  164.4,
+                  20.9
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Sample/Sample text/Aa",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "text": "Aa",
+                "fontSize": 20,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 20
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Sample/Sample text/Sample caption box",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FIXED FIXED",
+                "size": [
+                  128.4,
+                  15.4
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Sample/Sample text/Sample caption box/Sample of this exact pair",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#8fb7e8",
+                "text": "Sample of this exact pair",
+                "fontSize": 11,
+                "font": "Inter",
+                "style": "Regular",
+                "lineHeightPx": 15.399999618530273
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Ratio",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "radius": 4,
+                "layout": "HORIZONTAL MIN CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  116,
+                  42
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Ratio/Ratio mark",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  9,
+                  14
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Ratio/Ratio mark/✕",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#b91c1c",
+                "text": "✕",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Bold",
+                "lineHeightPx": 14
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Preview/Preview row/Ratio/2.4:1 · needs 4.5:1",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#000000",
+                "text": "2.4:1 · needs 4.5:1",
+                "fontSize": 10,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 14
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Fix",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "radius/lg",
+                "itemSpacing": "space/inline-sm",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  51
+                ],
+                "hidden": true
+              },
+              "i": "Fix Row",
+              "cp": {
+                "Ratio": "5.12:1",
+                "Hex": "#FFFFFF",
+                "Label": "Rebind to Brand/Text/OnAccent"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Manual review",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "border/subtle",
+                "radius": "radius/lg",
+                "itemSpacing": "space/inset-md",
+                "paddingLeft": "space/inset-md",
+                "paddingRight": "space/inset-md",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  145.4
+                ],
+                "hidden": true
+              },
+              "i": "Manual Review",
+              "cp": {
+                "Count": "1/3",
+                "Label": "MANUAL REVIEW"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Snippet",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "border/subtle",
+                "radius": "radius/lg"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  87
+                ],
+                "hidden": true
+              },
+              "i": "Code Snippet",
+              "cp": {
+                "Code": ".field__label {\n  color: var(--brand-text-on-accent);\n}",
+                "Language": "CSS"
+              }
+            },
+            {
+              "p": "Mode=Text/Body/Ignored",
+              "t": "INSTANCE",
+              "b": {
+                "stroke": "color/status/warning/500",
+                "radius": "radius/lg",
+                "itemSpacing": "space/inline-sm",
+                "paddingLeft": "space/inset-md",
+                "paddingRight": "space/inset-md",
+                "paddingTop": "space/inset-md",
+                "paddingBottom": "space/inset-md"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "size": [
+                  437,
+                  47
+                ],
+                "hidden": true
+              },
+              "i": "Ignore Banner",
+              "cp": {
+                "Expires": "expires 2026-12-01",
+                "Scope": "Applies to this colour pair",
+                "Author": "by Praveen",
+                "Reason": "Decorative watermark, exempt under 1.4.3"
+              }
+            },
+            {
+              "p": "Mode=Text/Footer",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#2c2c2c",
+                "stroke": "#444444",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "itemSpacing": 4,
+                "paddingLeft": 10,
+                "paddingRight": 10,
+                "paddingTop": 8,
+                "paddingBottom": 8,
+                "size": [
+                  463,
+                  43
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check label",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN HUG HUG",
+                "size": [
+                  58,
+                  13
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check label/Check With :",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#f5f5f5",
+                "text": "Check With :",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check icons",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "itemSpacing": 8.421052932739258,
+                "size": [
+                  80,
+                  21.1
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Content <Disability Indicator>",
+              "cp": {
+                "Property 1": "Content"
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Design <Disability Indicator>",
+              "cp": {
+                "Property 1": "Design"
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Check icons/Disability Indicator",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "icon/glyph/default",
+                "stroke": "disability-indicator/border/default"
+              },
+              "r": {
+                "strokeWeight": 0.451127827167511,
+                "radius": 2.1052632331848145,
+                "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
+                "paddingLeft": 1.804511308670044,
+                "paddingRight": 1.804511308670044,
+                "paddingTop": 1.804511308670044,
+                "paddingBottom": 1.804511308670044,
+                "size": [
+                  21.1,
+                  21.1
+                ]
+              },
+              "i": "Property 1=Code <Disability Indicator>",
+              "cp": {
+                "Property 1": "Code"
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Spacer",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  142,
+                  0
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Ignore button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "stroke": "#757575",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  46,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Ignore button/Ignore",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#f5f5f5",
+                "text": "Ignore",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Annotation button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#0c8ce9",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 8,
+                "paddingRight": 8,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  67,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Annotation button/Annotated tick",
+              "t": "INSTANCE",
+              "b": {},
+              "r": {
+                "size": [
+                  14,
+                  14
+                ],
+                "hidden": true
+              },
+              "i": "Status=Good <Status error icons>",
+              "cp": {
+                "Status": "Good"
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Annotation button/Annotation",
+              "t": "TEXT",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "text": "Annotation",
+                "fontSize": 9,
+                "font": "Inter",
+                "style": "Semi Bold",
+                "lineHeightPx": 12.600000381469727
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Select button",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "fill": "#0c8ce9",
+                "stroke": "#0c8ce9",
+                "strokeWeight": 1,
+                "radius": 4,
+                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
+                "itemSpacing": 4,
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 2,
+                "paddingBottom": 2,
+                "size": [
+                  30,
+                  26
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Select button/Icon",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              }
+            },
+            {
+              "p": "Mode=Text/Footer/Select button/Icon/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -12899,8 +15489,7 @@
             }
           ]
         }
-      ],
-      "status": "built"
+      ]
     },
     {
       "code": "TeamBanner",
@@ -13476,7 +16065,7 @@
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
                 "size": [
-                  100,
+                  120,
                   36
                 ]
               },
@@ -16034,17 +18623,18 @@
                 "radius": "button/primary/radius",
                 "itemSpacing": "button/primary/gap",
                 "paddingLeft": "button/primary/padding-x",
-                "paddingRight": "button/primary/padding-x"
+                "paddingRight": "button/primary/padding-x",
+                "width": "button/primary/width-md"
               },
               "r": {
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL CENTER CENTER FIXED FIXED",
                 "size": [
-                  108,
+                  120,
                   37
                 ]
               },
-              "i": "Type=Primary, State=Default <Button>",
+              "i": "Type=Primary, State=Default, Size=Medium <Button>",
               "cp": {
                 "Trailing icon": "91:1958",
                 "Leading icon": "91:1958",
@@ -16052,7 +18642,8 @@
                 "Show leading icon": false,
                 "Label": "Submit",
                 "Type": "Primary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
               }
             }
           ]
@@ -16113,6 +18704,14 @@
               }
             },
             {
+              "p": "Settings page/Frame 1430102627/Frame 1430102693/Frame 1430102623",
+              "t": "FRAME",
+              "b": {},
+              "o": [
+                "visible"
+              ]
+            },
+            {
               "p": "Settings page/Frame 1430102628",
               "t": "FRAME",
               "b": {},
@@ -16144,8 +18743,17 @@
               },
               "i": "Banner",
               "cp": {
+                "Dual logo": true,
                 "HCL Logo": true
               }
+            },
+            {
+              "p": "Settings page/Frame 1430102628/Banner/Frame 1430102689/Frame 1430102692/brand logos",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables"
+              ]
             },
             {
               "p": "Settings page/Frame 1430102628/Frame 1430102558",
@@ -16208,10 +18816,15 @@
                 "stroke": "tab/indicator/color"
               },
               "r": {
-                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG FIXED",
+                "itemSpacing": 10,
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 6,
+                "paddingBottom": 8,
                 "size": [
                   29,
-                  33
+                  40
                 ]
               },
               "i": "Property 1=Variant2 <settings>",
@@ -16252,7 +18865,8 @@
                 "Leading icon": "91:1958",
                 "Label": "Logoff session",
                 "Type": "Secondary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
               }
             },
             {
@@ -16269,7 +18883,8 @@
                 "Show leading icon": false,
                 "Label": "Reset all Settings",
                 "Type": "Primary",
-                "State": "Default"
+                "State": "Default",
+                "Size": "Medium"
               }
             },
             {
@@ -16314,7 +18929,7 @@
       "name": "settings",
       "id": "7:44580",
       "variants": 2,
-      "coverage": 33
+      "coverage": 20
     },
     {
       "section": "Atoms",
@@ -16378,7 +18993,7 @@
       "name": "Disability Indicator",
       "id": "419:40527",
       "variants": 7,
-      "coverage": 81
+      "coverage": 36
     },
     {
       "section": "Atoms",
@@ -16421,6 +19036,22 @@
       "coverage": 94
     },
     {
+      "section": "Atoms",
+      "type": "COMPONENT",
+      "name": "Banner",
+      "id": "40000064:9910",
+      "variants": 1,
+      "coverage": 18
+    },
+    {
+      "section": "Atoms",
+      "type": "COMPONENT_SET",
+      "name": "brand logos",
+      "id": "40000064:9865",
+      "variants": 6,
+      "coverage": 10
+    },
+    {
       "section": "Molecules",
       "type": "COMPONENT",
       "name": "Buttom Status",
@@ -16451,14 +19082,6 @@
       "id": "133:1647",
       "variants": 1,
       "coverage": 100
-    },
-    {
-      "section": "Molecules",
-      "type": "COMPONENT_SET",
-      "name": "Tab",
-      "id": "419:39986",
-      "variants": 2,
-      "coverage": 0
     },
     {
       "section": "Molecules",
@@ -16601,8 +19224,8 @@
       "type": "COMPONENT_SET",
       "name": "Button",
       "id": "40000040:5139",
-      "variants": 6,
-      "coverage": 98
+      "variants": 12,
+      "coverage": 99
     },
     {
       "section": "Molecules",
@@ -16611,14 +19234,6 @@
       "id": "40000046:5311",
       "variants": 8,
       "coverage": 99
-    },
-    {
-      "section": "Organisms",
-      "type": "COMPONENT",
-      "name": "WCAG Card",
-      "id": "419:39993",
-      "variants": 1,
-      "coverage": 62
     },
     {
       "section": "Organisms",

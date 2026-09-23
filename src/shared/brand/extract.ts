@@ -65,7 +65,9 @@ function snapshotCollection(index: VariableIndex, collection: VariableCollection
   for (const id of collection.variableIds) {
     const v = index.byId.get(id)
     if (!v) continue
-    const entry: SnapshotVariable = { name: v.name, type: v.resolvedType as VariableType, values: {} }
+    // The id is what lets a REST pull name this variable without Enterprise access to
+    // /variables/local: ids are stable for the life of the file, so one relay pull seeds the map.
+    const entry: SnapshotVariable = { id: v.id, name: v.name, type: v.resolvedType as VariableType, values: {} }
     const aliases: Record<string, string> = {}
     for (const mode of collection.modes) {
       const value = v.valuesByMode[mode.modeId]
@@ -110,8 +112,10 @@ function firstVisible<T extends { visible?: boolean }>(paints: readonly T[] | Pl
   return Array.isArray(paints) ? paints.find((p) => p.visible !== false) : undefined
 }
 
-/** Figma `overriddenFields` names → the snapshot keys they affect (b + r). */
-const OVERRIDE_KEYS: Record<string, string[]> = {
+/** Figma `overriddenFields` names → the snapshot keys they affect (b + r).
+ *  Shared with the REST pull (scripts/figma-pull.ts) so the two extractors describe an
+ *  instance the same way — a second copy would drift and make the snapshots incomparable. */
+export const OVERRIDE_KEYS: Record<string, string[]> = {
   fills: ['fill'], strokes: ['stroke'], strokeWeight: ['strokeWeight'],
   cornerRadius: ['radius'], topLeftRadius: ['radius'], topRightRadius: ['radius'], bottomLeftRadius: ['radius'], bottomRightRadius: ['radius'],
   itemSpacing: ['itemSpacing'], paddingLeft: ['paddingLeft'], paddingRight: ['paddingRight'], paddingTop: ['paddingTop'], paddingBottom: ['paddingBottom'],
@@ -188,7 +192,7 @@ async function describeNode(index: VariableIndex, node: SceneNode, path: string)
 }
 
 /** Keep only the b/r keys that the instance actually overrides, so override nodes carry overrides and nothing else. */
-function pruneToOverrides(entry: SnapNode, fields: readonly string[]): SnapNode {
+export function pruneToOverrides(entry: SnapNode, fields: readonly string[]): SnapNode {
   const keep = new Set(fields.flatMap((f) => OVERRIDE_KEYS[f] ?? []))
   const b = Object.fromEntries(Object.entries(entry.b).filter(([k]) => keep.has(k)))
   const r = Object.fromEntries(Object.entries(entry.r ?? {}).filter(([k]) => keep.has(k)))

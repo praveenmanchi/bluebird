@@ -4,6 +4,7 @@ export const figma = {
   name: 'Disability Indicator',
   props: { 'Property 1': 'kind (auditory | code | cognitive | content | design | physical | visual)' },
   figmaGaps: {
+    'dimension/size/icon-24': 'Figma binds the glyph box to the raw 24px primitive; code reads disability-indicator/icon-size, the semantic token that exists for this. Rebind in Figma to close the gap.',
     'icon/glyph/default': 'Three variants (Cognitive / Physical / Content) bind the tile fill to the generic glyph colour, which would hide the coloured glyph on a dark tile. Code paints the tile with disability-indicator/bg/default and the glyph with disability-indicator/icon/color, both present in the Brand collection for this tile. Rebind the frame fill in Figma to close the gap.',
   },
   notes: 'Figma mixes two constructions (a 29px tile with a bare icon vs a 15.4px nested "Disabilities"/"Responsibilities" instance). Code uses the tile construction for all seven kinds and the disability-<kind> glyphs from the Icon set.',

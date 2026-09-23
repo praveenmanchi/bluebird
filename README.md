@@ -18,7 +18,10 @@ npm run dev:relay      # WebSocket relay for live mode (port 4001)
 npm run build          # dist/index.html + dist/bridge.html + dist/code.js, enforces size budget
 npm run test           # vitest
 npm run storybook      # component workshop with a Brand switcher → http://localhost:6006
+npm run figma:diff     # what changed in Figma since the last pull (writes nothing but figma/drift.json)
 npm run figma:pull     # refresh figma/*.json from the Figma file (relay, or --rest)
+npm run figma:visual   # Figma renders vs Storybook renders per brand (needs FIGMA_TOKEN)
+npm run figma:parity   # do the relay and REST extractors agree? (needs both)
 npm run gen:tokens     # figma/*.json → generated CSS/TS
 npm run tokens:check   # Figma ↔ code drift gate
 npm run verify         # typecheck + lint + tokens:check + test + build

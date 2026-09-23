@@ -57,3 +57,140 @@ describe('WcagCard', () => {
     expect(screen.getByRole('img', { name: 'shot' })).toBeInTheDocument()
   })
 })
+
+/** The eleven card-level gaps from the 2026-09-23 market analysis. Each one is
+ * opt-in: absent props must leave the Figma-faithful card untouched. */
+describe('WcagCard — analysis gaps', () => {
+  it('1. mode="text" swaps the colour sample for type metrics', () => {
+    const metrics = { size: '14px', weight: '400', lineHeight: '20px', largeText: false }
+    const { container } = render(
+      <WcagCard code="1.4.3" title="t" mode="text" metrics={metrics} colors={{ fg: '#111111', bg: '#222222' }} />,
+    )
+    expect(container.querySelector('.bb-wcag-card__sample')).toBeNull()
+    expect(container.querySelector('.bb-metrics-panel')).toBeInTheDocument()
+    expect(screen.getByText('Line height')).toBeInTheDocument()
+    expect(screen.getByText('Body text (4.5:1)')).toBeInTheDocument()
+  })
+  it('1b. the metrics panel also rides along in colours mode', () => {
+    const { container } = render(
+      <WcagCard code="1.4.3" title="t" metrics={{ size: '13px' }} colors={{ fg: '#111111', bg: '#222222' }} />,
+    )
+    expect(container.querySelector('.bb-wcag-card__sample')).toBeInTheDocument()
+    expect(container.querySelector('.bb-metrics-panel')).toBeInTheDocument()
+  })
+  it('2. renders the suggested fix and fires onApply', () => {
+    const calls: string[] = []
+    const { container } = render(
+      <WcagCard code="x" title="y" colors={{ fg: '#8fb7e8', bg: '#0c8ce9' }}
+        fix={{ token: { name: 'Brand/Text/OnAccent', mode: 'Bridge' }, value: '#ffffff', ratio: '5.12:1', onApply: () => calls.push('apply') }} />,
+    )
+    expect(container.querySelector('.bb-fix-row')).toBeInTheDocument()
+    expect(screen.getByText('Brand/Text/OnAccent')).toBeInTheDocument()
+    expect(screen.getByText('5.12:1')).toBeInTheDocument()
+    screen.getByRole('button', { name: 'Apply' }).click()
+    expect(calls).toEqual(['apply'])
+  })
+  it('3. shows the variable behind each hex', () => {
+    const { container } = render(
+      <WcagCard code="x" title="y" node="Label" nodeToken={{ name: 'Brand/Text/Secondary' }}
+        colors={{ fg: '#8fb7e8', bg: '#0c8ce9', fgToken: { name: 'Brand/Text/Muted', mode: 'Bridge' } }} />,
+    )
+    expect(container.querySelectorAll('.bb-token-ref')).toHaveLength(2)
+    expect(screen.getByText('Brand/Text/Muted')).toBeInTheDocument()
+    expect(screen.getByText('Bridge')).toBeInTheDocument()
+  })
+  it('4. judges the pair in every brand mode', () => {
+    const { container } = render(
+      <WcagCard code="x" title="y" brandModes={[
+        { brand: 'Bridge', pass: false, ratio: '2.4:1', current: true },
+        { brand: 'Ikea', pass: true, ratio: '7.1:1' },
+      ]} />,
+    )
+    const modes = container.querySelectorAll('.bb-brand-mode-chip')
+    expect(modes).toHaveLength(2)
+    expect(modes[0]?.getAttribute('data-current')).toBe('true')
+    expect(modes[0]?.getAttribute('data-pass')).toBeNull()
+    expect(modes[1]?.getAttribute('data-pass')).toBe('true')
+  })
+  it('5. ranks severity and rolls up repeated layers', () => {
+    const calls: string[] = []
+    const { container } = render(
+      <WcagCard code="x" title="y" severity="critical" occurrences={{ count: 37, onSelectAll: () => calls.push('all') }} />,
+    )
+    expect(container.querySelector('.bb-wcag-card')?.getAttribute('data-severity')).toBe('critical')
+    expect(screen.getByText('Critical')).toBeInTheDocument()
+    expect(screen.getByText('×37')).toBeInTheDocument()
+    screen.getByRole('button', { name: 'Select all' }).click()
+    expect(calls).toEqual(['all'])
+  })
+  it('6. records why an ignore was made and offers a restore', () => {
+    const calls: string[] = []
+    const { container } = render(
+      <WcagCard code="x" title="y" ignored={{ reason: 'Decorative watermark', scope: 'pair', author: 'Praveen', expires: 'until 2026-12-01', onUndo: () => calls.push('undo') }} />,
+    )
+    expect(container.querySelector('.bb-wcag-card')?.getAttribute('data-ignored')).toBe('true')
+    expect(screen.getByRole('note')).toBeInTheDocument()
+    expect(screen.getByText('Decorative watermark')).toBeInTheDocument()
+    expect(screen.getByText('Applies to this colour pair')).toBeInTheDocument()
+    expect(screen.getByText('until 2026-12-01')).toBeInTheDocument()
+    screen.getByRole('button', { name: 'Restore' }).click()
+    expect(calls).toEqual(['undo'])
+  })
+  it('7. reflects the annotation lifecycle on the footer button', () => {
+    const { rerender } = render(<WcagCard code="x" title="y" onAnnotate={() => undefined} />)
+    expect(screen.getByRole('button', { name: 'Annotation' })).toBeEnabled()
+    rerender(<WcagCard code="x" title="y" onAnnotate={() => undefined} annotation={{ state: 'queued' }} />)
+    expect(screen.getByRole('button', { name: 'Annotating…' })).toBeDisabled()
+    rerender(<WcagCard code="x" title="y" onAnnotate={() => undefined} annotation={{ state: 'placed', target: 'Dev Mode' }} />)
+    expect(screen.getByRole('button', { name: 'Annotated' })).toHaveAttribute('title', 'Annotate in Dev Mode')
+  })
+  it('8. turns the "Check With" icons into a real review list', () => {
+    const calls: [number, boolean][] = []
+    const { container } = render(
+      <WcagCard code="x" title="y" onToggleManualCheck={(i, done) => calls.push([i, done])} manualChecks={[
+        { kind: 'content', label: 'Alt text conveys the same meaning', done: true },
+        { kind: 'code', label: 'Focus ring is visible at 3:1' },
+      ]} />,
+    )
+    expect(container.querySelectorAll('.bb-manual-review-item')).toHaveLength(2)
+    expect(screen.getByText('1/2')).toBeInTheDocument()
+    screen.getByRole('checkbox', { name: 'Focus ring is visible at 3:1' }).click()
+    expect(calls).toEqual([[1, true]])
+  })
+  it('9. fills the placeholder with before/after thumbnails', () => {
+    const { container } = render(
+      <WcagCard code="x" title="y" thumbnail={{ src: 'before.png', alt: 'current' }} thumbnailAfter={{ src: 'after.png', alt: 'fixed' }} />,
+    )
+    expect(container.querySelector('.bb-thumbnail-pair')?.getAttribute('data-pair')).toBe('true')
+    expect(screen.getByRole('img', { name: 'current' })).toBeInTheDocument()
+    expect(screen.getByText('Before')).toBeInTheDocument()
+    expect(screen.getByText('After')).toBeInTheDocument()
+  })
+  it('10. marks how the finding moved since the last scan', () => {
+    const { container } = render(<WcagCard code="x" title="y" change="regressed" lastSeen="passed on 21 Sep" />)
+    expect(container.querySelector('.bb-wcag-card')?.getAttribute('data-change')).toBe('regressed')
+    expect(screen.getByText('Regressed')).toBeInTheDocument()
+    expect(screen.getByText('passed on 21 Sep')).toBeInTheDocument()
+  })
+  it('11. carries a copyable implementation snippet', () => {
+    const calls: string[] = []
+    const { container } = render(
+      <WcagCard code="x" title="y" snippet={{ language: 'CSS', code: 'color: var(--text-on-accent);', onCopy: () => calls.push('copy') }} />,
+    )
+    expect(screen.getByText('CSS')).toBeInTheDocument()
+    expect(container.querySelector('.bb-code-snippet__code')?.textContent).toContain('--text-on-accent')
+    screen.getByRole('button', { name: 'Copy snippet' }).click()
+    expect(calls).toEqual(['copy'])
+  })
+  it('leaves the Figma-faithful card untouched when no gap prop is passed', () => {
+    const { container } = render(<WcagCard code="1.4.3" title="Contrast (Minimum)" colors={{ fg: '#8fb7e8', bg: '#0c8ce9' }} />)
+    for (const cls of [
+      '.bb-fix-row', '.bb-brand-modes', '.bb-metrics-panel', '.bb-manual-review',
+      '.bb-code-snippet', '.bb-ignore-banner', '.bb-thumbnail-pair', '.bb-meta-badge',
+      '.bb-occurrences', '.bb-token-ref',
+    ]) {
+      expect(container.querySelector(cls)).toBeNull()
+    }
+    expect(container.querySelector('.bb-wcag-card__sample')).toBeInTheDocument()
+  })
+})

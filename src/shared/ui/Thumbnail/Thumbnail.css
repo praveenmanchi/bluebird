@@ -1,0 +1,22 @@
+/* Thumbnail — Figma "Thumbnail" (40000158:7225). */
+.bb-thumbnail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-xs);
+  margin: 0;
+  min-width: 0;
+}
+.bb-thumbnail__img {
+  width: 100%;
+  max-height: var(--bb-derived-wcag-card-placeholder-height);
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: var(--bb-rating-radius);
+  background: var(--bb-surface-sunken);
+  object-fit: contain;
+}
+.bb-thumbnail__caption {
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+}

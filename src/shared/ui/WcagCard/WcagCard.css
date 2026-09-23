@@ -45,12 +45,17 @@
 .bb-wcag-card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-wcag-card-body-gap);
+  gap: var(--bb-derived-wcag-card-body-mode-colors-gap);
   box-sizing: border-box;
-  padding: var(--bb-rating-padding) var(--bb-wcag-card-padding) 0;
+  padding: var(--bb-rating-padding) var(--bb-wcag-card-padding) var(--bb-dimension-space-8);
+}
+/* Figma 2026-09-23: the text mode sits tighter at the bottom and its sections hug closer. */
+.bb-wcag-card[data-mode='text'] .bb-wcag-card__body {
+  gap: var(--bb-derived-wcag-card-body-mode-text-gap);
+  padding-bottom: var(--bb-dimension-space-6);
 }
 
-/* Summary — criterion number + disability indicators, reference link right. */
+/* Summary — criterion number + disability indicators, reference column right. */
 .bb-wcag-card__summary {
   display: flex;
   align-items: center;
@@ -74,11 +79,19 @@
   align-items: center;
   gap: var(--bb-derived-wcag-card-disabilities-gap);
 }
+/* Reference column — the occurrences roll-up sits above the link (40000163:15844). */
+.bb-wcag-card__reference {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--bb-derived-wcag-card-heading-gap);
+  min-width: 0;
+}
 .bb-wcag-card__link {
-  font-family: var(--bb-derived-wcag-card-understanding-sc-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-understanding-sc-font-size);
-  font-weight: var(--bb-derived-wcag-card-understanding-sc-font-weight);
-  line-height: var(--bb-derived-wcag-card-understanding-sc-line-height);
+  font-family: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-size);
+  font-weight: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-weight);
+  line-height: var(--bb-derived-wcag-card-understanding-sc-1-4-3-line-height);
   color: var(--bb-wcag-card-title-fg);
   text-align: right;
   text-decoration: none;
@@ -106,10 +119,10 @@
 }
 .bb-wcag-card__description {
   margin: 0;
-  font-family: var(--bb-derived-wcag-card-description-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-description-font-size);
-  font-weight: var(--bb-derived-wcag-card-description-font-weight);
-  line-height: var(--bb-derived-wcag-card-description-line-height);
+  font-family: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-size);
+  font-weight: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-weight);
+  line-height: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-line-height);
   color: var(--bb-wcag-card-title-fg);
 }
 .bb-wcag-card__divider {
@@ -145,13 +158,13 @@
 .bb-wcag-card__row-value {
   flex: 1 1 auto;
   min-width: 0;
-  font-family: var(--bb-derived-wcag-card-understanding-sc-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-understanding-sc-font-size);
-  font-weight: var(--bb-derived-wcag-card-understanding-sc-font-weight);
-  line-height: var(--bb-derived-wcag-card-understanding-sc-line-height);
+  font-family: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-size);
+  font-weight: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-weight);
+  line-height: var(--bb-derived-wcag-card-understanding-sc-1-4-3-line-height);
   color: var(--bb-wcag-card-title-fg);
 }
-.bb-wcag-card__row--fix .bb-wcag-card__row-value { font-weight: var(--bb-derived-wcag-card-value-wcag-card-font-weight); }
+.bb-wcag-card__row--fix .bb-wcag-card__row-value { font-weight: var(--bb-derived-wcag-card-use-white-label-text-or-darken-the-fill-to-reach-4-font-weight); }
 .bb-wcag-card__mono {
   font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
   font-size: var(--bb-derived-wcag-card-0c8ce9-font-size);
@@ -159,16 +172,17 @@
   line-height: var(--bb-derived-wcag-card-0c8ce9-line-height);
 }
 
-/* Colors row — swatch / hex / "on" / swatch / hex. */
+/* Colors row — swatch / hex / "on" / swatch / hex. The "on" separator rides
+ * with the background swatch so a wrap keeps each pair on its own line. */
 .bb-wcag-card__row--colors .bb-wcag-card__row-value {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--bb-derived-wcag-card-pair-gap);
   flex-wrap: wrap;
 }
 .bb-wcag-card__swatch-item {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--bb-derived-wcag-card-pair-gap);
 }
 .bb-wcag-card__swatch {
@@ -214,7 +228,6 @@
   justify-content: space-between;
   gap: var(--bb-derived-wcag-card-sample-gap);
   box-sizing: border-box;
-  width: var(--bb-derived-wcag-card-sample-width);
   max-width: 100%;
   padding: var(--bb-derived-wcag-card-sample-padding-top) var(--bb-derived-wcag-card-sample-padding-right) var(--bb-derived-wcag-card-sample-padding-bottom) var(--bb-derived-wcag-card-sample-padding-left);
   border: var(--bb-derived-wcag-card-sample-stroke-width) solid var(--bb-derived-wcag-card-sample-stroke);
@@ -228,10 +241,10 @@
   color: inherit;
 }
 .bb-wcag-card__sample-caption {
-  font-family: var(--bb-derived-wcag-card-caption-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-caption-font-size);
-  font-weight: var(--bb-derived-wcag-card-caption-font-weight);
-  line-height: var(--bb-derived-wcag-card-caption-line-height);
+  font-family: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-size);
+  font-weight: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-weight);
+  line-height: var(--bb-derived-wcag-card-sample-of-this-exact-pair-line-height);
   color: inherit;
 }
 .bb-wcag-card__ratio {
@@ -254,11 +267,11 @@
 }
 .bb-wcag-card__ratio[data-pass] .bb-wcag-card__ratio-mark { color: var(--bb-status-pill-icon-good); }
 .bb-wcag-card__ratio-value {
-  font-family: var(--bb-derived-wcag-card-ratio-value-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-ratio-value-font-size);
-  font-weight: var(--bb-derived-wcag-card-ratio-value-font-weight);
-  line-height: var(--bb-derived-wcag-card-ratio-value-line-height);
-  color: var(--bb-derived-wcag-card-ratio-value-color);
+  font-family: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-size);
+  font-weight: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-weight);
+  line-height: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-line-height);
+  color: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-color);
 }
 
 /* Footer action bar. */
@@ -269,7 +282,7 @@
   box-sizing: border-box;
   margin-top: var(--bb-rating-padding);
   padding: var(--bb-derived-wcag-card-footer-padding-top) var(--bb-derived-wcag-card-footer-padding-right) var(--bb-derived-wcag-card-footer-padding-bottom) var(--bb-derived-wcag-card-footer-padding-left);
-  border-top: var(--bb-derived-wcag-card-footer-stroke-width) solid var(--bb-derived-wcag-card-footer-stroke);
+  border-top: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-derived-wcag-card-footer-stroke);
   background: var(--bb-derived-wcag-card-footer-fill);
   flex-wrap: wrap;
 }
@@ -286,9 +299,9 @@
   gap: var(--bb-derived-wcag-card-check-icons-gap);
 }
 .bb-wcag-card__check {
-  padding: var(--bb-derived-wcag-card-disability-indicator-wcag-card-padding-top) var(--bb-derived-wcag-card-disability-indicator-wcag-card-padding-right) var(--bb-derived-wcag-card-disability-indicator-wcag-card-padding-bottom) var(--bb-derived-wcag-card-disability-indicator-wcag-card-padding-left);
-  border-radius: var(--bb-derived-wcag-card-disability-indicator-wcag-card-radius);
-  border-width: var(--bb-derived-wcag-card-disability-indicator-wcag-card-stroke-width);
+  padding: var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-top) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-right) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-bottom) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-left);
+  border-radius: var(--bb-derived-wcag-card-disability-indicator-mode-colors-radius);
+  border-width: var(--bb-derived-wcag-card-disability-indicator-mode-colors-stroke-width);
 }
 .bb-wcag-card__spacer { flex: 1 1 auto; }
 .bb-wcag-card__action {
@@ -325,3 +338,52 @@
   width: var(--bb-derived-wcag-card-vector-width);
   height: var(--bb-derived-wcag-card-vector-height);
 }
+
+/* ---------------------------------------------------------------------------
+ * Card-level sections added 2026-09-23. Each one is its own component now
+ * (MetaBadge, Occurrences, TokenRef, FixRow, BrandModes, MetricsPanel,
+ * ThumbnailPair, ManualReview, CodeSnippet, IgnoreBanner), so only the card's
+ * own placement and state rules live here.
+ * ------------------------------------------------------------------------ */
+
+/* The Change / Severity badges share the header with Rating. Right-aligned so a
+ * long "Regressed · passed on 21 Sep" can never slide under the Principle tag,
+ * which is absolutely positioned at the card's corner. */
+.bb-wcag-card__header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--bb-space-inline-xs);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+/* A hex and the variable behind it, stacked inside one swatch item. */
+.bb-wcag-card__swatch-labels {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-xs);
+  min-width: 0;
+}
+
+/* An ignored finding stays readable but stops competing with live ones. */
+.bb-wcag-card[data-ignored] { border-style: dashed; }
+.bb-wcag-card[data-ignored] .bb-wcag-card__title,
+.bb-wcag-card[data-ignored] .bb-wcag-card__description,
+.bb-wcag-card[data-ignored] .bb-wcag-card__row-value { color: var(--bb-text-tertiary); }
+
+/* The annotation button reports where the annotation actually is. */
+.bb-wcag-card__action-icon {
+  width: var(--bb-wcag-card-icon-size);
+  height: var(--bb-wcag-card-icon-size);
+}
+.bb-wcag-card__action--annotate[data-state='placed'] {
+  border-color: var(--bb-color-status-success-500);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-color-status-success-400);
+}
+.bb-wcag-card__action--annotate[data-state='queued'] {
+  color: var(--bb-text-tertiary);
+  cursor: progress;
+}
+.bb-wcag-card__action:disabled { cursor: not-allowed; }

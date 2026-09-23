@@ -3,6 +3,7 @@
 // generated sandbox registry).
 import type { HandlerMap } from '@shared/bridge'
 import { createMockHandlers as a11y, type MockScenario } from '@features/a11y/mock'
+import { createMockHandlers as tokens } from '@features/tokens/mock'
 import { config } from '@shared/config'
 import { createSessionHandlers, type SessionStore } from '../../src/sandbox/session'
 
@@ -48,7 +49,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
     'shell:resize': async (payload: { width: number; height: number }) => { onResize?.(payload) },
     ...createSessionHandlers(config, store),
   }
-  return { ...shell, ...a11y(scenario) }
+  return { ...shell, ...a11y(scenario), ...tokens() }
 }
 
 export const mockHandlers: HandlerMap = createMockHandlers()

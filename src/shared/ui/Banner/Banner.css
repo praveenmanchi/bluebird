@@ -69,7 +69,6 @@
 .bb-banner__powered-inner {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-banner-frame-1430102691-gap);
 }
 .bb-banner__powered-label {
   font-family: var(--bb-derived-banner-powered-by-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -79,9 +78,8 @@
   color: var(--bb-banner-powered-by);
   white-space: nowrap;
 }
+/* The mark is the composed <BrandLogo logo="hcltech" size="sm">, matching Figma, which replaced
+ * the inline vector with a "brand logos" instance. BrandLogo.css owns its size and colour. */
 .bb-banner__mark {
   display: block;
-  width: var(--bb-derived-banner-vector-width);
-  height: var(--bb-derived-banner-vector-height);
-  color: var(--bb-banner-text);
 }

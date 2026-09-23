@@ -26,6 +26,20 @@ const coreHandlers: HandlerMap = {
   'shell:resize': (size: WindowSize) => { const { width, height } = clampWindow(size); figma.ui.resize(width, height) },
   // Design-token snapshot for scripts/figma-pull.ts (plugin backend). Read-only.
   'figma:snapshot': (manifest: ExtractManifest) => extractAll(manifest),
+  // The current page's top-level frames with every descendant id, for
+  // scripts/ground-truth.ts to map scan findings back to labelled cases. Read-only.
+  // A plain stack walk: the find* methods are advised against under dynamic
+  // page loading, and the case frames are small.
+  'dev:cases': () => figma.currentPage.children.map((frame) => {
+    const ids: string[] = []
+    const stack: SceneNode[] = [frame]
+    while (stack.length) {
+      const node = stack.pop()!
+      ids.push(node.id)
+      if ('children' in node) stack.push(...node.children)
+    }
+    return { id: frame.id, name: frame.name, ids }
+  }),
 }
 
 const router = createRouter({ ...coreHandlers, ...featureHandlers }, (message) => figma.ui.postMessage(message))

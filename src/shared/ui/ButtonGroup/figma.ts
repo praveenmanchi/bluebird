@@ -7,8 +7,13 @@ export const figma = {
   props: {
     'Save Configuration (Type=Primary, Label)': 'primaryLabel / onPrimary',
     'Test Connection (Type=Secondary, Label)': 'secondaryLabel / onSecondary',
+    // Added in Figma 2026-09-23; "Seconndary butto" is Figma's typo, kept so the key matches.
+    'Primary Button': 'primaryLabel (presence)',
+    'Seconndary butto': 'secondaryLabel (presence)',
   },
   figmaGaps: {
+    'button/primary/width-md': composed,
+    'button/secondary/width-md': composed,
     'button/primary/bg/default': composed,
     'button/primary/border/default': composed,
     'button/primary/radius': composed,

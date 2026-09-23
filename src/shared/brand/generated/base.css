@@ -164,6 +164,13 @@
   --bb-dimension-size-box-16: 16px;
   --bb-dimension-size-mark-10: 10px;
   --bb-dimension-size-menu-item-28: 28px;
+  --bb-dimension-size-control-40: 40px;
+  --bb-dimension-space-16: 16px;
+  --bb-dimension-size-icon-20: 20px;
+  --bb-type-size-13: 13px;
+  --bb-type-line-13: 13px;
+  --bb-dimension-size-control-w-120: 120px;
+  --bb-dimension-size-control-w-160: 160px;
   --bb-surface-canvas: #151515;
   --bb-surface-raised: #2c2c2c;
   --bb-surface-sunken: #0c0c0c;
@@ -250,10 +257,10 @@
   --bb-size-menu-item-height: 28px;
   --bb-size-control-height-lg: 40px;
   --bb-space-inset-xl: 16px;
+  --bb-space-inset-lg-alt: 12px;
   --bb-size-icon-control-lg: 20px;
   --bb-font-size-body-lg: 13px;
   --bb-font-line-tight-lg: 13px;
   --bb-size-control-width-md: 120px;
   --bb-size-control-width-lg: 160px;
-  --bb-space-inset-lg-alt: 12px;
 }

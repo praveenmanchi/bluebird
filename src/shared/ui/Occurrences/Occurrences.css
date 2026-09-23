@@ -1,0 +1,14 @@
+/* Occurrences — Figma "Occurrences" (40000160:7250). */
+.bb-occurrences {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--bb-space-inline-xs);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-secondary);
+}
+.bb-occurrences__count {
+  font-weight: var(--bb-type-weight-600);
+  color: var(--bb-text-primary);
+}

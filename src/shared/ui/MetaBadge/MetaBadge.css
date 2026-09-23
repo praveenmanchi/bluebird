@@ -1,0 +1,24 @@
+/* MetaBadge — Figma "Meta Badge" (40000156:7214). Tone drives the stroke and
+ * label colour; everything else is shared. */
+.bb-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inline-xs);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: var(--bb-radius-pill);
+  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-secondary);
+  white-space: nowrap;
+}
+.bb-meta-badge[data-tone='accent'] { border-color: var(--bb-border-accent); color: var(--bb-text-accent); }
+.bb-meta-badge[data-tone='success'] { border-color: var(--bb-color-status-success-500); color: var(--bb-color-status-success-400); }
+.bb-meta-badge[data-tone='warning'] { border-color: var(--bb-color-status-warning-500); color: var(--bb-color-status-warning-400); }
+.bb-meta-badge[data-tone='danger'] { border-color: var(--bb-color-status-danger-500); color: var(--bb-color-status-danger-400); }
+.bb-meta-badge__meta {
+  font-weight: var(--bb-type-weight-400);
+  color: var(--bb-text-tertiary);
+}
