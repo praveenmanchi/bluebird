@@ -1,7 +1,8 @@
 // Match the layers of one Figma variant across two snapshots.
 //
-// Nodes are identified by their path `p` ("WCAG Card/Header/Rating"), so an exact
-// match handles everything except a renamed layer. For the leftovers we score
+// Snapshots that record node ids (both extractors do since 2026-09) are matched by id, which
+// is exact through renames. Older snapshots fall back to the path `p` ("WCAG Card/Header/Rating"):
+// an exact match handles everything except a renamed layer. For the leftovers we score
 // candidate pairs within the same parent and, on a match, rewrite the paths of the
 // whole before-side subtree — so one renamed container costs one finding instead of
 // forty. See `matchNodes` for the scoring weights and their limits.
@@ -60,6 +61,47 @@ function bindingOverlap(a: ComponentNode, b: ComponentNode): number {
  *   rename. Those come back tagged `confidence: 'heuristic'` so a reader can discount them.
  */
 export function matchNodes(before: readonly ComponentNode[], after: readonly ComponentNode[]): NodeMatch {
+  // Snapshots with node ids identify layers outright: a same-id pair is the same layer whatever its
+  // path became. Only layers without an id (older snapshots) go through the path heuristics below.
+  const afterById = new Map(after.filter((n) => n.id).map((n) => [n.id!, n]))
+  const byId = before.filter((n) => n.id && afterById.has(n.id)).map((n) => ({ before: n, after: afterById.get(n.id!)! }))
+  // A renamed container moves every descendant's path; only the container is the rename, so a
+  // descendant whose path follows from an ancestor's rename is an ordinary pair.
+  const renamedPrefix = new Map<string, string>()
+  const idPairs: NodePair[] = []
+  const idRenames: NodeRename[] = []
+  for (const x of [...byId].sort((a, b) => depthOf(a.before.p) - depthOf(b.before.p))) {
+    if (followRenames(x.before.p, renamedPrefix) === x.after.p) { idPairs.push(x); continue }
+    idRenames.push({ ...x, confidence: 'exact', score: Infinity })
+    renamedPrefix.set(x.before.p, x.after.p)
+  }
+  if (byId.length) {
+    const matchedBefore = new Set(byId.map((x) => x.before))
+    const matchedAfter = new Set(byId.map((x) => x.after))
+    // A new id on one side is a genuinely new (or deleted) layer, not a rename candidate.
+    const rest = matchByPath(before.filter((n) => !matchedBefore.has(n) && !n.id), after.filter((n) => !matchedAfter.has(n) && !n.id))
+    return {
+      pairs: [...idPairs, ...rest.pairs],
+      renames: [...idRenames, ...rest.renames],
+      added: [...after.filter((n) => n.id && !matchedAfter.has(n)), ...rest.added],
+      removed: [...before.filter((n) => n.id && !matchedBefore.has(n)), ...rest.removed],
+    }
+  }
+  return matchByPath(before, after)
+}
+
+/** Rewrite `path` through the deepest renamed ancestor, if any. */
+function followRenames(path: string, renamed: ReadonlyMap<string, string>): string {
+  // `parentOf` assumes a "/" — walk ancestors only while there is one.
+  for (let p = path; p.includes('/');) {
+    p = parentOf(p)
+    const to = renamed.get(p)
+    if (to !== undefined) return `${to}${path.slice(p.length)}`
+  }
+  return path
+}
+
+function matchByPath(before: readonly ComponentNode[], after: readonly ComponentNode[]): NodeMatch {
   const pairs: NodePair[] = []
   const renames: NodeRename[] = []
   // Before-side paths are rewritten in place as ancestors turn out to be renames.

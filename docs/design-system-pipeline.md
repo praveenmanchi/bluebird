@@ -3,18 +3,18 @@
 **Goal.** No hardcoded visual values anywhere in the UI. Every colour, size, radius, spacing and type
 value is a Figma variable. Changing a variable in Figma and re-running the pipeline re-skins the
 plugin and every Storybook story. Five brands (Bridge, Ikea, Richemont, Disney, Fiskars) are the five
-modes of the Figma **Brand** collection; the plugin picks one in `plugin.config.json → brand.active`.
+modes of the Figma **Brand UI** collection; the plugin picks one in `plugin.config.json → brand.active`.
 
 ```
 Figma file WWRcH8IPLJ4iQVyoK9oDnH
- ├─ 1. Primitives (164 vars, 1 mode)  ─┐
- ├─ 2. Semantics  (84 vars, 1 mode)   ─┤   npm run figma:pull          figma/tokens.json
- ├─ Brand (367 vars × 5 modes)        ─┘   (relay or REST)        →    figma/components.json
+ ├─ Foundations (375 vars, 1 mode)    ─┐   shared scales + <brand>/color/* and <brand>/type/family/* per brand
+ ├─ Semantics   (58 vars, 1 mode)     ─┤   npm run figma:pull          figma/tokens.json
+ ├─ Brand UI    (421 vars × 5 modes)  ─┘   (relay or REST)        →    figma/components.json
  └─ Components page: sets + bindings  ────────────────────────────→    figma/icons.json
                                                                           │
                                                         npm run gen:tokens│
                                                                           ▼
-   src/shared/brand/generated/  base.css · brand.<id>.css · derived.css · all.css · active.css · tokens.ts
+   src/shared/brand/generated/  base.css (Foundations + Semantics, :root) · brand.<id>.css (Brand UI mode) · derived.css · all.css · active.css · tokens.ts
    src/shared/ui/Icon/generated.ts
                                                                           │
               components read ONLY var(--bb-*)  ◄────────────────────────┤
@@ -37,6 +37,31 @@ Figma file WWRcH8IPLJ4iQVyoK9oDnH
 | Components | `src/shared/ui/<Name>/` (`.tsx`, `.css`, `figma.ts`, `.stories.tsx`, `.test.tsx`) | Engineering | Structure/behaviour changes; **never** for a colour/size change |
 | Tailwind bridge | `src/shared/brand/theme.css` | Engineering | A new semantic utility is needed by tabs |
 | Brand selection | `plugin.config.json → brand.active` | Product | Shipping a different brand |
+
+## Variable layering (2026-09-23, revised the same day)
+
+The brand switch lives in **Brand UI**, the collection design edits. Semantics is single-mode and
+holds only brand-neutral scales, so a brand change is one place: a Brand UI mode.
+
+| Collection | Modes | Holds | Aliases |
+|---|---|---|---|
+| Foundations | 1 | Shared scales (`dimension/*`, `type/size\|line\|weight\|tracking/*`, `color/alpha/*`, `color/category/*`) and one namespace per brand: `<brand>/color/brand/primary\|secondary\|neutral\|base`, `<brand>/color/primary\|secondary/50–900`, `<brand>/color/neutral/0–1000`, `<brand>/color/status/success\|warning\|danger\|info/100–900`, `<brand>/type/family/ui\|display\|mono`. The ramp step that carries the seed colour is suffixed `-brand` (`ikea/color/primary/600-brand`). | Raw values |
+| Semantics | 1 (`Value`) | The 58 brand-neutral intent tokens: `space/*`, `radius/*`, `size/*`, `border-width/*`, `font/size\|line\|weight-*`, `a11y/category-*`, `surface/transparent`, `border/on-accent` | Foundations only |
+| Brand UI | Bridge · Ikea · Richemont · Disney · Fiskars | **Tier 1, app tokens** (34): `surface/*`, `text/*`, `border/*`, `icon/default\|muted\|on-accent`, `feedback/*`, `font/family-ui\|display\|brand`, `a11y/accent*`. **Tier 2, component tokens** (387): `button/*`, `input/*`, … | Tier 1 → that brand's Foundations namespace per mode. Tier 2 colours → tier 1 (same collection, same mode); tier 2 numerics → Semantics, with a different Semantics token per mode where a brand genuinely differs (Ikea/Disney pill radius, brand font weights). |
+
+The tiers are a naming convention inside one collection, not two collections, so Figma's Appearance
+panel shows a single mode picker. `tokens:check` enforces the layering (`checkLayering`): Semantics
+must stay single-mode and alias Foundations only. The generator separately refuses a name that
+exists in two collections.
+
+Adding a brand = one Foundations namespace + one Brand UI mode: Figma copies every alias from the
+default mode, then 34 tier 1 aliases and ~40 per-brand tier 2 aliases are re-pointed. Components
+and Semantics never change.
+
+Code mirrors this: `base.css` carries Foundations **and** Semantics on `:root`; each
+`brand.<id>.css` carries that brand's Brand UI mode under `[data-brand]`, so `--bb-surface-canvas`
+switches with the brand. Component CSS reads Brand UI tokens or Semantics scales, never a brand
+namespace directly. CSS names are unchanged by the move (`text/primary` is still `--bb-text-primary`).
 
 Naming is mechanical: Figma `button/primary/bg/default` → CSS `--bb-button-primary-bg-default`.
 FLOATs become `px` except weights and opacities; font families are quoted.
@@ -87,6 +112,33 @@ real variable, the generator moves it and `tokens:check` points at the code to u
    extractor difference, never a design change. Zero is the licence to pass
    `--allow-cross-extractor`. That refusal is the guard against re-shipping the 2426-finding bug.
 
+0c. **Enterprise REST, two tiers (2026-09-24).** The file moved to an Enterprise org
+   (`JPZ7koqomjcjczGQuhIMVH`), so `--rest` is now fully headless. The REST backend lives in
+   `scripts/figma-rest/` and runs in one of two tiers, auto-detected and printed on every pull:
+
+   | Tier | Needs | Variables | Components, props, bindings, sizes, coverage, icons |
+   |---|---|---|---|
+   | **enterprise** | PAT with `file_content:read` + `file_variables:read` | live from `/variables/local`, with `publishKey`, `description`, `scopes`, `codeSyntax`; library variables named | REST |
+   | **professional** | PAT with `file_content:read` | relay if up, else committed `tokens.json` (flagged stale); bindings named from recorded ids, library variables stay `lib:<id>` | REST |
+
+   `--tier enterprise` fails instead of falling back; `--tier professional` skips `/variables/local`
+   on purpose. A 403 says whether the *plan* or the *token scope* is missing.
+
+   Every snapshot layer now records its Figma node `id` (instances also `mc`, the main component
+   id, and `st`, applied style names); sets and variants record their publish `key`; both
+   snapshots record the file `version`, and `--version <id>` pulls exactly that version.
+   `figma:diff` matches layers by id first — renames are exact, a renamed container is one
+   finding — and falls back to the path heuristics only for snapshots without ids.
+
+   Each REST pull also walks the Components page: coverage is recomputed live (it used to be
+   copied from the last relay pull), sets the manifest does not map are listed, and a manifest
+   entry whose node id vanished is followed to the unique set with the same Figma name
+   (`--fix-manifest` records the new id). Parity fixes that made REST match the relay exactly:
+   REST-nested bindings (`size`, `rectangleCornerRadii`, `individualStrokeWeights`) flattened to
+   plugin keys, font style from `fontStyle` rather than the often-null PostScript name, mixed text
+   runs and per-side stroke weights treated as `figma.mixed`, rotated and tilted LINE sizes
+   measured pre-rotation.
+
 1. Pull backend: the relay backend is proven (2026-09-22: full pull of 621 variables, 49 sets and the Tab Icons set in ~45 s). Flow: `npm run build` → `npm run dev:relay` → in Figma desktop run *Dev: connect to browser (live mode)* → `npm run figma:pull` → `npm run gen:tokens && npm run tokens:check`. The pull keeps the code-side bookkeeping (`status`/`aliasOf`, tiers, hand-exported glyphs). `--rest` needs a personal access token; `/variables/local` additionally needs Enterprise, but see 0b — after one relay pull, REST resolves bindings from the recorded variable ids. Variable *values* still need the relay (or Enterprise); components, properties, bindings and geometry do not.
 2. CI job: `figma:pull → gen:tokens → tokens:check → test → build-storybook`, opening a PR when `figma/*.json` changed. Storybook is the review surface for the diff.
 3. Visual parity: **done (2026-09-23)** — `npm run figma:visual` exports each variant via `GET /v1/images/:key?ids=…` (all plans, `FIGMA_TOKEN` only), screenshots the paired story per brand with Playwright, and pixelmatches the two into `figma/visual/report.html`. Pairing comes from `parameters.figma.setId`/`.variant` read out of Storybook's own preview at runtime — index.json carries no parameters, and story names ("Primary Default") do not resemble variant names ("Type=Primary, State=Default, Size=Medium"), so name-guessing pairs under half of them. All 107 variants pair. It reports only by default and stays out of `npm run verify`: Figma rasterises text itself, so the percentage is a sort order, not a verdict — it earns its keep on structural drift (wrong size, moved element, missing layer).
@@ -117,12 +169,17 @@ New tabs (see `docs/adding-a-tab.md`) use only `@shared/ui` components and Tailw
 
 0. **Banner (40000064:9910) is ~27 % bound.** Title/tagline fills are raw white (use `Banner/Text`), three fonts are raw (MuseoModerno, IBM Plex Sans, Michroma; `type/family/museo` already exists), all spacing is raw, and the layers are unnamed (`Frame 1430102689`…), so the derived tokens carry those names. A sixth Brand mode literally called **"Mode"** appeared (values copy Fiskars); the snapshot ignores it, delete or name it. The Bridge logo is outlined text (49 KB) and dominates the plugin bundle; a simplified asset would help.
 
-1. **Semantics has a single mode.** `text/primary`, `surface/canvas` etc. are dark-theme values only; light brands (Ikea, Richemont) work purely through the Brand component tokens. Either add Brand modes to Semantics or keep everything app-level in Brand (the shell currently uses `card-variable/*` as the canvas for that reason). A dedicated `app/canvas/*` group would be cleaner.
+1. ~~Semantics has a single mode.~~ Semantics gained five brand modes on 2026-09-23 and lost them again the same day: the 34 brand-varying tokens moved into Brand UI (tier 1) so design edits one collection. Still open: per-brand *shape* tokens (`radius/control`, `radius/card`, `font/weight-ui`) in tier 1 so the ~40 numeric tier 2 tokens that alias a different Semantics scale per brand stop doing so individually.
 2. **Icon vectors are bound to `icon/glyph/default`** even inside Button and Dropdown, although `button/*/icon/color` and `dropdown/chevron/color` exist. Rebind the vectors; the `figmaGaps` entries in `Button/figma.ts` and `Dropdown/figma.ts` can then be deleted (CI will insist).
 3. **Disabled opacity, checkbox mark stroke/dash geometry** are raw in the components (see `derived.css`). Add `*/disabled/opacity`, `checkbox/mark/stroke-width` variables.
 4. `border-width/*` tokens exist but stroke weights on the component roots are not bound to them.
 5. Font weights: variables named `…/font-weight` were FLOATs emitted with `px` until 2026-09-21 (fixed in `cssValueFor`); the Figma side is fine.
-6. Font: every family token resolves to **Noto Sans**. The plugin now loads it from Google Fonts (`manifest.json → networkAccess`). If the plugin must stay offline, ship the font subset or accept the system fallback.
+6. Font: `font/family-ui` resolves to **Noto Sans** in every brand; `font/family-display` is MuseoModerno (Bridge) and Noto Serif (Richemont) as placeholders until design confirms the brand faces. The plugin now loads it from Google Fonts (`manifest.json → networkAccess`). If the plugin must stay offline, ship the font subset or accept the system fallback.
+
+### Extractor note (2026-09-23)
+Alias resolution is mode-**name** based: a hop from Brand UI "Ikea" into another collection uses that collection's "Ikea" mode when it has one and its default mode otherwise (single-mode Semantics and Foundations). A same-collection alias (Brand UI tier 2 → tier 1) stays in the same mode. `extract.ts` and the REST `describe()` both do this; the old id-based lookup silently resolved every mode to Bridge once Semantics gained modes.
+
+Since 2026-09-24 the REST components pull matches the relay extractor on every set (see 0c), so a REST pull may be committed. The committed snapshot records `source: figma-rest`; re-run `npm run figma:parity` (needs the relay) after any change to either extractor.
 
 ## Commands
 
@@ -131,7 +188,10 @@ npm run figma:diff            # what changed in Figma since the last pull (write
 npm run figma:parity          # do the relay and REST extractors describe the file identically?
 npm run figma:visual          # Figma renders vs Storybook renders → figma/visual/report.html (needs FIGMA_TOKEN)
 npm run figma:pull            # relay backend (needs `npm run dev:relay` + bridge plugin open in Figma)
-npm run figma:pull -- --rest  # REST backend (FIGMA_TOKEN, Enterprise for variables)
+npm run figma:pull -- --rest  # REST backend, tier auto-detected (FIGMA_TOKEN; Enterprise for live variables)
+npm run figma:pull -- --rest --tier professional   # force the Professional path (no /variables/local)
+npm run figma:pull -- --rest --version <id>        # pull one saved Figma version
+npm run figma:pull -- --rest --fix-manifest        # record new ids for manifest sets that moved
 npm run gen:tokens            # regenerate CSS/TS from figma/*.json
 npm run tokens:check          # drift gate
 npm run tokens:check -- --write-baseline   # re-accept unread derived tokens as debt (last resort)

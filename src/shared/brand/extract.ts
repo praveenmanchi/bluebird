@@ -5,7 +5,7 @@ import type {
   ComponentNode as SnapNode, ComponentSetSnapshot, ComponentsSnapshot, CoverageRow,
   IconsSnapshot, ResolvedValue, SnapshotCollection, SnapshotVariable, TokenSnapshot, VariableType,
 } from './snapshot'
-import { parseVariantName } from './snapshot'
+import { parseVariantName, variableMeta } from './snapshot'
 import { rgbaToHex } from '../figma/color'
 
 export interface ExtractManifest {
@@ -42,13 +42,18 @@ function rawValue(value: VariableValue): ResolvedValue {
   return null
 }
 
-function resolveValue(index: VariableIndex, value: VariableValue | undefined, modeId: string, depth = 0): ResolvedValue {
+/** Follows aliases across collections. Mode ids are per collection, so the hop into another
+ *  collection picks that collection's mode with the SAME NAME (Brand "Ikea" → Semantics "Ikea")
+ *  and falls back to its default mode when there is none (single-mode Foundations). */
+function resolveValue(index: VariableIndex, value: VariableValue | undefined, mode: { modeId: string; name: string }, depth = 0): ResolvedValue {
   if (value === undefined || depth > MAX_ALIAS_DEPTH) return null
   if (isAlias(value)) {
     const target = index.byId.get(value.id)
     if (!target) return null
+    const collection = index.collectionById.get(target.variableCollectionId)
+    const modeId = collection?.modes.find((m) => m.name === mode.name)?.modeId ?? collection?.defaultModeId ?? mode.modeId
     const next = target.valuesByMode[modeId] ?? Object.values(target.valuesByMode)[0]
-    return resolveValue(index, next, modeId, depth + 1)
+    return resolveValue(index, next, { modeId, name: mode.name }, depth + 1)
   }
   return rawValue(value)
 }
@@ -67,17 +72,19 @@ function snapshotCollection(index: VariableIndex, collection: VariableCollection
     if (!v) continue
     // The id is what lets a REST pull name this variable without Enterprise access to
     // /variables/local: ids are stable for the life of the file, so one relay pull seeds the map.
-    const entry: SnapshotVariable = { id: v.id, name: v.name, type: v.resolvedType as VariableType, values: {} }
+    const entry: SnapshotVariable = { id: v.id, name: v.name, type: v.resolvedType as VariableType, values: {}, ...variableMeta(v) }
     const aliases: Record<string, string> = {}
     for (const mode of collection.modes) {
       const value = v.valuesByMode[mode.modeId]
-      entry.values[mode.name] = resolveValue(index, value, mode.modeId)
+      entry.values[mode.name] = resolveValue(index, value, mode)
       if (isAlias(value)) { const a = aliasName(index, value); if (a) aliases[mode.name] = a }
     }
     if (Object.keys(aliases).length) entry.aliases = aliases
     variables.push(entry)
   }
   return {
+    id: collection.id,
+    ...(collection.key ? { publishKey: collection.key } : {}),
     name: collection.name,
     key,
     modes: collection.modes.map((m) => m.name),
@@ -101,6 +108,31 @@ export async function extractTokens(manifest: ExtractManifest): Promise<TokenSna
 
 type Bound = { id: string } | { id: string }[] | undefined
 
+/** Every variable id bound anywhere under `root` (node properties and paint colours). */
+function boundIds(root: SceneNode): Set<string> {
+  const ids = new Set<string>()
+  const add = (b: unknown) => { for (const x of Array.isArray(b) ? b : [b]) if (x && typeof x === 'object' && 'id' in x) ids.add(String((x as { id: string }).id)) }
+  const nodes: SceneNode[] = [root, ...('findAll' in root ? root.findAll(() => true) : [])]
+  for (const n of nodes) {
+    for (const v of Object.values(n.boundVariables ?? {})) add(v)
+    for (const key of ['fills', 'strokes'] as const) {
+      const paints = key in n ? (n as unknown as Record<string, unknown>)[key] : undefined
+      if (Array.isArray(paints)) for (const p of paints as Paint[]) if (p.type === 'SOLID') add(p.boundVariables?.color)
+    }
+  }
+  return ids
+}
+
+/** Add the library variables `root` binds to the index, so they are named like REST's Enterprise
+ *  tier names them (`/variables/local` includes subscribed library variables) instead of `lib:<id>`. */
+async function indexLibraryVariables(index: VariableIndex, root: SceneNode): Promise<void> {
+  for (const id of boundIds(root)) {
+    if (index.byId.has(id)) continue
+    const v = await figma.variables.getVariableByIdAsync(id)
+    if (v) index.byId.set(id, v)
+  }
+}
+
 function boundName(index: VariableIndex, bound: Bound): string | undefined {
   if (!bound) return undefined
   const first = Array.isArray(bound) ? bound[0] : bound
@@ -122,6 +154,9 @@ export const OVERRIDE_KEYS: Record<string, string[]> = {
   width: ['width', 'size'], height: ['height', 'size'], opacity: ['opacity'], visible: ['hidden'],
   characters: ['text'], fontSize: ['fontSize'], fontName: ['font', 'style'], fontFamily: ['font'], fontWeight: ['style'], lineHeight: ['lineHeightPx', 'lineHeightPercent'],
   componentProperties: ['cp'], mainComponent: ['i'],
+  // Applied styles: the Plugin API names the override `textStyleId`, REST `inheritTextStyleId`.
+  fillStyleId: ['st'], strokeStyleId: ['st'], effectStyleId: ['st'], textStyleId: ['st'],
+  inheritFillStyleId: ['st'], inheritStrokeStyleId: ['st'], inheritEffectStyleId: ['st'], inheritTextStyleId: ['st'],
 }
 
 function paintHex(paint: Paint): string | undefined {
@@ -175,11 +210,14 @@ async function describeNode(index: VariableIndex, node: SceneNode, path: string)
   if ('opacity' in node && node.opacity !== 1) r.opacity = Math.round(node.opacity * 100) / 100
   if (!node.visible) r.hidden = true
 
-  const entry: SnapNode = { p: path, t: node.type, b }
+  const entry: SnapNode = { id: node.id, p: path, t: node.type, b }
   if (Object.keys(r).length) entry.r = r
+  const st = await styleRefs(node)
+  if (st) entry.st = st
   if (node.type === 'INSTANCE') {
     const main = await node.getMainComponentAsync()
     entry.i = main ? `${main.name}${main.parent?.type === 'COMPONENT_SET' ? ` <${main.parent.name}>` : ''}` : 'unknown'
+    if (main) entry.mc = main.id
     const cp: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(node.componentProperties)) cp[k.split('#')[0] ?? k] = v.value
     if (Object.keys(cp).length) entry.cp = cp
@@ -191,15 +229,34 @@ async function describeNode(index: VariableIndex, node: SceneNode, path: string)
   return entry
 }
 
+/** Applied local or library styles by kind → style name. REST reports the same four kinds. */
+async function styleRefs(node: SceneNode): Promise<Record<string, string> | undefined> {
+  const ids: [string, unknown][] = [
+    ['fill', 'fillStyleId' in node ? node.fillStyleId : undefined],
+    ['stroke', 'strokeStyleId' in node ? node.strokeStyleId : undefined],
+    ['effect', 'effectStyleId' in node ? node.effectStyleId : undefined],
+    ['text', node.type === 'TEXT' ? node.textStyleId : undefined],
+  ]
+  const out: Record<string, string> = {}
+  for (const [kind, id] of ids) {
+    // Mixed (a symbol) or empty means no single style applies.
+    if (typeof id !== 'string' || !id) continue
+    const style = await figma.getStyleByIdAsync(id)
+    if (style) out[kind] = style.name
+  }
+  return Object.keys(out).length ? out : undefined
+}
+
 /** Keep only the b/r keys that the instance actually overrides, so override nodes carry overrides and nothing else. */
 export function pruneToOverrides(entry: SnapNode, fields: readonly string[]): SnapNode {
   const keep = new Set(fields.flatMap((f) => OVERRIDE_KEYS[f] ?? []))
   const b = Object.fromEntries(Object.entries(entry.b).filter(([k]) => keep.has(k)))
   const r = Object.fromEntries(Object.entries(entry.r ?? {}).filter(([k]) => keep.has(k)))
-  const out: SnapNode = { p: entry.p, t: entry.t, b, o: [...fields] }
+  const out: SnapNode = { ...(entry.id ? { id: entry.id } : {}), p: entry.p, t: entry.t, b, o: [...fields] }
   if (Object.keys(r).length) out.r = r
-  if (keep.has('i') && entry.i) out.i = entry.i
+  if (keep.has('i') && entry.i) { out.i = entry.i; if (entry.mc) out.mc = entry.mc }
   if (keep.has('cp') && entry.cp) out.cp = entry.cp
+  if (keep.has('st') && entry.st) out.st = entry.st
   return out
 }
 
@@ -235,13 +292,15 @@ async function extractSet(index: VariableIndex, code: string, id: string): Promi
   // Screens (plain frames such as the Login page) are snapshotted as single-variant sets.
   if (!node || (node.type !== 'COMPONENT_SET' && node.type !== 'COMPONENT' && node.type !== 'FRAME')) throw new Error(`Node ${id} is not a component (set) or frame`)
   const variantsSource: (ComponentNode | FrameNode)[] = node.type === 'COMPONENT_SET' ? node.children.filter((c): c is ComponentNode => c.type === 'COMPONENT') : [node]
+  await indexLibraryVariables(index, node)
   const variants: ComponentSetSnapshot['variants'] = []
   for (const variant of variantsSource) {
     const nodes: SnapNode[] = []
     await walk(index, variant, '', nodes)
-    variants.push({ id: variant.id, name: variant.name, props: node.type === 'COMPONENT_SET' ? parseVariantName(variant.name) : {}, nodes })
+    variants.push({ id: variant.id, ...(variant.type === 'COMPONENT' && variant.key ? { key: variant.key } : {}), name: variant.name, props: node.type === 'COMPONENT_SET' ? parseVariantName(variant.name) : {}, nodes })
   }
-  return { code, id: node.id, name: node.name, description: node.type === 'FRAME' ? '' : node.description, props: node.type === 'FRAME' ? {} : propDefinitions(node), variants }
+  const key = node.type === 'FRAME' ? undefined : node.key
+  return { code, id: node.id, ...(key ? { key } : {}), name: node.name, description: node.type === 'FRAME' ? '' : node.description, props: node.type === 'FRAME' ? {} : propDefinitions(node), variants }
 }
 
 function coverageOf(index: VariableIndex, top: SceneNode): { bound: number; raw: number } {

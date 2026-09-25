@@ -16,9 +16,20 @@ export interface SnapshotVariable {
   values: Record<string, ResolvedValue>
   /** First-hop alias per mode, "<collection>/<variable>", when the value is an alias. */
   aliases?: Record<string, string>
+  /** Library publish key — stable across every file that subscribes to the library. */
+  publishKey?: string
+  description?: string
+  /** Where Figma lets the variable be applied (ALL_FILLS, CORNER_RADIUS, …). */
+  scopes?: string[]
+  /** Per-platform code syntax set in Figma (WEB / ANDROID / iOS). */
+  codeSyntax?: Record<string, string>
+  hiddenFromPublishing?: boolean
 }
 
 export interface SnapshotCollection {
+  /** Figma VariableCollectionId. */
+  id?: string
+  publishKey?: string
   name: string
   key: 'primitives' | 'semantics' | 'brand' | string
   modes: string[]
@@ -31,10 +42,15 @@ export interface TokenSnapshot {
   fileName: string
   pulledAt: string
   source: string
+  /** Figma file version the snapshot was read from (REST only — the Plugin API does not expose it). */
+  version?: string
   collections: SnapshotCollection[]
 }
 
 export interface ComponentNode {
+  /** Figma node id. Stable across renames, so the differ matches layers by it before falling back
+   *  to paths. Instance descendants carry Figma's compound id ("I12:3;45:6"). */
+  id?: string
   /** Layer path inside the variant, "/" separated. */
   p: string
   t: string
@@ -44,6 +60,10 @@ export interface ComponentNode {
   r?: Record<string, unknown>
   /** Main component name when the node is an instance. */
   i?: string
+  /** Main component node id when the node is an instance. */
+  mc?: string
+  /** Applied styles by kind (text / fill / stroke / effect) → style name. */
+  st?: Record<string, string>
   /** Component property references (visible / characters / mainComponent). */
   pr?: Record<string, string>
   /** Instance property overrides. */
@@ -54,6 +74,8 @@ export interface ComponentNode {
 
 export interface ComponentVariant {
   id: string
+  /** Component publish key. */
+  key?: string
   name: string
   props: Record<string, string>
   nodes: ComponentNode[]
@@ -69,6 +91,8 @@ export interface ComponentSetSnapshot {
   /** Exported name in src/shared/ui. */
   code: string
   id: string
+  /** Component (set) publish key. */
+  key?: string
   name: string
   description: string
   props: Record<string, ComponentPropDefinition>
@@ -95,6 +119,8 @@ export interface ComponentsSnapshot {
   fileKey: string
   page: { id: string; name: string }
   pulledAt: string
+  /** Figma file version (REST only). */
+  version?: string
   sets: ComponentSetSnapshot[]
   coverage: CoverageRow[]
 }
@@ -105,6 +131,18 @@ export interface IconsSnapshot {
   set: { id: string; name: string; variantProperty: string }
   icons: Record<string, IconEntry>
   marks: Record<string, { id: string; svg: string }>
+}
+
+/** Variable metadata as either backend reads it (Plugin API `Variable` or REST `/variables/local`),
+ *  kept only when present so snapshots stay lean and both backends write the same keys. */
+export function variableMeta(v: { key?: string; description?: string; scopes?: readonly string[]; codeSyntax?: Readonly<Record<string, string>>; hiddenFromPublishing?: boolean }): Partial<SnapshotVariable> {
+  return {
+    ...(v.key ? { publishKey: v.key } : {}),
+    ...(v.description ? { description: v.description } : {}),
+    ...(v.scopes?.length ? { scopes: [...v.scopes] } : {}),
+    ...(v.codeSyntax && Object.keys(v.codeSyntax).length ? { codeSyntax: { ...v.codeSyntax } } : {}),
+    ...(v.hiddenFromPublishing ? { hiddenFromPublishing: true } : {}),
+  }
 }
 
 export const CSS_VAR_PREFIX = '--bb-'

@@ -128,3 +128,38 @@ describe('matchNodes', () => {
     expect(m.renames[0]).toMatchObject({ confidence: 'heuristic' })
   })
 })
+
+describe('matchNodes with node ids', () => {
+  const withId = (id: string, p: string, t: string, b: Record<string, string> = {}): ComponentNode => ({ id, p, t, b })
+
+  it('pairs layers by id and reports a renamed container once, not per descendant', () => {
+    const before = [withId('1', 'R', 'COMPONENT'), withId('2', 'R/Header', 'FRAME'), withId('3', 'R/Header/Title', 'TEXT'), withId('4', 'R/Header/Icon', 'INSTANCE')]
+    const after = [withId('1', 'R', 'COMPONENT'), withId('2', 'R/Head', 'FRAME'), withId('3', 'R/Head/Title', 'TEXT'), withId('4', 'R/Head/Icon', 'INSTANCE')]
+    const m = matchNodes(before, after)
+    expect(m.renames).toHaveLength(1)
+    expect(m.renames[0]).toMatchObject({ before: { p: 'R/Header' }, after: { p: 'R/Head' }, confidence: 'exact' })
+    expect(m.pairs).toHaveLength(3)
+    expect(m.added).toEqual([])
+    expect(m.removed).toEqual([])
+  })
+
+  it('catches a rename the heuristics would miss: renamed and rebound in one edit', () => {
+    const m = matchNodes([withId('1', 'R', 'COMPONENT'), withId('2', 'R/A', 'FRAME', { fill: 'x' })], [withId('1', 'R', 'COMPONENT'), withId('2', 'R/B', 'FRAME', { fill: 'y' })])
+    expect(m.renames.map((r) => [r.before.p, r.after.p])).toEqual([['R/A', 'R/B']])
+  })
+
+  it('reports a layer moved to another parent, and new or deleted ids as added / removed', () => {
+    const before = [withId('1', 'R', 'COMPONENT'), withId('2', 'R/A', 'FRAME'), withId('3', 'R/B', 'FRAME'), withId('4', 'R/A/Dot', 'ELLIPSE'), withId('5', 'R/Old', 'TEXT')]
+    const after = [withId('1', 'R', 'COMPONENT'), withId('2', 'R/A', 'FRAME'), withId('3', 'R/B', 'FRAME'), withId('4', 'R/B/Dot', 'ELLIPSE'), withId('6', 'R/New', 'TEXT')]
+    const m = matchNodes(before, after)
+    expect(m.renames.map((r) => [r.before.p, r.after.p])).toEqual([['R/A/Dot', 'R/B/Dot']])
+    expect(m.added.map((n) => n.p)).toEqual(['R/New'])
+    expect(m.removed.map((n) => n.p)).toEqual(['R/Old'])
+  })
+
+  it('falls back to paths when the baseline predates node ids', () => {
+    const m = matchNodes([node('R', 'COMPONENT'), node('R/A', 'FRAME')], [withId('1', 'R', 'COMPONENT'), withId('2', 'R/A', 'FRAME')])
+    expect(m.pairs).toHaveLength(2)
+    expect(m.renames).toEqual([])
+  })
+})
