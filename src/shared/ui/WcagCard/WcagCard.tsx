@@ -351,6 +351,7 @@ export function WcagCard({
             language={snippet.language}
             copyLabel={snippet.copyLabel}
             onCopy={snippet.onCopy}
+            class="bb-wcag-card__snippet"
           />
         )}
         {ignored && (

@@ -16,7 +16,7 @@
   border-radius: var(--bb-wcag-card-radius);
   background: var(--bb-wcag-card-bg-default);
   color: var(--bb-wcag-card-title-fg);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   overflow: hidden;
 }
 
@@ -56,17 +56,23 @@
 }
 
 /* Summary — criterion number + disability indicators, reference column right. */
+/* Summary row (Figma "Frame 1430102698"): criterion group, then the reference column. In Figma the
+ * gap alone fills the row exactly; space-between keeps the reference column on the right edge when
+ * the code is shorter than the "Value" placeholder, and the gap stays the minimum between them. */
 .bb-wcag-card__summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--bb-derived-wcag-card-criterion-gap);
+  gap: var(--bb-derived-wcag-card-frame-1430102698-gap);
 }
+/* Criterion group (Figma "Frame 1430102699", 2026-09-25): the SC code and the disability indicators.
+ * Mode=Text was not regrouped and keeps its own "Criterion" frame spacing. */
 .bb-wcag-card__criterion {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-criterion-gap);
+  gap: var(--bb-derived-wcag-card-frame-1430102699-gap);
 }
+.bb-wcag-card[data-mode='text'] .bb-wcag-card__criterion { gap: var(--bb-derived-wcag-card-criterion-gap); }
 .bb-wcag-card__code {
   font-family: var(--bb-derived-wcag-card-aa-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-wcag-card-aa-font-size);
@@ -84,7 +90,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--bb-derived-wcag-card-heading-gap);
+  gap: var(--bb-derived-wcag-card-frame-1430102697-gap);
   min-width: 0;
 }
 .bb-wcag-card__link {
@@ -378,12 +384,15 @@
   height: var(--bb-wcag-card-icon-size);
 }
 .bb-wcag-card__action--annotate[data-state='placed'] {
-  border-color: var(--bb-color-status-success-500);
+  border-color: var(--bb-feedback-success);
   background: var(--bb-surface-transparent);
-  color: var(--bb-color-status-success-400);
+  color: var(--bb-feedback-success);
 }
 .bb-wcag-card__action--annotate[data-state='queued'] {
   color: var(--bb-text-tertiary);
   cursor: progress;
 }
 .bb-wcag-card__action:disabled { cursor: not-allowed; }
+/* Figma rebinds the embedded Code Snippet's stroke to border/default (2026-09-25); the Code Snippet
+ * set itself keeps border/subtle, so the override lives here. */
+.bb-wcag-card__snippet { border-color: var(--bb-border-default); }

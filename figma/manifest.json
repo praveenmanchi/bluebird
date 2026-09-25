@@ -1,15 +1,15 @@
 {
   "$comment": "Source of truth for `npm run figma:pull`. Node ids come from the Figma file; code names are the exported component names in src/shared/ui.",
-  "fileKey": "WWRcH8IPLJ4iQVyoK9oDnH",
-  "fileUrl": "https://www.figma.com/design/WWRcH8IPLJ4iQVyoK9oDnH/Plugin-UI",
+  "fileKey": "JPZ7koqomjcjczGQuhIMVH",
+  "fileUrl": "https://www.figma.com/design/JPZ7koqomjcjczGQuhIMVH/Plugin-UI?node-id=40000008-9592&p=f&t=o6gSpj31PPc00DCJ-0",
   "componentsPage": {
     "id": "40000008:9592",
     "name": "Components"
   },
   "collections": {
-    "primitives": "1. Primitives",
-    "semantics": "2. Semantics",
-    "brand": "Brand"
+    "primitives": "Foundations",
+    "semantics": "Semantics",
+    "brand": "Brand UI"
   },
   "componentSets": [
     {
@@ -266,6 +266,81 @@
       "code": "SettingsScreen",
       "figma": "Settings page",
       "id": "40000100:13084"
+    },
+    {
+      "code": "MetaBadge",
+      "figma": "Meta Badge",
+      "id": "40000156:7214"
+    },
+    {
+      "code": "TokenRef",
+      "figma": "Token Ref",
+      "id": "40000157:7199"
+    },
+    {
+      "code": "LinkButton",
+      "figma": "Link Button",
+      "id": "40000157:7205"
+    },
+    {
+      "code": "MetricCell",
+      "figma": "Metric Cell",
+      "id": "40000157:7207"
+    },
+    {
+      "code": "BrandModeChip",
+      "figma": "Brand Mode Chip",
+      "id": "40000158:7224"
+    },
+    {
+      "code": "Thumbnail",
+      "figma": "Thumbnail",
+      "id": "40000158:7225"
+    },
+    {
+      "code": "MetricsPanel",
+      "figma": "Metrics Panel",
+      "id": "40000159:7048"
+    },
+    {
+      "code": "ThumbnailPair",
+      "figma": "Thumbnail Pair",
+      "id": "40000159:7067"
+    },
+    {
+      "code": "BrandModes",
+      "figma": "Brand Modes",
+      "id": "40000159:7074"
+    },
+    {
+      "code": "Occurrences",
+      "figma": "Occurrences",
+      "id": "40000160:7250"
+    },
+    {
+      "code": "IgnoreBanner",
+      "figma": "Ignore Banner",
+      "id": "40000160:7255"
+    },
+    {
+      "code": "CodeSnippet",
+      "figma": "Code Snippet",
+      "id": "40000160:7266"
+    },
+    {
+      "code": "ManualReviewItem",
+      "figma": "Manual Review Item",
+      "id": "40000162:7275"
+    },
+    {
+      "code": "ManualReview",
+      "figma": "Manual Review",
+      "id": "40000162:7276"
+    },
+    {
+      "code": "FixRow",
+      "figma": "Fix Row",
+      "id": "40000164:7288"
     }
   ],
   "iconSet": {

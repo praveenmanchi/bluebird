@@ -40,8 +40,8 @@ export const figma = {
     // src/shared/ui for the CSS var.
     'border/accent': 'consumed by the composed FixRow and MetaBadge (the Change pill border)',
     'border/subtle': 'consumed by the composed CodeSnippet, FixRow, ManualReview, MetricsPanel and Thumbnail',
-    'color/status/danger/500': 'consumed by the composed MetaBadge (Severity) and BrandModeChip',
-    'color/status/warning/500': 'consumed by the composed IgnoreBanner and MetaBadge',
+    'feedback/danger': 'consumed by the composed MetaBadge (Severity) and BrandModeChip (--bb-feedback-danger)',
+    'feedback/warning': 'consumed by the composed IgnoreBanner and MetaBadge (--bb-feedback-warning)',
     'radius/lg': 'consumed by the composed CodeSnippet, FixRow, IgnoreBanner, ManualReview and MetricsPanel',
     'radius/pill': 'consumed by the composed MetaBadge (Severity / Change pills) and BrandModeChip',
     'space/inline-sm': 'consumed by every composed section that lays out inline content (MetaBadge, FixRow, ThumbnailPair, …)',
@@ -54,6 +54,15 @@ export const figma = {
     'disability-indicator/border/default': 'consumed by the composed DisabilityIndicator',
     'disability-indicator/icon/color': 'Figma overrides the Rating instance fill with the disability glyph colour; code keeps rating/bg/default from the composed Rating so the level chip stays brand-coloured.',
     'theme-card/border/default': 'consumed by the composed ThemeChip',
+    // 2026-09-23 (brand switch moved into Brand UI): the Occurrences, Metrics, Fix, Snippet,
+    // Ignored, Token and Brand-modes layers bind the tier 1 app tokens. Each is read by the
+    // composed child that renders that section.
+    'text/primary': 'consumed by the composed Occurrences (Count), MetricCell (Value), FixRow (Label), CodeSnippet (Code) and IgnoreBanner (Reason)',
+    'text/secondary': 'consumed by the composed Occurrences (Label), TokenRef (Name), FixRow (Hex), CodeSnippet (Language) and MetaBadge',
+    'text/accent': 'consumed by the composed MetaBadge (Change label), Occurrences (Select all), FixRow and CodeSnippet links, plus the Restore LinkButton in IgnoreBanner',
+    'surface/sunken': 'consumed by the composed TokenRef (Mode chip), BrandModeChip, CodeSnippet, IgnoreBanner, ManualReview and MetricsPanel',
+    'surface/accent-strong': 'the Fix row Sample chip in Figma is a placeholder swatch; FixRow paints the chip with the real suggested pair at runtime (style={{ background: on, color: hex }})',
+    'text/on-accent': 'as surface/accent-strong — the "Aa" inside the Sample chip takes the suggested foreground colour at runtime, not a token',
   },
   /**
    * The eleven card-level gaps from the 2026-09-23 market analysis, drawn into
