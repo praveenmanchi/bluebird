@@ -1,0 +1,33 @@
+/* ManualReview — Figma "Manual Review" (40000162:7276). */
+.bb-manual-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-sm);
+  padding: var(--bb-space-inset-md);
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: var(--bb-radius-lg);
+  background: var(--bb-surface-sunken);
+}
+.bb-manual-review__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-sm);
+}
+.bb-manual-review__label,
+.bb-manual-review__count {
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+  text-transform: uppercase;
+}
+.bb-manual-review__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

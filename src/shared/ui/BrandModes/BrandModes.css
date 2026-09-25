@@ -1,0 +1,22 @@
+/* BrandModes — Figma "Brand Modes" (40000159:7074). */
+.bb-brand-modes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-sm);
+}
+.bb-brand-modes__label {
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-tertiary);
+  text-transform: uppercase;
+}
+.bb-brand-modes__list {
+  display: flex;
+  gap: var(--bb-space-inline-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-wrap: wrap;
+}

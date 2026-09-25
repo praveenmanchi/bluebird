@@ -1,0 +1,57 @@
+/* FixRow — Figma "Fix Row" (40000164:7288). The Apply action is a real Button
+ * instance in Figma, so it is the Button component here too. */
+.bb-fix-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-space-inset-md);
+  border: var(--bb-border-width-default) solid var(--bb-border-accent);
+  border-radius: var(--bb-radius-lg);
+  background: var(--bb-surface-accent-subtle);
+}
+.bb-fix-row__icon { flex: none; color: var(--bb-text-accent); }
+.bb-fix-row__icon svg {
+  width: var(--bb-wcag-card-icon-size);
+  height: var(--bb-wcag-card-icon-size);
+}
+.bb-fix-row__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-inset-xs);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bb-fix-row__label {
+  margin: 0;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-11);
+  line-height: var(--bb-type-line-14);
+  color: var(--bb-text-primary);
+}
+.bb-fix-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-sm);
+  flex-wrap: wrap;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-secondary);
+}
+.bb-fix-row__sample {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: var(--bb-radius-md);
+  font-weight: var(--bb-type-weight-600);
+}
+.bb-fix-row__hex {
+  font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
+}
+.bb-fix-row__ratio {
+  color: var(--bb-feedback-success);
+  font-weight: var(--bb-type-weight-600);
+}
+.bb-fix-row__apply { flex: none; }

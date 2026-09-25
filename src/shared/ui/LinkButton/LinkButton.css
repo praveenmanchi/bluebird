@@ -1,0 +1,13 @@
+/* LinkButton — Figma "Link Button" (40000157:7205). */
+.bb-link-button {
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-text-accent);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.bb-link-button:disabled { color: var(--bb-text-tertiary); cursor: not-allowed; }

@@ -8,9 +8,14 @@ describe('Banner', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByText('Design Studio')).toBeInTheDocument()
     expect(screen.getByText('Connecting Gap between design workflow')).toBeInTheDocument()
-    expect(container.querySelectorAll('.bb-brand-logo')).toHaveLength(5)
+    // Five client logos (CSS reveals the active one) plus the HCL mark, which since 2026-09-23 is
+    // a composed <BrandLogo> at half size — Figma replaced the inline vector with an instance.
+    expect(container.querySelectorAll('.bb-brand-logo')).toHaveLength(6)
     expect(screen.getByText('Powered By')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'HCLTech' })).toBeInTheDocument()
+    const mark = screen.getByRole('img', { name: 'HCLTech' })
+    expect(mark).toBeInTheDocument()
+    expect(mark.getAttribute('data-logo')).toBe('hcltech')
+    expect(mark.getAttribute('data-size')).toBe('sm')
   })
   it('hides the Powered By block (Figma "HCL Logo" = false) and forces a brand logo', () => {
     const { container } = render(<Banner showPoweredBy={false} brand="fiskars" title="Bluebird" tagline="Design ops" />)

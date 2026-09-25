@@ -10,7 +10,7 @@
   padding-left: var(--bb-derived-status-pill-root-padding-left);
   padding-right: var(--bb-derived-status-pill-root-padding-right);
   color: var(--bb-status-pill-fg-default);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-status-pill-font-size);
   font-weight: var(--bb-status-pill-font-weight);
   line-height: var(--bb-status-pill-line-height);

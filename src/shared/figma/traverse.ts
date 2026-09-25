@@ -6,8 +6,12 @@ export interface TraverseOptions {
   batchSize?: number
   /** Called after each batch; return false to stop early. */
   onProgress?: (visited: number) => boolean | void
-  /** Skip children of this node (still visits the node itself). */
-  skipChildren?: (node: SceneNode) => boolean
+  /**
+   * Skip children of this node (still visits the node itself). May be async:
+   * identifying a repeated component instance needs `getMainComponentAsync`,
+   * and the sync `mainComponent` getter is deprecated.
+   */
+  skipChildren?: (node: SceneNode) => boolean | Promise<boolean>
 }
 
 const yieldToHost = () => new Promise<void>((r) => setTimeout(r, 0))
@@ -29,8 +33,15 @@ export async function traverse(
     visited += 1
     sinceYield += 1
 
-    if ('children' in node && !options.skipChildren?.(node)) {
-      for (let i = node.children.length - 1; i >= 0; i -= 1) stack.push(node.children[i]!)
+    if ('children' in node) {
+      let skip = false
+      if (options.skipChildren) {
+        const answer = options.skipChildren(node)
+        skip = typeof answer === 'boolean' ? answer : await answer
+      }
+      if (!skip) {
+        for (let i = node.children.length - 1; i >= 0; i -= 1) stack.push(node.children[i]!)
+      }
     }
     if (sinceYield >= batchSize) {
       sinceYield = 0

@@ -1,0 +1,25 @@
+/* TokenRef — Figma "Token Ref" (40000157:7199). */
+.bb-token-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inline-xs);
+  min-width: 0;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-secondary);
+}
+.bb-token-ref__icon {
+  width: var(--bb-wcag-card-icon-size);
+  height: var(--bb-wcag-card-icon-size);
+  flex: none;
+  color: var(--bb-icon-muted);
+}
+.bb-token-ref__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bb-token-ref__mode {
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-xs);
+  border-radius: var(--bb-radius-sm);
+  background: var(--bb-surface-sunken);
+  color: var(--bb-text-tertiary);
+  white-space: nowrap;
+}

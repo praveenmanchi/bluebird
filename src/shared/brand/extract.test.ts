@@ -67,7 +67,8 @@ describe('extractTokens', () => {
     expect(snap.collections.map((c) => c.key)).toEqual(['primitives', 'semantics', 'brand'])
     const brand = snap.collections[2]!
     expect(brand.modes).toEqual(['Bridge', 'Ikea'])
-    expect(brand.variables[0]).toEqual({ name: 'button/bg', type: 'COLOR', values: { Bridge: '#0000ff', Ikea: '#ff000080' }, aliases: { Bridge: 'Sem/surface/accent' } })
+    // `id` is recorded so a REST pull can name node bindings without Enterprise access — see scripts/figma-pull.ts.
+    expect(brand.variables[0]).toEqual({ id: 'v3', name: 'button/bg', type: 'COLOR', values: { Bridge: '#0000ff', Ikea: '#ff000080' }, aliases: { Bridge: 'Sem/surface/accent' } })
     expect(snap.collections[1]!.variables[0]!.aliases).toEqual({ Value: 'Prim/color/blue' })
   })
 })

@@ -6,7 +6,7 @@
   align-items: center;
   gap: var(--bb-status-pill-gap);
   color: var(--bb-status-pill-fg-default);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-status-pill-font-size);
   font-weight: var(--bb-derived-info-meta-20m-font-weight);
   line-height: var(--bb-status-pill-line-height);

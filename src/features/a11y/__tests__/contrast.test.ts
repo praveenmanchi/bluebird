@@ -28,6 +28,14 @@ describe('WCAG rating', () => {
     expect(isBoldStyle('Black', 400)).toBe(false)
   })
 
+  it('does not let semibold claim the large-text exception — WCAG pins bold to 700', () => {
+    expect(isBoldStyle('Regular', 600)).toBe(false)
+    expect(isBoldStyle('Semi Bold')).toBe(false)
+    expect(isBoldStyle('SemiBold')).toBe(false)
+    expect(isBoldStyle('DemiBold')).toBe(false)
+    expect(isBoldStyle('Extra Bold')).toBe(true)
+  })
+
   it('rounds ratios to two decimals', () => {
     expect(roundRatio(4.4849)).toBe(4.48)
   })

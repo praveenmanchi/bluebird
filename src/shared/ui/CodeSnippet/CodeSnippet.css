@@ -1,0 +1,45 @@
+/* CodeSnippet — Figma "Code Snippet" (40000160:7266). */
+.bb-code-snippet {
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: var(--bb-radius-lg);
+  background: var(--bb-surface-sunken);
+  overflow: hidden;
+}
+.bb-code-snippet__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-space-inset-sm) var(--bb-space-inset-md);
+}
+.bb-code-snippet__language {
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-11);
+  color: var(--bb-text-secondary);
+}
+.bb-code-snippet__copy {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-icon-muted);
+  cursor: pointer;
+}
+.bb-code-snippet__copy svg {
+  width: var(--bb-wcag-card-icon-size);
+  height: var(--bb-wcag-card-icon-size);
+}
+.bb-code-snippet__copy:is(:hover, :focus-visible) { color: var(--bb-text-accent); }
+.bb-code-snippet__code {
+  margin: 0;
+  padding: var(--bb-space-inset-md);
+  border-top: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-14);
+  color: var(--bb-text-primary);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}

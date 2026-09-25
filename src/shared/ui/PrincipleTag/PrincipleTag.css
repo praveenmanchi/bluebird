@@ -12,7 +12,7 @@
   padding: var(--bb-derived-principle-tag-root-padding-top) var(--bb-derived-principle-tag-root-padding-right) var(--bb-derived-principle-tag-root-padding-bottom) var(--bb-derived-principle-tag-root-padding-left);
   border-radius: var(--bb-derived-principle-tag-root-radius);
   color: var(--bb-principle-fg);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-principle-font-size);
   font-weight: var(--bb-derived-principle-tag-perceivable-font-weight);
   line-height: var(--bb-derived-principle-tag-perceivable-line-height);

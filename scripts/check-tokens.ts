@@ -1,35 +1,38 @@
 // Drift gate between Figma and code. Exit 1 on any finding.
 //
 //  1. Generated files are up to date with figma/*.json.
-//  2. Every `var(--bb-…)` used under src/shared/ui and src/shell exists.
+//  2. Every `var(--bb-…)` used under src/shared/ui, src/shell and src/features exists.
 //  3. No hardcoded visual values (hex, rgb(), px, named colours) in component CSS.
 //  4. Each code component consumes every token its Figma set binds, unless the
 //     component's figma.ts lists the token under `figmaGaps` with a reason.
-import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs'
-import { resolve, relative, join } from 'node:path'
-import { generate, readInputs, ROOT } from './gen-tokens'
-import { cssVarName } from '../src/shared/brand/snapshot'
+//  5. Each code component reads every `--bb-derived-*` its Figma set generates —
+//     the raw widths, heights, paddings and gaps Figma has not turned into variables
+//     yet. Unread ones are debt, recorded with their VALUE in
+//     figma/derived-baseline.json: a baselined token whose value later moves in Figma
+//     re-surfaces as `derived-token-drifted`, because that is a design change reaching
+//     no code. Permanent exceptions go in the component's figma.ts `derivedGaps`.
+//  6. Figma component properties, setIds and the manifest agree with the code
+//     (scripts/check-props.ts).
+//  7. Variable layering: Semantics is single-mode and aliases Foundations only; the brand
+//     switch lives in Brand UI (checkLayering).
+//
+// `npm run tokens:check -- --write-baseline` rewrites the baseline. It is a last
+// resort: it accepts the current values as debt, so say why in the commit message.
+import { readFileSync, existsSync, writeFileSync } from 'node:fs'
+import { resolve, relative } from 'node:path'
+import { derivedDeclarations, generate, readInputs, ROOT } from './gen-tokens'
+import { checkProps, type Finding } from './check-props'
+import { COMPONENT_DIRS, walkFiles } from './component-sources'
+import { cssVarName, type TokenSnapshot } from '../src/shared/brand/snapshot'
 
-export interface Finding { rule: string; file: string; message: string; line?: number }
+export type { Finding }
 
-const COMPONENT_DIRS = ['src/shared/ui', 'src/shell']
 const RAW_PATTERNS: { name: string; re: RegExp }[] = [
   { name: 'hex colour', re: /#[0-9a-fA-F]{3,8}\b/ },
   { name: 'rgb/hsl colour', re: /\b(?:rgb|hsl)a?\(/ },
   { name: 'px length', re: /(?<![\w-])(?!0px)\d*\.?\d+px\b/ },
   { name: 'named colour', re: /:\s*(?:white|black|red|blue|green|gray|grey|transparent)\s*[;!]/ },
 ]
-
-function walkFiles(dir: string, out: string[] = []): string[] {
-  if (!existsSync(dir)) return out
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry)
-    if (entry === 'generated') continue
-    if (statSync(p).isDirectory()) walkFiles(p, out)
-    else out.push(p)
-  }
-  return out
-}
 
 export function findRawValues(css: string, file: string): Finding[] {
   const findings: Finding[] = []
@@ -50,7 +53,22 @@ export function findUnknownVars(source: string, file: string, known: Set<string>
   return findings
 }
 
-interface FigmaMeta { figmaGaps?: Record<string, string> }
+interface FigmaMeta {
+  figmaGaps?: Record<string, string>
+  /** Generated `--bb-derived-*` names the component deliberately does not read, with the reason.
+   *  Separate from figmaGaps on purpose: that one is keyed by Figma variable name, this one by
+   *  CSS var name, and merging them would let a typo in either silently satisfy the other rule. */
+  derivedGaps?: Record<string, string>
+}
+
+const BASELINE_FILE = 'figma/derived-baseline.json'
+interface DerivedBaseline { $comment?: string; tokens: Record<string, string> }
+
+function readBaseline(root: string): DerivedBaseline {
+  const file = resolve(root, BASELINE_FILE)
+  if (!existsSync(file)) return { tokens: {} }
+  return JSON.parse(readFileSync(file, 'utf8')) as DerivedBaseline
+}
 
 async function loadFigmaMeta(file: string): Promise<FigmaMeta> {
   if (!existsSync(file)) return {}
@@ -58,8 +76,11 @@ async function loadFigmaMeta(file: string): Promise<FigmaMeta> {
   return mod.figma ?? {}
 }
 
-export async function checkComponentCoverage(root = ROOT): Promise<Finding[]> {
+export async function checkComponentCoverage(root = ROOT, options: { writeBaseline?: boolean } = {}): Promise<Finding[]> {
   const { components } = readInputs(root)
+  const baseline = readBaseline(root)
+  const nextBaseline: Record<string, string> = {}
+  const generated = new Set<string>()
   const findings: Finding[] = []
   for (const set of components.sets) {
     if (set.status === 'planned' || set.status === 'alias') continue
@@ -67,6 +88,7 @@ export async function checkComponentCoverage(root = ROOT): Promise<Finding[]> {
     const cssFile = resolve(dir, `${set.code}.css`)
     if (!existsSync(cssFile)) { findings.push({ rule: 'missing-component', file: relative(root, cssFile), message: `Figma set "${set.name}" has no code component` }); continue }
     const css = readFileSync(cssFile, 'utf8')
+    const file = relative(root, cssFile)
     const meta = await loadFigmaMeta(set.dir ? resolve(dir, `${set.code}.figma.ts`) : resolve(dir, 'figma.ts'))
     const bound = new Set<string>()
     for (const v of set.variants) for (const n of v.nodes) for (const name of Object.values(n.b)) bound.add(name)
@@ -74,16 +96,75 @@ export async function checkComponentCoverage(root = ROOT): Promise<Finding[]> {
       if (name.startsWith('lib:')) continue // remote library variable: no local value to generate a token from; listed in docs/figma-token-mapping.md
       if (meta.figmaGaps?.[name]) continue
       if (!css.includes(`var(${cssVarName(name)})`)) {
-        findings.push({ rule: 'figma-token-unused', file: relative(root, cssFile), message: `Figma binds "${name}" but the component never reads ${cssVarName(name)}` })
+        findings.push({ rule: 'figma-token-unused', file, message: `Figma binds "${name}" but the component never reads ${cssVarName(name)}` })
       }
+    }
+
+    // Raw Figma geometry: the generator turns it into --bb-derived-*, but nothing until now
+    // checked that the component actually reads it, so a resize could land nowhere.
+    for (const { name, value } of derivedDeclarations({ ...components, sets: [set] })) {
+      generated.add(name)
+      if (meta.derivedGaps?.[name]) continue
+      if (css.includes(`var(${name})`)) {
+        if (baseline.tokens[name] !== undefined) findings.push({ rule: 'derived-baseline-stale', file: BASELINE_FILE, message: `${name} is read by ${file} now — delete the baseline entry` })
+        continue
+      }
+      nextBaseline[name] = value
+      if (options.writeBaseline) continue
+      const based = baseline.tokens[name]
+      if (based === undefined) findings.push({ rule: 'derived-token-unused', file, message: `Figma generates ${name} (${value}) but the component never reads it` })
+      else if (based !== value) findings.push({ rule: 'derived-token-drifted', file, message: `${name} moved ${based} → ${value} in Figma and ${set.code} still does not read it — wire it up, or add it to derivedGaps` })
+    }
+  }
+  for (const name of Object.keys(baseline.tokens)) {
+    if (!generated.has(name)) findings.push({ rule: 'derived-baseline-stale', file: BASELINE_FILE, message: `${name} is no longer generated — delete the baseline entry` })
+  }
+  if (options.writeBaseline) {
+    const sorted = Object.fromEntries(Object.entries(nextBaseline).sort(([a], [b]) => a.localeCompare(b)))
+    const payload: DerivedBaseline = { $comment: 'Derived tokens from raw Figma geometry that no component reads yet — debt, not design. Shrink me: wire the token up, or record a reason in the component figma.ts `derivedGaps`. Values are stored so that a later change to one in Figma re-surfaces as `derived-token-drifted` instead of staying muted. See scripts/check-tokens.ts.', tokens: sorted }
+    writeFileSync(resolve(root, BASELINE_FILE), `${JSON.stringify(payload, null, 2)}\n`)
+    console.log(`[tokens:check] wrote ${BASELINE_FILE} — ${Object.keys(sorted).length} unread derived token(s)`)
+  }
+  return findings
+}
+
+/**
+ * Layering contract (2026-09-23, "brand switch lives in Brand UI"):
+ *   Foundations  1 mode   raw values, one namespace per brand
+ *   Semantics    1 mode   brand-neutral scales; aliases Foundations only
+ *   Brand UI     N modes  tier 1 app tokens (surface/text/border/icon/feedback/font/a11y) alias
+ *                         Foundations per mode; tier 2 component tokens alias tier 1 or Semantics.
+ * The generator already refuses a name that exists in two collections, so the only way to put
+ * brand back into Semantics is to give it a second mode or an alias into Brand UI — both caught here.
+ */
+export function checkLayering(tokens: TokenSnapshot, file = 'figma/tokens.json'): Finding[] {
+  const findings: Finding[] = []
+  const byName = new Map(tokens.collections.map((c) => [c.name, c]))
+  const semantics = byName.get('Semantics')
+  const brandUi = byName.get('Brand UI')
+  if (!semantics || !brandUi) return findings
+  if (semantics.modes.length !== 1) {
+    findings.push({ rule: 'semantics-multi-mode', file, message: `Semantics has ${semantics.modes.length} modes (${semantics.modes.join(', ')}) — the brand switch belongs in Brand UI; Semantics holds shared scales only` })
+  }
+  for (const v of semantics.variables) {
+    for (const [mode, target] of Object.entries(v.aliases ?? {})) {
+      if (!target.startsWith('Foundations/')) findings.push({ rule: 'semantics-alias-layer', file, message: `Semantics/${v.name} (${mode}) aliases ${target} — Semantics may alias Foundations only` })
+    }
+  }
+  for (const v of brandUi.variables) {
+    for (const [mode, target] of Object.entries(v.aliases ?? {})) {
+      const collection = target.split('/')[0]
+      if (collection !== 'Foundations' && collection !== 'Semantics' && collection !== 'Brand UI') findings.push({ rule: 'brand-ui-alias-layer', file, message: `Brand UI/${v.name} (${mode}) aliases ${target} — unknown collection` })
     }
   }
   return findings
 }
 
-export async function runChecks(root = ROOT): Promise<Finding[]> {
+export async function runChecks(root = ROOT, options: { writeBaseline?: boolean } = {}): Promise<Finding[]> {
   const findings: Finding[] = []
-  const files = generate(readInputs(root))
+  const inputs = readInputs(root)
+  findings.push(...checkLayering(inputs.tokens))
+  const files = generate(inputs)
   for (const [rel, content] of Object.entries(files)) {
     const abs = resolve(root, rel)
     if (!existsSync(abs) || readFileSync(abs, 'utf8') !== content) findings.push({ rule: 'stale-generated', file: rel, message: 'out of date — run `npm run gen:tokens`' })
@@ -99,12 +180,15 @@ export async function runChecks(root = ROOT): Promise<Finding[]> {
       if (file.endsWith('.css')) findings.push(...findRawValues(source, rel))
     }
   }
-  findings.push(...(await checkComponentCoverage(root)))
+  findings.push(...(await checkComponentCoverage(root, options)))
+  const { components } = readInputs(root)
+  const manifest = JSON.parse(readFileSync(resolve(root, 'figma/manifest.json'), 'utf8')) as { componentSets: { code: string; id: string }[] }
+  findings.push(...(await checkProps(root, components, new Map(manifest.componentSets.map((s) => [s.code, s.id])))))
   return findings
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
-  const findings = await runChecks()
+  const findings = await runChecks(ROOT, { writeBaseline: process.argv.includes('--write-baseline') })
   for (const f of findings) console.error(`[tokens:check] ${f.rule}  ${f.file}${f.line ? `:${f.line}` : ''}  ${f.message}`)
   console.log(findings.length ? `[tokens:check] ${findings.length} finding(s)` : '[tokens:check] OK — code matches figma/*.json')
   process.exit(findings.length ? 1 : 0)

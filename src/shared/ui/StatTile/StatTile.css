@@ -25,14 +25,14 @@
 }
 .bb-stat-tile__value {
   color: var(--bb-derived-stat-tile-68-color);
-  font-family: var(--bb-type-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-stat-tile-68-font-size);
   font-weight: var(--bb-derived-stat-tile-68-font-weight);
   line-height: var(--bb-derived-stat-tile-68-line-height);
 }
 .bb-stat-tile__label {
   color: var(--bb-derived-stat-tile-variables-color);
-  font-family: var(--bb-type-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-stat-tile-variables-font-size);
   font-weight: var(--bb-derived-stat-tile-variables-font-weight);
   line-height: var(--bb-derived-stat-tile-variables-line-height);

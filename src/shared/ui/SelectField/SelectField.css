@@ -36,7 +36,7 @@
   border-radius: var(--bb-dropdown-radius);
   background: var(--bb-dropdown-bg-default);
   color: var(--bb-dropdown-fg-value);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-dropdown-font-size);
   font-weight: var(--bb-dropdown-font-weight);
   line-height: var(--bb-dropdown-line-height);

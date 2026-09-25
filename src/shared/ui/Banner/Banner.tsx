@@ -42,7 +42,7 @@ export function Banner({ showPoweredBy = true, dualLogo = true, brand, title = '
         <div class="bb-banner__powered">
           <div class="bb-banner__powered-inner">
             <span class="bb-banner__powered-label">Powered By</span>
-            <svg class="bb-banner__mark" viewBox={mark.viewBox} fill="none" role="img" aria-label="HCLTech" dangerouslySetInnerHTML={{ __html: mark.body }} />
+            <BrandLogo logo="hcltech" size="sm" title="HCLTech" class="bb-banner__mark" />
           </div>
         </div>
       )}

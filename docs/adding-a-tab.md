@@ -56,3 +56,17 @@ const off = rpc.on<Progress>('<id>:progress', (p) => …)
 ```
 
 Long scans: use `traverse()` from `@shared/figma/traverse` so the plugin yields between batches.
+
+## Accuracy suite (ground truth)
+
+Unit tests prove a rule does what we meant. The ground-truth page proves it matches what a designer sees. The Figma page **Accessibility · Ground truth** holds labelled cases, one frame each, named `<id> · <title> ▸ <expected>` where `<expected>` is a comma-separated list of `none · contrast · contrast:aaa · assumed · nontext · target · unmeasurable`.
+
+```bash
+npm run dev:relay        # once
+# In Figma desktop: re-run the plugin (Cmd+Opt+P) after any sandbox change, then
+# Plugins → Development → bluebird → "Dev: connect to browser (live mode)", and
+# make the ground-truth page the current page.
+npm run gt               # runs the real a11y:scan and compares every case
+```
+
+`scripts/ground-truth.ts` talks to the relay; the pure comparison lives in `tests/ground-truth/judge.ts` and is unit tested. Add a case by drawing it on the page and naming the frame — nothing in code changes. When a rule changes, this is the gate.

@@ -10,7 +10,7 @@
   gap: var(--bb-derived-settings-button-root-gap);
   padding: var(--bb-derived-settings-button-root-padding-top) var(--bb-derived-settings-button-root-padding-right) var(--bb-derived-settings-button-root-property-1-default-padding-bottom) var(--bb-derived-settings-button-root-padding-left);
   border: 0;
-  border-bottom: var(--bb-derived-settings-button-root-stroke-width) solid var(--bb-surface-transparent);
+  border-bottom: var(--bb-derived-tab-root-stroke-width) solid var(--bb-surface-transparent);
   background: var(--bb-surface-transparent);
   color: var(--bb-icon-glyph-default);
   cursor: pointer;

@@ -6,3 +6,7 @@ src/sandbox/registry.generated.ts
 .DS_Store
 *.log
 storybook-static
+figma/drift.json
+figma/visual
+.env
+.env.local

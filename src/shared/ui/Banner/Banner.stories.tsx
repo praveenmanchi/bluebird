@@ -21,9 +21,10 @@ export const PluginWidth: Story = { decorators: [(Story) => <div style={{ width:
 
 export const AcrossBrands: Story = {
   decorators: [],
+
   render: (args) => (
     <BrandGrid width="632px">
       <Banner {...args} />
     </BrandGrid>
-  ),
+  )
 }

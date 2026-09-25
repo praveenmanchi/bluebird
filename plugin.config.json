@@ -56,7 +56,10 @@
     },
     "design-system": {
       "label": "Design System",
-      "tabs": []
+      "tabs": [
+        "tokens",
+        "a11y"
+      ]
     }
   },
   "tabs": {
@@ -64,6 +67,11 @@
       "enabled": true,
       "label": "Accessibility",
       "icon": "accessibility"
+    },
+    "tokens": {
+      "enabled": true,
+      "label": "Design tokens",
+      "icon": "variables"
     }
   },
   "window": {

@@ -14,7 +14,7 @@
   border-radius: var(--bb-derived-chip-root-radius);
   background: var(--bb-chip-filter-bg-default);
   color: var(--bb-chip-filter-fg-default);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-chip-filter-font-size);
   font-weight: var(--bb-chip-filter-font-weight);
   line-height: var(--bb-chip-filter-line-height);

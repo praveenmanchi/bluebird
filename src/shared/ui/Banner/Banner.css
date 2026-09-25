@@ -1,5 +1,5 @@
-/* Banner — Figma "Banner" component (40000064:9910). Background, rule and
- * "Powered By" colours come from Banner/* variables; everything else in the
+/* Banner — Figma "Banner" component (40000064:9910). Background and rule
+ * colours come from Banner/* variables; everything else in the
  * Figma layer is still raw (unnamed frames, sizes, three non-tokenised fonts)
  * and therefore arrives here as --bb-derived-banner-* until design promotes it. */
 .bb-banner {
@@ -41,7 +41,7 @@
 }
 .bb-banner__stack > * + * { margin-top: var(--bb-derived-banner-frame-1430102687-gap); }
 .bb-banner__title {
-  font-family: var(--bb-derived-banner-design-studio-font-family), var(--bb-type-family-museo), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-banner-design-studio-font-family), var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-banner-design-studio-font-size);
   font-weight: var(--bb-derived-banner-design-studio-font-weight);
   line-height: normal;
@@ -69,19 +69,19 @@
 .bb-banner__powered-inner {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-banner-frame-1430102691-gap);
 }
 .bb-banner__powered-label {
   font-family: var(--bb-derived-banner-powered-by-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-banner-powered-by-font-size);
   font-weight: var(--bb-derived-banner-powered-by-font-weight);
   line-height: normal;
-  color: var(--bb-banner-powered-by);
+  /* Raw white in Figma since 2026-09-24. Banner/powered by is #ffffff00 (transparent) in every
+   * Brand mode except Bridge, so reading it hid the label in four brands. */
+  color: var(--bb-derived-banner-powered-by-color);
   white-space: nowrap;
 }
+/* The mark is the composed <BrandLogo logo="hcltech" size="sm">, matching Figma, which replaced
+ * the inline vector with a "brand logos" instance. BrandLogo.css owns its size and colour. */
 .bb-banner__mark {
   display: block;
-  width: var(--bb-derived-banner-vector-width);
-  height: var(--bb-derived-banner-vector-height);
-  color: var(--bb-banner-text);
 }

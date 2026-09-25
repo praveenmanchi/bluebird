@@ -13,7 +13,7 @@
   border-radius: var(--bb-derived-size-step-root-radius);
   background: var(--bb-surface-transparent);
   color: var(--bb-derived-size-step-l-color);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-size-step-l-font-size);
   font-weight: var(--bb-derived-size-step-l-font-weight);
   line-height: 1;

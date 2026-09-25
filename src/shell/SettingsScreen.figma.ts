@@ -3,6 +3,10 @@ export const figma = {
   setId: '40000100:13084',
   name: 'Settings page',
   props: { Toggle: 'session summary row in the Toggle type tokens; sessions persist until logoff/reset, so no switch is rendered (the design\'s copy is placeholder)', Container: 'ButtonGroup: "Logoff session" secondary / "Reset all Settings" primary', settings: 'SettingsButton active (settings / Variant2)' },
+
+  derivedGaps: {
+    '--bb-derived-settings-screen-settings-height': 'The settings button grew 33px → 40px in Figma on 2026-09-23; the shell renders the composed <SettingsButton>, which already sizes itself from --bb-derived-settings-button-root-height (40px). Reading it here would pin the row twice.',
+  },
   figmaGaps: {
     'footer/bg/default': 'consumed by the shell Footer', 'footer/border/top': 'consumed by the shell Footer', 'footer/padding-x': 'consumed by the shell Footer', 'footer/padding-y': 'consumed by the shell Footer',
     'Banner/bg': 'consumed by the shell Banner', 'Boader': 'consumed by the shell tab row (shell.css)',

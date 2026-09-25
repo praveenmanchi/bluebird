@@ -13,7 +13,7 @@
   border-radius: 0;
   background: var(--bb-surface-transparent);
   color: var(--bb-tab-fg-default);
-  font-family: var(--bb-type-family-museo), var(--bb-tab-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-display), var(--bb-tab-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-tab-font-size);
   font-weight: var(--bb-tab-font-weight);
   line-height: var(--bb-tab-line-height);
