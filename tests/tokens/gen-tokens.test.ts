@@ -46,16 +46,19 @@ describe('generate()', () => {
   })
   it('resolves brand values per mode', () => {
     expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-button-primary-bg-default: #0c8ce9;')
-    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-bg-default: #111111;')
+    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-bg-default: #161616;')
     expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-radius: 64px;')
     expect(files['src/shared/brand/generated/brand.richemont.css']).toContain('--bb-button-primary-radius: 0px;')
     expect(files['src/shared/brand/generated/brand.fiskars.css']).toContain('[data-brand="fiskars"]')
   })
-  it('keeps primitives and semantics brand-agnostic on :root', () => {
+  it('keeps primitives on :root and emits semantics per brand mode', () => {
     const base = files['src/shared/brand/generated/base.css']!
     expect(base).toContain(':root {')
-    expect(base).toContain('--bb-surface-canvas: #151515;')
-    expect(base).toContain('--bb-font-family-ui: "Noto Sans";')
+    expect(base).toContain('--bb-bridge-color-primary-400-brand: #0c8ce9;')
+    expect(base).not.toContain('--bb-surface-canvas')
+    expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-surface-canvas: #151515;')
+    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-surface-canvas: #ffffff;')
+    expect(files['src/shared/brand/generated/brand.richemont.css']).toContain('--bb-font-family-display: "Noto Serif";')
   })
   it('promotes raw Figma values to derived tokens', () => {
     const derived = files['src/shared/brand/generated/derived.css']!
@@ -73,7 +76,7 @@ describe('generate()', () => {
   })
   it('fails on colliding names and on an unknown active brand', () => {
     const clash = structuredClone(inputs)
-    clash.tokens.collections[1]!.variables.push({ name: 'color/neutral/0', type: 'COLOR', values: { Value: '#fff' } })
+    clash.tokens.collections[1]!.variables.push({ name: 'bridge/color/neutral/0', type: 'COLOR', values: { Bridge: '#fff' } })
     expect(() => assertNoCollisions(clash.tokens)).toThrow(/collision/)
     expect(() => generate({ ...inputs, activeBrand: 'acme' })).toThrow(/not a Brand mode/)
   })

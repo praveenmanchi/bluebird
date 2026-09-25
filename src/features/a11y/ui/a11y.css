@@ -42,17 +42,17 @@
  * rather than silently dropped from the count. */
 .bb-a11y__unmeasurable {
   padding: var(--bb-space-inset-md);
-  border: var(--bb-border-width-default) solid var(--bb-color-status-warning-500);
+  border: var(--bb-border-width-default) solid var(--bb-feedback-warning);
   border-radius: var(--bb-radius-lg);
   background: var(--bb-surface-sunken);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-11);
   line-height: var(--bb-type-line-14);
   color: var(--bb-text-secondary);
 }
 .bb-a11y__unmeasurable summary {
   font-weight: var(--bb-type-weight-600);
-  color: var(--bb-color-status-warning-400);
+  color: var(--bb-feedback-warning);
   cursor: pointer;
 }
 .bb-a11y__unmeasurable ul {
@@ -78,7 +78,7 @@
 }
 .bb-a11y__export-label {
   margin-right: auto;
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);

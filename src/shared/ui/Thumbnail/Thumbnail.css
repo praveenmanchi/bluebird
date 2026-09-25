@@ -15,7 +15,7 @@
   object-fit: contain;
 }
 .bb-thumbnail__caption {
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   line-height: var(--bb-type-line-11);
   color: var(--bb-text-tertiary);

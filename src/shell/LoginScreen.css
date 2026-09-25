@@ -40,7 +40,7 @@
 .bb-login__title {
   margin: 0;
   color: var(--bb-derived-login-screen-title-color);
-  font-family: var(--bb-derived-login-screen-title-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-login-screen-title-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-login-screen-title-font-size);
   font-weight: var(--bb-derived-login-screen-title-font-weight);
   line-height: var(--bb-derived-login-screen-title-line-height);
@@ -48,7 +48,7 @@
 .bb-login__subtitle {
   margin: 0;
   color: var(--bb-derived-login-screen-subtitle-color);
-  font-family: var(--bb-derived-login-screen-subtitle-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-login-screen-subtitle-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-login-screen-subtitle-font-size);
   font-weight: var(--bb-derived-login-screen-subtitle-font-weight);
   line-height: var(--bb-derived-login-screen-subtitle-line-height);

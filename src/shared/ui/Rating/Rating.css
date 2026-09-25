@@ -13,7 +13,7 @@
   border-radius: var(--bb-rating-radius);
   background: var(--bb-rating-bg-default);
   color: var(--bb-rating-fg-default);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-rating-font-size);
   font-weight: var(--bb-rating-font-weight);
   line-height: var(--bb-derived-rating-a-line-height);

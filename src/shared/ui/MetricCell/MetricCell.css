@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: var(--bb-space-inset-xs);
   min-width: 0;
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
 .bb-metric-cell__label {
   font-size: var(--bb-type-size-10);

@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--bb-space-stack-md);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
 .bb-tokens__toolbar {
   display: flex;
@@ -38,8 +38,8 @@
   font-weight: var(--bb-type-weight-600);
   color: var(--bb-text-primary);
 }
-.bb-tokens__coverage-value[data-tone="warn"] { color: var(--bb-color-status-warning-400); }
-.bb-tokens__coverage-value[data-tone="error"] { color: var(--bb-color-status-danger-400); }
+.bb-tokens__coverage-value[data-tone="warn"] { color: var(--bb-feedback-warning); }
+.bb-tokens__coverage-value[data-tone="error"] { color: var(--bb-feedback-danger); }
 .bb-tokens__coverage-label,
 .bb-tokens__coverage-meta {
   font-size: var(--bb-type-size-10);

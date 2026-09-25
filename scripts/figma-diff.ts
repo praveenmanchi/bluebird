@@ -11,14 +11,15 @@
 //
 // Exit codes: 0 = no drift (or drift without --fail-on-drift) · 1 = drift with
 // --fail-on-drift · 2 = the pull itself failed. CI must not call a dead relay "drift".
-import { readdirSync, readFileSync, statSync, existsSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { resolve, relative, join } from 'node:path'
+import { resolve, relative } from 'node:path'
 import { mergeCommitted, pullSnapshot, readCommitted, readManifest, ROOT, type Backend, type Snapshot } from './figma-pull'
 import { derivedDeclarations, normalizeSvg } from './gen-tokens'
 import { cssVarName, brandIdFromMode, type ComponentSetSnapshot, type ComponentVariant, type ComponentsSnapshot, type TokenSnapshot } from '../src/shared/brand/snapshot'
 import { tokenKeyFromVariableName } from '../src/shared/brand/tokens'
 import { matchNodes } from './figma-diff-nodes'
+import { COMPONENT_DIRS, walkFiles } from './component-sources'
 
 export type DriftKind =
   | 'variable-added' | 'variable-removed' | 'variable-changed' | 'mode-added' | 'mode-removed'
@@ -62,7 +63,6 @@ export interface DriftReport {
   findings: DriftFinding[]
 }
 
-const COMPONENT_DIRS = ['src/shared/ui', 'src/shell']
 // Never diffed, or every run reports the tool's own bookkeeping as design drift:
 //   pulledAt · fileName · source          re-stamped on every pull
 //   components.coverage                   recomputed by extract.ts from the live layer counts
@@ -81,17 +81,6 @@ const derivedPrefix = (code: string) => `--bb-derived-${tokenKeyFromVariableName
 
 function cssFileFor(set: ComponentSetSnapshot, root: string): string {
   return set.dir ? resolve(root, set.dir, `${set.code}.css`) : resolve(root, 'src/shared/ui', set.code, `${set.code}.css`)
-}
-
-function walkFiles(dir: string, out: string[] = []): string[] {
-  if (!existsSync(dir)) return out
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry)
-    if (entry === 'generated') continue
-    if (statSync(p).isDirectory()) walkFiles(p, out)
-    else out.push(p)
-  }
-  return out
 }
 
 /** Every `var(--bb-…)` any component reads, so a finding can say whether the change reaches code. */

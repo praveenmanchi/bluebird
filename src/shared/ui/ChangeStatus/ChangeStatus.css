@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: flex-start;
   color: var(--bb-change-status-fg);
-  font-family: var(--bb-type-family-museo), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-change-status-font-size);
   line-height: var(--bb-change-status-line-height);
   white-space: nowrap;

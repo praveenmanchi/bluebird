@@ -16,7 +16,7 @@
 }
 .bb-manual-review__label,
 .bb-manual-review__count {
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);

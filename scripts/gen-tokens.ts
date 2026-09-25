@@ -1,8 +1,8 @@
 // figma/*.json  →  generated CSS custom properties, TypeScript token names,
 // per-component token lists, and the Icon glyph table.
 //
-//   figma/tokens.json      → src/shared/brand/generated/base.css      (primitives + semantics, :root)
-//                          → src/shared/brand/generated/brand.<id>.css (one per Brand mode, [data-brand])
+//   figma/tokens.json      → src/shared/brand/generated/base.css      (Foundations + single-mode Semantics, :root)
+//                          → src/shared/brand/generated/brand.<id>.css (one per Brand UI mode, [data-brand])
 //                          → src/shared/brand/generated/all.css       (Storybook: every brand)
 //                          → src/shared/brand/generated/active.css    (plugin: base + brand.active)
 //   figma/components.json  → src/shared/brand/generated/derived.css   (raw Figma values with no variable yet)
@@ -243,7 +243,17 @@ export function generate(input: GenInputs): Record<string, string> {
   }
 
   const files: Record<string, string> = {}
-  const base = [...declarationsFor(input, 'primitives', 'Value'), ...declarationsFor(input, 'semantics', 'Value')]
+  const primitives = input.tokens.collections.find((c) => c.key === 'primitives')
+  const semantics = input.tokens.collections.find((c) => c.key === 'semantics')
+  if (!primitives || !semantics) throw new Error('tokens.json needs primitives and semantics collections')
+  // Semantics carries the brand switch when it has one mode per Brand mode; a single-mode
+  // Semantics is brand-agnostic and lands on :root next to the primitives.
+  const semanticsPerBrand = semantics.modes.length > 1
+  const semanticsModeFor = (brandMode: string) => (semantics.modes.includes(brandMode) ? brandMode : semantics.defaultMode)
+  const base = [
+    ...declarationsFor(input, 'primitives', primitives.defaultMode),
+    ...(semanticsPerBrand ? [] : declarationsFor(input, 'semantics', semantics.defaultMode)),
+  ]
   files[`${GEN_DIR}/base.css`] = HEADER + block(':root', base)
 
   const derived = derivedDeclarations(input.components)
@@ -253,12 +263,21 @@ export function generate(input: GenInputs): Record<string, string> {
 
   for (const mode of brand.modes) {
     const id = brandIdFromMode(mode)
-    files[`${GEN_DIR}/brand.${id}.css`] = HEADER + block(`[data-brand="${id}"]`, declarationsFor(input, 'brand', mode))
+    const perBrand = [
+      ...(semanticsPerBrand ? declarationsFor(input, 'semantics', semanticsModeFor(mode)) : []),
+      ...declarationsFor(input, 'brand', mode),
+    ]
+    files[`${GEN_DIR}/brand.${id}.css`] = HEADER + block(`[data-brand="${id}"]`, perBrand)
   }
   files[`${GEN_DIR}/all.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n${brandIds.map((id) => `@import "./brand.${id}.css";`).join('\n')}\n`
   files[`${GEN_DIR}/active.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n@import "./brand.${input.activeBrand}.css";\n`
 
-  const tokenNames = [...new Set([...base.map((d) => d.name), ...derived.map((d) => d.name), ...declarationsFor(input, 'brand', brand.modes[0]!).map((d) => d.name)])].sort()
+  const tokenNames = [...new Set([
+    ...base.map((d) => d.name),
+    ...declarationsFor(input, 'semantics', semantics.defaultMode).map((d) => d.name),
+    ...derived.map((d) => d.name),
+    ...declarationsFor(input, 'brand', brand.modes[0]!).map((d) => d.name),
+  ])].sort()
   const builtSets = input.components.sets.filter((set) => !set.status || set.status === 'built')
   const componentTokens = builtSets.map((set) => `  ${set.code}: [\n${tsArray(boundTokensOf(set).map(cssVarName), '    ')}\n  ],`).join('\n')
   const figmaComponents = builtSets.map((set) =>

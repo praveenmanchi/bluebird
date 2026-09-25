@@ -1,7 +1,7 @@
 // Drift gate between Figma and code. Exit 1 on any finding.
 //
 //  1. Generated files are up to date with figma/*.json.
-//  2. Every `var(--bb-…)` used under src/shared/ui and src/shell exists.
+//  2. Every `var(--bb-…)` used under src/shared/ui, src/shell and src/features exists.
 //  3. No hardcoded visual values (hex, rgb(), px, named colours) in component CSS.
 //  4. Each code component consumes every token its Figma set binds, unless the
 //     component's figma.ts lists the token under `figmaGaps` with a reason.
@@ -13,35 +13,26 @@
 //     no code. Permanent exceptions go in the component's figma.ts `derivedGaps`.
 //  6. Figma component properties, setIds and the manifest agree with the code
 //     (scripts/check-props.ts).
+//  7. Variable layering: Semantics is single-mode and aliases Foundations only; the brand
+//     switch lives in Brand UI (checkLayering).
 //
 // `npm run tokens:check -- --write-baseline` rewrites the baseline. It is a last
 // resort: it accepts the current values as debt, so say why in the commit message.
-import { readdirSync, readFileSync, statSync, existsSync, writeFileSync } from 'node:fs'
-import { resolve, relative, join } from 'node:path'
+import { readFileSync, existsSync, writeFileSync } from 'node:fs'
+import { resolve, relative } from 'node:path'
 import { derivedDeclarations, generate, readInputs, ROOT } from './gen-tokens'
 import { checkProps, type Finding } from './check-props'
-import { cssVarName } from '../src/shared/brand/snapshot'
+import { COMPONENT_DIRS, walkFiles } from './component-sources'
+import { cssVarName, type TokenSnapshot } from '../src/shared/brand/snapshot'
 
 export type { Finding }
 
-const COMPONENT_DIRS = ['src/shared/ui', 'src/shell']
 const RAW_PATTERNS: { name: string; re: RegExp }[] = [
   { name: 'hex colour', re: /#[0-9a-fA-F]{3,8}\b/ },
   { name: 'rgb/hsl colour', re: /\b(?:rgb|hsl)a?\(/ },
   { name: 'px length', re: /(?<![\w-])(?!0px)\d*\.?\d+px\b/ },
   { name: 'named colour', re: /:\s*(?:white|black|red|blue|green|gray|grey|transparent)\s*[;!]/ },
 ]
-
-function walkFiles(dir: string, out: string[] = []): string[] {
-  if (!existsSync(dir)) return out
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry)
-    if (entry === 'generated') continue
-    if (statSync(p).isDirectory()) walkFiles(p, out)
-    else out.push(p)
-  }
-  return out
-}
 
 export function findRawValues(css: string, file: string): Finding[] {
   const findings: Finding[] = []
@@ -137,9 +128,43 @@ export async function checkComponentCoverage(root = ROOT, options: { writeBaseli
   return findings
 }
 
+/**
+ * Layering contract (2026-09-23, "brand switch lives in Brand UI"):
+ *   Foundations  1 mode   raw values, one namespace per brand
+ *   Semantics    1 mode   brand-neutral scales; aliases Foundations only
+ *   Brand UI     N modes  tier 1 app tokens (surface/text/border/icon/feedback/font/a11y) alias
+ *                         Foundations per mode; tier 2 component tokens alias tier 1 or Semantics.
+ * The generator already refuses a name that exists in two collections, so the only way to put
+ * brand back into Semantics is to give it a second mode or an alias into Brand UI — both caught here.
+ */
+export function checkLayering(tokens: TokenSnapshot, file = 'figma/tokens.json'): Finding[] {
+  const findings: Finding[] = []
+  const byName = new Map(tokens.collections.map((c) => [c.name, c]))
+  const semantics = byName.get('Semantics')
+  const brandUi = byName.get('Brand UI')
+  if (!semantics || !brandUi) return findings
+  if (semantics.modes.length !== 1) {
+    findings.push({ rule: 'semantics-multi-mode', file, message: `Semantics has ${semantics.modes.length} modes (${semantics.modes.join(', ')}) — the brand switch belongs in Brand UI; Semantics holds shared scales only` })
+  }
+  for (const v of semantics.variables) {
+    for (const [mode, target] of Object.entries(v.aliases ?? {})) {
+      if (!target.startsWith('Foundations/')) findings.push({ rule: 'semantics-alias-layer', file, message: `Semantics/${v.name} (${mode}) aliases ${target} — Semantics may alias Foundations only` })
+    }
+  }
+  for (const v of brandUi.variables) {
+    for (const [mode, target] of Object.entries(v.aliases ?? {})) {
+      const collection = target.split('/')[0]
+      if (collection !== 'Foundations' && collection !== 'Semantics' && collection !== 'Brand UI') findings.push({ rule: 'brand-ui-alias-layer', file, message: `Brand UI/${v.name} (${mode}) aliases ${target} — unknown collection` })
+    }
+  }
+  return findings
+}
+
 export async function runChecks(root = ROOT, options: { writeBaseline?: boolean } = {}): Promise<Finding[]> {
   const findings: Finding[] = []
-  const files = generate(readInputs(root))
+  const inputs = readInputs(root)
+  findings.push(...checkLayering(inputs.tokens))
+  const files = generate(inputs)
   for (const [rel, content] of Object.entries(files)) {
     const abs = resolve(root, rel)
     if (!existsSync(abs) || readFileSync(abs, 'utf8') !== content) findings.push({ rule: 'stale-generated', file: rel, message: 'out of date — run `npm run gen:tokens`' })

@@ -46,5 +46,7 @@ export default defineConfig(({ command }) => ({
       input: fileURLToPath(new URL(`./${target}.html`, import.meta.url)),
     },
   },
-  server: { port: 5173, strictPort: true },
+  // 5173 is the port manifest.json whitelists for Figma "live" mode, so it stays
+  // the default. PORT overrides it when a preview host assigns a free port.
+  server: { port: Number(process.env.PORT) || 5173, strictPort: true },
 }))

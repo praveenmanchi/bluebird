@@ -13,7 +13,7 @@
   gap: var(--bb-derived-persona-card-root-gap);
   padding: var(--bb-derived-persona-card-root-padding-top) var(--bb-derived-persona-card-root-padding-right) var(--bb-derived-persona-card-root-padding-bottom) var(--bb-derived-persona-card-root-padding-left);
   color: var(--bb-derived-persona-card-design-system-color);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
 /* Frame 1430102662 */
 .bb-persona-card__body {
@@ -50,7 +50,7 @@
 .bb-persona-card__name {
   margin: 0;
   color: var(--bb-derived-persona-card-design-system-color);
-  font-family: var(--bb-derived-persona-card-design-system-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-persona-card-design-system-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-persona-card-design-system-font-size);
   font-weight: var(--bb-derived-persona-card-design-system-font-weight);
   line-height: var(--bb-derived-persona-card-design-system-line-height);
@@ -59,7 +59,7 @@
 .bb-persona-card__description {
   margin: 0;
   color: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color);
-  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight);
   /* Figma: 12 line-height with no variable yet; dimension/space/12 is the only 12 primitive. */
@@ -89,7 +89,7 @@
   min-width: 0;
   margin: 0;
   color: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color);
-  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-font-size);
   font-weight: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight);
   line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-line-height);

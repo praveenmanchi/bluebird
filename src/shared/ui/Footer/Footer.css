@@ -17,7 +17,7 @@
   background: var(--bb-footer-bg-default);
   border-top: var(--bb-border-width-default) solid var(--bb-footer-border-top);
   color: var(--bb-footer-fg-default);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-footer-font-size);
   font-weight: var(--bb-footer-font-weight);
   line-height: var(--bb-footer-line-height);

@@ -23,7 +23,7 @@
 }
 .bb-fix-row__label {
   margin: 0;
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-11);
   line-height: var(--bb-type-line-14);
   color: var(--bb-text-primary);
@@ -33,7 +33,7 @@
   align-items: center;
   gap: var(--bb-space-inline-sm);
   flex-wrap: wrap;
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   line-height: var(--bb-type-line-11);
   color: var(--bb-text-secondary);
@@ -51,7 +51,7 @@
   font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
 }
 .bb-fix-row__ratio {
-  color: var(--bb-color-status-success-400);
+  color: var(--bb-feedback-success);
   font-weight: var(--bb-type-weight-600);
 }
 .bb-fix-row__apply { flex: none; }

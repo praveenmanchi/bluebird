@@ -7,7 +7,7 @@
   padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
   border: var(--bb-border-width-default) solid var(--bb-border-subtle);
   border-radius: var(--bb-radius-pill);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);
@@ -15,9 +15,9 @@
   white-space: nowrap;
 }
 .bb-meta-badge[data-tone='accent'] { border-color: var(--bb-border-accent); color: var(--bb-text-accent); }
-.bb-meta-badge[data-tone='success'] { border-color: var(--bb-color-status-success-500); color: var(--bb-color-status-success-400); }
-.bb-meta-badge[data-tone='warning'] { border-color: var(--bb-color-status-warning-500); color: var(--bb-color-status-warning-400); }
-.bb-meta-badge[data-tone='danger'] { border-color: var(--bb-color-status-danger-500); color: var(--bb-color-status-danger-400); }
+.bb-meta-badge[data-tone='success'] { border-color: var(--bb-feedback-success); color: var(--bb-feedback-success); }
+.bb-meta-badge[data-tone='warning'] { border-color: var(--bb-feedback-warning); color: var(--bb-feedback-warning); }
+.bb-meta-badge[data-tone='danger'] { border-color: var(--bb-feedback-danger); color: var(--bb-feedback-danger); }
 .bb-meta-badge__meta {
   font-weight: var(--bb-type-weight-400);
   color: var(--bb-text-tertiary);

@@ -4,7 +4,7 @@
   border: 0;
   background: var(--bb-surface-transparent);
   color: var(--bb-text-accent);
-  font-family: var(--bb-type-family-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   line-height: var(--bb-type-line-11);
   text-decoration: underline;
