@@ -33,6 +33,8 @@ export interface VariableCardExpandedProps extends Omit<JSX.HTMLAttributes<HTMLE
   kind?: VariableCardKind
   /** Header chip count (Frame 1430102562). */
   changeCount?: number | string
+  /** Header chip caption; defaults to VariableCard's "Usage No." (the Figma text override). */
+  changeLabel?: ComponentChildren
   /** Section title (Figma text "Components Using the Searched Variable"). */
   sectionTitle?: ComponentChildren
   /** Summary chips on the right of the section title (two change-status instances in Figma). */
@@ -60,6 +62,7 @@ export function VariableCardExpanded({
   meta,
   kind = 'variable',
   changeCount = 52,
+  changeLabel,
   sectionTitle = 'Components Using the Searched Variable',
   summary = [],
   rows,
@@ -78,6 +81,7 @@ export function VariableCardExpanded({
         name={name}
         meta={meta}
         changeCount={changeCount}
+        changeLabel={changeLabel}
         expanded
         onToggle={() => onCollapse?.()}
         onInspect={onInspect}

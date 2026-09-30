@@ -49,6 +49,36 @@ describe('WcagCard', () => {
     expect(container.querySelectorAll('.bb-theme-chip')).toHaveLength(2)
     expect(screen.getByRole('link', { name: 'Understanding' })).toHaveAttribute('href', 'https://w3.org')
   })
+  it('draws the Line 64 rule between the Fix row and the snippet in colours mode only', () => {
+    const fix = { value: '#ffffff', ratio: '5.12:1' }
+    const snippet = { code: 'color: var(--text-on-accent);' }
+    const { container, rerender } = render(<WcagCard code="x" title="y" fix={fix} snippet={snippet} />)
+    const rule = container.querySelector('.bb-wcag-card__body > .bb-wcag-card__divider--fix')
+    expect(rule).toBeInTheDocument()
+    expect(rule?.tagName).toBe('HR')
+    expect(rule?.previousElementSibling).toHaveClass('bb-fix-row')
+    expect(rule?.nextElementSibling).toHaveClass('bb-code-snippet')
+    rerender(<WcagCard code="x" title="y" mode="text" fix={fix} snippet={snippet} />)
+    expect(container.querySelector('.bb-wcag-card__divider--fix')).toBeNull()
+  })
+  it('leaves out the Line 64 rule when no Fix row sits above it', () => {
+    const { container, rerender } = render(<WcagCard code="x" title="y" />)
+    expect(container.querySelector('.bb-wcag-card__divider--fix')).toBeNull()
+    rerender(<WcagCard code="x" title="y" snippet={{ code: 'color: red;' }} />)
+    expect(container.querySelector('.bb-wcag-card__divider--fix')).toBeNull()
+  })
+  it('draws the Line 62 rule above the brand-mode matrix only', () => {
+    const { container, rerender } = render(<WcagCard code="x" title="y" />)
+    expect(container.querySelector('.bb-wcag-card__divider--brand-modes')).toBeNull()
+    rerender(<WcagCard code="x" title="y" brandModes={[{ brand: 'Bridge', pass: true, ratio: '7.1:1' }]} />)
+    const rule = container.querySelector('.bb-wcag-card__sections > .bb-wcag-card__divider--brand-modes')
+    expect(rule?.nextElementSibling).toHaveClass('bb-brand-modes')
+  })
+  it('hides the brand-mode matrix and its Line 62 rule in mode="text", as Figma does', () => {
+    const { container } = render(<WcagCard code="x" title="y" mode="text" brandModes={[{ brand: 'Bridge', pass: true, ratio: '7.1:1' }]} />)
+    expect(container.querySelector('.bb-wcag-card__divider--brand-modes')).toBeNull()
+    expect(container.querySelector('.bb-brand-modes')).toBeNull()
+  })
   it('renders the placeholder slot only when a preview is supplied', () => {
     const { container, rerender } = render(<WcagCard code="x" title="y" />)
     expect(container.querySelector('.bb-wcag-card__placeholder')).toBeNull()
@@ -89,6 +119,10 @@ describe('WcagCard — analysis gaps', () => {
     expect(screen.getByText('5.12:1')).toBeInTheDocument()
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(calls).toEqual(['apply'])
+  })
+  it('2b. keeps the fix out of text mode, where Figma hides the Fix row', () => {
+    const { container } = render(<WcagCard code="x" title="y" mode="text" fix={{ value: '#ffffff', ratio: '5.12:1' }} />)
+    expect(container.querySelector('.bb-fix-row')).toBeNull()
   })
   it('3. shows the variable behind each hex', () => {
     const { container } = render(

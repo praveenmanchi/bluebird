@@ -26,4 +26,13 @@ describe('FixRow', () => {
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(calls).toEqual(['apply'])
   })
+  it('leads the Apply button with the Variables glyph, as the Figma instance does', () => {
+    render(<FixRow onApply={() => undefined} />)
+    const apply = screen.getByRole('button', { name: 'Apply' })
+    expect(apply.querySelector('.bb-button__icon [data-icon="variables"]')).toBeInTheDocument()
+  })
+  it('fixes the Apply button at the Medium frame width, as the Figma instance does', () => {
+    render(<FixRow onApply={() => undefined} />)
+    expect(screen.getByRole('button', { name: 'Apply' })).toHaveAttribute('data-width', 'fixed')
+  })
 })

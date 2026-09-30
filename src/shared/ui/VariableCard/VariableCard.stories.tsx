@@ -16,7 +16,10 @@ type Story = StoryObj<typeof meta>
 
 const v = (variant: string) => ({ figma: { variant } })
 export const Variable: Story = { parameters: v('Property 1=variable') }
-export const TextStyle: Story = { args: { kind: 'text-style', name: 'Heading/H2' }, parameters: v('Property 1=text style') }
+export const TextStyle: Story = { args: { kind: 'text-style' }, parameters: v('Property 1=text style') }
+
+/** The chip with a diff caption instead of Figma's "Usage No." override. */
+export const DiffCaption: Story = { args: { changeStatus: 'added', changeLabel: 'Added' } }
 
 export const Interactive: Story = {
   render: (args) => {

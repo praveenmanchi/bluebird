@@ -1,6 +1,7 @@
 /* SegmentedControl — Figma "Group Tab selecters" set (308:51205): "4 level" /
- * "2 level" (segment count). Bound token: chip-filter/radius. The dark track
- * fill, its translucent stroke and inset are raw in Figma →
+ * "2 level" (segment count). Bound tokens: chip-filter/radius, icon/glyph/muted
+ * (the override on unselected segments' glyphs). The dark track fill, its
+ * translucent stroke, inset and the 4 level item spacing are raw in Figma →
  * --bb-derived-segmented-control-*. Segments are SegmentTab. */
 .bb-segmented-control {
   display: inline-flex;
@@ -11,5 +12,8 @@
   border-radius: var(--bb-chip-filter-radius);
   background: var(--bb-derived-segmented-control-root-fill);
 }
+/* Only the 4 level variant sets itemSpacing; 2 level segments sit flush. */
+.bb-segmented-control[data-level="4"] { gap: var(--bb-derived-segmented-control-root-gap); }
 .bb-segmented-control__segment { height: auto; align-self: stretch; }
+.bb-segmented-control__segment:not([data-selected]) .bb-segment-tab__icon { color: var(--bb-icon-glyph-muted); }
 .bb-segmented-control[data-disabled] { cursor: not-allowed; }

@@ -32,14 +32,41 @@ export const figma = {
   derivedGaps: {
     '--bb-derived-wcag-card-line-61-width': 'Figma pins the divider Lines to the card inner width (437px); code uses .bb-wcag-card__divider { width: 100% } so they stretch with the card instead of re-pinning on every resize.',
     '--bb-derived-wcag-card-line-62-width': 'as line-61 — full-bleed rule, stretched rather than pinned.',
-    '--bb-derived-wcag-card-line-64-width': 'as line-61 — full-bleed rule, stretched rather than pinned.',
+    '--bb-derived-wcag-card-line-64-width': 'as line-61 — .bb-wcag-card__divider--fix (the Body rule under the Fix row) stretches to the body width rather than pinning 437px.',
+    '--bb-derived-wcag-card-disability-indicator--1-padding-top': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--1-padding-right': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--1-padding-bottom': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--1-padding-left': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--1-radius': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--1-stroke-width': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-padding-top': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-padding-right': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-padding-bottom': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-padding-left': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-radius': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--2-stroke-width': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-padding-top': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-padding-right': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-padding-bottom': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-padding-left': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-radius': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--3-stroke-width': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-padding-top': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-padding-right': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-padding-bottom': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-padding-left': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-radius': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-disability-indicator--4-stroke-width': 'Body "Disabilities" indicators (30px, 40000121:7454-7457 and 40000164:12429-12432; seven layers per variant are named "Disability Indicator") render at DisabilityIndicator\'s native size, whose own root tokens carry these values; only the 21.1px footer checks (.bb-wcag-card__check) override them.',
+    '--bb-derived-wcag-card-row-label--1-height': 'Row Node\'s label box (419:44972, 80x15; seven layers are named "Row label"). Rows size from the text line-height rather than a pinned height, like the baselined row-label heights.',
+    '--bb-derived-wcag-card-row-value--1-width': 'Row Colors\' value box (419:45060, 166x12.6; five layers are named "Row value"). Values fill the row (flex) and size from the text line-height, like the baselined row-value sizes.',
+    '--bb-derived-wcag-card-row-value--1-height': 'Row Colors\' value box (419:45060, 166x12.6; five layers are named "Row value"). Values fill the row (flex) and size from the text line-height, like the baselined row-value sizes.',
   },
   figmaGaps: {
     // The 2026-09-23 set binds the new sections to the semantic scale. Each of these is read by
     // the composed child that renders that section, not by WcagCard.css — verified by grepping
     // src/shared/ui for the CSS var.
-    'border/accent': 'consumed by the composed FixRow and MetaBadge (the Change pill border)',
-    'border/subtle': 'consumed by the composed CodeSnippet, FixRow, ManualReview, MetricsPanel and Thumbnail',
+    'border/accent': 'consumed by the composed MetaBadge (the Change pill border)',
+    'border/subtle': 'consumed by the composed CodeSnippet, FixRow, ManualReview, MetaBadge and Thumbnail',
     'feedback/danger': 'consumed by the composed MetaBadge (Severity) and BrandModeChip (--bb-feedback-danger)',
     'feedback/warning': 'consumed by the composed IgnoreBanner and MetaBadge (--bb-feedback-warning)',
     'radius/lg': 'consumed by the composed CodeSnippet, FixRow, IgnoreBanner, ManualReview and MetricsPanel',
@@ -60,7 +87,7 @@ export const figma = {
     'text/primary': 'consumed by the composed Occurrences (Count), MetricCell (Value), FixRow (Label), CodeSnippet (Code) and IgnoreBanner (Reason)',
     'text/secondary': 'consumed by the composed Occurrences (Label), TokenRef (Name), FixRow (Hex), CodeSnippet (Language) and MetaBadge',
     'text/accent': 'consumed by the composed MetaBadge (Change label), Occurrences (Select all), FixRow and CodeSnippet links, plus the Restore LinkButton in IgnoreBanner',
-    'surface/sunken': 'consumed by the composed TokenRef (Mode chip), BrandModeChip, CodeSnippet, IgnoreBanner, ManualReview and MetricsPanel',
+    'surface/sunken': 'consumed by the composed TokenRef (Mode chip), BrandModeChip, CodeSnippet, IgnoreBanner, ManualReview and Thumbnail',
     'surface/accent-strong': 'the Fix row Sample chip in Figma is a placeholder swatch; FixRow paints the chip with the real suggested pair at runtime (style={{ background: on, color: hex }})',
     'text/on-accent': 'as surface/accent-strong — the "Aa" inside the Sample chip takes the suggested foreground colour at runtime, not a token',
   },
@@ -89,8 +116,13 @@ export const figma = {
     'Show metrics': 'metrics — bound in Mode=Colors, unbound and always on in Mode=Text',
     'Show thumbnails': 'thumbnail + thumbnailAfter',
     'Show snippet': 'snippet',
-    // No boolean: the Fix row is always on in Mode=colors, absent from Mode=Text.
-    Fix: 'fix',
+    // No boolean: the Fix row is always on in Mode=colors and hidden in Mode=Text, so code renders
+    // `fix` only when mode is "colors".
+    Fix: 'fix (mode === "colors" only)',
+    // No boolean either: Figma always draws this Body rule under the Fix row in Mode=colors (absent
+    // from Mode=Text). `fix` is optional in code, so the rule rides with the rendered Fix row instead
+    // of sitting alone on the footer border.
+    'Line 64': 'mode === "colors" && fix',
     'Show ignored': 'ignored',
     Annotated: "annotation.state === 'placed'",
   },

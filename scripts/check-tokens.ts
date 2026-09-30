@@ -16,14 +16,17 @@
 //  7. Variable layering: Semantics is single-mode and aliases Foundations only; the brand
 //     switch lives in Brand UI (checkLayering).
 //
+// Warnings (printed, never fail the gate): same-named Figma layers in one variant that the
+// generator told apart by position (`vector--1`) — see layerCollisionWarnings.
+//
 // `npm run tokens:check -- --write-baseline` rewrites the baseline. It is a last
 // resort: it accepts the current values as debt, so say why in the commit message.
 import { readFileSync, existsSync, writeFileSync } from 'node:fs'
 import { resolve, relative } from 'node:path'
-import { derivedDeclarations, generate, readInputs, ROOT } from './gen-tokens'
+import { derivedDeclarations, derivedLayerCollisions, generate, readInputs, ROOT } from './gen-tokens'
 import { checkProps, type Finding } from './check-props'
 import { COMPONENT_DIRS, walkFiles } from './component-sources'
-import { cssVarName, type TokenSnapshot } from '../src/shared/brand/snapshot'
+import { cssVarName, type ComponentsSnapshot, type TokenSnapshot } from '../src/shared/brand/snapshot'
 
 export type { Finding }
 
@@ -160,6 +163,19 @@ export function checkLayering(tokens: TokenSnapshot, file = 'figma/tokens.json')
   return findings
 }
 
+/**
+ * Same-named layers in one variant share a derived name, so the generator keeps the historical
+ * name for one of them and gives each other value its layer position (`vector--1`). Those tokens
+ * are safe to read, but they renumber when a layer is added or moved: the fix is distinct layer
+ * names in Figma, so this lists what to rename.
+ */
+export function layerCollisionWarnings(components: ComponentsSnapshot): string[] {
+  return derivedLayerCollisions(components).map((c) => {
+    const parts = [...new Set(c.tokens.map((t) => t.replace(/(--\d+)-.*$/, '$1')))]
+    return `${c.set} › ${c.variant}: ${c.nodes.length} layers named "${c.layer}" (${c.nodes.join(', ')}) — ${c.tokens.length} value(s) the shared name dropped are only reachable as ${parts.map((p) => `${p}-*`).join(', ')}; give the layers distinct names in Figma`
+  })
+}
+
 export async function runChecks(root = ROOT, options: { writeBaseline?: boolean } = {}): Promise<Finding[]> {
   const findings: Finding[] = []
   const inputs = readInputs(root)
@@ -189,6 +205,7 @@ export async function runChecks(root = ROOT, options: { writeBaseline?: boolean 
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
   const findings = await runChecks(ROOT, { writeBaseline: process.argv.includes('--write-baseline') })
+  for (const w of layerCollisionWarnings(readInputs(ROOT).components)) console.warn(`[tokens:check] warning  derived-layer-collision  ${w}`)
   for (const f of findings) console.error(`[tokens:check] ${f.rule}  ${f.file}${f.line ? `:${f.line}` : ''}  ${f.message}`)
   console.log(findings.length ? `[tokens:check] ${findings.length} finding(s)` : '[tokens:check] OK — code matches figma/*.json')
   process.exit(findings.length ? 1 : 0)

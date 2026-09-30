@@ -11,6 +11,10 @@ describe('TeamBanner', () => {
     expect(container.querySelector('.bb-icon[data-icon="version"]')).not.toBeNull()
     expect(container.querySelector('.bb-team-banner__tagline')?.textContent).toContain('Together, every')
   })
+  it('defaults the tagline to the Figma copy verbatim (text node 204:7255)', () => {
+    const { container } = render(<TeamBanner />)
+    expect(container.querySelector('.bb-team-banner__tagline')?.textContent).toBe('Together, every\nstep forward to Innovate’ & scale')
+  })
   it('renders the team mark through BrandLogo so it follows the active brand', () => {
     const { container } = render(<TeamBanner />)
     expect(container.querySelector('.bb-team-banner__mark .bb-brand-logo[data-logo="bridge"]')).not.toBeNull()

@@ -5,7 +5,7 @@ import { Icon } from '../Icon/Icon'
 import './TeamBanner.css'
 
 /** Figma text defaults (layer "Together, every step forward to Innovate’ & scale"). */
-export const TEAM_BANNER_TAGLINE = 'Together, every\nstep forward to Innovate'
+export const TEAM_BANNER_TAGLINE = 'Together, every\nstep forward to Innovate’ & scale'
 
 export interface TeamBannerProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'children'> {
   /** Team credited in the footer line (Figma layer "Built with Care by the Gap Design System Team"). */

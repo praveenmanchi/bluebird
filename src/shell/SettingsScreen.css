@@ -11,19 +11,6 @@
   padding: var(--bb-space-stack-md) var(--bb-space-inset-md);
   background: var(--bb-background);
 }
-.bb-settings__row { display: flex; flex-direction: column; gap: var(--bb-toggle-gap); width: 100%; }
-/* Same type tokens as the Toggle row the design uses, without the switch. */
-.bb-settings__title {
-  margin: 0;
-  color: var(--bb-toggle-label-fg);
-  font-size: var(--bb-toggle-label-font-size);
-  font-weight: var(--bb-toggle-label-font-weight);
-  line-height: var(--bb-toggle-label-line-height);
-}
-.bb-settings__description {
-  margin: 0;
-  color: var(--bb-toggle-description-fg);
-  font-size: var(--bb-toggle-description-font-size);
-  line-height: var(--bb-toggle-description-line-height);
-}
+/* Toggle instance (Toggle=false) resized from the set's 960px to 1051px. */
+.bb-settings__row { max-width: var(--bb-derived-settings-screen-toggle-width); }
 .bb-settings__actions { width: 100%; }

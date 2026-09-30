@@ -4,7 +4,9 @@
  * the per-variant frame sizes (derived tokens; the artwork is not tokenised). */
 .bb-brand-logo { display: none; flex: none; }
 .bb-brand-logo[data-logo="bridge"]    { width: var(--bb-derived-brand-logo-root-brand-bridge-width);    height: var(--bb-derived-brand-logo-root-brand-bridge-height); }
-.bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-vector-brand-ikea-width);      height: var(--bb-derived-brand-logo-vector-brand-ikea-height); }
+/* Ikea's frame hugs its 106.3x35 oval with no padding. Both ikea vectors are named "Vector", so the
+ * oval is the position-indexed `vector--1`; the plain `vector` name holds the wordmark (figma.ts). */
+.bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-vector--1-brand-ikea-width); height: var(--bb-derived-brand-logo-vector--1-brand-ikea-height); }
 .bb-brand-logo[data-logo="richemont"] { width: var(--bb-derived-brand-logo-root-brand-richemont-width); height: var(--bb-derived-brand-logo-root-brand-richemont-height); }
 /* Disney's frame hugs its vector (2px / 5px padding) instead of carrying a fixed size. */
 .bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + 2 * var(--bb-derived-brand-logo-root-padding-left)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + 2 * var(--bb-derived-brand-logo-root-padding-top)); }
@@ -18,9 +20,18 @@
   height: calc(var(--bb-derived-brand-logo-root-brand-hcl-height) / 2);
 }
 
-[data-brand="bridge"]    .bb-brand-logo[data-logo="bridge"],
-[data-brand="ikea"]      .bb-brand-logo[data-logo="ikea"],
-[data-brand="richemont"] .bb-brand-logo[data-logo="richemont"],
-[data-brand="disney"]    .bb-brand-logo[data-logo="disney"],
-[data-brand="fiskars"]   .bb-brand-logo[data-logo="fiskars"],
+/* The reveal follows the NEAREST [data-brand], the way the brand tokens do (inherited custom
+ * properties): a descendant selector would also match inside a nested scope of another brand and
+ * show both logos (Storybook's BrandGrid, any nested brand preview). */
+[data-brand]             { --brand-logo-bridge: none; --brand-logo-ikea: none; --brand-logo-richemont: none; --brand-logo-disney: none; --brand-logo-fiskars: none; }
+[data-brand="bridge"]    { --brand-logo-bridge: block; }
+[data-brand="ikea"]      { --brand-logo-ikea: block; }
+[data-brand="richemont"] { --brand-logo-richemont: block; }
+[data-brand="disney"]    { --brand-logo-disney: block; }
+[data-brand="fiskars"]   { --brand-logo-fiskars: block; }
+.bb-brand-logo[data-logo="bridge"]    { display: var(--brand-logo-bridge, none); }
+.bb-brand-logo[data-logo="ikea"]      { display: var(--brand-logo-ikea, none); }
+.bb-brand-logo[data-logo="richemont"] { display: var(--brand-logo-richemont, none); }
+.bb-brand-logo[data-logo="disney"]    { display: var(--brand-logo-disney, none); }
+.bb-brand-logo[data-logo="fiskars"]   { display: var(--brand-logo-fiskars, none); }
 .bb-brand-logo[data-forced] { display: block; }

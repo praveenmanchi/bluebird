@@ -2,15 +2,24 @@
  * Property 1 = Auditory / Code / Cognitive / Content / Design / Physical /
  * Visual. Border, gap and icon size are Brand-bound (disability-indicator/*);
  * the tile background and glyph colour read the matching
- * disability-indicator/bg|icon tokens. The fractional inset, radius and
- * hairline stroke are raw → --bb-derived-disability-indicator-*. */
+ * disability-indicator/bg|icon tokens. The FIXED square tile, fractional
+ * inset, radius and hairline stroke are raw → --bb-derived-disability-indicator-*. */
 .bb-disability-indicator {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  /* FIXED square whatever the brand glyph size, without width/height: the inset floor
+   * ((tile − glyph) / 2) lifts a smaller glyph's tile to the size and the max size clamps a larger
+   * one, so the glyph stays centred. A consumer that re-insets a scaled instance (WcagCard's
+   * footer checks) replaces the padding and hugs its own inset instead of inheriting the tile. */
+  max-width: var(--bb-derived-disability-indicator-root-width);
+  max-height: var(--bb-derived-disability-indicator-root-height);
   gap: var(--bb-disability-indicator-gap);
-  padding: var(--bb-derived-disability-indicator-root-padding-top) var(--bb-derived-disability-indicator-root-padding-right) var(--bb-derived-disability-indicator-root-padding-bottom) var(--bb-derived-disability-indicator-root-padding-left);
+  padding-top: max(var(--bb-derived-disability-indicator-root-padding-top), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-right: max(var(--bb-derived-disability-indicator-root-padding-right), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-bottom: max(var(--bb-derived-disability-indicator-root-padding-bottom), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-left: max(var(--bb-derived-disability-indicator-root-padding-left), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
   border: var(--bb-derived-disability-indicator-root-stroke-width) solid var(--bb-disability-indicator-border-default);
   border-radius: var(--bb-derived-disability-indicator-root-radius);
   background: var(--bb-disability-indicator-bg-default);

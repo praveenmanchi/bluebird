@@ -18,6 +18,9 @@ export interface VariableCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>,
   changeCount?: number | string
   /** Status of the composed "change status" instance; defaults to Updated (Figma Property 1=Default). */
   changeStatus?: ChangeStatusKind
+  /** Caption of the composed "change status" instance. Figma overrides it to "Usage No." in both variants;
+   *  pass e.g. "Added" to show a diff caption instead. */
+  changeLabel?: ComponentChildren
   /** Whether the row is expanded: flips the chevron (dropdown-down → dropdown-up) and aria-expanded. */
   expanded?: boolean
   /** Fired by the chevron (Tab Icon "Dropdown- down"). */
@@ -35,7 +38,7 @@ const GLYPH: Record<VariableCardKind, 'variables' | 'text'> = { variable: 'varia
  * Tab Icon, name + meta stack, then the timestamp, a change-status chip and
  * the research / dropdown icon actions.
  */
-export function VariableCard({ kind = 'variable', name, meta, updated, changeCount = 52, changeStatus = 'updated', expanded = false, onToggle, onInspect, trailing, class: cls, ...rest }: VariableCardProps) {
+export function VariableCard({ kind = 'variable', name, meta, updated, changeCount = 52, changeStatus = 'updated', changeLabel = 'Usage No.', expanded = false, onToggle, onInspect, trailing, class: cls, ...rest }: VariableCardProps) {
   return (
     <article {...rest} class={`bb-variable-card ${cls ?? ''}`} data-kind={kind} data-expanded={expanded || undefined}>
       <div class="bb-variable-card__lead">
@@ -47,7 +50,7 @@ export function VariableCard({ kind = 'variable', name, meta, updated, changeCou
       </div>
       <div class="bb-variable-card__trail">
         {updated !== undefined && <span class="bb-variable-card__updated">{updated}</span>}
-        <ChangeStatus status={changeStatus} count={changeCount} class="bb-variable-card__status" />
+        <ChangeStatus status={changeStatus} label={changeLabel} count={changeCount} class="bb-variable-card__status" />
         {trailing}
         <button type="button" class="bb-variable-card__action" aria-label="Inspect" onClick={onInspect}>
           <Icon name="research" />

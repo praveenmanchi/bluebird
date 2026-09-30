@@ -35,7 +35,6 @@
 }
 .bb-variable-card-expanded__header .bb-variable-card__name {
   font-family: var(--bb-font-family-brand), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-weight: var(--bb-derived-variable-card-expanded-black-font-weight);
 }
 .bb-variable-card-expanded__header .bb-variable-card__meta {
   font-family: var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -66,7 +65,8 @@
   flex: none;
   gap: var(--bb-derived-variable-card-expanded-frame-1430102678-gap);
 }
-.bb-variable-card-expanded__chip.bb-change-status { gap: var(--bb-derived-variable-card-expanded-frame-1430102572-gap); }
+/* Figma rebinds every chip's caption and count text to card-variable/title/fg. */
+.bb-variable-card-expanded__chip.bb-change-status { gap: var(--bb-derived-variable-card-expanded-frame-1430102572-gap); color: var(--bb-card-variable-title-fg); }
 
 /* Frame 14301025xx — detail rows */
 .bb-variable-card-expanded__rows {
@@ -137,9 +137,9 @@
   outline: var(--bb-border-width-default) solid var(--bb-border-focus);
   outline-offset: var(--bb-space-inset-xs);
 }
-/* Figma overrides the count square inside the change-status instance to the count-badge tokens. */
+/* Figma overrides the count square (Frame 1430102560) inside the change-status instance to the count-badge tokens. */
 .bb-variable-card-expanded__chip .bb-change-status__count {
   background: var(--bb-badge-count-bg-default);
-  border: var(--bb-border-width-default) solid var(--bb-badge-count-border-default);
+  border: var(--bb-derived-variable-card-expanded-frame-1430102560-stroke-width) solid var(--bb-badge-count-border-default);
   border-radius: var(--bb-badge-count-radius);
 }

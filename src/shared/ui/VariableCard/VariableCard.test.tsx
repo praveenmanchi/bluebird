@@ -22,6 +22,12 @@ describe('VariableCard', () => {
     expect(chip?.getAttribute('data-status')).toBe('added')
     expect(chip?.querySelector('.bb-change-status__count')?.textContent).toBe('7')
   })
+  it('captions the chip "Usage No." (the Figma text override) unless changeLabel says otherwise', () => {
+    const { container, rerender } = render(<VariableCard name="x" />)
+    expect(container.querySelector('.bb-change-status__label')?.textContent).toBe('Usage No.')
+    rerender(<VariableCard name="x" changeStatus="added" changeLabel="Added" />)
+    expect(container.querySelector('.bb-change-status__label')?.textContent).toBe('Added')
+  })
   it('fires onToggle with the next state and flips the chevron when expanded', () => {
     const onToggle = vi.fn()
     const { container, rerender } = render(<VariableCard name="x" onToggle={onToggle} />)

@@ -7,7 +7,7 @@ export const figma = {
     'Color/Border/Black (text)': 'name',
     'Universal Toolkit… (text)': 'meta',
     '12 Days ago (text)': 'updated',
-    'Frame 1430102562 (change status instance)': 'changeCount | changeStatus',
+    'Frame 1430102562 (change status instance)': 'changeCount | changeStatus | changeLabel',
     'Tab Icons=Research': 'onInspect',
     'Tab Icons=Dropdown- down': 'expanded | onToggle',
   },
@@ -15,6 +15,8 @@ export const figma = {
   notes: [
     'Figma has no fill on the root; the card is transparent over the canvas.',
     'The chip "Frame 1430102562" is an instance of "change status" → composed ChangeStatus (change-status/* tokens live in ChangeStatus.css).',
+    'Both variants override the chip caption "Updated" → "Usage No." (I83:688;83:672, I287:46234;83:672), so changeLabel defaults to "Usage No."; its caption and count text are rebound to card-variable/title/fg (;83:672, ;83:676), and its count square (Frame 1430102560) is overridden to badge-count/* with a raw 1px stroke.',
+    'Figma only draws the Default chip. For changeStatus added / removed, ChangeStatus\'s own [data-status] fill and border colour outrank the badge-count override, so only its radius and stroke width carry over.',
     'When `expanded` is true the chevron swaps to dropdown-up; the expanded body is VariableCardExpanded, which composes this row as its header.',
   ],
 } as const
