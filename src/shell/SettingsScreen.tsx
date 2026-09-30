@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks'
-import { ButtonGroup } from '@shared/ui'
+import { ButtonGroup, Toggle } from '@shared/ui'
 import type { BrandTokensResult } from '@shared/brand'
 import { config } from '@shared/config'
 import type { Session } from '@shared/session'
@@ -15,9 +15,8 @@ export interface SettingsScreenProps {
 /**
  * Figma "Settings page" (40000100:13084): a session summary row above a
  * right-aligned button group "Logoff session" / "Reset all Settings". The
- * design draws the row as a Toggle with placeholder copy; a session simply
- * persists until logoff or reset, so the row is plain info in the same type
- * tokens and no switch is rendered.
+ * row is the Toggle instance with its switch hidden (Toggle=false); its
+ * placeholder copy becomes the session details.
  */
 export function SettingsScreen({ session, brand, onLogout, onReset }: SettingsScreenProps) {
   const [busy, setBusy] = useState<'logout' | 'reset' | null>(null)
@@ -29,10 +28,12 @@ export function SettingsScreen({ session, brand, onLogout, onReset }: SettingsSc
 
   return (
     <section class="bb-settings" aria-label="Settings">
-      <div class="bb-settings__row">
-        <p class="bb-settings__title">Signed in as {label}</p>
-        <p class="bb-settings__description">Brand unlocked with an access code{since ? ` on ${since}` : ''} · {source}. You stay signed in until you log off; resetting also forgets window size and preferences.</p>
-      </div>
+      <Toggle
+        class="bb-settings__row"
+        showSwitch={false}
+        title={`Signed in as ${label}`}
+        description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you log off; resetting also forgets window size and preferences.`}
+      />
       {confirmReset ? (
         <ButtonGroup
           class="bb-settings__actions"

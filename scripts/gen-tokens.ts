@@ -165,45 +165,124 @@ function rawDeclarationsFor(node: { p: string; t: string; b: Record<string, stri
   return out
 }
 
-export function derivedDeclarations(components: ComponentsSnapshot): Declaration[] {
-  const out = new Map<string, string>()
-  for (const set of components.sets) {
-    if (set.status === 'planned' || set.status === 'alias') continue // no code reads them; keeps the plugin CSS small
-    const code = tokenKeyFromVariableName(set.code.replace(/([a-z])([A-Z])/g, '$1-$2'))
-    // (leaf|prop) → value → variant slugs
-    const table = new Map<string, Map<string, string[]>>()
-    for (const variant of set.variants) {
-      const slug = tokenKeyFromVariableName(variant.name.replace(/[=,]/g, '-'))
-      const instancePaths = new Set(variant.nodes.filter((n) => n.t === 'INSTANCE').map((n) => n.p))
-      for (const node of variant.nodes) {
-        const isRoot = !node.p.includes('/')
-        // Layers inside an instance belong to their own set — unless this set overrides them (`o`), in which case the overridden values are this set's design.
-        if (!node.o && [...instancePaths].some((ip) => node.p.startsWith(`${ip}/`))) continue
-        const leaf = isRoot ? 'root' : tokenKeyFromVariableName(node.p.split('/').pop() ?? '')
-        for (const [prop, value] of rawDeclarationsFor(node, { instanceSizes: Boolean(set.dir) })) {
-          const key = `${leaf}|${prop}`
-          const byValue = table.get(key) ?? new Map<string, string[]>()
-          byValue.set(value, [...(byValue.get(value) ?? []), slug])
-          table.set(key, byValue)
-        }
-      }
-    }
-    for (const [key, byValue] of table) {
-      const [leaf, prop] = key.split('|') as [string, string]
-      if (byValue.size === 1) {
-        const [value] = [...byValue.keys()] as [string]
-        // Disabled opacity keeps its historical name (state-scoped) so component CSS stays stable.
-        const name = prop === 'opacity' && leaf === 'root' ? `${code}-disabled-opacity` : `${code}-${leaf}-${prop}`
-        out.set(`--bb-derived-${name}`, value)
-      } else {
-        for (const [value, slugs] of byValue) for (const slug of slugs) {
-          const name = prop === 'opacity' && leaf === 'root' ? `${code}-${slug}-opacity` : `${code}-${leaf}-${slug}-${prop}`
-          out.set(`--bb-derived-${name}`, value)
-        }
+/** One layer's raw value for one css property, before it is named. */
+interface DerivedEntry {
+  variant: string
+  /** Variant name as a token key (`brand-ikea`). */
+  slug: string
+  /** Figma node id, or the layer path for snapshots that predate ids. */
+  nodeId: string
+  /** Figma layer name (the last path segment), for reports. */
+  layer: string
+  /** Layer name as a token key, or `root` for the variant itself. */
+  leaf: string
+  /** 1-based position among this variant's layers that share `leaf` and carry raw values. */
+  index: number
+  /** Name segment the token is built from: `leaf`, or `leaf--index` once disambiguated. */
+  part: string
+  prop: string
+  value: string
+}
+
+/** Layers in one variant whose shared name could hold only one of their values. */
+export interface DerivedLayerCollision {
+  set: string
+  variant: string
+  layer: string
+  /** The same-named layers that carry raw values, in node order: `<layer>--<n>` is nodes[n - 1]. */
+  nodes: string[]
+  /** Occurrence-indexed tokens now holding the values the shared name dropped. */
+  tokens: string[]
+}
+
+function derivedEntries(set: ComponentSetSnapshot): DerivedEntry[] {
+  const entries: DerivedEntry[] = []
+  for (const variant of set.variants) {
+    const slug = tokenKeyFromVariableName(variant.name.replace(/[=,]/g, '-'))
+    const instancePaths = new Set(variant.nodes.filter((n) => n.t === 'INSTANCE').map((n) => n.p))
+    const seen = new Map<string, number>()
+    for (const node of variant.nodes) {
+      const isRoot = !node.p.includes('/')
+      // Layers inside an instance belong to their own set — unless this set overrides them (`o`), in which case the overridden values are this set's design.
+      if (!node.o && [...instancePaths].some((ip) => node.p.startsWith(`${ip}/`))) continue
+      const declarations = rawDeclarationsFor(node, { instanceSizes: Boolean(set.dir) })
+      if (!declarations.length) continue
+      const layer = isRoot ? variant.name : node.p.split('/').pop() ?? ''
+      const leaf = isRoot ? 'root' : tokenKeyFromVariableName(layer)
+      const index = (seen.get(leaf) ?? 0) + 1
+      seen.set(leaf, index)
+      for (const [prop, value] of declarations) {
+        entries.push({ variant: variant.name, slug, nodeId: node.id ?? node.p, layer, leaf, index, part: leaf, prop, value })
       }
     }
   }
-  return [...out.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([name, value]) => ({ name, value }))
+  return entries
+}
+
+/** `<set>-<part>-<prop>` when every entry of a part/prop agrees, `<set>-<part>-<variant>-<prop>` otherwise; [name, entry] in emission order. */
+function nameEntries(code: string, entries: readonly DerivedEntry[]): [string, DerivedEntry][] {
+  const table = new Map<string, Map<string, DerivedEntry[]>>() // (part|prop) → value → entries
+  for (const e of entries) {
+    const key = `${e.part}|${e.prop}`
+    const byValue = table.get(key) ?? new Map<string, DerivedEntry[]>()
+    byValue.set(e.value, [...(byValue.get(e.value) ?? []), e])
+    table.set(key, byValue)
+  }
+  return [...table.values()].flatMap((byValue) => [...byValue.values()].flat().map((e): [string, DerivedEntry] => {
+    // Disabled opacity keeps its historical name (state-scoped) so component CSS stays stable.
+    const disabledOpacity = e.prop === 'opacity' && e.part === 'root'
+    if (byValue.size === 1) return [disabledOpacity ? `${code}-disabled-opacity` : `${code}-${e.part}-${e.prop}`, e]
+    return [disabledOpacity ? `${code}-${e.slug}-opacity` : `${code}-${e.part}-${e.slug}-${e.prop}`, e]
+  }))
+}
+
+function collisionsOf(setCode: string, entries: readonly DerivedEntry[], rescued: readonly [string, DerivedEntry][]): DerivedLayerCollision[] {
+  const groupOf = (e: DerivedEntry) => `${e.variant}\u0000${e.leaf}`
+  const hit = new Set(rescued.map(([, e]) => groupOf(e)))
+  return [...new Set(entries.map(groupOf))].filter((g) => hit.has(g)).map((g) => {
+    const members = entries.filter((e) => groupOf(e) === g)
+    return {
+      set: setCode,
+      variant: members[0]!.variant,
+      layer: members[0]!.layer,
+      nodes: [...new Set(members.map((e) => e.nodeId))],
+      tokens: [...new Set(rescued.filter(([, e]) => groupOf(e) === g).map(([name]) => `--bb-derived-${name}`))].sort(),
+    }
+  })
+}
+
+function buildDerived(components: ComponentsSnapshot): { declarations: Declaration[]; collisions: DerivedLayerCollision[] } {
+  const out = new Map<string, string>()
+  const collisions: DerivedLayerCollision[] = []
+  for (const set of components.sets) {
+    if (set.status === 'planned' || set.status === 'alias') continue // no code reads them; keeps the plugin CSS small
+    const code = tokenKeyFromVariableName(set.code.replace(/([a-z])([A-Z])/g, '$1-$2'))
+    const entries = derivedEntries(set)
+    const named = nameEntries(code, entries)
+    const kept = new Map(named.map(([name, e]) => [name, e.value])) // later writes win, as they always have
+    // Same-named layers in one variant land on one name and only the last value survives. Component CSS
+    // already reads those names, so they stay as they are; each value that lost gets its layer's
+    // occurrence index instead (`vector--1`). tokenKeyFromVariableName collapses `-+`, so a real layer
+    // name does not produce `--`; the guard below still refuses to shadow an existing token.
+    const lost = named.filter(([name, e]) => kept.get(name) !== e.value).map(([, e]) => ({ ...e, part: `${e.leaf}--${e.index}` }))
+    const rescued = nameEntries(code, lost)
+    for (const [name] of rescued) if (kept.has(name)) throw new Error(`derived token ${name} would overwrite an existing one`)
+    for (const [name, value] of [...kept, ...rescued.map(([n, e]): [string, string] => [n, e.value])]) out.set(`--bb-derived-${name}`, value)
+    collisions.push(...collisionsOf(set.code, entries, rescued))
+  }
+  return {
+    declarations: [...out.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([name, value]) => ({ name, value })),
+    collisions,
+  }
+}
+
+export function derivedDeclarations(components: ComponentsSnapshot): Declaration[] {
+  return buildDerived(components).declarations
+}
+
+/** Same-named Figma layers whose values needed occurrence-indexed tokens — the designer should rename them. */
+export function derivedLayerCollisions(components: ComponentsSnapshot): DerivedLayerCollision[] {
+  return buildDerived(components).collisions
 }
 
 function boundTokensOf(set: ComponentSetSnapshot): string[] {
@@ -365,7 +444,10 @@ export function writeFiles(files: Record<string, string>, root = ROOT): string[]
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
-  const files = generate(readInputs())
+  const inputs = readInputs()
+  const files = generate(inputs)
   const changed = writeFiles(files)
   console.log(`[tokens] ${Object.keys(files).length} files, ${changed.length} changed${changed.length ? `: ${changed.join(', ')}` : ''}`)
+  const collisions = derivedLayerCollisions(inputs.components).length
+  if (collisions) console.warn(`[tokens] ${collisions} group(s) of same-named Figma layers needed position-indexed derived tokens (\`--<n>\`) — \`npm run tokens:check\` lists them`)
 }

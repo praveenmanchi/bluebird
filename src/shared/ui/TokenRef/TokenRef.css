@@ -9,9 +9,11 @@
   line-height: var(--bb-type-line-11);
   color: var(--bb-text-secondary);
 }
+/* Figma draws the Variables instance at an unbound 12x12 and no icon-size variable is that
+ * small, so the Foundations dimension/space/12 step stands in (figma.ts notes). */
 .bb-token-ref__icon {
-  width: var(--bb-wcag-card-icon-size);
-  height: var(--bb-wcag-card-icon-size);
+  width: var(--bb-dimension-space-12);
+  height: var(--bb-dimension-space-12);
   flex: none;
   color: var(--bb-icon-muted);
 }

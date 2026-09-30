@@ -1,5 +1,5 @@
 /* WcagCard — Figma "WCAG Card" set (419:39993). Bound: wcag-card/bg/default,
- * wcag-card/divider/color (root stroke + Line 61), wcag-card/radius,
+ * wcag-card/divider/color (root stroke + Lines 61/62/64), wcag-card/radius,
  * wcag-card/title/fg (every text), wcag-card/padding (body inset + Principle
  * padding-right), wcag-card/gap (Sections stack), rating/padding (body /
  * heading / row top insets), rating/radius (Placeholder). The header inset,
@@ -137,6 +137,10 @@
   border: 0;
   border-top: var(--bb-derived-wcag-card-line-61-stroke-width) solid var(--bb-wcag-card-divider-color);
 }
+/* Line 62 — above the brand-mode matrix. */
+.bb-wcag-card__divider--brand-modes { border-top-width: var(--bb-derived-wcag-card-line-62-stroke-width); }
+/* Line 64 — the Body-level rule under the Fix row (Mode=colors only). */
+.bb-wcag-card__divider--fix { border-top-width: var(--bb-derived-wcag-card-line-64-stroke-width); }
 
 /* Detail rows — an 80px label column and a value column. */
 .bb-wcag-card__details {

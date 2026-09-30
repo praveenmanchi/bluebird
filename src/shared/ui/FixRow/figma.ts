@@ -11,6 +11,8 @@ export const figma = {
     Ratio: 'ratio',
     'Sample (frame)': 'sample + on',
     'Button (instance)': 'onApply + applyLabel',
+    'Button › Show leading icon + Leading icon (91:1958)': 'leadingIcon="variables" (fixed; Fix Row exposes no property for it)',
+    'Button › width FIXED (button/primary/width-md)': 'width="fixed" (Apply is 120 wide in Figma, not hugging its label)',
   },
   figmaGaps: {
     'icon/glyph/default': 'consumed by the composed Icon (the icons "Fix" instance in Figma)',
@@ -20,9 +22,9 @@ export const figma = {
     'button/primary/height': composed,
     'button/primary/padding-x': composed,
     'button/primary/radius': composed,
-    'button/primary/width-md': composed,
+    'button/primary/width-md': 'Bound on the nested Button ("Apply") instance, which Figma sizes FIXED; FixRow passes width="fixed", so Button.css reads it under [data-width="fixed"].',
     'surface/accent-strong': sample,
     'text/on-accent': sample,
   },
-  notes: 'Created 2026-09-23. Reuses the existing Button set (Type=Primary, Size=Medium) rather than drawing a new button.',
+  notes: 'Created 2026-09-23. Reuses the existing Button set (Type=Primary, Size=Medium) rather than drawing a new button. The root frame carries a fill (surface/accent-subtle) and a stroke (border/accent) that are both hidden, and pads only top and bottom (Icon and Apply sit flush with its edges), so the row draws no box; checked against the live file at version 2403078664214847267.',
 } as const

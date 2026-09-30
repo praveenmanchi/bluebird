@@ -82,16 +82,17 @@
   height: var(--bb-derived-team-banner-frame-height);
   color: var(--bb-derived-team-banner-vector-fill);
 }
-/* Frame 1430102657 */
+/* Frame 1430102657 — no item spacing; the tagline and the credit frame are both
+ * FILL, so each takes half the row (288 of 576) and the tagline wraps to 3 lines. */
 .bb-team-banner__bottom {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--bb-derived-team-banner-frame-1430102640-gap);
 }
-/* "Together, every step forward to Innovate" — faded display line. */
+/* "Together, every step forward to Innovate’ & scale" — faded display line. */
 .bb-team-banner__tagline {
-  flex: none;
+  flex: 1;
+  min-width: 0;
   white-space: pre-line;
   color: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-color);
   font-family: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;

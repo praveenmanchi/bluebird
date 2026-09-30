@@ -112,9 +112,9 @@ export interface WcagCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ti
   mode?: WcagCardMode
   /** Gap 1 — the Metrics panel, which Figma now renders in both modes. */
   metrics?: WcagCardTextMetrics
-  /** Gap 2 — the suggested token/value and its Apply action. */
+  /** Gap 2 — the suggested token/value and its Apply action. Colours mode only, as in Figma. */
   fix?: WcagCardFix
-  /** Gap 4 — pass/fail for the same pair in every brand mode. */
+  /** Gap 4 — pass/fail for the same pair in every brand mode. Colours mode only, as in Figma. */
   brandModes?: readonly WcagCardBrandVerdict[]
   brandModesLabel?: ComponentChildren
   /** Gap 5 — impact ranking shown in the header. */
@@ -224,7 +224,8 @@ export function WcagCard({
   const annotateText = annotateLabel ?? ANNOTATE_LABEL[annotationState]
   const showSample = mode === 'colors' && (colors !== undefined || ratio !== undefined)
   const showMetrics = metrics !== undefined
-  const showBrandModes = brandModes !== undefined && brandModes.length > 0
+  const showBrandModes = mode === 'colors' && brandModes !== undefined && brandModes.length > 0
+  const showFix = mode === 'colors' && fix !== undefined
   return (
     <article
       {...rest}
@@ -304,7 +305,7 @@ export function WcagCard({
             )}
           </div>
           {showMetrics && <MetricsPanel metrics={metricRows(metrics)} />}
-          {showBrandModes && <hr class="bb-wcag-card__divider" />}
+          {showBrandModes && <hr class="bb-wcag-card__divider bb-wcag-card__divider--brand-modes" />}
           {showBrandModes && <BrandModes modes={brandModes} label={brandModesLabel} />}
           {(thumbnail || thumbnailAfter) && <ThumbnailPair before={thumbnail} after={thumbnailAfter} />}
           {preview !== undefined && <div class="bb-wcag-card__placeholder">{preview}</div>}
@@ -332,7 +333,7 @@ export function WcagCard({
         )}
         {/* FixRow keeps its own short "Aa" swatch — forwarding the card's
             sampleText would stretch the row with a whole sentence. */}
-        {fix && (
+        {showFix && (
           <FixRow
             label={fix.label ?? (fix.token ? <>Rebind to <strong>{fix.token.name}</strong></> : undefined)}
             hex={fix.value}
@@ -342,6 +343,9 @@ export function WcagCard({
             onApply={fix.onApply}
           />
         )}
+        {/* Figma always draws Line 64 under its Fix row; here `fix` is optional, and a rule with
+            nothing above it would land on the footer's top border. */}
+        {showFix && <hr class="bb-wcag-card__divider bb-wcag-card__divider--fix" />}
         {manualChecks && manualChecks.length > 0 && (
           <ManualReview checks={manualChecks} label={manualChecksLabel} onToggle={onToggleManualCheck} />
         )}

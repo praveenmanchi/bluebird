@@ -19,6 +19,13 @@ describe('VariableCardExpanded', () => {
     expect(container.querySelectorAll('.bb-variable-card-expanded__glyph[data-icon="multiple-component"]')).toHaveLength(1)
     expect(container.querySelectorAll('.bb-variable-card-expanded__glyph[data-icon="component"]')).toHaveLength(1)
   })
+  it('captions the header chip "Usage No." like Figma and passes changeLabel through', () => {
+    const { container, rerender } = render(<VariableCardExpanded name="x" rows={[]} />)
+    const label = () => container.querySelector('.bb-variable-card-expanded__header .bb-change-status__label')?.textContent
+    expect(label()).toBe('Usage No.')
+    rerender(<VariableCardExpanded name="x" rows={[]} changeLabel="Nodes" />)
+    expect(label()).toBe('Nodes')
+  })
   it('renders row values inside ChangeStatus chips and the summary chips', () => {
     const { container } = render(<VariableCardExpanded name="x" rows={rows} summary={[{ label: 'Frames', count: 18 }]} />)
     const chips = container.querySelectorAll('.bb-variable-card-expanded__chip')

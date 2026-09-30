@@ -1,10 +1,9 @@
-/* MetricsPanel — Figma "Metrics Panel" (40000159:7048). */
+/* MetricsPanel — Figma "Metrics Panel" (40000159:7048). No fill or stroke:
+ * the cells sit straight on whatever surface hosts the panel. */
 .bb-metrics-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--bb-size-control-width-md), 1fr));
-  gap: var(--bb-space-inline-sm);
-  padding: var(--bb-space-inset-md);
-  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  gap: var(--bb-space-inline-sm) var(--bb-derived-metrics-panel-root-gap);
+  padding: var(--bb-space-inset-md) 0;
   border-radius: var(--bb-radius-lg);
-  background: var(--bb-surface-sunken);
 }

@@ -1,5 +1,6 @@
 /* ButtonGroup — Figma "Container" set (215:12537), single variant: two Button
- * instances (Secondary, Primary) packed to the trailing edge. The gap is bound
+ * instances (Secondary, Primary), each behind a visibility boolean, packed to
+ * the trailing edge. The gap is bound
  * to button/secondary/padding-x in Figma; every button/* token the instances
  * bind is consumed by the composed Button (see Button.css). */
 .bb-button-group {

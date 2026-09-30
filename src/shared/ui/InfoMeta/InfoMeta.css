@@ -1,6 +1,7 @@
 /* Info meta — Figma "info" set (133:1647). Bound: status-pill/gap (root),
  * status-pill/fg/default + status-pill/font/size (every text, including the
- * "|" divider). The Inter face and 400 weight are raw → --bb-derived-info-meta-*. */
+ * "|" divider), icon/glyph/muted (fill override on the Component glyph). The
+ * Inter face and 400 weight are raw → --bb-derived-info-meta-*. */
 .bb-info-meta {
   display: inline-flex;
   align-items: center;
@@ -17,8 +18,7 @@
   flex: none;
   width: var(--bb-status-pill-icon-size);
   height: var(--bb-status-pill-icon-size);
-  color: var(--bb-icon-glyph-muted); /* override on the Component glyph */
-  color: var(--bb-status-pill-fg-default);
+  color: var(--bb-icon-glyph-muted);
 }
 .bb-info-meta__icon > .bb-icon { width: 100%; height: 100%; }
 .bb-info-meta__segment {

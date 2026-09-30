@@ -19,6 +19,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = { parameters: { figma: { variant: 'Toggle' } } }
 
 export const Off: Story = { args: { checked: false } }
+/** Figma Toggle=false: the switch is hidden, leaving title and description. */
+export const WithoutSwitch: Story = { args: { showSwitch: false } }
 export const Disabled: Story = { args: { disabled: true } }
 export const SwitchOnly: Story = { args: { title: undefined, description: undefined, label: 'Enable sync' } }
 

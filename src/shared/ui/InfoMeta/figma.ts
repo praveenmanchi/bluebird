@@ -4,5 +4,5 @@ export const figma = {
   name: 'info',
   props: { 'Component (instance)': 'icon', '20m | V2.11.0 (text layers)': 'items' },
   figmaGaps: {},
-  notes: 'The "Component" instance has no colour bound; code colours the glyph through status-pill/fg/default like the text.',
+  notes: 'The "Component" instance overrides its glyph fill with icon/glyph/muted (I133:1642;133:1639); code colours the glyph through that token and the text through status-pill/fg/default.',
 } as const

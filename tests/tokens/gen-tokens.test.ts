@@ -1,6 +1,26 @@
 import { describe, it, expect } from 'vitest'
-import { generate, readInputs, derivedDeclarations, assertNoCollisions, normalizeSvg } from '../../scripts/gen-tokens'
+import { generate, readInputs, derivedDeclarations, derivedLayerCollisions, assertNoCollisions, normalizeSvg } from '../../scripts/gen-tokens'
 import { cssValueFor, cssVarName, brandIdFromMode, parseVariantName } from '../../src/shared/brand/snapshot'
+import type { ComponentsSnapshot } from '../../src/shared/brand/snapshot'
+
+interface FixtureLayer { id: string; name: string; fill?: string; size?: [number, number] }
+
+/** A one-set snapshot: each variant is a bare root with VECTOR children. */
+function logoFixture(variants: { name: string; layers: FixtureLayer[] }[]): ComponentsSnapshot {
+  return {
+    fileKey: 'test', page: { id: '0:1', name: 'Components' }, pulledAt: '2026-09-27', coverage: [],
+    sets: [{
+      code: 'Logo', id: '9:9', name: 'Logo', description: '', props: {}, status: 'built',
+      variants: variants.map((v, i) => ({
+        id: `9:${i}`, name: v.name, props: {},
+        nodes: [
+          { id: `9:${i}`, p: v.name, t: 'COMPONENT', b: {} },
+          ...v.layers.map((l) => ({ id: l.id, p: `${v.name}/${l.name}`, t: 'VECTOR', b: {}, r: { ...(l.fill && { fill: l.fill }), ...(l.size && { size: l.size }) } })),
+        ],
+      })),
+    }],
+  } as ComponentsSnapshot
+}
 
 describe('snapshot helpers', () => {
   it('names css variables from Figma variable names', () => {
@@ -89,6 +109,62 @@ describe('generate()', () => {
     // `brand logos` instance on 2026-09-23, so the Banner no longer owns a vector.)
     expect(a.some((n) => n.includes('leading-icon'))).toBe(false)
     expect(a).toContain('--bb-derived-settings-button-vector-width')
+  })
+  it('keeps every value when two layers in one variant share a name', () => {
+    // Mirrors BrandLogo Brand=ikea (40000064:9864): an oval and a wordmark, both named "Vector".
+    const components = logoFixture([
+      { name: 'Brand=a', layers: [{ id: '1:1', name: 'Vector', fill: '#111111', size: [10, 5] }] },
+      { name: 'Brand=b', layers: [
+        { id: '2:1', name: 'Vector', fill: '#f6d33c', size: [106.3, 35] },
+        { id: '2:2', name: 'Vector', fill: '#2360a5', size: [82.1, 14.6] },
+      ] },
+    ])
+    const derived = Object.fromEntries(derivedDeclarations(components).map((d) => [d.name, d.value]))
+    // Names that existed before keep the value they always had (the later layer wins them).
+    expect(derived['--bb-derived-logo-vector-brand-a-fill']).toBe('#111111')
+    expect(derived['--bb-derived-logo-vector-brand-b-fill']).toBe('#2360a5')
+    expect(derived['--bb-derived-logo-vector-brand-b-width']).toBe('82.1px')
+    // The earlier layer used to be dropped; it now gets an occurrence-indexed name.
+    expect(derived['--bb-derived-logo-vector--1-fill']).toBe('#f6d33c')
+    expect(derived['--bb-derived-logo-vector--1-width']).toBe('106.3px')
+    expect(derived['--bb-derived-logo-vector--1-height']).toBe('35px')
+    expect(derivedLayerCollisions(components)).toEqual([{
+      set: 'Logo', variant: 'Brand=b', layer: 'Vector', nodes: ['2:1', '2:2'],
+      tokens: ['--bb-derived-logo-vector--1-fill', '--bb-derived-logo-vector--1-height', '--bb-derived-logo-vector--1-width'],
+    }])
+  })
+  it('adds nothing for same-named layers whose values agree', () => {
+    const components = logoFixture([{ name: 'Brand=a', layers: [
+      { id: '1:1', name: 'Dot', fill: '#111111', size: [4, 4] },
+      { id: '1:2', name: 'Dot', fill: '#111111', size: [4, 4] },
+    ] }])
+    expect(derivedDeclarations(components).map((d) => d.name)).toEqual([
+      '--bb-derived-logo-dot-fill', '--bb-derived-logo-dot-height', '--bb-derived-logo-dot-width',
+    ])
+    expect(derivedLayerCollisions(components)).toEqual([])
+  })
+  it('never lets a disambiguated name clash with a real layer name', () => {
+    // Figma auto-names like "Vector 1" slug to `vector-1`; the `--` marker cannot come from a layer name.
+    const components = logoFixture([{ name: 'Brand=a', layers: [
+      { id: '1:1', name: 'Vector', fill: '#aaaaaa', size: [1, 1] },
+      { id: '1:2', name: 'Vector', fill: '#bbbbbb', size: [1, 1] },
+      { id: '1:3', name: 'Vector 1', fill: '#cccccc', size: [1, 1] },
+    ] }])
+    const derived = Object.fromEntries(derivedDeclarations(components).map((d) => [d.name, d.value]))
+    expect(derived['--bb-derived-logo-vector-1-fill']).toBe('#cccccc')
+    expect(derived['--bb-derived-logo-vector-brand-a-fill']).toBe('#bbbbbb')
+    expect(derived['--bb-derived-logo-vector--1-fill']).toBe('#aaaaaa')
+  })
+  it('numbers only the same-named layers that carry raw values', () => {
+    // A fully variable-bound layer produces no derived token, so it does not shift `--<n>`: `vector--1` is nodes[0].
+    const components = logoFixture([{ name: 'Brand=a', layers: [
+      { id: '1:1', name: 'Vector' },
+      { id: '1:2', name: 'Vector', fill: '#aaaaaa' },
+      { id: '1:3', name: 'Vector', fill: '#bbbbbb' },
+    ] }])
+    const derived = Object.fromEntries(derivedDeclarations(components).map((d) => [d.name, d.value]))
+    expect(derived['--bb-derived-logo-vector--1-fill']).toBe('#aaaaaa')
+    expect(derivedLayerCollisions(components)[0]?.nodes).toEqual(['1:2', '1:3'])
   })
   it('normalises svg exports to currentColor bodies', () => {
     const { viewBox, body } = normalizeSvg('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 1" fill="#F5F5F5"/>\n<rect stroke="white"/></svg>')

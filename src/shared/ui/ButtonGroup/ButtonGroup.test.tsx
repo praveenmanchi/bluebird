@@ -27,6 +27,23 @@ describe('ButtonGroup', () => {
     expect(primary).toBeDisabled()
     expect(primary?.getAttribute('aria-busy')).toBe('true')
   })
+  it('hides the primary Button when showPrimary is false (Figma "Primary Button"=false)', () => {
+    render(<ButtonGroup showPrimary={false} />)
+    const buttons = screen.getAllByRole('button')
+    expect(buttons.map((b) => b.dataset.variant)).toEqual(['secondary'])
+    expect(screen.queryByRole('button', { name: 'Save Configuration' })).toBeNull()
+  })
+  it('hides the secondary Button when showSecondary is false (Figma "Seconndary butto"=false)', () => {
+    render(<ButtonGroup showSecondary={false} />)
+    const buttons = screen.getAllByRole('button')
+    expect(buttons.map((b) => b.dataset.variant)).toEqual(['primary'])
+    expect(screen.queryByRole('button', { name: 'Test Connection' })).toBeNull()
+  })
+  it('renders no Button when both are hidden', () => {
+    render(<ButtonGroup showPrimary={false} showSecondary={false} />)
+    expect(screen.getByRole('group')).toBeInTheDocument()
+    expect(screen.queryAllByRole('button')).toHaveLength(0)
+  })
   it('accepts custom children instead of the default pair', () => {
     render(<ButtonGroup><Button>Only</Button></ButtonGroup>)
     expect(screen.getAllByRole('button')).toHaveLength(1)

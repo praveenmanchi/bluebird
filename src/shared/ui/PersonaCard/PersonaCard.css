@@ -60,10 +60,10 @@
   margin: 0;
   color: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color);
   font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-font-size-caption);
+  /* The footnote layer carries the same name (its copy), so this layer's size is the position-indexed `--1`. */
+  font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-font-size);
   font-weight: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight);
-  /* Figma: 12 line-height with no variable yet; dimension/space/12 is the only 12 primitive. */
-  line-height: var(--bb-dimension-space-12);
+  line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-line-height);
 }
 /* Frame 1430102659 — the compact tool tabs */
 .bb-persona-card__tabs {

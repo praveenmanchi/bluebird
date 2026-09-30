@@ -29,6 +29,8 @@ export function BrandLogo({ brand, logo, title, size = 'md', class: cls }: Brand
       {names.map((name) => {
         const art = LOGOS[name as LogoName]
         if (!art) return null
+        // The exported frame is the intrinsic size; BrandLogo.css overrides it where Figma sizes the variant.
+        const [, , width, height] = art.viewBox.split(' ')
         return (
           <svg
             key={name}
@@ -37,6 +39,8 @@ export function BrandLogo({ brand, logo, title, size = 'md', class: cls }: Brand
             data-size={size}
             data-forced={forced ? '' : undefined}
             viewBox={art.viewBox}
+            width={width}
+            height={height}
             fill="none"
             role={title ? 'img' : 'presentation'}
             aria-hidden={title ? undefined : 'true'}

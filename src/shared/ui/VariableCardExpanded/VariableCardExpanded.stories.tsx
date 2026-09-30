@@ -3,6 +3,9 @@ import { VariableCardExpanded, type VariableCardRow } from './VariableCardExpand
 import { figma } from './figma'
 import { BrandGrid } from '../../../../.storybook/helpers'
 
+/** Figma's five detail rows, text overrides verbatim (I400:15310;83:672 …). */
+const FIGMA_ROWS: VariableCardRow[] = Array.from({ length: 5 }, () => ({ label: 'Button', value: 52, valueLabel: ' Nodes  Using' }))
+
 const ROWS: VariableCardRow[] = [
   { label: 'Button', value: 12 },
   { label: 'Checkbox', value: 4 },
@@ -20,10 +23,10 @@ const meta = {
     meta: 'Universal Toolkit · Used by 52 components · Affects 1 mode/brands',
     changeCount: 52,
     summary: [
-      { label: 'Frames', count: 18 },
-      { label: 'Instances', count: 34 },
+      { label: 'Total No. of Usage No.', count: 52 },
+      { label: 'Total No. of Nodes  Using', count: 52 },
     ],
-    rows: ROWS,
+    rows: FIGMA_ROWS,
   },
 } satisfies Meta<typeof VariableCardExpanded>
 export default meta
@@ -33,6 +36,9 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = { parameters: { figma: { variant: 'Variable search card expand' } } }
 
 export const TextStyle: Story = { args: { kind: 'text-style', name: 'Heading/H2', rows: ROWS.slice(0, 2) } }
+
+/** Rows with their own names and diff statuses instead of Figma's five "Button" rows. */
+export const MixedRows: Story = { args: { rows: ROWS } }
 
 export const NoSummary: Story = { args: { summary: [] } }
 

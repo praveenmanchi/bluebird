@@ -21,6 +21,16 @@ describe('Toggle', () => {
     fireEvent.click(screen.getByRole('switch', { name: 'Enable' }))
     expect(onChange).toHaveBeenCalledWith(true)
   })
+  it('keeps the switch visible when unchecked (Status is not the Figma "Toggle" boolean)', () => {
+    render(<Toggle title="Sync" description="Compare before PR" checked={false} />)
+    expect(screen.getByRole('switch', { name: 'Sync' }).getAttribute('aria-checked')).toBe('false')
+  })
+  it('hides the switch for Figma Toggle=false, leaving a text-only title and description', () => {
+    const { container } = render(<Toggle title="Sync" description="Compare before PR" showSwitch={false} />)
+    expect(screen.queryByRole('switch')).toBeNull()
+    expect(container.querySelector('.bb-toggle__title')?.textContent).toBe('Sync')
+    expect(container.querySelector('.bb-toggle__description')?.textContent).toBe('Compare before PR')
+  })
   it('does not fire when disabled', () => {
     const onChange = vi.fn()
     const { container } = render(<Toggle label="Enable" checked disabled onChange={onChange} />)

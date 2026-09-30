@@ -2,7 +2,7 @@
 .bb-manual-review {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-space-inset-sm);
+  gap: var(--bb-space-inset-md);
   padding: var(--bb-space-inset-md);
   border: var(--bb-border-width-default) solid var(--bb-border-subtle);
   border-radius: var(--bb-radius-lg);
@@ -26,7 +26,7 @@
 .bb-manual-review__list {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-space-inset-sm);
+  gap: var(--bb-space-inset-md);
   margin: 0;
   padding: 0;
   list-style: none;

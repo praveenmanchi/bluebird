@@ -2,7 +2,8 @@
  * Operable / Understandable / Robust. Background per principle and the caption
  * colour are Brand-bound (principle/*); the glyph reads icon/glyph/on-accent
  * as bound on the vectors. The single rounded corner, inset, gap, the
- * semibold caption type and the per-principle icon boxes are raw → derived. */
+ * semibold caption type, the per-principle icon boxes and the Operable
+ * width are raw → derived. */
 .bb-principle-tag {
   display: inline-flex;
   align-items: center;
@@ -20,7 +21,11 @@
   user-select: none;
 }
 .bb-principle-tag[data-principle="perceivable"] { background: var(--bb-principle-perceivable-bg); }
-.bb-principle-tag[data-principle="operable"] { background: var(--bb-principle-operable-bg); }
+/* Operable alone is FIXED-width in Figma (border-box, padding included); the other three hug. */
+.bb-principle-tag[data-principle="operable"] {
+  width: var(--bb-derived-principle-tag-root-width);
+  background: var(--bb-principle-operable-bg);
+}
 .bb-principle-tag[data-principle="understandable"] { background: var(--bb-principle-understandable-bg); }
 .bb-principle-tag[data-principle="robust"] { background: var(--bb-principle-robust-bg); }
 
