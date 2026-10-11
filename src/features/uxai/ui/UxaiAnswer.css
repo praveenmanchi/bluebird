@@ -10,7 +10,7 @@
   --uxai-inline: var(--bb-uxai-space-inline);
   --uxai-hair: var(--bb-uxai-space-hair);
   --uxai-gutter: var(--bb-uxai-size-orb-sm);
-  /* "Sources" and "Thought for Ns" text. */
+  /* "Thought for Ns" and caption text. */
   --uxai-font-family: var(--bb-uxai-font-family);
   --uxai-caption-color: var(--bb-uxai-text-meta);
   --uxai-caption-size: var(--bb-uxai-font-size-caption);

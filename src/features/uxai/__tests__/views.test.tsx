@@ -9,15 +9,18 @@ import { Composer } from '../ui/Composer'
 import { SCREEN_THREADS, SOURCES, VARIABLES, answerKindFor } from '../fixtures'
 
 describe('uxai screens on Figma fixtures', () => {
-  it('Answer: Sources bar collapses past four chips, Thought for, Color Artifact, follow-ups', () => {
-    render(<UxaiAnswer turns={SCREEN_THREADS.answer} sources={SOURCES} draft="" />)
-    const bar = screen.getByLabelText('Sources in use')
-    for (const chip of ['Brand UI variables', 'Components', 'Icons', 'Type styles', '+1']) expect(within(bar).getByText(chip)).toBeInTheDocument()
+  it('Answer: no screen Sources bar (Figma 2026-10-12); Thought for, Color Artifact, follow-ups; sources in the Chat Input', () => {
+    const { container } = render(<UxaiAnswer turns={SCREEN_THREADS.answer} sources={SOURCES} draft="" />)
+    expect(container.querySelector('.bb-uxai-sources-bar')).toBeNull()
+    expect(screen.queryByLabelText('Sources in use')).toBeNull()
     expect(screen.getByText('Thought for 2s')).toBeInTheDocument()
     expect(screen.getByText('Matched surface/accent via button/primary/bg/default')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Check contrast in every brand' })).toBeInTheDocument()
-    expect(screen.getByText('5 sources')).toBeInTheDocument()
     expect(screen.queryByText('Ticket Row · State=Selected')).toBeNull()
+    // The chips now live in the Chat Input's Sources bar, still collapsing past four.
+    fireEvent.click(screen.getByRole('button', { name: '5 sources' }))
+    const bar = screen.getByLabelText('Sources in use')
+    for (const chip of ['Brand UI variables', 'Components', 'Icons', 'Type styles', '+1']) expect(within(bar).getByText(chip)).toBeInTheDocument()
   })
 
   it('Component: the live Button preview and its code citation, no follow-ups', () => {

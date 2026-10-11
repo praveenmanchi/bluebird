@@ -130,11 +130,14 @@ describe('uxai Tab', () => {
     expect(screen.getByRole('button', { name: 'Swap surface/accent' })).toBeInTheDocument()
   })
 
-  it('goes to Sources from "Manage sources", and source toggles update the chips', async () => {
+  it('goes to Sources from the Answer screen\'s Chat Input, and source toggles update the chips', async () => {
     renderTab(createMockHandlers({ libraries: { status: 'ready', index: SAMPLE_LIBRARY } }))
     await act(async () => { await vi.advanceTimersByTimeAsync(0) })
     ask('What is our primary colour?')
     await act(async () => { await vi.advanceTimersByTimeAsync(STEP_MS * 4) })
+    // The Answer screen has no Sources bar of its own: the Chat Input's chip opens one.
+    expect(screen.queryByLabelText('Sources in use')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '2 sources' }))
     expect(screen.getByLabelText('Sources in use')).toHaveTextContent('Brand UI')
 
     fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
@@ -142,6 +145,7 @@ describe('uxai Tab', () => {
     expect(screen.getByRole('button', { name: '1 source' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Back to conversation' }))
+    fireEvent.click(screen.getByRole('button', { name: '1 source' }))
     expect(screen.getByLabelText('Sources in use')).not.toHaveTextContent('Brand UI')
     expect(screen.getByText(/surface\/accent \(Brand UI\)/)).toBeInTheDocument()
   })

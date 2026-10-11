@@ -10,16 +10,19 @@ export interface ChatBodyProps extends ChatScreenProps {
   class: string
   /** Replaces the Sources bar (the Selection screen shows its Selection Preview there). */
   top?: ComponentChildren
+  /** Draw the screen's own Sources bar above the Thread. Off where Figma dropped it (Answer): the
+   *  Chat Input's "N sources" chip opens the same bar inside the field. */
+  sourcesBar?: boolean
   variablesPanel?: ComponentChildren
   withSelection?: boolean
 }
 
 /** The UX AI body every chat screen shares: Sources bar (or Selection Preview), Thread, Chat Input. */
-export function ChatBody({ class: cls, top, variablesPanel, withSelection, turns, sources, draft, onDraft, onSend, onStop, onManageSources, onUseSelection, onFocusNode, onOpenUrl }: ChatBodyProps) {
+export function ChatBody({ class: cls, top, sourcesBar = true, variablesPanel, withSelection, turns, sources, draft, onDraft, onSend, onStop, onManageSources, onUseSelection, onFocusNode, onOpenUrl }: ChatBodyProps) {
   const thinking = turns.find((t) => t.status === 'thinking')
   return (
     <div class={`bb-uxai-screen ${cls}`}>
-      {top ?? <SourcesBar sources={sources} onManage={onManageSources} />}
+      {top ?? (sourcesBar && <SourcesBar sources={sources} onManage={onManageSources} />)}
       <Thread turns={turns} variablesPanel={variablesPanel} onSend={onSend} onFocusNode={onFocusNode} onOpenUrl={onOpenUrl} />
       <Composer
         sources={sources}
