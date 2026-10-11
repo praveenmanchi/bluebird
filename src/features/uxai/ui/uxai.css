@@ -86,4 +86,20 @@
 }
 
 /* Chat Input — FILL in every body; the component's own width is the set's. */
+/* The Chat Input's "N sources" chip opens its Sources bar. */
+.bb-uxai-composer__sources {
+  display: inline-flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-uxai-radius-chip);
+  background: none;
+  cursor: pointer;
+  appearance: none;
+}
+.bb-uxai-composer__sources:focus-visible {
+  outline: var(--bb-uxai-border-width) solid var(--bb-border-focus);
+  outline-offset: var(--bb-uxai-space-hair);
+}
 .bb-chat-input.bb-uxai-composer { flex: none; width: 100%; max-width: var(--uxai-composer-max); }

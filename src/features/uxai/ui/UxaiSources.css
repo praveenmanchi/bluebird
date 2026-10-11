@@ -1,8 +1,11 @@
 /* UX AI · Sources — Figma "UX AI body" 40000290:5841 (screen 40000288:8330).
- * Header (title + actions), the Sources grid, the Drop zone and the Welcome
- * prompts above the Chat Input. Buttons, Source Cards, the Thinking Orb,
- * Prompt Chips and the Chat Input are composed components that read their
- * own tokens. Below the header everything scrolls together in a short window. */
+ * Figma: the Welcome prompts above the Chat Input (whose sources chip expands
+ * into the Sources bar). "Manage sources" (data-managing, not drawn in Figma)
+ * swaps the Welcome for the header, the Sources grid and the Drop zone; those
+ * size from the Source Card's own width now that the frame has no cards.
+ * Buttons, Source Cards, the Thinking Orb, Prompt Chips and the Chat Input are
+ * composed components that read their own tokens. Below the header everything
+ * scrolls together in a short window. */
 .bb-uxai-sources {
   --uxai-panel: var(--bb-uxai-space-panel);
   --uxai-section: var(--bb-uxai-space-section);
@@ -31,7 +34,7 @@
   gap: var(--bb-uxai-space-hair);
   /* Keeps the actions on the title's row until the title would drop below half a card. */
   flex: 1 1 0;
-  min-width: calc(var(--bb-derived-uxai-sources-source-card-width) / 2);
+  min-width: calc(var(--bb-derived-source-card-root-width) / 2);
 }
 .bb-uxai-sources__heading {
   margin: 0;
@@ -54,11 +57,10 @@
   overflow-y: auto;
 }
 
-/* Sources grid — rows of two FILL cards (409.5 each at 827); one column once a
- * card would drop below half that width. */
+/* Sources grid — FILL cards, as many per row as fit at half a Source Card's width; one column below that. */
 .bb-uxai-sources__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--bb-derived-uxai-sources-source-card-width) / 2)), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--bb-derived-source-card-root-width) / 2)), 1fr));
   gap: var(--bb-uxai-space-inline);
   margin: 0;
   padding: 0;
@@ -75,7 +77,7 @@
   gap: var(--bb-uxai-space-tight);
   flex: none;
   padding: var(--bb-uxai-space-section) var(--bb-uxai-space-panel);
-  border: var(--bb-derived-uxai-sources-drop-zone-stroke-width) dashed var(--bb-uxai-chip-border);
+  border: var(--bb-uxai-border-width) dashed var(--bb-uxai-chip-border);
   border-radius: var(--bb-uxai-radius-control);
   text-align: center;
 }

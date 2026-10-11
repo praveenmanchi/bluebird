@@ -30,7 +30,8 @@ const ASK_TIMEOUT_MS = CLAUDE_TIMEOUT_MS + 15_000
  * then searches their variables and components, and selection questions check what the
  * selection binds against them. Without them the tab shows sample sources and canned answers.
  *
- * Views: Sources (first run, and "Manage sources") → a chat screen picked by the latest turn:
+ * Views: Sources (the welcome before the first question; the source list while "Manage sources" is
+ * open) → a chat screen picked by the latest turn:
  * Thinking while an answer runs, Selection for a canned selection/swap question, Component for a
  * component question, Answer otherwise.
  */
@@ -103,11 +104,14 @@ export function Tab() {
     return (
       <UxaiSources
         sources={sources.value}
+        managing={view.value === 'sources'}
         onToggleSource={toggleSource}
         draft={draft.value}
         onDraft={onDraft}
         onSend={onSend}
-        onBack={all.length ? showChat : undefined}
+        onManageSources={showSources}
+        onBack={showChat}
+        hasConversation={all.length > 0}
         onUseSelection={onUseSelection}
         status={<LibraryStatus state={lib} onRefresh={() => loadLibraries(true)} />}
       />

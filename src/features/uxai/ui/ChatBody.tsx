@@ -30,6 +30,7 @@ export function ChatBody({ class: cls, top, variablesPanel, withSelection, turns
         onSend={onSend}
         onStop={onStop}
         onAddSource={onManageSources}
+        onManageSources={onManageSources}
         onUseSelection={onUseSelection}
       />
     </div>

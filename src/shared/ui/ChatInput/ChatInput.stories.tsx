@@ -8,7 +8,7 @@ const meta = {
   title: 'Organisms/ChatInput',
   component: ChatInput,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  argTypes: { state: { control: 'inline-radio', options: ['idle', 'active', 'generating'] } },
+  argTypes: { state: { control: 'inline-radio', options: ['idle', 'active', 'generating', 'sources'] } },
   args: { state: 'idle', showContext: true, onSend: () => undefined, onStop: () => undefined },
 } satisfies Meta<typeof ChatInput>
 export default meta
@@ -20,6 +20,11 @@ export const Active: Story = { args: { state: 'active' }, parameters: v('State=A
 export const Generating: Story = {
   args: { state: 'generating', defaultValue: 'What variables are used in this component?' },
   parameters: v('State=Generating'),
+}
+/** Figma "source expend": the Sources bar replaces the context row. */
+export const SourceExpand: Story = {
+  args: { state: 'sources', onManageSources: () => undefined },
+  parameters: v('State=source expend'),
 }
 export const WithoutContext: Story = { args: { showContext: false } }
 
@@ -44,6 +49,7 @@ export const AcrossBrands: Story = {
   render: () => (
     <BrandGrid width="420px">
       <ChatInput state="idle" />
+      <ChatInput state="sources" onManageSources={() => undefined} />
       <ChatInput state="generating" defaultValue="What variables are used in this component?" />
     </BrandGrid>
   ),
