@@ -2,7 +2,7 @@
 // REST → Plugin-API translations, discovery/reconciliation and the pull's argument parsing.
 import { describe, it, expect } from 'vitest'
 import { mixedStrokeWeight, mixedText, pluginBindings, restFontStyle, styleKind, unrotatedSize } from '../../scripts/figma-rest/normalize'
-import { coverageOf, discoverSets, reconcile } from '../../scripts/figma-rest/discover'
+import { coverageOf, coverageRows, discoverSets, reconcile } from '../../scripts/figma-rest/discover'
 import { describeSet, type DescribeContext } from '../../scripts/figma-rest/describe'
 import { restTokens } from '../../scripts/figma-rest/variables'
 import { withVersion } from '../../scripts/figma-rest/http'
@@ -89,8 +89,10 @@ describe('discovery', () => {
     ],
   }
 
+  const legacy = { kind: 'legacy' as const, pages: [page] }
+
   it('lists sets at the top of the page and inside sections, not instances', () => {
-    expect(discoverSets(page)).toEqual([
+    expect(discoverSets(legacy)).toEqual([
       { id: 's1', name: 'Loose set', type: 'COMPONENT_SET', section: null, variants: 2 },
       { id: 's2', name: 'Button', type: 'COMPONENT_SET', section: 'Atoms', variants: 1 },
       { id: 'c1', name: 'Icon', type: 'COMPONENT', section: 'Atoms', variants: 1 },
@@ -100,7 +102,7 @@ describe('discovery', () => {
   it('follows a set that moved by unique name, reports what is missing and unmapped', () => {
     const r = reconcile(
       [{ code: 'Button', figma: 'Button', id: 'old-id' }, { code: 'Gone', figma: 'Gone', id: 'gone-id' }, { code: 'Loose', figma: 'Loose set', id: 's1' }],
-      new Set(['s1', 's2', 'c1']), discoverSets(page), ['c1'],
+      new Set(['s1', 's2', 'c1']), discoverSets(legacy), ['c1'],
     )
     expect(r.moved).toEqual([{ code: 'Button', figma: 'Button', from: 'old-id', to: 's2' }])
     expect(r.missing.map((m) => m.code)).toEqual(['Gone'])
@@ -112,6 +114,22 @@ describe('discovery', () => {
     const r = reconcile([{ code: 'Card', figma: 'Card', id: 'old' }], new Set(['a', 'b']), twins)
     expect(r.moved).toEqual([])
     expect(r.missing.map((m) => m.code)).toEqual(['Card'])
+  })
+
+  it('walks the tier pages: components nested in doc frames, labelled by tier with the tab as group', () => {
+    const stage = (comp: RestNode): RestNode => ({ id: `doc-${comp.id}`, name: `Doc/${comp.name}`, type: 'FRAME', children: [{ id: `st-${comp.id}`, name: 'Stage', type: 'FRAME', children: [comp] }] })
+    const atoms: RestNode = { id: 'pa', name: '  ↳ Atoms', type: 'CANVAS', children: [{ id: 'sa', name: 'Atoms', type: 'SECTION', children: [stage({ id: 'r', name: 'Rating', type: 'COMPONENT_SET', children: [{ id: 'r1', name: 'Rating=A', type: 'COMPONENT' }] })] }] }
+    const molecules: RestNode = { id: 'pm', name: '  ↳ Molecules', type: 'CANVAS', children: [{ id: 'sj', name: 'Jira', type: 'SECTION', children: [stage({ id: 't', name: 'Ticket Row', type: 'COMPONENT', fills: [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }] })] }] }
+    const tiered = { kind: 'tiered' as const, pages: [atoms, molecules] }
+    const refs = [{ id: 'pa', name: 'Atoms' }, { id: 'pm', name: 'Molecules' }]
+    expect(discoverSets(tiered, refs)).toEqual([
+      { id: 'r', name: 'Rating', type: 'COMPONENT_SET', section: 'Atoms', variants: 1 },
+      { id: 't', name: 'Ticket Row', type: 'COMPONENT', section: 'Molecules', group: 'Jira', variants: 1 },
+    ])
+    expect(coverageRows(tiered, refs)).toEqual([
+      { section: 'Atoms', type: 'COMPONENT_SET', name: 'Rating', id: 'r', variants: 1, coverage: null },
+      { section: 'Molecules', group: 'Jira', type: 'COMPONENT', name: 'Ticket Row', id: 't', variants: 1, coverage: 0 },
+    ])
   })
 
   it('counts coverage like extract.ts, including REST-nested radius bindings', () => {

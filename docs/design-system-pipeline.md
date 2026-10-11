@@ -10,7 +10,7 @@ Figma file WWRcH8IPLJ4iQVyoK9oDnH
  ├─ Foundations (375 vars, 1 mode)    ─┐   shared scales + <brand>/color/* and <brand>/type/family/* per brand
  ├─ Semantics   (58 vars, 1 mode)     ─┤   npm run figma:pull          figma/tokens.json
  ├─ Brand UI    (421 vars × 5 modes)  ─┘   (relay or REST)        →    figma/components.json
- └─ Components page: sets + bindings  ────────────────────────────→    figma/icons.json
+ └─ Component pages: sets + bindings ────────────────────────────→    figma/icons.json
                                                                           │
                                                         npm run gen:tokens│
                                                                           ▼
@@ -130,7 +130,7 @@ real variable, the generator moves it and `tokens:check` points at the code to u
    `figma:diff` matches layers by id first — renames are exact, a renamed container is one
    finding — and falls back to the path heuristics only for snapshots without ids.
 
-   Each REST pull also walks the Components page: coverage is recomputed live (it used to be
+   Each REST pull also walks the component pages: coverage is recomputed live (it used to be
    copied from the last relay pull), sets the manifest does not map are listed, and a manifest
    entry whose node id vanished is followed to the unique set with the same Figma name
    (`--fix-manifest` records the new id). Parity fixes that made REST match the relay exactly:
@@ -142,6 +142,18 @@ real variable, the generator moves it and `tokens:check` points at the code to u
 1. Pull backend: the relay backend is proven (2026-09-22: full pull of 621 variables, 49 sets and the Tab Icons set in ~45 s). Flow: `npm run build` → `npm run dev:relay` → in Figma desktop run *Dev: connect to browser (live mode)* → `npm run figma:pull` → `npm run gen:tokens && npm run tokens:check`. The pull keeps the code-side bookkeeping (`status`/`aliasOf`, tiers, hand-exported glyphs). `--rest` needs a personal access token; `/variables/local` additionally needs Enterprise, but see 0b — after one relay pull, REST resolves bindings from the recorded variable ids. Variable *values* still need the relay (or Enterprise); components, properties, bindings and geometry do not.
 2. CI job: `figma:pull → gen:tokens → tokens:check → test → build-storybook`, opening a PR when `figma/*.json` changed. Storybook is the review surface for the diff.
 3. Visual parity: **done (2026-09-23)** — `npm run figma:visual` exports each variant via `GET /v1/images/:key?ids=…` (all plans, `FIGMA_TOKEN` only), screenshots the paired story per brand with Playwright, and pixelmatches the two into `figma/visual/report.html`. Pairing comes from `parameters.figma.setId`/`.variant` read out of Storybook's own preview at runtime — index.json carries no parameters, and story names ("Primary Default") do not resemble variant names ("Type=Primary, State=Default, Size=Medium"), so name-guessing pairs under half of them. All 107 variants pair. It reports only by default and stays out of `npm run verify`: Figma rasterises text itself, so the percentage is a sort order, not a verdict — it earns its keep on structural drift (wrong size, moved element, missing layer).
+
+**Tier pages (2026-10-12).** The file now keeps its main components on one page per tier:
+Atoms, Molecules, Organisms and Icons. Molecules and organisms are filed in one section per tab, and
+each component sits inside a `Doc/<Name>` frame. `figma/manifest.json` lists them under
+`componentPages`. Both extractors resolve them through `src/shared/brand/componentPages.ts`:
+
+- Pages are matched by id, then by name (ids can change on a branch merge).
+- When the file has none of them, the extractors fall back to the legacy `componentsPage`.
+- A file that has only some of them is an error, because it would silently drop components.
+
+Coverage rows on tier pages count every main component. `section` is the tier and `group` is the
+tab. The snapshot records every walked page under `pages`.
 
 ### Phase 2 — components built, Figma bindings still to close (2026-09-21)
 Every component set on the Components page now has a code counterpart under `src/shared/ui` (38 built, 11 aliases). `figma/components.json` carries `status: built | alias` per set; `alias` sets are covered by another component (`aliasOf`): the six icon-only sets and the toolbar/section icons feed the `Icon` glyph table (`figma/icons.json`, 69 glyphs), `brands` / integration logos feed `BrandLogo` (`figma/logos/*.svg`), and the duplicates ButtonWrapper→Button, TabLegacy→Tab, SelectFieldLabeled→SelectField, CountBadgeIcon→CountBadge are folded into props.

@@ -107,7 +107,10 @@ export interface ComponentSetSnapshot {
 }
 
 export interface CoverageRow {
+  /** Tier: the page label on tier pages (Atoms, Molecules, Organisms, Icons), the section on the legacy page. */
   section: string
+  /** Tier pages only: the tab section the component is filed under, when it differs from the tier. */
+  group?: string
   type: string
   name: string
   id: string
@@ -117,7 +120,10 @@ export interface CoverageRow {
 
 export interface ComponentsSnapshot {
   fileKey: string
+  /** The page walked; on tier pages, the first of `pages`. */
   page: { id: string; name: string }
+  /** Tier pages only: every page walked, in order. */
+  pages?: { id: string; name: string }[]
   pulledAt: string
   /** Figma file version (REST only). */
   version?: string

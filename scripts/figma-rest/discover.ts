@@ -1,14 +1,13 @@
-// Walk the Components page: coverage rows (mirrors extract.ts extractCoverage), component sets the
-// manifest does not map yet, and manifest entries whose node id no longer exists. Works on every
-// plan — it only needs /v1/files/:key/nodes.
+// Walk the component pages (legacy Components page, or the Atoms/Molecules/Organisms/Icons tier
+// pages — see src/shared/brand/componentPages.ts): coverage rows (mirrors extract.ts extractCoverage),
+// component sets the manifest does not map yet, and manifest entries whose node id no longer exists.
+// Works on every plan — it only needs /v1/files/:key/nodes.
+import { inCoverage, placeComponents, type PageRef, type PageSource } from '../../src/shared/brand/componentPages'
 import type { CoverageRow } from '../../src/shared/brand/snapshot'
 import { pluginBindings } from './normalize'
 import type { RestNode } from './types'
 
-const COVERAGE_SECTIONS = /Atoms|Molecules|Organisms/
-const isComponent = (n: RestNode) => n.type === 'COMPONENT' || n.type === 'COMPONENT_SET'
-
-export interface DiscoveredSet { id: string; name: string; type: string; section: string | null; variants: number }
+export interface DiscoveredSet { id: string; name: string; type: string; section: string | null; group?: string; variants: number }
 
 export interface ManifestEntry { code: string; figma: string; id: string }
 
@@ -21,21 +20,16 @@ export interface Reconciliation {
   unmapped: DiscoveredSet[]
 }
 
-/** Every component (set) at the top of the page or directly inside one of its sections. */
-export function discoverSets(page: RestNode): DiscoveredSet[] {
-  const out: DiscoveredSet[] = []
-  const add = (n: RestNode, section: string | null) => {
-    if (isComponent(n)) out.push({ id: n.id, name: n.name.trim(), type: n.type, section, variants: n.type === 'COMPONENT_SET' ? (n.children ?? []).length : 1 })
-  }
-  for (const top of page.children ?? []) {
-    if (top.type === 'SECTION') for (const child of top.children ?? []) add(child, sectionLabel(top.name))
-    else add(top, null)
-  }
-  return out
-}
+const variantsOf = (n: RestNode) => n.type === 'COMPONENT_SET' ? (n.children ?? []).length : 1
+const groupOf = (tier: string | null, group: string | null) => group && group !== tier ? { group } : {}
 
-/** "⚛️ Atoms" → "Atoms", as extract.ts labels coverage rows. */
-const sectionLabel = (name: string) => name.replace(/^\S+\s/, '')
+/** Every main component on the pages: legacy = top level or directly inside a section; tier pages =
+ *  anywhere under a section (inside its Doc/<Name> frame), never inside an instance. */
+export function discoverSets(source: PageSource<RestNode>, refs: readonly PageRef[] = []): DiscoveredSet[] {
+  return placeComponents(source, refs).map(({ node, tier, group }) => ({
+    id: node.id, name: node.name.trim(), type: node.type, section: tier, ...groupOf(tier, group), variants: variantsOf(node),
+  }))
+}
 
 function* descendants(node: RestNode): Generator<RestNode> {
   yield node
@@ -58,21 +52,14 @@ export function coverageOf(top: RestNode): { bound: number; raw: number } {
   return { bound, raw }
 }
 
-export function coverageRows(page: RestNode): CoverageRow[] {
-  const rows: CoverageRow[] = []
-  for (const section of page.children ?? []) {
-    if (section.type !== 'SECTION' || !COVERAGE_SECTIONS.test(section.name)) continue
-    for (const top of section.children ?? []) {
-      if (!isComponent(top)) continue
-      const { bound, raw } = coverageOf(top)
-      rows.push({
-        section: sectionLabel(section.name), type: top.type, name: top.name.trim(), id: top.id,
-        variants: top.type === 'COMPONENT_SET' ? (top.children ?? []).length : 1,
-        coverage: bound + raw ? Math.round((100 * bound) / (bound + raw)) : null,
-      })
+export function coverageRows(source: PageSource<RestNode>, refs: readonly PageRef[] = []): CoverageRow[] {
+  return placeComponents(source, refs).filter((p) => inCoverage(source.kind, p)).map(({ node, tier, group }) => {
+    const { bound, raw } = coverageOf(node)
+    return {
+      section: tier ?? '', ...groupOf(tier, group), type: node.type, name: node.name.trim(), id: node.id,
+      variants: variantsOf(node), coverage: bound + raw ? Math.round((100 * bound) / (bound + raw)) : null,
     }
-  }
-  return rows
+  })
 }
 
 /** Compare the manifest against what the file actually holds. `found` = ids the API returned;
