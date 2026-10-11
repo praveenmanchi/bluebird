@@ -1,0 +1,96 @@
+/* ThinkingOrb — Figma "Thinking Orb" (40000283:8191). The set holds static
+ * frames of an animated orb: a sunken pill clips layered, blurred ellipses
+ * coloured by uxai/orb/* plus a soft highlight (uxai/text/title at 35%).
+ * Ellipse sizes are raw in Figma → --bb-derived-thinking-orb-*; positions are
+ * the Figma x/y as a share of the orb, so one rule serves both sizes.
+ * Blur: Figma layer blurs are raw effect values the generator does not export.
+ * Measured from the file they scale with the orb — blobs 18% of the orb,
+ * highlight 10% (Figma radius) → CSS blur = radius / 2, written against the
+ * bound orb size so they follow uxai/size/orb-*. Motion is code-only (the
+ * Figma description says "Animate in code") and stops under reduced motion. */
+.bb-thinking-orb {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  overflow: hidden;
+  width: var(--bb-uxai-size-orb-sm);
+  height: var(--bb-uxai-size-orb-sm);
+  border-radius: var(--bb-uxai-radius-pill);
+  background: var(--bb-uxai-surface-sunken);
+  vertical-align: middle;
+}
+.bb-thinking-orb[data-size='40'] {
+  width: var(--bb-uxai-size-orb-lg);
+  height: var(--bb-uxai-size-orb-lg);
+}
+.bb-thinking-orb__field {
+  position: absolute;
+  inset: 0;
+}
+.bb-thinking-orb__blob,
+.bb-thinking-orb__highlight {
+  position: absolute;
+  border-radius: var(--bb-uxai-radius-pill);
+}
+.bb-thinking-orb__blob[data-tone='core'] { background: var(--bb-uxai-orb-core); }
+.bb-thinking-orb__blob[data-tone='a'] { background: var(--bb-uxai-orb-a); }
+.bb-thinking-orb__blob[data-tone='b'] { background: var(--bb-uxai-orb-b); }
+.bb-thinking-orb__blob[data-tone='c'] { background: var(--bb-uxai-orb-c); }
+.bb-thinking-orb__highlight {
+  background: var(--bb-uxai-text-title);
+  opacity: var(--bb-derived-thinking-orb-ellipse-opacity);
+}
+.bb-thinking-orb[data-size='20'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.09)); }
+.bb-thinking-orb[data-size='40'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.09)); }
+.bb-thinking-orb[data-size='20'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.05)); }
+.bb-thinking-orb[data-size='40'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.05)); }
+
+/* Geometry per Figma variant (layer order = Figma order, bottom → top). */
+/* State=Searching */
+.bb-thinking-orb[data-state='searching'] .bb-thinking-orb__blob:nth-child(1) { left: 5%; top: 5%; }
+.bb-thinking-orb[data-state='searching'] .bb-thinking-orb__blob:nth-child(2) { left: -10%; top: -5%; }
+.bb-thinking-orb[data-state='searching'] .bb-thinking-orb__blob:nth-child(3) { left: 52.5%; top: 47.5%; }
+.bb-thinking-orb[data-state='searching'] .bb-thinking-orb__highlight { left: 22%; top: 18%; }
+.bb-thinking-orb[data-state='searching'][data-size='20'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse--1-state-searching-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--1-state-searching-size-20-height); }
+.bb-thinking-orb[data-state='searching'][data-size='20'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse--2-state-searching-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--2-state-searching-size-20-height); }
+.bb-thinking-orb[data-state='searching'][data-size='20'] .bb-thinking-orb__blob:nth-child(3) { width: var(--bb-derived-thinking-orb-ellipse--3-state-searching-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--3-state-searching-size-20-height); }
+.bb-thinking-orb[data-state='searching'][data-size='20'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse-state-searching-size-20-width); height: var(--bb-derived-thinking-orb-ellipse-state-searching-size-20-height); }
+.bb-thinking-orb[data-state='searching'][data-size='40'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse--1-state-searching-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--1-state-searching-size-40-height); }
+.bb-thinking-orb[data-state='searching'][data-size='40'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse--2-state-searching-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--2-state-searching-size-40-height); }
+.bb-thinking-orb[data-state='searching'][data-size='40'] .bb-thinking-orb__blob:nth-child(3) { width: var(--bb-derived-thinking-orb-ellipse--3-state-searching-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--3-state-searching-size-40-height); }
+.bb-thinking-orb[data-state='searching'][data-size='40'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse-state-searching-size-40-width); height: var(--bb-derived-thinking-orb-ellipse-state-searching-size-40-height); }
+/* State=Composing */
+.bb-thinking-orb[data-state='composing'] .bb-thinking-orb__blob:nth-child(1) { left: 2.5%; top: 2.5%; }
+.bb-thinking-orb[data-state='composing'] .bb-thinking-orb__blob:nth-child(2) { left: -2.5%; top: 42.5%; }
+.bb-thinking-orb[data-state='composing'] .bb-thinking-orb__blob:nth-child(3) { left: 50%; top: 5%; }
+.bb-thinking-orb[data-state='composing'] .bb-thinking-orb__highlight { left: 22%; top: 18%; }
+.bb-thinking-orb[data-state='composing'][data-size='20'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse--1-state-composing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--1-state-composing-size-20-height); }
+.bb-thinking-orb[data-state='composing'][data-size='20'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse--2-state-composing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--2-state-composing-size-20-height); }
+.bb-thinking-orb[data-state='composing'][data-size='20'] .bb-thinking-orb__blob:nth-child(3) { width: var(--bb-derived-thinking-orb-ellipse-state-composing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse-state-composing-size-20-height); }
+.bb-thinking-orb[data-state='composing'][data-size='20'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse--4-state-composing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--4-state-composing-size-20-height); }
+.bb-thinking-orb[data-state='composing'][data-size='40'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse--1-state-composing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--1-state-composing-size-40-height); }
+.bb-thinking-orb[data-state='composing'][data-size='40'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse--2-state-composing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--2-state-composing-size-40-height); }
+.bb-thinking-orb[data-state='composing'][data-size='40'] .bb-thinking-orb__blob:nth-child(3) { width: var(--bb-derived-thinking-orb-ellipse-state-composing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse-state-composing-size-40-height); }
+.bb-thinking-orb[data-state='composing'][data-size='40'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse--4-state-composing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--4-state-composing-size-40-height); }
+/* State=Breathing */
+.bb-thinking-orb[data-state='breathing'] .bb-thinking-orb__blob:nth-child(1) { left: 15%; top: 15%; }
+.bb-thinking-orb[data-state='breathing'] .bb-thinking-orb__blob:nth-child(2) { left: -5%; top: -5%; }
+.bb-thinking-orb[data-state='breathing'] .bb-thinking-orb__highlight { left: 22%; top: 18%; }
+.bb-thinking-orb[data-state='breathing'][data-size='20'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse-state-breathing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse-state-breathing-size-20-height); }
+.bb-thinking-orb[data-state='breathing'][data-size='20'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse--2-state-breathing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--2-state-breathing-size-20-height); }
+.bb-thinking-orb[data-state='breathing'][data-size='20'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse--3-state-breathing-size-20-width); height: var(--bb-derived-thinking-orb-ellipse--3-state-breathing-size-20-height); }
+.bb-thinking-orb[data-state='breathing'][data-size='40'] .bb-thinking-orb__blob:nth-child(1) { width: var(--bb-derived-thinking-orb-ellipse--1-state-breathing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--1-state-breathing-size-40-height); }
+.bb-thinking-orb[data-state='breathing'][data-size='40'] .bb-thinking-orb__blob:nth-child(2) { width: var(--bb-derived-thinking-orb-ellipse-state-breathing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse-state-breathing-size-40-height); }
+.bb-thinking-orb[data-state='breathing'][data-size='40'] .bb-thinking-orb__highlight { width: var(--bb-derived-thinking-orb-ellipse--3-state-breathing-size-40-width); height: var(--bb-derived-thinking-orb-ellipse--3-state-breathing-size-40-height); }
+
+/* Motion — Searching swirls the blobs, Composing churns them faster the other
+ * way, Breathing swells and settles. The highlight stays put, like a specular. */
+@media (prefers-reduced-motion: no-preference) {
+  .bb-thinking-orb[data-state='searching'] .bb-thinking-orb__field { animation: bb-thinking-orb-swirl 2400ms linear infinite; } /* allow-raw */
+  .bb-thinking-orb[data-state='composing'] .bb-thinking-orb__field { animation: bb-thinking-orb-swirl 1600ms linear infinite reverse; } /* allow-raw */
+  .bb-thinking-orb[data-state='composing'] .bb-thinking-orb__blob { animation: bb-thinking-orb-churn 800ms ease-in-out infinite alternate; } /* allow-raw */
+  .bb-thinking-orb[data-state='breathing'] .bb-thinking-orb__field { animation: bb-thinking-orb-breathe 3200ms ease-in-out infinite alternate; } /* allow-raw */
+}
+@keyframes bb-thinking-orb-swirl { to { transform: rotate(360deg); } } /* allow-raw */
+@keyframes bb-thinking-orb-churn { from { transform: scale(0.88); } to { transform: scale(1.12); } } /* allow-raw */
+@keyframes bb-thinking-orb-breathe { from { transform: scale(0.9); opacity: 0.85; } to { transform: scale(1.05); opacity: 1; } } /* allow-raw */

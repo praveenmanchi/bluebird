@@ -1,0 +1,25 @@
+/* UX AI · Thinking — Figma "UX AI body" 40000290:6023 (screen 40000288:8337).
+ * An earlier Type answer above the running one; the Chat Input is Generating. See uxai.css. */
+.bb-uxai-thinking-screen {
+  /* Frame bindings: root padding / gap, Thread + Indent + Thinking spacing, the orb gutter. */
+  --uxai-panel: var(--bb-uxai-space-panel);
+  --uxai-section: var(--bb-uxai-space-section);
+  --uxai-tight: var(--bb-uxai-space-tight);
+  --uxai-inline: var(--bb-uxai-space-inline);
+  --uxai-hair: var(--bb-uxai-space-hair);
+  --uxai-gutter: var(--bb-uxai-size-orb-sm);
+  /* "Sources" and "Thought for Ns" text. */
+  --uxai-font-family: var(--bb-uxai-font-family);
+  --uxai-caption-color: var(--bb-uxai-text-meta);
+  --uxai-caption-size: var(--bb-uxai-font-size-caption);
+  --uxai-caption-line: var(--bb-uxai-font-line-caption);
+  --uxai-weight-strong: var(--bb-uxai-font-weight-strong);
+  --uxai-weight-medium: var(--bb-uxai-font-weight-medium);
+  --uxai-weight-regular: var(--bb-uxai-font-weight-regular);
+  /* The 859 px desktop frame and its FILL children cap the layout; the plugin window (360–760) flexes below them. */
+  --uxai-max-width: var(--bb-derived-uxai-thinking-root-width);
+  --uxai-message-max: var(--bb-derived-uxai-thinking-message-width);
+  --uxai-message-min-height: var(--bb-derived-uxai-thinking-message-height);
+  --uxai-composer-max: var(--bb-derived-uxai-thinking-chat-input-width);
+  --uxai-artifact-max: var(--bb-derived-uxai-thinking-type-artifact-width);
+}

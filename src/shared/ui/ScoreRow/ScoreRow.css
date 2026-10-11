@@ -1,0 +1,7 @@
+/* Score Row — Figma "Score Row" (40000447:8676). */
+.bb-score-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-a11y-space-panel);
+}
+.bb-score-row__meter { flex: 1 1 auto; min-width: 0; }

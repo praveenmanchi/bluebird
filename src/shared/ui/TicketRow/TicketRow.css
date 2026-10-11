@@ -1,0 +1,79 @@
+/* TicketRow — Figma "Ticket Row" (40000267:8055). A fixed 400×60 frame:
+ * Top (Meta ↔ Signals, space-between) over a one-line Title. Default has no
+ * fill; Hover fills jira/row/bg/hover; Selected fills jira/row/bg/selected
+ * and adds an inside stroke (jira/row/border/selected), which — like Figma's
+ * auto layout — narrows the content by the stroke. data-state="hover" forces
+ * the hover look for stories and visual diffs. */
+.bb-ticket-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-tight);
+  box-sizing: border-box;
+  width: var(--bb-derived-ticket-row-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-ticket-row-root-height);
+  margin: 0;
+  padding: var(--bb-jira-space-row-y) var(--bb-jira-space-row-x);
+  border: 0 solid var(--bb-jira-row-border-selected);
+  border-radius: var(--bb-jira-radius-row);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-jira-text-title);
+  text-align: start;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  transition: background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-ticket-row:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-ticket-row:is(:hover, [data-state='hover']):not([data-state='selected']) {
+  background: var(--bb-jira-row-bg-hover);
+}
+.bb-ticket-row[data-state='selected'] {
+  border-width: var(--bb-derived-ticket-row-root-stroke-width);
+  background: var(--bb-jira-row-bg-selected);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-ticket-row { transition: none; }
+}
+
+.bb-ticket-row__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  min-width: 0;
+  overflow: hidden;
+}
+.bb-ticket-row__meta,
+.bb-ticket-row__signals {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+  overflow: hidden;
+}
+.bb-ticket-row__meta { min-width: 0; }
+.bb-ticket-row__signals { flex: none; }
+.bb-ticket-row__key {
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-medium);
+  line-height: var(--bb-jira-font-line-body);
+  color: var(--bb-jira-text-key);
+  white-space: nowrap;
+}
+.bb-ticket-row__title {
+  display: block;
+  align-self: stretch;
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-label);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-label);
+  color: var(--bb-jira-text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

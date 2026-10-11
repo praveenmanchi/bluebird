@@ -1,0 +1,62 @@
+/* ChangelogNote — Figma "Changelog Note" (40000345:8607). VERTICAL MIN MIN,
+ * FIXED 600 × HUG, field surface with a 1 (raw → derived) stroke, radius
+ * publish/radius/control, padding row-y × row-x, gap publish/space/tight:
+ * Header (FILL, gap inline: Change badge, Title, Action link), Note, Source.
+ * State=Edited swaps the stroke to publish/surface/row-selected-border and
+ * the Source text to publish/text/accent; editing in code reuses that look. */
+.bb-changelog-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-tight);
+  box-sizing: border-box;
+  width: var(--bb-derived-changelog-note-root-width);
+  max-width: 100%;
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border: var(--bb-derived-changelog-note-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-changelog-note:is([data-state='edited'], [data-editing]) {
+  border-color: var(--bb-publish-surface-row-selected-border);
+}
+.bb-changelog-note__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+  align-self: stretch;
+  min-width: 0;
+}
+.bb-changelog-note__change,
+.bb-changelog-note__action { flex: none; }
+.bb-changelog-note__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-medium);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-changelog-note__note {
+  margin: 0;
+  max-width: 100%;
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-body);
+}
+.bb-changelog-note__field { align-self: stretch; }
+.bb-changelog-note__source {
+  max-width: 100%;
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-changelog-note[data-state='edited'] .bb-changelog-note__source { color: var(--bb-publish-text-accent); }

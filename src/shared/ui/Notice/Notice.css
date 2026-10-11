@@ -1,0 +1,39 @@
+/* Notice — Figma "Notice" (40000321:8423). Tone drives fill, stroke and icon
+ * colour; layout and type are shared. */
+.bb-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-login-gap-sm);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-login-notice-padding);
+  border: var(--bb-input-border-width) solid var(--bb-login-notice-info-border);
+  border-radius: var(--bb-login-notice-radius);
+  background: var(--bb-login-notice-info-bg);
+}
+.bb-notice[data-tone='error'] { border-color: var(--bb-login-notice-error-border); background: var(--bb-login-notice-error-bg); }
+.bb-notice__icon { width: var(--bb-login-icon-size-sm); height: var(--bb-login-icon-size-sm); color: var(--bb-login-notice-info-icon); }
+.bb-notice[data-tone='error'] .bb-notice__icon { color: var(--bb-login-notice-error-icon); }
+.bb-notice__copy {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--bb-login-gap-xs);
+  min-width: 0;
+}
+.bb-notice__title, .bb-notice__body { margin: 0; font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif; }
+.bb-notice__title {
+  color: var(--bb-login-text-title);
+  font-size: var(--bb-login-font-body-size);
+  font-weight: var(--bb-login-font-weight-strong);
+  line-height: var(--bb-login-font-body-line);
+}
+.bb-notice__body {
+  color: var(--bb-login-text-body);
+  font-size: var(--bb-login-font-caption-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-caption-line);
+}
+/* Login Page override: no surface, no icon, centred copy. */
+.bb-notice[data-bare] { border-color: var(--bb-surface-transparent); background: none; }
+.bb-notice[data-bare] .bb-notice__copy { text-align: center; }

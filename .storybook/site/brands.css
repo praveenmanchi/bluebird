@@ -1,0 +1,28 @@
+/* Brands page. Each card carries its own [data-brand], so tokens inside resolve to that mode. */
+.bbs-brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--bbs-gap); }
+.bbs-brand-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--bb-border-width-default) solid var(--bb-border-subtle);
+  border-radius: calc(var(--bb-radius-xl) * 1.5);
+  background: var(--bb-surface-canvas);
+  color: var(--bb-text-primary);
+  font-family: var(--bb-font-family-ui), sans-serif;
+}
+.bbs-brand-card[data-current] { border-color: var(--bb-border-focus); }
+.bbs-brand-card__banner { display: flex; align-items: center; justify-content: center; min-height: calc(var(--bb-size-header-height) * 1.75); background: var(--bb-app-header-bg-default); color: var(--bb-app-header-fg-wordmark); }
+.bbs-brand-card__body { display: flex; flex-direction: column; gap: var(--bbs-gap); padding: calc(var(--bbs-gap) * 1.25); }
+.bbs-brand-card__title { justify-content: space-between; }
+.bbs-brand-card__label { margin: 0 0 var(--bb-space-stack-sm); }
+.bbs-brand-card__facts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--bb-space-inline-md); margin: 0; }
+.bbs-brand-card__facts dt { color: var(--bb-text-tertiary); font-size: var(--bb-type-size-12); }
+.bbs-brand-card__facts dd { margin: 0; font-size: var(--bb-type-size-16); }
+.bbs-brand-card__anchors { display: flex; height: var(--bb-size-control-height-lg); border-radius: var(--bb-radius-xl); overflow: hidden; border: var(--bb-border-width-default) solid var(--bb-border-subtle); }
+.bbs-brand-card__anchors span { flex: 1; }
+.bbs-brand-card__roles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--bb-space-stack-sm) var(--bb-space-inline-md); }
+.bbs-brand-card__roles li { display: flex; align-items: center; gap: var(--bb-space-inline-sm); min-width: 0; }
+
+.bbs-link { all: unset; cursor: pointer; color: var(--bb-text-accent); font-size: var(--bb-type-size-13); }
+.bbs-link:hover { text-decoration: underline; }
+.bbs-link:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); border-radius: var(--bb-radius-sm); }

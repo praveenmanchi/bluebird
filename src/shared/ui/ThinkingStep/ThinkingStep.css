@@ -1,0 +1,32 @@
+/* ThinkingStep — Figma "Thinking Step" (40000284:8201): one line of the
+ * assistant's visible reasoning. The glyph is the shared "Status error icons"
+ * set: Done → Good (its own connection/icon/ok fill), Running → Retry
+ * (icon/glyph/default), which spins while the step runs. The running label is
+ * brighter (uxai/text/body) than a finished one (uxai/text/meta). */
+.bb-thinking-step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-inline);
+  max-width: 100%;
+}
+.bb-thinking-step__icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-thinking-step[data-status='done'] .bb-thinking-step__icon { color: var(--bb-connection-icon-ok); }
+.bb-thinking-step__label {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-thinking-step[data-status='running'] .bb-thinking-step__label { color: var(--bb-uxai-text-body); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bb-thinking-step[data-status='running'] .bb-thinking-step__icon { animation: bb-thinking-step-spin 1200ms linear infinite; } /* allow-raw */
+}
+@keyframes bb-thinking-step-spin { to { transform: rotate(360deg); } } /* allow-raw */

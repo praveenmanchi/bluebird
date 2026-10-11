@@ -36,7 +36,7 @@
   margin: 0;
   padding: var(--bb-space-inset-md);
   border-top: var(--bb-border-width-default) solid var(--bb-border-subtle);
-  font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
+  font-family: var(--bb-derived-code-snippet-code-font-family), ui-monospace, monospace;
   font-size: var(--bb-type-size-10);
   line-height: var(--bb-type-line-14);
   color: var(--bb-text-primary);

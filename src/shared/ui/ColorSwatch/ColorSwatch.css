@@ -1,0 +1,17 @@
+/* ColorSwatch — Figma "Color Swatch" (40000283:8194). The fill is data: the
+ * `color` prop paints it inline; without one it shows the Figma default
+ * (uxai/beam/5). border-box keeps the stroke inside uxai/size/swatch(-lg). */
+.bb-color-swatch {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-uxai-size-swatch);
+  height: var(--bb-uxai-size-swatch);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-beam-5);
+  border: var(--bb-derived-color-swatch-root-stroke-width) solid var(--bb-uxai-swatch-border);
+}
+.bb-color-swatch[data-size='large'] {
+  width: var(--bb-uxai-size-swatch-lg);
+  height: var(--bb-uxai-size-swatch-lg);
+}

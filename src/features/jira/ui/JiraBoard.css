@@ -1,0 +1,309 @@
+/* Jira board — Figma "Jira board" (40000269:5322), the body of "Jira UI".
+ * Root: horizontal auto layout, padding jira/space/panel, gap jira/space/section.
+ * Ticket list (380, padding/gap jira/space/section) beside Ticket detail (fill,
+ * padding jira/space/panel, gap jira/space/section); both are jira/surface/panel
+ * cards with a jira/surface/panel-border stroke and jira/radius/panel.
+ * The frame is a 1074×724 desktop mock: in the 360–760 plugin window the panels
+ * stack and the root scrolls; from the container breakpoint up they sit side by
+ * side and scroll on their own. Composed instances (TicketRow, Dropdown,
+ * SearchBar, SegmentTab, FieldRow, …) consume their own tokens. */
+.bb-jira-board {
+  container: jira-board / inline-size;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-jira-board-root-width);
+  height: 100%;
+  margin-inline: auto;
+  padding: var(--bb-jira-space-panel);
+  overflow-y: auto;
+  font-family: var(--bb-jira-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-jira-board__layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--bb-jira-space-section);
+}
+
+/* ── Panels ─────────────────────────────────────────────────────────────── */
+.bb-jira-board__list,
+.bb-jira-board__detail {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--bb-jira-space-section);
+  box-sizing: border-box;
+  min-width: 0;
+  border-style: solid;
+  border-color: var(--bb-jira-surface-panel-border);
+  border-radius: var(--bb-jira-radius-panel);
+  background: var(--bb-jira-surface-panel);
+}
+.bb-jira-board__list {
+  padding: var(--bb-jira-space-section);
+  border-width: var(--bb-derived-jira-board-ticket-list-stroke-width);
+}
+.bb-jira-board__detail {
+  padding: var(--bb-jira-space-panel);
+  border-width: var(--bb-derived-jira-board-ticket-detail-stroke-width);
+}
+.bb-jira-board__detail--empty { justify-content: center; align-items: center; }
+
+/* ── Ticket list ────────────────────────────────────────────────────────── */
+.bb-jira-board__list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-jira-space-inline);
+  flex-wrap: wrap;
+}
+.bb-jira-board__list-title {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+}
+.bb-jira-board__title-icon {
+  flex: none;
+  width: var(--bb-jira-size-icon);
+  height: var(--bb-jira-size-icon);
+  color: var(--bb-jira-text-title);
+}
+.bb-jira-board__list-heading {
+  margin: 0;
+  color: var(--bb-jira-text-title);
+  font-family: var(--bb-jira-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-heading);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-label);
+}
+.bb-jira-board__tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-tight);
+  flex-wrap: wrap;
+}
+/* "Scope tabs & search": the scope Dropdown fills the row and the "Search toggle" /
+ * "Filter toggle" Buttons hug beside it; each opens its (hidden in Figma) panel below. */
+.bb-jira-board__scope-search {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+}
+.bb-jira-board__scope { flex: 1 1 var(--bb-derived-jira-board-dropdown-width); min-width: 0; }
+.bb-jira-board .bb-jira-board__toggle { flex: none; }
+.bb-jira-board .bb-jira-board__toggle[aria-expanded="true"] { border-color: var(--bb-dropdown-border-focus); }
+/* Filters changed from the defaults while the panel is closed: tint the glyph. */
+.bb-jira-board .bb-jira-board__toggle[data-active] { color: var(--bb-jira-text-key); }
+.bb-jira-board .bb-jira-board__search { max-width: none; }
+.bb-jira-board__filters {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-inline);
+}
+/* Three equal FILL dropdowns (112.7 each in the mock); they share the row rather than wrap. */
+.bb-jira-board__filter { min-width: 0; }
+.bb-jira-board__filter--status { flex: 1 1 var(--bb-derived-jira-board-status-all-width); }
+.bb-jira-board__filter--sprint { flex: 1 1 var(--bb-derived-jira-board-sprint-42-width); }
+.bb-jira-board__filter--priority { flex: 1 1 var(--bb-derived-jira-board-priority-all-width); }
+
+/* Stacked: the list shows about five rows and scrolls, so the detail stays in reach. */
+.bb-jira-board__tickets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-jira-space-tight);
+  max-height: calc(var(--bb-derived-jira-board-bb-142-height) * 5);
+  overflow-y: auto;
+}
+.bb-jira-board__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-jira-space-tight);
+}
+.bb-jira-board__group-heading {
+  margin: 0;
+  color: var(--bb-jira-text-meta);
+  font-family: var(--bb-jira-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-caption);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-caption);
+}
+/* Rows FILL the list in Figma (354 = the 380 list's content box); the set itself is 400 wide. */
+.bb-jira-board .bb-jira-board__row { flex: none; width: 100%; max-width: none; }
+
+/* ── Ticket detail ──────────────────────────────────────────────────────── */
+.bb-jira-board__breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-jira-space-inline);
+  flex-wrap: wrap;
+}
+.bb-jira-board__path {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-tight);
+  min-width: 0;
+}
+.bb-jira-board__crumb,
+.bb-jira-board__crumb-key,
+.bb-jira-board__field-label,
+.bb-jira-board__priority-label,
+.bb-jira-board__description,
+.bb-jira-board__notice,
+.bb-jira-board__empty {
+  margin: 0;
+  font-family: var(--bb-jira-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-body);
+}
+.bb-jira-board__crumb { color: var(--bb-jira-text-meta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bb-jira-board__crumb-key { color: var(--bb-jira-text-key); font-weight: var(--bb-jira-font-weight-medium); }
+.bb-jira-board__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+}
+.bb-jira-board__icon-button {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  color: var(--bb-jira-icon-default);
+  cursor: pointer;
+}
+.bb-jira-board__icon-button:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+.bb-jira-board__action-icon { width: var(--bb-jira-size-icon); height: var(--bb-jira-size-icon); }
+.bb-jira-board__title {
+  margin: 0;
+  color: var(--bb-jira-text-title);
+  font-family: var(--bb-jira-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-title);
+  font-weight: var(--bb-jira-font-weight-strong);
+}
+
+.bb-jira-board__quick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-jira-space-section);
+  flex-wrap: wrap;
+}
+.bb-jira-board__fields {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-panel);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.bb-jira-board__status { flex: 0 1 auto; width: var(--bb-derived-jira-board-status-width); min-width: 0; }
+.bb-jira-board .bb-jira-board__log-work { flex: none; }
+.bb-jira-board__points,
+.bb-jira-board__priority {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-jira-space-tight);
+}
+.bb-jira-board__field-label { color: var(--bb-jira-text-meta); }
+.bb-jira-board__priority-label { color: var(--bb-jira-text-title); }
+.bb-jira-board__priority-icon { width: var(--bb-jira-size-icon); height: var(--bb-jira-size-icon); }
+.bb-jira-board__points-trigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-jira-radius-pill);
+  background: var(--bb-surface-transparent);
+  cursor: pointer;
+}
+.bb-jira-board__points-trigger:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+
+/* Two FieldRow columns side by side (stacked in a narrow detail). Each column is a
+ * label | value grid: FieldRows are flattened into it so the labels hug the longest
+ * one ("Fix version") instead of the fixed jira/size/field-label, which leaves the
+ * values room in a half-width column. */
+.bb-jira-board__detail { container: jira-detail / inline-size; }
+.bb-jira-board__details,
+.bb-jira-board__subtasks {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--bb-jira-space-panel);
+}
+.bb-jira-board__column {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-auto-rows: var(--bb-derived-jira-board-field-row-height);
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-jira-board__column > .bb-field-row { display: contents; }
+.bb-jira-board__column .bb-field-row__label { width: auto; }
+.bb-jira-board__subtask-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-tight);
+  flex: 1 1 0;
+  min-width: 0;
+}
+@container jira-detail (min-width: 400px) { /* allow-raw: two-column breakpoint, not a Figma value */
+  .bb-jira-board__details,
+  .bb-jira-board__subtasks { flex-direction: row; align-items: flex-start; }
+  /* Status, points, priority and Log work share one line; the Status dropdown gives way. */
+  .bb-jira-board__quick,
+  .bb-jira-board__fields { flex-wrap: nowrap; }
+  .bb-jira-board__fields { flex: 1 1 auto; }
+  .bb-jira-board__points,
+  .bb-jira-board__priority { flex: none; white-space: nowrap; }
+}
+/* Field rows, section titles, composer and comments FILL the detail in Figma. */
+.bb-jira-board .bb-field-row,
+.bb-jira-board .bb-section-title,
+.bb-jira-board .bb-comment-composer,
+.bb-jira-board .bb-comment { width: 100%; max-width: none; }
+
+/* Jira descriptions keep their paragraphs and list lines (api/adf.ts emits newlines). */
+.bb-jira-board__description { color: var(--bb-jira-text-body); white-space: pre-line; }
+.bb-jira-board__links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--bb-derived-jira-board-figma-link-card-width)), 1fr));
+  gap: var(--bb-jira-space-inline);
+}
+.bb-jira-board .bb-jira-board__link { width: 100%; max-width: none; }
+.bb-jira-board__activity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-jira-space-section);
+}
+.bb-jira-board__notice,
+.bb-jira-board__empty { color: var(--bb-jira-text-meta); }
+.bb-jira-board__tickets > .bb-jira-empty-state { align-self: center; }
+
+/* Side by side from the container breakpoint: the list takes 30% and the detail
+ * 70% (percentage bases that shrink together for the gap, so padding does not
+ * skew the ratio — a product call, not the mock's 380 + fill).
+ * The root stops scrolling and each panel scrolls. */
+@container jira-board (min-width: 720px) { /* allow-raw: layout breakpoint, not a Figma value */
+  .bb-jira-board__layout { flex-direction: row; height: 100%; }
+  .bb-jira-board__list { flex: 0 1 30%; min-width: 0; overflow: hidden; }
+  .bb-jira-board__detail { flex: 0 1 70%; min-width: 0; overflow-y: auto; }
+  .bb-jira-board__tickets { flex: 1 1 auto; min-height: 0; max-height: none; }
+}
+
+/* At 30% of the plugin window the list is ~215 wide: the filters stack, and rows
+ * drop the status badge (the group heading already says it) so the key,
+ * priority and points fit. */
+.bb-jira-board__list { container: jira-list / inline-size; }
+@container jira-list (max-width: 280px) { /* allow-raw: list-content breakpoint, not a Figma value */
+  .bb-jira-board__filters { flex-direction: column; align-items: stretch; }
+  .bb-jira-board__filter { flex: none; }
+  .bb-jira-board__row .bb-meta-badge { display: none; }
+}

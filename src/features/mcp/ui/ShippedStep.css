@@ -1,0 +1,33 @@
+/* PR link — Figma "MCP v2 · 6 Ship · PR link" body (40000496:8535). Shell, cards and the Actions bar
+ * come from McpHandoff.css; this file holds only what this step adds. */
+/* "Success" frame on PR link (cloned from Publish v2 Link): title row, meta, hugging buttons. */
+.bb-mcp-handoff__success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-inline);
+  padding: var(--bb-mcp-space-section);
+  border: var(--bb-mcp-border-width) solid var(--bb-mcp-surface-panel-border);
+  border-radius: var(--bb-mcp-radius-control);
+  background: var(--bb-mcp-surface-field);
+}
+.bb-mcp-handoff__success-title {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-mcp-space-inline);
+  margin: 0;
+  color: var(--bb-mcp-text-title);
+  font-size: var(--bb-mcp-font-size-title);
+  font-weight: var(--bb-mcp-font-weight-strong);
+  line-height: var(--bb-mcp-font-line-label);
+}
+.bb-mcp-handoff__success-icon {
+  flex: none;
+  width: var(--bb-mcp-size-icon);
+  height: var(--bb-mcp-size-icon);
+  color: var(--bb-mcp-meter-success);
+}
+.bb-mcp-handoff__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-mcp-space-inline);
+}

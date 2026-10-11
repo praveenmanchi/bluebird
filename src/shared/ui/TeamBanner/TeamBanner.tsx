@@ -1,5 +1,4 @@
 import type { ComponentChildren, JSX } from 'preact'
-import { LOGOS } from '@logos'
 import { BrandLogo } from '../BrandLogo/BrandLogo'
 import { Icon } from '../Icon/Icon'
 import './TeamBanner.css'
@@ -8,40 +7,51 @@ import './TeamBanner.css'
 export const TEAM_BANNER_TAGLINE = 'Together, every\nstep forward to Innovate’ & scale'
 
 export interface TeamBannerProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'children'> {
-  /** Team credited in the footer line (Figma layer "Built with Care by the Gap Design System Team"). */
+  /** Organisation in the credit, set bold with the team (Figma run "HCL"). */
+  org?: ComponentChildren
+  /** Team in the credit, set bold with "Team" (Figma run " Design System Team"). */
   team?: ComponentChildren
   /** Version shown in the pill next to the `version` glyph (Figma text "Version 1.3.3"). */
   version?: ComponentChildren
-  /** Shows the "Fabric Logo" instance and its hairline separator before the team mark (Figma layers "Fabric Logo " + "Line 60"). */
-  showFabric?: boolean
+  /** Shows the rule + product name/tagline after the brand logo (Figma "Frame 1430102695"). */
+  showProduct?: boolean
+  /** Product name (Figma text "Design Studio"). */
+  product?: ComponentChildren
+  /** Line under the product name (Figma text "Connecting Gap between design workflow"). */
+  productTagline?: ComponentChildren
   /** Replaces the two-line tagline (Figma layer "Together, every step forward to Innovate’ & scale"). */
   tagline?: ComponentChildren
+  /** Tagline size: md = the component's 16; lg = the 24 the Settings Layout instances override it to;
+   *  auto = lg when the banner is wide enough (Settings S-480/S-600 frames), md when narrow (S-360). */
+  taglineSize?: 'md' | 'lg' | 'auto'
   /** Slot rendered in place of the tagline when given. */
   children?: ComponentChildren
 }
 
 /**
- * Figma "team Banner" (204:7270): a blue team header. Top row = Fabric logo,
- * hairline, team mark (the Bridge wordmark, rendered with BrandLogo so it
- * follows the active brand) and a version pill; bottom row = faded tagline
- * and a "Built with Care by the … Team" credit.
+ * Figma "team Banner" (204:7270): a blue team header. Top row = the active
+ * brand's logo (BrandLogo), a rule and the "Design Studio" product lockup, and
+ * a version pill; bottom row = faded tagline and a "Built with Care by the …
+ * Team" credit.
  */
-export function TeamBanner({ team = 'Gap Design System', version = '1.3.3', showFabric = true, tagline = TEAM_BANNER_TAGLINE, children, class: cls, ...rest }: TeamBannerProps) {
-  const fabric = LOGOS.fabric
+export function TeamBanner({ org = 'HCL', team = 'Design System', version = '1.3.3', showProduct = true, product = 'Design Studio', productTagline = 'Connecting Gap between design workflow', tagline = TEAM_BANNER_TAGLINE, taglineSize = 'md', children, class: cls, ...rest }: TeamBannerProps) {
   return (
-    <header {...rest} class={`bb-team-banner ${cls ?? ''}`} data-fabric={showFabric || undefined}>
+    <header {...rest} class={`bb-team-banner ${cls ?? ''}`} data-tagline={taglineSize}>
       <div class="bb-team-banner__stack">
         <div class="bb-team-banner__top">
           <div class="bb-team-banner__brand">
-            {showFabric && (
-              <>
-                <svg class="bb-team-banner__fabric" data-logo="fabric" viewBox={fabric.viewBox} fill="none" role="img" aria-label="Fabric" dangerouslySetInnerHTML={{ __html: fabric.body }} />
-                <span class="bb-team-banner__hairline" aria-hidden="true" />
-              </>
-            )}
             <span class="bb-team-banner__mark">
               <BrandLogo title="Team mark" />
             </span>
+            {showProduct && (
+              <div class="bb-team-banner__product">
+                <span class="bb-team-banner__rule" aria-hidden="true" />
+                <div class="bb-team-banner__product-text">
+                  <span class="bb-team-banner__product-name">{product}</span>
+                  <span class="bb-team-banner__product-tagline">{productTagline}</span>
+                </div>
+              </div>
+            )}
           </div>
           <span class="bb-team-banner__version">
             <Icon name="version" class="bb-team-banner__version-glyph" />
@@ -50,7 +60,10 @@ export function TeamBanner({ team = 'Gap Design System', version = '1.3.3', show
         </div>
         <div class="bb-team-banner__bottom">
           <div class="bb-team-banner__tagline">{children ?? tagline}</div>
-          <p class="bb-team-banner__credit">Built with Care by the {team} Team</p>
+          {/* Figma 264:10144 mixes weights: light lead-ins, bold "Care" and "<org> <team> Team". */}
+          <p class="bb-team-banner__credit">
+            <span>Built with <strong>Care</strong> by the <strong>{org} {team} Team</strong></span>
+          </p>
         </div>
       </div>
     </header>

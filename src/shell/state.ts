@@ -14,8 +14,8 @@ export const activePersonaId = signal<string | null>(defaultPersona?.id ?? null)
 export const activeTabId = signal<string | null>(defaultPersona?.tabs[0]?.id ?? null)
 export const brandStatus = signal<BrandTokensResult | null>(null)
 
-/** Access-code session. `boot` until session:status answers; the app renders only for `app` / `settings`. */
-export type Screen = 'boot' | 'login' | 'app' | 'settings'
+/** Access-code session. `boot` until session:status answers; `onboarding` is the first-run tour after sign-in. */
+export type Screen = 'boot' | 'login' | 'onboarding' | 'app' | 'settings'
 export const screen = signal<Screen>('boot')
 export const session = signal<Session | null>(null)
 export const connection = signal<TransportStatus>('connected')

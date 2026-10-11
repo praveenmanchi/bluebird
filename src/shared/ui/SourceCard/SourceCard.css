@@ -1,0 +1,60 @@
+/* SourceCard — Figma "Source Card" (40000284:8167): one attached source in the
+ * UX AI sources list. Fixed 380 × 44 in Figma (→ derived; the width is a
+ * max so the card still shrinks in a narrow panel). The Status (Meta Badge)
+ * and Include (Checkbox) instances are the shared components and read their
+ * own tokens. */
+.bb-source-card {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-source-card-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-source-card-root-height);
+  padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
+  border: var(--bb-derived-source-card-root-stroke-width) solid var(--bb-uxai-chip-border);
+  border-radius: var(--bb-uxai-radius-control);
+  background: var(--bb-uxai-surface-field);
+}
+.bb-source-card__type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-uxai-size-control);
+  height: var(--bb-uxai-size-control);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-surface-sunken);
+}
+.bb-source-card__icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-source-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-hair);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bb-source-card__name,
+.bb-source-card__meta {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-source-card__name {
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-body);
+  color: var(--bb-uxai-text-title);
+}
+.bb-source-card__meta {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-source-card__status,
+.bb-source-card__include { flex: none; }

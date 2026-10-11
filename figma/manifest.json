@@ -258,14 +258,69 @@
       "id": "84:1043"
     },
     {
+      "code": "Spinner",
+      "figma": "Spinner",
+      "id": "40000321:8410"
+    },
+    {
+      "code": "Notice",
+      "figma": "Notice",
+      "id": "40000321:8423"
+    },
+    {
+      "code": "DividerLabel",
+      "figma": "Divider Label",
+      "id": "40000321:8424"
+    },
+    {
+      "code": "AccessCodeField",
+      "figma": "Access Code Field",
+      "id": "40000321:20076"
+    },
+    {
+      "code": "SsoProviderButton",
+      "figma": "SSO Provider Button",
+      "id": "40000324:8451"
+    },
+    {
+      "code": "ContactRow",
+      "figma": "Contact Row",
+      "id": "40000324:8452"
+    },
+    {
+      "code": "LoginFooter",
+      "figma": "Login Footer",
+      "id": "40000324:8504"
+    },
+    {
+      "code": "TextArea",
+      "figma": "Text Area",
+      "id": "40000408:8646"
+    },
+    {
       "code": "LoginScreen",
       "figma": "Login Page",
-      "id": "40000100:13204"
+      "id": "40000308:21144"
+    },
+    {
+      "code": "LoginSso",
+      "figma": "SSO",
+      "id": "40000328:5494"
     },
     {
       "code": "SettingsScreen",
       "figma": "Settings page",
-      "id": "40000100:13084"
+      "id": "40000350:19914"
+    },
+    {
+      "code": "SettingsIntegrations",
+      "figma": "Settings · Integrations",
+      "id": "40000408:8714"
+    },
+    {
+      "code": "OnboardingScreen",
+      "figma": "Onboarding · 2 · Accessibility",
+      "id": "40000423:5240"
     },
     {
       "code": "MetaBadge",
@@ -341,6 +396,426 @@
       "code": "FixRow",
       "figma": "Fix Row",
       "id": "40000164:7288"
+    },
+    {
+      "code": "IssueType",
+      "figma": "Issue Type",
+      "id": "40000265:8019"
+    },
+    {
+      "code": "PriorityIcon",
+      "figma": "Priority Icon",
+      "id": "40000265:8035"
+    },
+    {
+      "code": "StoryPoints",
+      "figma": "Story Points",
+      "id": "40000265:8036"
+    },
+    {
+      "code": "Avatar",
+      "figma": "Avatar",
+      "id": "40000265:8042"
+    },
+    {
+      "code": "TicketRow",
+      "figma": "Ticket Row",
+      "id": "40000267:8055"
+    },
+    {
+      "code": "FieldRow",
+      "figma": "Field Row",
+      "id": "40000267:8056"
+    },
+    {
+      "code": "SectionTitle",
+      "figma": "Section Title",
+      "id": "40000267:8062"
+    },
+    {
+      "code": "Comment",
+      "figma": "Comment",
+      "id": "40000268:8025"
+    },
+    {
+      "code": "CommentComposer",
+      "figma": "Comment Composer",
+      "id": "40000268:8040"
+    },
+    {
+      "code": "FigmaLinkCard",
+      "figma": "Figma Link Card",
+      "id": "40000268:8066"
+    },
+    {
+      "code": "JiraEmptyState",
+      "figma": "Jira Empty State",
+      "id": "40000268:8127"
+    },
+    {
+      "code": "ProgressBar",
+      "figma": "Progress Bar",
+      "id": "40000275:8128"
+    },
+    {
+      "code": "Step",
+      "figma": "Step",
+      "id": "40000275:8141"
+    },
+    {
+      "code": "Stepper",
+      "figma": "Stepper",
+      "id": "40000275:8142"
+    },
+    {
+      "code": "ReadinessMeter",
+      "figma": "Readiness Meter",
+      "id": "40000275:8183"
+    },
+    {
+      "code": "CheckItem",
+      "figma": "Check Item",
+      "id": "40000275:8210"
+    },
+    {
+      "code": "ConnectionRow",
+      "figma": "Connection Row",
+      "id": "40000275:8211"
+    },
+    {
+      "code": "ThinkingOrb",
+      "figma": "Thinking Orb",
+      "id": "40000283:8191"
+    },
+    {
+      "code": "ColorSwatch",
+      "figma": "Color Swatch",
+      "id": "40000283:8194"
+    },
+    {
+      "code": "ContextChip",
+      "figma": "Context Chip",
+      "id": "40000283:8207"
+    },
+    {
+      "code": "ChatInput",
+      "figma": "Chat Input",
+      "id": "40000284:8166"
+    },
+    {
+      "code": "SourceCard",
+      "figma": "Source Card",
+      "id": "40000284:8167"
+    },
+    {
+      "code": "Message",
+      "figma": "Message",
+      "id": "40000284:8190"
+    },
+    {
+      "code": "ThinkingStep",
+      "figma": "Thinking Step",
+      "id": "40000284:8201"
+    },
+    {
+      "code": "PromptChip",
+      "figma": "Prompt Chip",
+      "id": "40000284:8202"
+    },
+    {
+      "code": "ArtifactHeader",
+      "figma": "Artifact Header",
+      "id": "40000285:8144"
+    },
+    {
+      "code": "BrandSwatch",
+      "figma": "Brand Swatch",
+      "id": "40000285:8153"
+    },
+    {
+      "code": "ColorArtifact",
+      "figma": "Color Artifact",
+      "id": "40000285:8157"
+    },
+    {
+      "code": "TypeSpecimen",
+      "figma": "Type Specimen",
+      "id": "40000285:8230"
+    },
+    {
+      "code": "TypeArtifact",
+      "figma": "Type Artifact",
+      "id": "40000285:8231"
+    },
+    {
+      "code": "ComponentArtifact",
+      "figma": "Component Artifact",
+      "id": "40000285:8254"
+    },
+    {
+      "code": "VariableRow",
+      "figma": "Variable Row",
+      "id": "40000287:8277"
+    },
+    {
+      "code": "SelectionPreview",
+      "figma": "Selection Preview",
+      "id": "40000287:8278"
+    },
+    {
+      "code": "BotAvatar",
+      "figma": "Bot Avatar",
+      "id": "40000295:8478"
+    },
+    {
+      "code": "VoiceWave",
+      "figma": "Voice Wave",
+      "id": "40000295:8509"
+    },
+    {
+      "code": "AgentCard",
+      "figma": "Agent Card",
+      "id": "40000296:8379"
+    },
+    {
+      "code": "AgentHeader",
+      "figma": "Agent Header",
+      "id": "40000296:8380"
+    },
+    {
+      "code": "RuleRow",
+      "figma": "Rule Row",
+      "id": "40000296:8401"
+    },
+    {
+      "code": "FindingRow",
+      "figma": "Finding Row",
+      "id": "40000296:8483"
+    },
+    {
+      "code": "VoiceBar",
+      "figma": "Voice Bar",
+      "id": "40000296:8535"
+    },
+    {
+      "code": "JiraBoard",
+      "figma": "Jira board",
+      "id": "40000269:5322"
+    },
+    {
+      "code": "McpHandoff",
+      "figma": "MCP handoff",
+      "id": "40000496:6698"
+    },
+    {
+      "code": "CheckStep",
+      "figma": "MCP handoff",
+      "id": "40000496:7041"
+    },
+    {
+      "code": "GenerateStep",
+      "figma": "MCP handoff",
+      "id": "40000496:7353"
+    },
+    {
+      "code": "ShipStep",
+      "figma": "MCP handoff",
+      "id": "40000496:7657"
+    },
+    {
+      "code": "ShipPushing",
+      "figma": "MCP handoff",
+      "id": "40000496:7999"
+    },
+    {
+      "code": "ShippedStep",
+      "figma": "MCP handoff",
+      "id": "40000496:8535"
+    },
+    {
+      "code": "UxaiAnswer",
+      "figma": "UX AI body",
+      "id": "40000288:8351"
+    },
+    {
+      "code": "UxaiComponent",
+      "figma": "UX AI body",
+      "id": "40000289:5737"
+    },
+    {
+      "code": "UxaiSources",
+      "figma": "UX AI body",
+      "id": "40000290:5841"
+    },
+    {
+      "code": "UxaiThinking",
+      "figma": "UX AI body",
+      "id": "40000290:6023"
+    },
+    {
+      "code": "UxaiSelection",
+      "figma": "UX AI body",
+      "id": "40000291:6087"
+    },
+    {
+      "code": "AgentsGallery",
+      "figma": "Agents body",
+      "id": "40000297:8491"
+    },
+    {
+      "code": "AgentsSetup",
+      "figma": "Agents body",
+      "id": "40000298:5805"
+    },
+    {
+      "code": "AgentsRunning",
+      "figma": "Agents body",
+      "id": "40000298:6038"
+    },
+    {
+      "code": "AgentsResults",
+      "figma": "Agents body",
+      "id": "40000299:6101"
+    },
+    {
+      "code": "AgentsVoice",
+      "figma": "Agents body",
+      "id": "40000299:6304"
+    },
+    {
+      "code": "AgentsRunAll",
+      "figma": "Agents body",
+      "id": "40000299:18411"
+    },
+    {
+      "code": "TypeCompare",
+      "figma": "Type Compare",
+      "id": "40000463:9116"
+    },
+    {
+      "code": "TargetPreview",
+      "figma": "Target Preview",
+      "id": "40000463:9175"
+    },
+    {
+      "code": "VisionSimTile",
+      "figma": "Vision Sim Tile",
+      "id": "40000463:9248"
+    },
+    {
+      "code": "VisionSimGrid",
+      "figma": "Vision Sim Grid",
+      "id": "40000463:9249"
+    },
+    {
+      "code": "LegendDot",
+      "figma": "Legend Dot",
+      "id": "40000446:8622"
+    },
+    {
+      "code": "DisclosureToggle",
+      "figma": "Disclosure Toggle",
+      "id": "40000446:8631"
+    },
+    {
+      "code": "ScoreValue",
+      "figma": "Score Value",
+      "id": "40000446:8644"
+    },
+    {
+      "code": "KpiTile",
+      "figma": "KPI Tile",
+      "id": "40000447:8612"
+    },
+    {
+      "code": "BreakdownRow",
+      "figma": "Breakdown Row",
+      "id": "40000447:8613"
+    },
+    {
+      "code": "BrandCount",
+      "figma": "Brand Count",
+      "id": "40000447:8631"
+    },
+    {
+      "code": "LevelRow",
+      "figma": "Level Row",
+      "id": "40000447:8664"
+    },
+    {
+      "code": "SummaryHeader",
+      "figma": "Summary Header",
+      "id": "40000447:8665"
+    },
+    {
+      "code": "ScoreRow",
+      "figma": "Score Row",
+      "id": "40000447:8676"
+    },
+    {
+      "code": "BreakdownCard",
+      "figma": "Breakdown Card",
+      "id": "40000447:8687"
+    },
+    {
+      "code": "ScanSummary",
+      "figma": "Scan Summary",
+      "id": "40000444:20376"
+    },
+    {
+      "code": "ValueDiff",
+      "figma": "Value Diff",
+      "id": "40000341:8469"
+    },
+    {
+      "code": "PipelineNode",
+      "figma": "Pipeline Node",
+      "id": "40000341:8511"
+    },
+    {
+      "code": "VersionOption",
+      "figma": "Version Option",
+      "id": "40000341:8566"
+    },
+    {
+      "code": "PublishStep",
+      "figma": "Publish Step",
+      "id": "40000341:8605"
+    },
+    {
+      "code": "ChangeRow",
+      "figma": "Change Row",
+      "id": "40000345:8562"
+    },
+    {
+      "code": "BrandDiffRow",
+      "figma": "Brand Diff Row",
+      "id": "40000345:8584"
+    },
+    {
+      "code": "ChangelogNote",
+      "figma": "Changelog Note",
+      "id": "40000345:8607"
+    },
+    {
+      "code": "ReleaseRow",
+      "figma": "Release Row",
+      "id": "40000345:8635"
+    },
+    {
+      "code": "Pipeline",
+      "figma": "Pipeline",
+      "id": "40000345:8676"
+    },
+    {
+      "code": "PublishEmptyState",
+      "figma": "Publish Empty State",
+      "id": "40000346:8697"
+    },
+    {
+      "code": "ChangeItem",
+      "figma": "Change Item",
+      "id": "40000483:9599"
     }
   ],
   "iconSet": {

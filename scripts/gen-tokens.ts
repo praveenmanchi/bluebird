@@ -116,9 +116,15 @@ export function assertNoCollisions(tokens: TokenSnapshot): void {
 // named after the layer; a value that differs per variant carries the variant.
 const FONT_WEIGHTS: Record<string, number> = { thin: 100, extralight: 200, light: 300, regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 }
 
+/** Named styles ("ExtraBold") map through FONT_WEIGHTS; numeric ones ("300", as Museo Sans names
+ *  its styles) are the weight itself when they fall in the CSS range 100–900. */
 function weightFromStyle(style: string | undefined): number | undefined {
   if (!style) return undefined
   const key = style.toLowerCase().replace(/[\s-]/g, '').replace(/italic$/, '')
+  if (/^\d+$/.test(key)) {
+    const numeric = Number(key)
+    return numeric >= 100 && numeric <= 900 ? numeric : undefined
+  }
   return FONT_WEIGHTS[key]
 }
 

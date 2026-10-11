@@ -10,8 +10,12 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: var(--bb-derived-wcag-card-root-width);
-  max-width: 100%;
+  /* Fluid: the card fills its column at every window size. Figma's 465 px is the desktop mock's
+   * width (listed under derivedGaps in figma.ts), not a size the plugin should keep. */
+  width: 100%;
+  min-width: 0;
+  /* Narrow-card layout below follows the card's own width, wherever it is placed. */
+  container: wcag-card / inline-size;
   border: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-wcag-card-divider-color);
   border-radius: var(--bb-wcag-card-radius);
   background: var(--bb-wcag-card-bg-default);
@@ -54,6 +58,9 @@
   gap: var(--bb-derived-wcag-card-body-mode-text-gap);
   padding-bottom: var(--bb-dimension-space-6);
 }
+/* Figma 2026-10-11: Touch target and Vision are cut from Mode=colors and keep its 6px body rhythm. */
+.bb-wcag-card[data-mode='touch'] .bb-wcag-card__body { gap: var(--bb-derived-wcag-card-body-mode-touch-target-gap); }
+.bb-wcag-card[data-mode='vision'] .bb-wcag-card__body { gap: var(--bb-derived-wcag-card-body-mode-vision-gap); }
 
 /* Summary — criterion number + disability indicators, reference column right. */
 /* Summary row (Figma "Frame 1430102698"): criterion group, then the reference column. In Figma the
@@ -72,11 +79,10 @@
   align-items: center;
   gap: var(--bb-derived-wcag-card-frame-1430102699-gap);
 }
-.bb-wcag-card[data-mode='text'] .bb-wcag-card__criterion { gap: var(--bb-derived-wcag-card-criterion-gap); }
 .bb-wcag-card__code {
-  font-family: var(--bb-derived-wcag-card-aa-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-wcag-card-aa-font-size);
-  font-weight: var(--bb-derived-wcag-card-aa-font-weight);
+  font-weight: var(--bb-type-weight-700);
   line-height: var(--bb-derived-wcag-card-aa-line-height);
   color: var(--bb-wcag-card-title-fg);
 }
@@ -94,10 +100,10 @@
   min-width: 0;
 }
 .bb-wcag-card__link {
-  font-family: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-size);
-  font-weight: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-weight);
-  line-height: var(--bb-derived-wcag-card-understanding-sc-1-4-3-line-height);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-400);
+  line-height: var(--bb-font-line-caption);
   color: var(--bb-wcag-card-title-fg);
   text-align: right;
   text-decoration: none;
@@ -117,18 +123,22 @@
 }
 .bb-wcag-card__title {
   margin: 0;
-  font-family: var(--bb-derived-wcag-card-contrast-minimum-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-wcag-card-contrast-minimum-font-size);
-  font-weight: var(--bb-derived-wcag-card-contrast-minimum-font-weight);
+  font-weight: var(--bb-type-weight-700);
   line-height: var(--bb-derived-wcag-card-contrast-minimum-line-height);
   color: var(--bb-wcag-card-title-fg);
 }
+/* Each mode's title layer is named after its criterion in Figma, so each carries its own token. */
+.bb-wcag-card[data-mode='text'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-text-spacing-font-size); line-height: var(--bb-derived-wcag-card-text-spacing-line-height); }
+.bb-wcag-card[data-mode='touch'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-target-size-minimum-font-size); line-height: var(--bb-derived-wcag-card-target-size-minimum-line-height); }
+.bb-wcag-card[data-mode='vision'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-use-of-color-font-size); line-height: var(--bb-derived-wcag-card-use-of-color-line-height); }
 .bb-wcag-card__description {
   margin: 0;
-  font-family: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-size);
-  font-weight: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-font-weight);
-  line-height: var(--bb-derived-wcag-card-body-text-must-reach-a-4-5-1-contrast-ratio-agains-line-height);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-400);
+  line-height: var(--bb-font-line-caption);
   color: var(--bb-wcag-card-title-fg);
 }
 .bb-wcag-card__divider {
@@ -159,26 +169,26 @@
 .bb-wcag-card__row-label {
   flex: 0 0 var(--bb-derived-wcag-card-row-label-width);
   width: var(--bb-derived-wcag-card-row-label-width);
-  font-family: var(--bb-derived-wcag-card-node-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-node-font-size);
-  font-weight: var(--bb-derived-wcag-card-node-font-weight);
-  line-height: var(--bb-derived-wcag-card-node-line-height);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-font-line-caption);
   color: var(--bb-wcag-card-title-fg);
 }
 .bb-wcag-card__row-value {
   flex: 1 1 auto;
   min-width: 0;
-  font-family: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-size);
-  font-weight: var(--bb-derived-wcag-card-understanding-sc-1-4-3-font-weight);
-  line-height: var(--bb-derived-wcag-card-understanding-sc-1-4-3-line-height);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-400);
+  line-height: var(--bb-font-line-caption);
   color: var(--bb-wcag-card-title-fg);
 }
-.bb-wcag-card__row--fix .bb-wcag-card__row-value { font-weight: var(--bb-derived-wcag-card-use-white-label-text-or-darken-the-fill-to-reach-4-font-weight); }
+.bb-wcag-card__row--fix .bb-wcag-card__row-value { font-weight: var(--bb-type-weight-500); }
 .bb-wcag-card__mono {
-  font-family: var(--bb-derived-wcag-card-0c8ce9-font-family), ui-monospace, monospace;
-  font-size: var(--bb-derived-wcag-card-0c8ce9-font-size);
-  font-weight: var(--bb-derived-wcag-card-0c8ce9-font-weight);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-400);
   line-height: var(--bb-derived-wcag-card-0c8ce9-line-height);
 }
 
@@ -204,9 +214,9 @@
   flex: none;
 }
 .bb-wcag-card__on {
-  font-family: var(--bb-derived-wcag-card-on-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-on-font-size);
-  font-weight: var(--bb-derived-wcag-card-on-font-weight);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-400);
   line-height: var(--bb-derived-wcag-card-on-line-height);
 }
 .bb-wcag-card__row--themes .bb-wcag-card__row-value {
@@ -220,7 +230,7 @@
 .bb-wcag-card__placeholder {
   min-height: var(--bb-derived-wcag-card-placeholder-height);
   border-radius: var(--bb-rating-radius);
-  background: var(--bb-derived-wcag-card-placeholder-fill);
+  background: var(--bb-surface-overlay);
 }
 
 /* Preview — the colour sample beside the white ratio badge. */
@@ -244,16 +254,16 @@
   border-radius: var(--bb-derived-wcag-card-sample-radius);
 }
 .bb-wcag-card__sample-glyph {
-  font-family: var(--bb-derived-wcag-card-aa-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-wcag-card-aa-font-size);
-  font-weight: var(--bb-derived-wcag-card-aa-font-weight);
+  font-weight: var(--bb-type-weight-700);
   line-height: var(--bb-derived-wcag-card-aa-line-height);
   color: inherit;
 }
 .bb-wcag-card__sample-caption {
-  font-family: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-size);
-  font-weight: var(--bb-derived-wcag-card-sample-of-this-exact-pair-font-weight);
+  font-weight: var(--bb-type-weight-400);
   line-height: var(--bb-derived-wcag-card-sample-of-this-exact-pair-line-height);
   color: inherit;
 }
@@ -269,17 +279,17 @@
   background: var(--bb-derived-wcag-card-ratio-fill);
 }
 .bb-wcag-card__ratio-mark {
-  font-family: var(--bb-derived-wcag-card--font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card--font-size);
-  font-weight: var(--bb-derived-wcag-card--font-weight);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-700);
   line-height: var(--bb-derived-wcag-card--line-height);
-  color: var(--bb-derived-wcag-card--color);
+  color: var(--bb-feedback-danger);
 }
 .bb-wcag-card__ratio[data-pass] .bb-wcag-card__ratio-mark { color: var(--bb-status-pill-icon-good); }
 .bb-wcag-card__ratio-value {
-  font-family: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-size);
-  font-weight: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-font-weight);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-line-height);
   color: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-color);
 }
@@ -292,16 +302,16 @@
   box-sizing: border-box;
   margin-top: var(--bb-rating-padding);
   padding: var(--bb-derived-wcag-card-footer-padding-top) var(--bb-derived-wcag-card-footer-padding-right) var(--bb-derived-wcag-card-footer-padding-bottom) var(--bb-derived-wcag-card-footer-padding-left);
-  border-top: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-derived-wcag-card-footer-stroke);
-  background: var(--bb-derived-wcag-card-footer-fill);
+  border-top: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-wcag-card-divider-color);
+  background: var(--bb-wcag-card-bg-default);
   flex-wrap: wrap;
 }
 .bb-wcag-card__check-label {
-  font-family: var(--bb-derived-wcag-card-check-with-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-check-with-font-size);
-  font-weight: var(--bb-derived-wcag-card-check-with-font-weight);
-  line-height: var(--bb-derived-wcag-card-check-with-line-height);
-  color: var(--bb-derived-wcag-card-check-with-color);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-font-line-caption);
+  color: var(--bb-text-secondary);
 }
 .bb-wcag-card__check-icons {
   display: flex;
@@ -323,26 +333,26 @@
   height: var(--bb-derived-wcag-card-ignore-button-height);
   padding: var(--bb-derived-wcag-card-ignore-button-padding-top) var(--bb-derived-wcag-card-ignore-button-padding-right) var(--bb-derived-wcag-card-ignore-button-padding-bottom) var(--bb-derived-wcag-card-ignore-button-padding-left);
   border-radius: var(--bb-derived-wcag-card-ignore-button-radius);
-  border: var(--bb-derived-wcag-card-ignore-button-stroke-width) solid var(--bb-derived-wcag-card-ignore-button-stroke);
+  border: var(--bb-derived-wcag-card-ignore-button-stroke-width) solid var(--bb-wcag-card-border-default);
   background: var(--bb-surface-transparent);
-  color: var(--bb-derived-wcag-card-ignore-color);
-  font-family: var(--bb-derived-wcag-card-ignore-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-ignore-font-size);
-  font-weight: var(--bb-derived-wcag-card-ignore-font-weight);
-  line-height: var(--bb-derived-wcag-card-ignore-line-height);
+  color: var(--bb-text-secondary);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-wcag-card-meta-font-size);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-font-line-caption);
   cursor: pointer;
 }
 .bb-wcag-card__action--annotate {
-  border-color: var(--bb-derived-wcag-card-annotation-button-stroke);
-  background: var(--bb-derived-wcag-card-annotation-button-fill);
-  color: var(--bb-derived-wcag-card-annotation-color);
+  border-color: var(--bb-surface-accent);
+  background: var(--bb-surface-accent);
+  color: var(--bb-wcag-card-title-fg);
 }
 .bb-wcag-card__action--select {
   padding-left: var(--bb-derived-wcag-card-select-button-padding-left);
   padding-right: var(--bb-derived-wcag-card-select-button-padding-right);
-  border-color: var(--bb-derived-wcag-card-select-button-stroke);
-  background: var(--bb-derived-wcag-card-select-button-fill);
-  color: var(--bb-derived-wcag-card-vector-fill);
+  border-color: var(--bb-surface-accent);
+  background: var(--bb-surface-accent);
+  color: var(--bb-wcag-card-title-fg);
 }
 .bb-wcag-card__action--select svg {
   width: var(--bb-derived-wcag-card-vector-width);
@@ -400,3 +410,12 @@
 /* Figma rebinds the embedded Code Snippet's stroke to border/default (2026-09-25); the Code Snippet
  * set itself keeps border/subtle, so the override lives here. */
 .bb-wcag-card__snippet { border-color: var(--bb-border-default); }
+
+/* Narrow card (the S window, or any column under 400 px): each detail row stacks its label over
+ * its value so long values (Why it fails, How to fix) get the full width instead of a squeezed
+ * column beside the fixed label. */
+@container wcag-card (max-width: 400px) { /* allow-raw: narrow-card breakpoint (the S window), not a Figma value */
+  .bb-wcag-card__row { flex-direction: column; gap: var(--bb-derived-wcag-card-heading-gap); }
+  .bb-wcag-card__row-label { flex: none; width: auto; }
+  .bb-wcag-card__row-value { width: 100%; }
+}

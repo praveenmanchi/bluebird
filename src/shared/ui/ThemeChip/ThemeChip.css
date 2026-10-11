@@ -1,8 +1,9 @@
 /* Theme chip — Figma "Theme" set (419:45605): Forms / Gestures / Keyboard /
  * Sensory / Whole Site / Wording / Zoom and Legibility. Bound:
  * theme-card/border/default, theme-card/icon/size (and icon/glyph/default as
- * the root fill — see figma.ts). Sub-pixel radius, stroke, gap, padding and
- * the per-variant fixed widths are raw → --bb-derived-theme-chip-*. */
+ * the root fill — see figma.ts). Sub-pixel radius, stroke, gap and padding are
+ * raw → --bb-derived-theme-chip-*. Chips hug their label (Figma switched the
+ * set from fixed widths to hug on 2026-10-11 so "Keyboard" stops truncating). */
 .bb-theme-chip {
   display: inline-flex;
   align-items: center;
@@ -20,13 +21,6 @@
   line-height: var(--bb-theme-card-label-line-height);
   white-space: nowrap;
 }
-.bb-theme-chip[data-theme="forms"] { width: var(--bb-derived-theme-chip-root-theme-type-forms-width); }
-.bb-theme-chip[data-theme="gestures"] { width: var(--bb-derived-theme-chip-root-theme-type-gestures-width); }
-.bb-theme-chip[data-theme="keyboard"] { width: var(--bb-derived-theme-chip-root-theme-type-keyboard-width); }
-.bb-theme-chip[data-theme="sensory"] { width: var(--bb-derived-theme-chip-root-theme-type-sensory-width); }
-.bb-theme-chip[data-theme="whole-site"] { width: var(--bb-derived-theme-chip-root-theme-type-whole-site-width); }
-.bb-theme-chip[data-theme="wording"] { width: var(--bb-derived-theme-chip-root-theme-type-wording-width); }
-.bb-theme-chip[data-theme="zoom"] { width: var(--bb-derived-theme-chip-root-theme-type-zoom-and-legibility-width); }
 .bb-theme-chip__icon {
   display: inline-flex;
   flex: none;

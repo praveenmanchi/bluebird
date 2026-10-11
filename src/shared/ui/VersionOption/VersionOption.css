@@ -1,0 +1,68 @@
+/* VersionOption — Figma "Version Option" (40000341:8566). VERTICAL MIN MIN,
+ * FIXED 200 × HUG, field surface with a 1 (raw → derived) panel-border
+ * stroke, radius publish/radius/control, padding row-y × row-x, gap
+ * publish/space/hair: Top (Bump + optional Suggested badge, gap inline),
+ * Version, Hint. Selected=Yes swaps the fill and stroke to publish/version/*
+ * and the Version text to publish/text/accent. The FIXED 200 width is a
+ * layout cell in the Publish screen, so code fills its flex cell instead. */
+.bb-version-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border: var(--bb-derived-version-option-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+}
+.bb-version-option[data-selected] {
+  border-color: var(--bb-publish-version-selected-border);
+  background: var(--bb-publish-version-selected);
+}
+.bb-version-option[data-disabled] { cursor: not-allowed; }
+.bb-version-option:has(.bb-version-option__input:focus-visible) {
+  outline: var(--bb-publish-border-width) solid var(--bb-publish-version-selected-border);
+  outline-offset: var(--bb-publish-space-hair);
+}
+/* The native radio drives selection, keyboard and a11y; the card is the visual. */
+.bb-version-option__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+.bb-version-option__top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+}
+.bb-version-option__bump {
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-version-option__version {
+  font-size: var(--bb-publish-font-size-heading);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-label);
+  color: var(--bb-publish-text-title);
+}
+.bb-version-option[data-selected] .bb-version-option__version { color: var(--bb-publish-text-accent); }
+.bb-version-option__hint {
+  max-width: 100%;
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}

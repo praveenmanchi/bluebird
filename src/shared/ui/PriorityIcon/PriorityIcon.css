@@ -1,0 +1,35 @@
+/* PriorityIcon — Figma "Priority Icon" (40000265:8035). A 16×16 frame with
+ * one stroked "Vector" layer: Highest/High share jira/priority/high, the
+ * others have their own colour. Round caps/joins are the Figma vector's. */
+.bb-priority-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-jira-size-icon);
+  height: var(--bb-jira-size-icon);
+}
+.bb-priority-icon__glyph {
+  display: block;
+  overflow: visible;
+  width: var(--bb-derived-priority-icon-vector-width);
+  fill: none;
+  stroke: var(--bb-jira-priority-high);
+  stroke-width: var(--bb-jira-icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bb-priority-icon[data-priority='highest'] .bb-priority-icon__glyph { height: var(--bb-derived-priority-icon-vector-priority-highest-height); }
+.bb-priority-icon[data-priority='high'] .bb-priority-icon__glyph { height: var(--bb-derived-priority-icon-vector-priority-high-height); }
+.bb-priority-icon[data-priority='medium'] .bb-priority-icon__glyph {
+  height: var(--bb-derived-priority-icon-vector-priority-medium-height);
+  stroke: var(--bb-jira-priority-medium);
+}
+.bb-priority-icon[data-priority='low'] .bb-priority-icon__glyph {
+  height: var(--bb-derived-priority-icon-vector-priority-low-height);
+  stroke: var(--bb-jira-priority-low);
+}
+.bb-priority-icon[data-priority='lowest'] .bb-priority-icon__glyph {
+  height: var(--bb-derived-priority-icon-vector-priority-lowest-height);
+  stroke: var(--bb-jira-priority-lowest);
+}

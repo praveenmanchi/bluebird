@@ -1,0 +1,6 @@
+/* Typography page. */
+.bbs-font-card__aa { font-size: calc(var(--bb-type-size-24) * 3); line-height: 1; color: var(--bb-text-primary); }
+.bbs-font-card__alphabet { margin: 0; color: var(--bb-text-secondary); font-size: var(--bb-type-size-14); line-height: var(--bb-type-line-20); overflow-wrap: anywhere; }
+.bbs-type-table td:nth-child(2) { width: 50%; }
+.bbs-type-sample { color: var(--bb-text-primary); }
+.bbs-weight-sample { font-size: var(--bb-type-size-24); line-height: var(--bb-type-line-32); }

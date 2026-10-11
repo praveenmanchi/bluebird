@@ -1,0 +1,115 @@
+/* UX AI · Sources — Figma "UX AI body" 40000290:5841 (screen 40000288:8330).
+ * Header (title + actions), the Sources grid, the Drop zone and the Welcome
+ * prompts above the Chat Input. Buttons, Source Cards, the Thinking Orb,
+ * Prompt Chips and the Chat Input are composed components that read their
+ * own tokens. Below the header everything scrolls together in a short window. */
+.bb-uxai-sources {
+  --uxai-panel: var(--bb-uxai-space-panel);
+  --uxai-section: var(--bb-uxai-space-section);
+  --uxai-font-family: var(--bb-uxai-font-family);
+  --uxai-caption-color: var(--bb-uxai-text-meta);
+  --uxai-caption-size: var(--bb-uxai-font-size-caption);
+  --uxai-caption-line: var(--bb-uxai-font-line-caption);
+  --uxai-weight-regular: var(--bb-uxai-font-weight-regular);
+  /* The 859 px desktop frame and its FILL Chat Input cap the layout; the plugin window (360–760) flexes below them. */
+  --uxai-max-width: var(--bb-derived-uxai-sources-root-width);
+  --uxai-composer-max: var(--bb-derived-uxai-sources-chat-input-width);
+}
+
+.bb-uxai-sources__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-uxai-space-inline);
+  flex: none;
+}
+.bb-uxai-sources__title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-hair);
+  /* Keeps the actions on the title's row until the title would drop below half a card. */
+  flex: 1 1 0;
+  min-width: calc(var(--bb-derived-uxai-sources-source-card-width) / 2);
+}
+.bb-uxai-sources__heading {
+  margin: 0;
+  color: var(--bb-uxai-text-title);
+  font-size: var(--bb-uxai-font-size-heading);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-label);
+}
+.bb-uxai-sources__actions {
+  display: flex;
+  gap: var(--bb-uxai-space-inline);
+}
+
+.bb-uxai-sources__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-section);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Sources grid — rows of two FILL cards (409.5 each at 827); one column once a
+ * card would drop below half that width. */
+.bb-uxai-sources__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--bb-derived-uxai-sources-source-card-width) / 2)), 1fr));
+  gap: var(--bb-uxai-space-inline);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-uxai-sources__cell { min-width: 0; }
+.bb-source-card.bb-uxai-sources__card { width: 100%; }
+
+/* Drop zone — dashed chip/border, centred copy. */
+.bb-uxai-sources__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-uxai-space-tight);
+  flex: none;
+  padding: var(--bb-uxai-space-section) var(--bb-uxai-space-panel);
+  border: var(--bb-derived-uxai-sources-drop-zone-stroke-width) dashed var(--bb-uxai-chip-border);
+  border-radius: var(--bb-uxai-radius-control);
+  text-align: center;
+}
+.bb-uxai-sources__drop-title {
+  margin: 0;
+  color: var(--bb-uxai-text-body);
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-body);
+}
+
+/* Welcome — fills what is left, orb + title + suggestions centred. */
+.bb-uxai-sources__welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-uxai-space-section);
+  flex: 1 0 auto;
+  text-align: center;
+}
+.bb-uxai-sources__welcome-title {
+  margin: 0;
+  color: var(--bb-uxai-text-title);
+  font-size: var(--bb-uxai-font-size-title);
+  font-weight: var(--bb-uxai-font-weight-strong);
+}
+.bb-uxai-sources__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--bb-uxai-space-tight);
+}
+
+/* Where the sources come from (Dual File libraries, or why these are samples). Not in Figma. */
+.bb-uxai-sources__status { display: flex; flex-direction: column; flex: none; }
+.bb-uxai-library-status { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bb-uxai-space-tight); }

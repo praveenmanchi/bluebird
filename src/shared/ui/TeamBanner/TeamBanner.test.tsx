@@ -4,12 +4,22 @@ import { TeamBanner } from './TeamBanner'
 
 describe('TeamBanner', () => {
   it('renders the team credit, the version pill and the default tagline', () => {
-    const { container } = render(<TeamBanner team="Gap Design System" version="1.3.3" />)
+    const { container } = render(<TeamBanner org="HCL" team="Design System" version="1.3.3" />)
     expect(screen.getByRole('banner')).toHaveClass('bb-team-banner')
-    expect(screen.getByText('Built with Care by the Gap Design System Team')).toBeInTheDocument()
+    expect(container.querySelector('.bb-team-banner__credit')?.textContent).toBe('Built with Care by the HCL Design System Team')
     expect(screen.getByText('Version 1.3.3')).toBeInTheDocument()
     expect(container.querySelector('.bb-icon[data-icon="version"]')).not.toBeNull()
     expect(container.querySelector('.bb-team-banner__tagline')?.textContent).toContain('Together, every')
+  })
+  it('defaults the credit to the Figma copy (text node 264:10144)', () => {
+    const { container } = render(<TeamBanner />)
+    expect(container.querySelector('.bb-team-banner__credit')?.textContent).toBe('Built with Care by the HCL Design System Team')
+  })
+  it('sets "Care" and "<org> <team> Team" bold like the Figma text runs', () => {
+    const { container } = render(<TeamBanner org="Acme" team="Platform" />)
+    const bold = [...container.querySelectorAll('.bb-team-banner__credit strong')].map((b) => b.textContent)
+    expect(bold).toEqual(['Care', 'Acme Platform Team'])
+    expect(container.querySelector('.bb-team-banner__credit')?.textContent).toBe('Built with Care by the Acme Platform Team')
   })
   it('defaults the tagline to the Figma copy verbatim (text node 204:7255)', () => {
     const { container } = render(<TeamBanner />)
@@ -21,17 +31,31 @@ describe('TeamBanner', () => {
     // BrandLogo renders one mark per brand and lets [data-brand] CSS reveal the active one.
     expect(screen.getAllByRole('img', { name: 'Team mark' }).length).toBeGreaterThan(0)
   })
-  it('toggles the Fabric logo and its hairline with showFabric', () => {
-    const { container, rerender } = render(<TeamBanner />)
-    expect(screen.getByRole('img', { name: 'Fabric' })).toBeInTheDocument()
-    expect(container.querySelector('.bb-team-banner__hairline')).not.toBeNull()
-    rerender(<TeamBanner showFabric={false} />)
-    expect(screen.queryByRole('img', { name: 'Fabric' })).toBeNull()
-    expect(container.querySelector('.bb-team-banner__hairline')).toBeNull()
+  it('renders the Design Studio lockup after the brand logo (Figma Frame 1430102692)', () => {
+    const { container } = render(<TeamBanner />)
+    const brand = container.querySelector('.bb-team-banner__brand')!
+    expect([...brand.children].map((c) => c.className)).toEqual(['bb-team-banner__mark', 'bb-team-banner__product'])
+    expect(container.querySelector('.bb-team-banner__rule')).not.toBeNull()
+    expect(container.querySelector('.bb-team-banner__product-name')?.textContent).toBe('Design Studio')
+    expect(container.querySelector('.bb-team-banner__product-tagline')?.textContent).toBe('Connecting Gap between design workflow')
+  })
+  it('takes custom product copy and hides the lockup with showProduct', () => {
+    const { container, rerender } = render(<TeamBanner product="Studio X" productTagline="Tagline" />)
+    expect(container.querySelector('.bb-team-banner__product-name')?.textContent).toBe('Studio X')
+    expect(container.querySelector('.bb-team-banner__product-tagline')?.textContent).toBe('Tagline')
+    rerender(<TeamBanner showProduct={false} />)
+    expect(container.querySelector('.bb-team-banner__product')).toBeNull()
+    expect(container.querySelector('.bb-team-banner__mark .bb-brand-logo')).not.toBeNull()
   })
   it('lets children replace the tagline and forwards root attributes', () => {
     const { container } = render(<TeamBanner title="hdr"><b>Slot</b></TeamBanner>)
     expect(container.querySelector('.bb-team-banner__tagline')?.textContent).toBe('Slot')
     expect(container.querySelector('.bb-team-banner')).toHaveAttribute('title', 'hdr')
+  })
+  it('defaults the tagline to the component size and takes the Settings override', () => {
+    const { container, rerender } = render(<TeamBanner />)
+    expect(container.querySelector('.bb-team-banner')?.getAttribute('data-tagline')).toBe('md')
+    rerender(<TeamBanner taglineSize="auto" />)
+    expect(container.querySelector('.bb-team-banner')?.getAttribute('data-tagline')).toBe('auto')
   })
 })

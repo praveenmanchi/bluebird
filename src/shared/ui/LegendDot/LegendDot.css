@@ -1,0 +1,16 @@
+/* Legend Dot — Figma "Legend Dot" (40000446:8622): an a11y/size/dot circle per tone. */
+.bb-legend-dot {
+  display: inline-block;
+  flex: none;
+  width: var(--bb-a11y-size-dot);
+  height: var(--bb-a11y-size-dot);
+  border-radius: 50%;
+  background: var(--bb-a11y-category-perceivable);
+}
+.bb-legend-dot[data-tone='operable'] { background: var(--bb-a11y-category-operable); }
+.bb-legend-dot[data-tone='understandable'] { background: var(--bb-a11y-category-understandable); }
+.bb-legend-dot[data-tone='robust'] { background: var(--bb-a11y-category-robust); }
+.bb-legend-dot[data-tone='critical'] { background: var(--bb-a11y-severity-critical); }
+.bb-legend-dot[data-tone='serious'] { background: var(--bb-a11y-severity-serious); }
+.bb-legend-dot[data-tone='moderate'] { background: var(--bb-a11y-severity-moderate); }
+.bb-legend-dot[data-tone='minor'] { background: var(--bb-a11y-severity-minor); }

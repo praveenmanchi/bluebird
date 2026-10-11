@@ -1,0 +1,64 @@
+/* SelectionPreview — Figma "Selection Preview" (40000287:8278). A sunken
+ * thumbnail of the selection beside its name, meta, stats and a link to select
+ * it on the canvas. The thumbnail is the real component scaled the way Figma
+ * scales the instance (see figmaScale in the .tsx). */
+.bb-selection-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-uxai-space-section);
+  box-sizing: border-box;
+  width: var(--bb-derived-selection-preview-root-width);
+  max-width: 100%;
+  padding: var(--bb-uxai-space-row-x);
+  border: var(--bb-derived-selection-preview-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+}
+.bb-selection-preview__preview {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-derived-selection-preview-preview-width);
+  height: var(--bb-derived-selection-preview-preview-height);
+  border-radius: var(--bb-uxai-radius-control);
+  background: var(--bb-uxai-surface-sunken);
+  overflow: hidden;
+}
+.bb-selection-preview__thumb {
+  flex: none;
+  transform: scale(var(--selection-preview-scale, 1));
+  pointer-events: none;
+}
+.bb-selection-preview__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-tight);
+  /* Wraps under the thumbnail once the text column would be narrower than the thumbnail. */
+  flex: 1 1 var(--bb-derived-selection-preview-preview-width);
+  min-width: 0;
+}
+.bb-selection-preview__name,
+.bb-selection-preview__meta {
+  margin: 0;
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-selection-preview__name {
+  font-size: var(--bb-uxai-font-size-heading);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-label);
+  color: var(--bb-uxai-text-title);
+}
+.bb-selection-preview__meta {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-selection-preview__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-uxai-space-tight);
+}

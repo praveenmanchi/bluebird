@@ -1,0 +1,108 @@
+/* VoiceWave — Figma "Voice Wave" (40000295:8509). Nine pill bars in a FIXED
+ * 60 × 28 frame, left-aligned and vertically centred (gap agents/space/hair).
+ * Each bar's per-state height is raw Figma geometry (--bb-derived-voice-wave-*);
+ * the custom properties below just name them per bar. Listening / Speaking
+ * pulse the bars (the set description: "bar heights animate from audio level
+ * in code"); `levels` replaces the loop with live heights. Reduced motion
+ * keeps the Figma heights still. */
+.bb-voice-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-agents-space-hair);
+  flex: none;
+  width: var(--bb-derived-voice-wave-root-width);
+  height: var(--bb-derived-voice-wave-root-height);
+}
+.bb-voice-wave__bar {
+  flex: none;
+  height: var(--bar-idle);
+  border-radius: var(--bb-agents-radius-pill);
+  background: var(--bb-agents-wave-idle);
+}
+.bb-voice-wave__bar:nth-child(1) {
+  --bar-index: 0;
+  width: var(--bb-derived-voice-wave-bar-1-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-1-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-1-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-1-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(2) {
+  --bar-index: 1;
+  width: var(--bb-derived-voice-wave-bar-2-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-2-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-2-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-2-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(3) {
+  --bar-index: 2;
+  width: var(--bb-derived-voice-wave-bar-3-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-3-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-3-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-3-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(4) {
+  --bar-index: 3;
+  width: var(--bb-derived-voice-wave-bar-4-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-4-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-4-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-4-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(5) {
+  --bar-index: 4;
+  width: var(--bb-derived-voice-wave-bar-5-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-5-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-5-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-5-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(6) {
+  --bar-index: 5;
+  width: var(--bb-derived-voice-wave-bar-6-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-6-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-6-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-6-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(7) {
+  --bar-index: 6;
+  width: var(--bb-derived-voice-wave-bar-7-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-7-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-7-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-7-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(8) {
+  --bar-index: 7;
+  width: var(--bb-derived-voice-wave-bar-8-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-8-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-8-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-8-state-speaking-height);
+}
+.bb-voice-wave__bar:nth-child(9) {
+  --bar-index: 8;
+  width: var(--bb-derived-voice-wave-bar-9-width);
+  --bar-idle: var(--bb-derived-voice-wave-bar-9-state-idle-height);
+  --bar-listening: var(--bb-derived-voice-wave-bar-9-state-listening-height);
+  --bar-speaking: var(--bb-derived-voice-wave-bar-9-state-speaking-height);
+}
+.bb-voice-wave[data-state='listening'] .bb-voice-wave__bar {
+  height: var(--bar-listening);
+  background: var(--bb-agents-wave-active);
+}
+.bb-voice-wave[data-state='speaking'] .bb-voice-wave__bar {
+  height: var(--bar-speaking);
+  background: var(--bb-agents-wave-speaking);
+}
+.bb-voice-wave[data-live] .bb-voice-wave__bar { min-height: var(--bar-idle); }
+
+.bb-voice-wave:not([data-state='idle']):not([data-live]) .bb-voice-wave__bar {
+  animation: bb-voice-wave-pulse 0.9s ease-in-out infinite; /* allow-raw */
+  animation-delay: calc(var(--bar-index) * -0.13s); /* allow-raw */
+}
+.bb-voice-wave[data-live] .bb-voice-wave__bar {
+  transition: height 0.08s linear; /* allow-raw */
+}
+@keyframes bb-voice-wave-pulse {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-voice-wave .bb-voice-wave__bar { animation: none; transition: none; }
+}

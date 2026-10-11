@@ -49,7 +49,6 @@
 .bb-checkbox__mark {
   width: var(--bb-checkbox-mark-size);
   height: var(--bb-checkbox-mark-size);
-  stroke-width: var(--bb-derived-checkbox-check-stroke-width);
 }
 .bb-checkbox__dash {
   width: var(--bb-derived-checkbox-dash-width);

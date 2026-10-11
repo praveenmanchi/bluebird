@@ -1,0 +1,19 @@
+/* Breakdown Card — Figma "Breakdown Card" (40000447:8687). */
+.bb-breakdown-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-tight);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--bb-a11y-space-section);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-sunken);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-breakdown-card__title {
+  margin: 0;
+  font-size: var(--bb-a11y-font-size-body);
+  line-height: var(--bb-a11y-font-line-body);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-title);
+}

@@ -1,0 +1,42 @@
+/* ComponentArtifact — Figma "Component Artifact" (40000285:8254). VERTICAL
+ * panel, FIXED 560 wide, hugging: Artifact Header, the Preview well (a live
+ * render of the component), the Props row (Meta Badges) and the Code row
+ * (a Citation chip), all FILL. The stroke takes layout space in Figma (inner
+ * width 534), so it is a real border with border-box sizing. */
+.bb-component-artifact {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: var(--bb-derived-component-artifact-root-width);
+  gap: var(--bb-uxai-space-section);
+  padding: var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+  border: var(--bb-derived-component-artifact-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+}
+.bb-component-artifact > .bb-component-artifact__header { width: auto; }
+.bb-component-artifact__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--bb-uxai-space-section);
+  padding: var(--bb-uxai-space-panel);
+  border-radius: var(--bb-uxai-radius-control);
+  background: var(--bb-uxai-surface-sunken);
+}
+.bb-component-artifact__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-uxai-space-tight);
+}
+.bb-component-artifact__caption {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+}

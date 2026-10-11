@@ -1,0 +1,35 @@
+/* Stepper — Figma "Stepper" (40000275:8142). HORIZONTAL MIN CENTER, FIXED
+ * 1000 × 24, gap mcp/space/section: Step, Connector, Step, Connector, …
+ * Each Connector is a FILL frame mcp/size/connector tall, so the free width
+ * is split evenly between them. In code each connector lives in the <li> of
+ * the step it leads to (list semantics stay one item per step): the item grows
+ * by the same share, and the connector takes all of it. */
+.bb-stepper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-mcp-space-section);
+  box-sizing: border-box;
+  width: var(--bb-derived-stepper-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-stepper-root-height);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-stepper__item {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--bb-mcp-space-section);
+  min-width: 0;
+}
+.bb-stepper__item[data-first] { flex: none; }
+.bb-stepper__item > .bb-step { flex: none; }
+.bb-stepper__connector {
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--bb-mcp-size-connector);
+  background: var(--bb-mcp-step-connector);
+}

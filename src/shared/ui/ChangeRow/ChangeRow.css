@@ -1,0 +1,78 @@
+/* ChangeRow — Figma "Change Row" (40000345:8562). HORIZONTAL MIN CENTER,
+ * FIXED 356 × HUG, field surface with a 1 (raw → derived) panel-border
+ * stroke, radius publish/radius/control, padding publish/space/row-y ×
+ * row-x, gap publish/space/inline: Include (Checkbox, label hidden) ·
+ * Preview (24 swatch for Kind=Color; 24 panel box holding a Tab Icon for
+ * Number / Component) · Text (FILL, VERTICAL, gap publish/space/hair) ·
+ * Change (Meta Badge). State=Selected swaps the fill and stroke to the
+ * row-selected pair. */
+.bb-change-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border: var(--bb-derived-change-row-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-change-row[data-state='selected'] {
+  background: var(--bb-publish-surface-row-selected);
+  border-color: var(--bb-publish-surface-row-selected-border);
+}
+.bb-change-row__include { flex: none; }
+.bb-change-row__preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-publish-size-swatch);
+  height: var(--bb-publish-size-swatch);
+  border-radius: var(--bb-publish-radius-control);
+}
+.bb-change-row__preview--swatch {
+  border: var(--bb-derived-change-row-preview-stroke-width) solid var(--bb-publish-swatch-border);
+  background: var(--change-row-swatch);
+}
+.bb-change-row__preview--icon {
+  border: var(--bb-derived-change-row-preview-stroke-width) solid var(--bb-publish-surface-panel-border);
+  background: var(--bb-publish-surface-panel);
+  color: var(--bb-publish-text-body);
+}
+.bb-change-row__icon {
+  width: 100%;
+  height: 100%;
+}
+.bb-change-row__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-publish-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-change-row__name,
+.bb-change-row__detail {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-change-row__name {
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-medium);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-change-row__detail {
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-change-row__change { flex: none; }

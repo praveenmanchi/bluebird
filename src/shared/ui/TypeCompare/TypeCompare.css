@@ -1,0 +1,34 @@
+/* Type Compare — Figma "Type Compare" (40000463:9116). Chrome is bound to a11y/* tokens; the
+ * two samples render at the scanned and suggested metrics passed in as props. */
+.bb-type-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--bb-a11y-space-section);
+  width: 100%;
+  max-width: var(--bb-derived-type-compare-root-width);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-type-compare__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-inline);
+  padding: var(--bb-a11y-space-section);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-sunken);
+}
+.bb-type-compare__header {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-a11y-space-inline);
+}
+.bb-type-compare__spec {
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-type-compare__sample {
+  margin: 0;
+  font-weight: var(--bb-derived-type-compare-sample-font-weight);
+  color: var(--bb-derived-type-compare-sample-color);
+}

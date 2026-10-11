@@ -20,6 +20,15 @@
         "npx storybook dev -p \"$PORT\" --ci --no-open"
       ],
       "port": 6006
+    },
+    {
+      "name": "jira-proxy",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "jira:proxy"
+      ],
+      "port": 8787
     }
   ]
 }

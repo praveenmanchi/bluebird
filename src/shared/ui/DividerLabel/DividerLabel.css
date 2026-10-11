@@ -1,0 +1,21 @@
+/* DividerLabel — Figma "Divider Label" (40000321:8424): Line start · Label · Line end. */
+.bb-divider-label {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-login-gap-md);
+  width: 100%;
+}
+.bb-divider-label__line {
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--bb-input-border-width);
+  background: var(--bb-login-border-divider);
+}
+.bb-divider-label__label {
+  color: var(--bb-login-text-meta);
+  font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-login-font-caption-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-caption-line);
+  white-space: nowrap;
+}

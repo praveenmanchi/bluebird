@@ -1,0 +1,40 @@
+/* ColorArtifact — Figma "Color Artifact" (40000285:8157). VERTICAL panel,
+ * FIXED 560 wide, hugging: Artifact Header, the Brands row of Brand Swatches,
+ * the Alias chain (Citation chips) and the Usage row (Meta Badges), all FILL.
+ * The stroke takes layout space in Figma (inner width 534, height 209), so it
+ * is a real border with border-box sizing. */
+.bb-color-artifact {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: var(--bb-derived-color-artifact-root-width);
+  gap: var(--bb-uxai-space-section);
+  padding: var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+  border: var(--bb-derived-color-artifact-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+}
+.bb-color-artifact > .bb-color-artifact__header { width: auto; }
+.bb-color-artifact__brands {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-panel);
+}
+/* Every swatch shows the artifact's variable; it resolves in the swatch's own
+ * data-brand. A `variable` prop repaints it inline. */
+.bb-color-artifact__brands .bb-color-swatch { background: var(--bb-surface-accent); }
+.bb-color-artifact__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-uxai-space-tight);
+}
+.bb-color-artifact__caption {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+}

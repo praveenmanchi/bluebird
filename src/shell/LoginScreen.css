@@ -1,64 +1,118 @@
-/* Login page — Figma "Login Page" (40000100:13204). Root fill is the Brand
- * variable `Background`; the mark, heading and form geometry are raw in the
- * frame → --bb-derived-login-screen-*. The input and button are the Input and
- * Button components (their tokens are consumed there). */
+/* Login page — Figma "Login Page" (40000308:21144) and "Login · SSO"
+ * (40000328:5494). Header (HCLTech mark · Private badge) · Body (centred Card)
+ * · Page footer. Every value is a login/* token; the Figma frame is a
+ * 1074×868 desktop mock, so the card keeps login/card/width as a max and the
+ * page scrolls inside the much narrower plugin window. */
 .bb-login {
-  position: relative;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   box-sizing: border-box;
-  min-height: 100%;
-  padding: var(--bb-space-inset-lg);
-  background: var(--bb-background);
+  min-height: 0;
+  padding: var(--bb-login-page-padding);
+  overflow-y: auto;
+  background: var(--bb-login-surface-page);
+  font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif;
 }
-.bb-brand-logo.bb-login__mark {
-  position: absolute;
-  top: var(--bb-space-stack-md);
-  left: var(--bb-space-stack-md);
-  /* The instance is scaled to 180×52 on the login frame. */
+.bb-login__header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-login-gap-md);
+}
+.bb-brand-logo.bb-login__logo {
   width: var(--bb-derived-login-screen-brand-logos-width);
   height: var(--bb-derived-login-screen-brand-logos-height);
 }
-.bb-login__form {
+.bb-login__body {
   display: flex;
+  flex: 1 0 auto;
   flex-direction: column;
   align-items: center;
-  gap: var(--bb-derived-login-screen-form-gap);
-  width: 100%;
-  max-width: var(--bb-derived-login-screen-form-width);
+  justify-content: center;
+  padding: var(--bb-login-page-padding) 0;
 }
+.bb-login__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-login-gap-lg);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-login-card-width);
+  padding: var(--bb-login-card-padding);
+  border: var(--bb-derived-login-screen-card-stroke-width) solid var(--bb-login-border-card);
+  border-radius: var(--bb-login-card-radius);
+  background: var(--bb-login-surface-card);
+}
+
+/* Heading — Mark · Title · Subtitle (LoginHeading.tsx). */
 .bb-login__heading {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--bb-derived-login-screen-heading-gap);
-  max-width: var(--bb-derived-login-screen-heading-width);
+  gap: var(--bb-login-gap-md);
   text-align: center;
 }
+.bb-login__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-login-mark-size);
+  height: var(--bb-login-mark-size);
+  border-radius: var(--bb-login-mark-radius);
+  background: var(--bb-login-mark-bg);
+  color: var(--bb-login-mark-icon);
+}
+.bb-login__mark .bb-icon { width: var(--bb-login-icon-size); height: var(--bb-login-icon-size); }
 .bb-login__title {
   margin: 0;
-  color: var(--bb-derived-login-screen-title-color);
-  font-family: var(--bb-derived-login-screen-title-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-login-screen-title-font-size);
-  font-weight: var(--bb-derived-login-screen-title-font-weight);
-  line-height: var(--bb-derived-login-screen-title-line-height);
+  color: var(--bb-login-text-title);
+  font-size: var(--bb-login-font-title-size);
+  font-weight: var(--bb-login-font-title-weight);
+  line-height: var(--bb-login-font-title-line);
 }
 .bb-login__subtitle {
   margin: 0;
-  color: var(--bb-derived-login-screen-subtitle-color);
-  font-family: var(--bb-derived-login-screen-subtitle-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-login-screen-subtitle-font-size);
-  font-weight: var(--bb-derived-login-screen-subtitle-font-weight);
-  line-height: var(--bb-derived-login-screen-subtitle-line-height);
+  color: var(--bb-login-text-body);
+  font-size: var(--bb-login-font-body-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-body-line);
 }
-.bb-login__row {
+
+/* Form — Access code field · Submit button. */
+.bb-login__form {
   display: flex;
-  align-items: flex-start;
-  gap: var(--bb-derived-login-screen-code-row-gap);
-  width: 100%;
+  flex-direction: column;
+  gap: var(--bb-login-gap-md);
 }
-.bb-login__field { flex: 1 1 auto; min-width: 0; }
-/* The Figma field and button are 37px tall (input/height is 32); keep the design's height. */
-.bb-login__row .bb-input__control, .bb-login__row .bb-button { height: var(--bb-derived-login-screen-background-border-height); }
+.bb-button.bb-login__wide { width: 100%; }
+.bb-login__busy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-button-primary-gap);
+}
+.bb-login__hint {
+  margin: 0;
+  color: var(--bb-login-text-meta);
+  font-size: var(--bb-login-font-caption-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-caption-line);
+  text-align: center;
+}
+
+/* Page footer — Legal · Reminder, space-between; wraps in narrow windows. */
+.bb-login__footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--bb-login-gap-xs) var(--bb-login-gap-md);
+}
+.bb-login__legal {
+  margin: 0;
+  color: var(--bb-login-text-meta);
+  font-size: var(--bb-login-font-caption-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-caption-line);
+}

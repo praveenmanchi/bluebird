@@ -7,7 +7,7 @@ const meta = {
   title: 'Organisms/TeamBanner',
   component: TeamBanner,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { team: 'Gap Design System', version: '1.3.3', showFabric: true },
+  args: { org: 'HCL', team: 'Design System', version: '1.3.3', showProduct: true },
 } satisfies Meta<typeof TeamBanner>
 export default meta
 type Story = StoryObj<typeof meta>
@@ -15,7 +15,10 @@ type Story = StoryObj<typeof meta>
 /** The single Figma variant. */
 export const Default: Story = { parameters: { figma: { variant: 'team Banner' } } }
 
-export const WithoutFabric: Story = { args: { showFabric: false } }
+/** The Settings Layout instance: tagline overridden to 24 (UX copy 335:8011, 576 wide). */
+export const SettingsInstance: Story = { args: { taglineSize: 'lg' }, render: (args) => <div style={{ width: 'calc(var(--bb-derived-team-banner-root-width) - var(--bb-dimension-space-12) * 2)' }}><TeamBanner {...args} style={{ width: '100%' }} /></div> }
+
+export const WithoutProduct: Story = { args: { showProduct: false } }
 
 export const CustomSlot: Story = {
   render: (args) => (

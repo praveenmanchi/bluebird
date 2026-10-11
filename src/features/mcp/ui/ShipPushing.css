@@ -1,0 +1,11 @@
+/* Ship steps — Figma "MCP v2 · 5 Ship · Pushing" body (40000496:7999). Shell, cards and the Actions bar
+ * come from McpHandoff.css; this file holds only what this step adds. */
+/* Steps: VERTICAL, gap mcp/space/hair, FILL Publish Steps (also on PR link and Push rejected). */
+.bb-mcp-handoff__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-hair);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

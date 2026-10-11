@@ -227,4 +227,31 @@ describe('WcagCard — analysis gaps', () => {
     }
     expect(container.querySelector('.bb-wcag-card__sample')).toBeInTheDocument()
   })
+
+  it('renders each check type\'s preview only in its own mode', () => {
+    const typeCompare = { current: { size: 13, lineHeight: 16 }, suggested: { size: 16, lineHeight: 24 } }
+    const target = { width: 18, height: 18, spacing: 4 }
+    const vision = { colors: { a: '#D93025', b: '#1E8E3E' } }
+    const { container, rerender } = render(<WcagCard code="x" title="y" mode="touch" typeCompare={typeCompare} target={target} vision={vision} />)
+    expect(container.querySelector('.bb-target-preview')).toBeInTheDocument()
+    expect(container.querySelector('.bb-type-compare')).toBeNull()
+    expect(container.querySelector('.bb-vision-sim-grid')).toBeNull()
+    rerender(<WcagCard code="x" title="y" mode="vision" typeCompare={typeCompare} target={target} vision={vision} />)
+    expect(container.querySelectorAll('.bb-vision-sim-tile')).toHaveLength(6)
+    expect(container.querySelector('.bb-target-preview')).toBeNull()
+    rerender(<WcagCard code="x" title="y" mode="text" typeCompare={typeCompare} target={target} vision={vision} />)
+    expect(container.querySelector('.bb-type-compare')).toBeInTheDocument()
+    rerender(<WcagCard code="x" title="y" mode="colors" typeCompare={typeCompare} target={target} vision={vision} />)
+    expect(container.querySelector('.bb-wcag-card__check-preview')).toBeNull()
+  })
+
+  it('keeps the colour-only sections out of touch and vision mode', () => {
+    const { container } = render(
+      <WcagCard code="x" title="y" mode="touch" colors={{ fg: '#fff', bg: '#000' }} ratio={{ value: '2:1' }} fix={{ value: '#fff', ratio: '5:1' }}
+        brandModes={[{ brand: 'Bridge', ratio: '2:1', pass: false }]} />,
+    )
+    expect(container.querySelector('.bb-wcag-card__preview')).toBeNull()
+    expect(container.querySelector('.bb-fix-row')).toBeNull()
+    expect(container.querySelector('.bb-brand-modes')).toBeNull()
+  })
 })

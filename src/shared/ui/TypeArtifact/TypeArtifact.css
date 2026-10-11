@@ -1,0 +1,18 @@
+/* TypeArtifact — Figma "Type Artifact" (40000285:8231). VERTICAL panel,
+ * FIXED 560 wide, hugging its rows: Artifact Header + one Type Specimen per
+ * level, every child FILL. The stroke takes layout space in Figma (inner
+ * width 534), so it is a real border with border-box sizing. */
+.bb-type-artifact {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: var(--bb-derived-type-artifact-root-width);
+  gap: var(--bb-uxai-space-section);
+  padding: var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+  border: var(--bb-derived-type-artifact-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+}
+.bb-type-artifact > .bb-type-artifact__header,
+.bb-type-artifact > .bb-type-artifact__specimen { width: auto; }

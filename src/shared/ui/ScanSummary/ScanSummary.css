@@ -1,0 +1,55 @@
+/* Scan Summary — Figma "Scan Summary" (40000444:20376). */
+.bb-scan-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-section);
+  box-sizing: border-box;
+  padding: var(--bb-a11y-space-section);
+  border: var(--bb-a11y-border-width) solid var(--bb-a11y-surface-panel-border);
+  border-radius: var(--bb-a11y-radius-panel);
+  background: var(--bb-a11y-surface-panel);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+/* Four across at L, two-by-two at M and S — never a lone orphan tile. Each pair is a two-column
+ * grid; the pairs wrap as a unit once two of them (four tiles of five icon boxes) no longer fit. */
+.bb-scan-summary__kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-a11y-space-inline);
+}
+.bb-scan-summary__kpi-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1 0 calc(var(--bb-a11y-size-icon-box) * 10 + var(--bb-a11y-space-inline));
+  gap: var(--bb-a11y-space-inline);
+}
+.bb-scan-summary__details { display: flex; flex-direction: column; gap: var(--bb-a11y-space-section); }
+.bb-scan-summary__details[hidden] { display: none; }
+.bb-scan-summary__levels { display: flex; flex-direction: column; gap: var(--bb-a11y-space-inline); }
+.bb-scan-summary__heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--bb-a11y-space-inline); }
+.bb-scan-summary__heading-title {
+  margin: 0;
+  font-size: var(--bb-a11y-font-size-body);
+  line-height: var(--bb-a11y-font-line-body);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-title);
+}
+.bb-scan-summary__heading-hint {
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-scan-summary__breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--bb-a11y-size-icon-box) * 9), 1fr));
+  gap: var(--bb-a11y-space-section);
+}
+.bb-scan-summary__brands { display: flex; flex-direction: column; gap: var(--bb-a11y-space-inline); }
+/* One row of brand modes however many there are; names truncate before the row wraps. */
+.bb-scan-summary__brand-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--bb-a11y-space-inline);
+}

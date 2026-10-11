@@ -1,0 +1,10 @@
+/* Spacing & shape page. */
+.bbs-space-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--bb-space-stack-md); }
+.bbs-space-list li { display: grid; grid-template-columns: 72px 1fr auto; align-items: center; gap: var(--bb-space-inline-md); }
+.bbs-space-bar { display: block; height: var(--bb-space-inset-md); border-radius: var(--bb-radius-sm); background: var(--bb-surface-accent); }
+
+.bbs-shape-card { align-items: flex-start; }
+.bbs-radius-sample { display: block; width: calc(var(--bb-size-control-height-lg) * 1.5); height: calc(var(--bb-size-control-height-lg) * 1.5); background: var(--bb-surface-accent-subtle); border: var(--bb-border-width-default) solid var(--bb-border-accent); }
+.bbs-stroke-sample { display: block; width: 100%; height: var(--bb-size-control-height-lg); border-style: solid; border-color: var(--bb-border-strong); border-radius: var(--bb-radius-lg); }
+.bbs-size-sample { display: inline-block; max-width: 100%; border-radius: var(--bb-radius-sm); background: var(--bb-surface-accent-subtle); border: var(--bb-border-width-default) solid var(--bb-border-accent); vertical-align: middle; }
+

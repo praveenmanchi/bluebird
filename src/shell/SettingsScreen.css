@@ -14,3 +14,27 @@
 /* Toggle instance (Toggle=false) resized from the set's 960px to 1051px. */
 .bb-settings__row { max-width: var(--bb-derived-settings-screen-toggle-width); }
 .bb-settings__actions { width: 100%; }
+/* Persona switch (code-only row): the Toggle text row above a 2-level SegmentedControl. */
+.bb-settings__persona {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-space-stack-sm);
+  max-width: var(--bb-derived-settings-screen-toggle-width);
+}
+/* Product tour (code-only row): the Toggle text row with a Replay button beside it. */
+.bb-settings__tour {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-stack-sm);
+  max-width: var(--bb-derived-settings-screen-toggle-width);
+}
+/* Persona card ("Frame 1430102664", 264:10472): first row of Settings · Integrations, full width. */
+.bb-settings__persona-card { width: 100%; }
+/* Team Banner (204:7270) pinned to the bottom of the page, full width, as in the
+ * Settings Layout frames that place it (UX copy frame 287:31888, Main screens settings). */
+.bb-settings__team {
+  margin-top: auto;
+  width: 100%;
+}

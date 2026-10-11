@@ -1,0 +1,46 @@
+/* SsoProviderButton — Figma "SSO Provider Button" (40000324:8451).
+ * Glyph (16) · Label, centred. Glyphs are monochrome marks in login/provider/glyph. */
+.bb-sso-provider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-login-gap-sm);
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--bb-login-provider-height);
+  margin: 0;
+  padding: 0 var(--bb-login-gap-md);
+  border: var(--bb-input-border-width) solid var(--bb-login-provider-border-default);
+  border-radius: var(--bb-login-provider-radius);
+  background: var(--bb-login-provider-bg-default);
+  color: var(--bb-login-provider-text);
+  font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-login-font-body-size);
+  line-height: var(--bb-login-font-body-line);
+  cursor: pointer;
+}
+.bb-sso-provider:hover:not(:disabled), .bb-sso-provider[data-state='hover'] {
+  border-color: var(--bb-login-provider-border-hover);
+  background: var(--bb-login-provider-bg-hover);
+}
+.bb-sso-provider:focus-visible { outline: var(--bb-input-border-width) solid var(--bb-input-border-focus); outline-offset: var(--bb-input-border-width); }
+.bb-sso-provider:disabled { cursor: default; }
+.bb-sso-provider__label { font-weight: var(--bb-login-font-weight-medium); white-space: nowrap; }
+.bb-sso-provider__glyph {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-content: space-between;
+  align-items: center;
+  justify-content: space-between;
+  width: var(--bb-login-icon-size-sm);
+  height: var(--bb-login-icon-size-sm);
+}
+.bb-sso-provider[data-provider='google'] .bb-sso-provider__glyph { justify-content: center; }
+.bb-sso-provider__tile {
+  width: var(--bb-derived-sso-provider-button-tile-width);
+  height: var(--bb-derived-sso-provider-button-tile-height);
+  background: var(--bb-login-provider-glyph);
+}
+.bb-sso-provider__ring { display: block; width: 100%; height: 100%; stroke: var(--bb-login-provider-glyph); }
+.bb-sso-provider__letter { font-weight: var(--bb-login-font-title-weight); }

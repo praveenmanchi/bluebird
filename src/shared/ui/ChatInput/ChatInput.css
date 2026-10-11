@@ -1,0 +1,140 @@
+/* ChatInput — Figma "Chat Input" (40000284:8166): the UX AI prompt field.
+ * Idle draws a plain uxai/chip/border stroke. Active and Generating wrap the
+ * field in the Beam (Figma: "angular gradient border + glow bound to
+ * uxai/beam/*; animate the gradient rotation in code"): a conic gradient over
+ * uxai/beam/1-5 painted in the border box, uxai/beam-width thick, with a
+ * uxai/beam/2 glow. Figma includes strokes in layout, so the beam stroke
+ * (1.4, derived per state) replaces the 1 idle stroke in the box model.
+ * The glow's 7 blur is a raw effect value the generator does not export; it
+ * is written as 5 × uxai/beam-width (= 7) so it scales with the beam.
+ * An idle field that receives focus shows the Active beam (data-state stays
+ * the Figma variant; :focus-within selects the same rules). */
+@property --chat-input-beam-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; } /* allow-raw: animation driver for the beam rotation, not a design value */
+
+.bb-chat-input {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--bb-uxai-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-chat-input-root-width);
+  max-width: 100%;
+  padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
+  border: var(--bb-derived-chat-input-root-state-idle-stroke-width) solid var(--bb-uxai-chip-border);
+  border-radius: var(--bb-uxai-radius-control);
+  background: var(--bb-uxai-surface-field);
+}
+.bb-chat-input[data-state='active'],
+.bb-chat-input[data-state='idle']:focus-within,
+.bb-chat-input[data-state='generating'] {
+  border: var(--bb-derived-chat-input-root-state-active-stroke-width) solid transparent;
+  background:
+    linear-gradient(var(--bb-uxai-surface-field), var(--bb-uxai-surface-field)) padding-box,
+    conic-gradient(from var(--chat-input-beam-angle), var(--bb-uxai-beam-1), var(--bb-uxai-beam-2), var(--bb-uxai-beam-3), var(--bb-uxai-beam-4), var(--bb-uxai-beam-5), var(--bb-uxai-beam-1)) border-box; /* allow-raw: animated angle (motion) */
+  box-shadow: 0 0 calc(var(--bb-uxai-beam-width) * 5) var(--bb-uxai-beam-2);
+}
+.bb-chat-input[data-state='generating'] { border-width: var(--bb-derived-chat-input-root-state-generating-stroke-width); }
+
+/* Context — the Selection / Sources chips (Show context). */
+.bb-chat-input__context {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-tight);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Text */
+.bb-chat-input__field {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--bb-uxai-font-line-label);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  resize: none;
+  field-sizing: content;
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-label);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-label);
+  color: var(--bb-uxai-text-title);
+}
+.bb-chat-input__field::placeholder { color: var(--bb-uxai-text-placeholder); opacity: 1; }
+.bb-chat-input__field:focus { outline: none; }
+
+/* Toolbar — tools + hint on the left, Send / Stop on the right. */
+.bb-chat-input__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+.bb-chat-input__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-section);
+  min-width: 0;
+  overflow: hidden;
+}
+.bb-chat-input__tool,
+.bb-chat-input__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  appearance: none;
+}
+.bb-chat-input__tool {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+  background: none;
+}
+.bb-chat-input__tool .bb-icon,
+.bb-chat-input__action .bb-icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-chat-input__tool:focus-visible,
+.bb-chat-input__action:focus-visible {
+  outline: var(--bb-uxai-border-width) solid var(--bb-border-focus);
+  outline-offset: var(--bb-uxai-space-hair);
+}
+.bb-chat-input__hint {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-chat-input__action {
+  width: var(--bb-uxai-size-control);
+  height: var(--bb-uxai-size-control);
+  border-radius: var(--bb-uxai-radius-pill);
+  background: var(--bb-uxai-send-bg);
+}
+.bb-chat-input__arrow { transform: rotate(180deg); } /* allow-raw: Figma rotates the Tab Icons "arrow" (a down chevron) 180° */
+.bb-chat-input__stop-glyph {
+  display: block;
+  width: var(--bb-derived-chat-input-stop-glyph-width);
+  height: var(--bb-derived-chat-input-stop-glyph-height);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-icon-on-accent);
+}
+
+/* Motion — the beam rotates slowly while focused, quickly while generating. */
+@media (prefers-reduced-motion: no-preference) {
+  .bb-chat-input[data-state='active'],
+  .bb-chat-input[data-state='idle']:focus-within { animation: bb-chat-input-beam 6000ms linear infinite; } /* allow-raw */
+  .bb-chat-input[data-state='generating'] { animation: bb-chat-input-beam 2000ms linear infinite; } /* allow-raw */
+}
+@keyframes bb-chat-input-beam { to { --chat-input-beam-angle: 360deg; } } /* allow-raw */

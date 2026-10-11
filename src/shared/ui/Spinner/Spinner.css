@@ -1,0 +1,18 @@
+/* Spinner — Figma "Spinner" (40000321:8410). Track + arc are two ellipses in
+ * Figma; here they are two stroked circles in the same 16-unit box. */
+.bb-spinner {
+  display: block;
+  flex: none;
+  width: var(--bb-login-spinner-size);
+  height: var(--bb-login-spinner-size);
+  animation: bb-spinner-spin 800ms linear infinite; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-spinner[data-size='lg'] { width: var(--bb-login-spinner-size-lg); height: var(--bb-login-spinner-size-lg); }
+.bb-spinner__track { stroke: var(--bb-login-spinner-track); }
+.bb-spinner__arc { stroke: var(--bb-login-spinner-arc); }
+.bb-spinner[data-tone='accent'] .bb-spinner__track { stroke: var(--bb-login-mark-bg); }
+.bb-spinner[data-tone='accent'] .bb-spinner__arc { stroke: var(--bb-login-spinner-arc-accent); }
+@keyframes bb-spinner-spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) {
+  .bb-spinner { animation-duration: 2400ms; } /* allow-raw */
+}

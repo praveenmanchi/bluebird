@@ -1,0 +1,9 @@
+/* LoginFooter — Figma "Login Footer" (40000324:8504): Divider Label · switch
+ * Button (Secondary / Large, fills) · Contact Row. */
+.bb-login-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-login-gap-lg);
+  width: 100%;
+}
+.bb-button.bb-login-footer__switch { width: 100%; }

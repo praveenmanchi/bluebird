@@ -1,0 +1,37 @@
+/* RuleRow — Figma "Rule Row" (40000296:8401). FIXED 400-wide row: Enabled
+ * (Checkbox, no label), Text (FILL: Name over Description) and Level (Rating).
+ * Figma fixes the frame at 32 high, but its Text frame is 32 high on its own
+ * plus agents/space/hair above and below, so the height is a floor here
+ * (min-height) instead of a clip. */
+.bb-rule-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-rule-row-root-width);
+  max-width: 100%;
+  min-height: var(--bb-derived-rule-row-root-height);
+  padding-block: var(--bb-agents-space-hair);
+}
+.bb-rule-row__toggle { flex: none; }
+.bb-rule-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-rule-row__name {
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-medium);
+  line-height: var(--bb-agents-font-line-body);
+  color: var(--bb-agents-text-title);
+}
+.bb-rule-row__description {
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+  color: var(--bb-agents-text-meta);
+}
+.bb-rule-row__level { flex: none; }

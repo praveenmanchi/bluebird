@@ -9,14 +9,14 @@ const meta = {
   title: 'Organisms/Footer',
   component: Footer,
   parameters: { figma: { setId: figma.setId, name: figma.name }, layout: 'fullscreen' },
-  args: { local: true, uxai: true, mcp: true, dualFile: true, size: 'M' },
+  args: { git: true, uxai: true, mcp: true, dualFile: true, size: 'M' },
 } satisfies Meta<typeof Footer>
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = { parameters: { figma: { variant: 'footer' } } }
 export const LocalOnly: Story = { args: { uxai: false, mcp: false, dualFile: false } }
-export const CustomPills: Story = { args: { pills: [{ label: 'Local', status: 'good' }, { label: 'UX AI', status: 'issue' }, { label: 'MCP', status: 'error' }, { label: 'Dual File', status: 'retry' }] } }
+export const CustomPills: Story = { args: { pills: [{ label: 'Git', status: 'good' }, { label: 'UX AI', status: 'issue' }, { label: 'MCP', status: 'error' }, { label: 'Dual File', status: 'retry' }] } }
 
 export const Interactive: Story = {
   render: (args) => {

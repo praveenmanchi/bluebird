@@ -14,7 +14,7 @@
   background: var(--bb-rating-bg-default);
   color: var(--bb-rating-fg-default);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-rating-font-size);
+  font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-rating-font-weight);
   line-height: var(--bb-derived-rating-a-line-height);
   white-space: nowrap;

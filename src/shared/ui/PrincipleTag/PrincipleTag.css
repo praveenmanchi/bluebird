@@ -14,8 +14,8 @@
   border-radius: var(--bb-derived-principle-tag-root-radius);
   color: var(--bb-principle-fg);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-principle-font-size);
-  font-weight: var(--bb-derived-principle-tag-perceivable-font-weight);
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-derived-principle-tag-perceivable-line-height);
   white-space: nowrap;
   user-select: none;

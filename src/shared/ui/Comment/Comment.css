@@ -1,0 +1,54 @@
+/* Comment — Figma "Comment" (40000268:8025). Avatar beside a Content column
+ * (Header, Body, Actions) that fills the 520-wide frame. The frame's 40
+ * height is a canvas artefact (the content is 66 high and overflows it), so
+ * the comment hugs its content. */
+.bb-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-comment-root-width);
+  max-width: 100%;
+}
+.bb-comment__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-tight);
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-comment__header {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+}
+.bb-comment__author {
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-body);
+  color: var(--bb-jira-text-title);
+  white-space: nowrap;
+}
+.bb-comment__time {
+  font-size: var(--bb-jira-font-size-caption);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-caption);
+  color: var(--bb-jira-text-meta);
+  white-space: nowrap;
+}
+.bb-comment__body {
+  margin: 0;
+  align-self: stretch;
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-body);
+  color: var(--bb-jira-text-body);
+  overflow-wrap: anywhere;
+}
+.bb-comment__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+}

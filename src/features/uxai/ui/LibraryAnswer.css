@@ -1,0 +1,94 @@
+/* LibraryAnswer — what a Dual File grounded answer cites. Not a Figma frame yet:
+ * built from the Color Artifact's panel (uxai/surface/panel, radius/panel) and the
+ * Variable Row's text styles, so it only reads existing uxai/* variables. */
+.bb-uxai-library-answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-color-artifact-root-width);
+}
+.bb-uxai-library {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-tight);
+  box-sizing: border-box;
+  padding: var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-surface-panel-border);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-uxai-library > .bb-uxai-library__header { width: auto; }
+.bb-uxai-library__group {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-uxai-library__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-hair);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-uxai-library__row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-inline);
+  padding: var(--bb-uxai-space-hair) var(--bb-uxai-space-tight);
+  border-radius: var(--bb-uxai-radius-control);
+  min-width: 0;
+}
+.bb-uxai-library__row[data-origin='other'] { background: var(--bb-uxai-changed-bg); }
+.bb-uxai-library__swatches {
+  display: inline-flex;
+  flex: none;
+  gap: var(--bb-uxai-space-hair);
+}
+.bb-uxai-library__amount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  min-width: var(--bb-uxai-size-swatch);
+  height: var(--bb-uxai-size-swatch);
+  padding: 0 var(--bb-uxai-space-hair);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-surface-sunken);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-chip-border);
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-title);
+}
+.bb-uxai-library__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--bb-uxai-space-hair);
+}
+.bb-uxai-library__name,
+.bb-uxai-library__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-uxai-library__name {
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-body);
+  color: var(--bb-uxai-text-title);
+}
+.bb-uxai-library__meta {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-uxai-library__open { flex: none; }

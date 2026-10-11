@@ -1,0 +1,37 @@
+/* FieldRow — Figma "Field Row" (40000267:8056). A fixed 360×20 line: the
+ * label column is jira/size/field-label wide, the value frame fills the rest
+ * (optional Avatar + text, jira/space/tight apart). */
+.bb-field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-field-row-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-field-row-root-height);
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-body);
+}
+.bb-field-row__label {
+  flex: none;
+  width: var(--bb-jira-size-field-label);
+  color: var(--bb-jira-text-meta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-field-row__value {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-tight);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-field-row__text {
+  color: var(--bb-jira-text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

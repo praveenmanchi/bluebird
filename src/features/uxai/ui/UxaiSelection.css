@@ -1,0 +1,85 @@
+/* UX AI · Selection — Figma "UX AI body" 40000291:6087 (screen 40000288:8344).
+ * The Selection Preview replaces the Sources bar; the answer carries the
+ * Variables panel (a plain frame here, so its fill, stroke, radius and
+ * spacing are read below). Selection Preview, Messages, Artifact Header,
+ * Variable Rows, the Tab selecters, Buttons and the Chat Input are composed
+ * components that read their own tokens. */
+.bb-uxai-selection {
+  /* Frame bindings: root padding / gap, Thread + Indent spacing, the orb gutter. */
+  --uxai-panel: var(--bb-uxai-space-panel);
+  --uxai-section: var(--bb-uxai-space-section);
+  --uxai-tight: var(--bb-uxai-space-tight);
+  --uxai-inline: var(--bb-uxai-space-inline);
+  --uxai-hair: var(--bb-uxai-space-hair);
+  --uxai-gutter: var(--bb-uxai-size-orb-sm);
+  /* "1 change · 3 variants". */
+  --uxai-font-family: var(--bb-uxai-font-family);
+  --uxai-caption-color: var(--bb-uxai-text-meta);
+  --uxai-caption-size: var(--bb-uxai-font-size-caption);
+  --uxai-caption-line: var(--bb-uxai-font-line-caption);
+  --uxai-weight-regular: var(--bb-uxai-font-weight-regular);
+  --uxai-weight-strong: var(--bb-uxai-font-weight-strong);
+  --uxai-weight-medium: var(--bb-uxai-font-weight-medium);
+  /* The 859 px desktop frame and its FILL children cap the layout; the plugin window (360–760) flexes below them. */
+  --uxai-max-width: var(--bb-derived-uxai-selection-root-width);
+  --uxai-message-max: var(--bb-derived-uxai-selection-message-width);
+  --uxai-message-min-height: var(--bb-derived-uxai-selection-message-height);
+  --uxai-composer-max: var(--bb-derived-uxai-selection-chat-input-width);
+}
+.bb-selection-preview.bb-uxai-selection__preview {
+  flex: none;
+  width: 100%;
+  max-width: var(--bb-derived-uxai-selection-selection-preview-width);
+}
+
+/* Variables panel — VERTICAL, FILL, section gap, row-x inset, a 1 stroke that takes layout space. */
+.bb-uxai-variables {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-section);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-uxai-space-row-x);
+  border: var(--bb-derived-uxai-selection-variables-panel-stroke-width) solid var(--bb-uxai-surface-panel-border);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+}
+.bb-artifact-header.bb-uxai-variables__header {
+  width: 100%;
+  max-width: var(--bb-derived-uxai-selection-artifact-header-width);
+}
+.bb-uxai-variables__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-hair);
+}
+.bb-variable-row.bb-uxai-variables__row {
+  width: 100%;
+  max-width: var(--bb-derived-uxai-selection-variable-row-width);
+}
+/* Footer — Mode tabs left, Apply right (SPACE_BETWEEN); wraps in a narrow window. */
+.bb-uxai-variables__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-uxai-space-inline);
+}
+.bb-uxai-variables__modes {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-tight);
+}
+.bb-uxai-variables__apply {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-uxai-space-inline);
+}
+.bb-uxai-variables__summary {
+  color: var(--bb-uxai-text-meta);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+}

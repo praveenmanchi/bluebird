@@ -1,0 +1,49 @@
+/* AgentHeader — Figma "Agent Header" (40000296:8380). FIXED 640-wide row,
+ * centred: Bot (Bot Avatar), Text (FILL: Name, Purpose, Chips) and Status
+ * (Meta Badge). Figma fixes it at 60 high while Text is 83 high, so the
+ * height is a floor (min-height) here rather than a clip.
+ * The Bot instance binds width/height to agents/size/bot (40) yet Figma renders
+ * it 56 × 56; the code follows the rendered design as 1.4 × the token. */
+.bb-agent-header {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: var(--bb-derived-agent-header-root-width);
+  max-width: 100%;
+  min-height: var(--bb-derived-agent-header-root-height);
+}
+.bb-agent-header__bot {
+  width: calc(var(--bb-agents-size-bot) * 1.4);
+  height: calc(var(--bb-agents-size-bot) * 1.4);
+}
+.bb-agent-header__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-tight);
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-agent-header__name {
+  margin: 0;
+  font-size: var(--bb-agents-font-size-title);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: normal;
+  color: var(--bb-agents-text-title);
+}
+.bb-agent-header__purpose {
+  margin: 0;
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-body);
+  color: var(--bb-agents-text-body);
+}
+.bb-agent-header__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight);
+  max-width: 100%;
+}
+.bb-agent-header__status { flex: none; }

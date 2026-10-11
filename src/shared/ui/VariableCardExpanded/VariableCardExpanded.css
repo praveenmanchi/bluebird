@@ -2,8 +2,9 @@
  * single variant. Border, radius, divider and the type ramp are
  * card-variable/* tokens; the header row is the composed VariableCard,
  * flattened to a bottom divider. Root stroke, the header padding, the row
- * gaps and the Gap Inc Sans / MuseoModerno families are raw →
- * --bb-derived-variable-card-expanded-* (families via type/family/*). */
+ * gaps and the Museo Sans / MuseoModerno families are raw →
+ * --bb-derived-variable-card-expanded-*. Museo Sans is not a web font, so
+ * type/family/brand stands in where it is not installed. */
 .bb-variable-card-expanded {
   display: flex;
   flex-direction: column;
@@ -34,10 +35,11 @@
   gap: var(--bb-derived-variable-card-expanded-frame-1430102565-gap);
 }
 .bb-variable-card-expanded__header .bb-variable-card__name {
-  font-family: var(--bb-font-family-brand), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-variable-card-expanded-black-font-family), var(--bb-font-family-brand), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-weight: var(--bb-derived-variable-card-expanded-black-font-weight);
 }
 .bb-variable-card-expanded__header .bb-variable-card__meta {
-  font-family: var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-variable-card-expanded-brands-font-family), var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-weight: var(--bb-derived-variable-card-expanded-brands-font-weight);
 }
 .bb-variable-card-expanded__header .bb-variable-card__trail { gap: var(--bb-derived-variable-card-expanded-frame-1430102568-gap); }
@@ -100,7 +102,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-variable-card-expanded-button-font-family), var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-meta-font-size);
   font-weight: var(--bb-derived-variable-card-expanded-button-font-weight);
   line-height: var(--bb-card-variable-title-line-height);

@@ -1,0 +1,32 @@
+/* JiraEmptyState — Figma "Jira Empty State" (40000268:8127). A 360-wide,
+ * height-hugging column centred on its axis: Jira glyph, Title, Body (fills
+ * the width, centred text) and the action Button. The three States differ
+ * only in copy and in the Button type (Not connected is Primary). */
+.bb-jira-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-jira-space-section);
+  box-sizing: border-box;
+  width: var(--bb-derived-jira-empty-state-root-width);
+  max-width: 100%;
+  padding: var(--bb-jira-space-panel);
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  text-align: center;
+}
+.bb-jira-empty-state__title {
+  margin: 0;
+  font-size: var(--bb-jira-font-size-heading);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-label);
+  color: var(--bb-jira-text-title);
+  white-space: nowrap;
+}
+.bb-jira-empty-state__body {
+  margin: 0;
+  align-self: stretch;
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-body);
+  color: var(--bb-jira-text-meta);
+}

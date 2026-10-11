@@ -7,12 +7,12 @@ export const figma = {
     WCAG: 'code',
     Node: 'node',
     Actual: 'actual',
-    Requried: 'required',
+    Required: 'required',
     'Check content': 'checks includes "content"',
     'check Design': 'checks includes "design"',
     'check code': 'checks includes "code"',
     'why it fails': 'whyItFails',
-    'How ti fix': 'howToFix',
+    'How to fix': 'howToFix',
     Cognitive: 'disabilities includes "cognitive"',
     Auditory: 'disabilities includes "auditory"',
     'Physical/Motor': 'disabilities includes "physical"',
@@ -27,9 +27,30 @@ export const figma = {
     'Ignore / Annotation / Select buttons': 'onIgnore / onAnnotate / onSelect',
     'Component 13/14/15 (Theme instances)': 'themes',
     Placeholder: 'preview',
+    'Check preview (Type Compare / Target Preview / Vision Sim Grid)': 'typeCompare (text) / target (touch) / vision (vision)',
   },
 
   derivedGaps: {
+    '--bb-derived-wcag-card-root-width': 'Desktop-mock width (465). The card is fluid: it fills its column at every plugin window size, and stacks row labels over values below 400 px (container query).',
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-padding-top': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-padding-right': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-padding-bottom': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-padding-left': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-radius': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-touch-target-stroke-width': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-padding-top': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-padding-right': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-padding-bottom': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-padding-left': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-radius': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-disability-indicator-mode-vision-stroke-width': "Body \"Disabilities\" indicators in Mode=Touch target / Mode=Vision (cut from Mode=colors 2026-10-11) render at DisabilityIndicator's native size, whose own root tokens carry these values.",
+    '--bb-derived-wcag-card-row-label-mode-touch-target-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-row-value-mode-touch-target-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-row-value-mode-touch-target-width': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-row-label-mode-vision-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-row-value-mode-vision-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-row-value-mode-vision-width': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
+    '--bb-derived-wcag-card-spacer-width': 'The 108px Spacer pushes the Occurrences / "Understanding SC" column to the right of the criterion row; code does that with flex (margin-inline-start: auto), so the pinned width is not read.',
     '--bb-derived-wcag-card-line-61-width': 'Figma pins the divider Lines to the card inner width (437px); code uses .bb-wcag-card__divider { width: 100% } so they stretch with the card instead of re-pinning on every resize.',
     '--bb-derived-wcag-card-line-62-width': 'as line-61 — full-bleed rule, stretched rather than pinned.',
     '--bb-derived-wcag-card-line-64-width': 'as line-61 — .bb-wcag-card__divider--fix (the Body rule under the Fix row) stretches to the body width rather than pinning 437px.',
@@ -62,6 +83,10 @@ export const figma = {
     '--bb-derived-wcag-card-row-value--1-height': 'Row Colors\' value box (419:45060, 166x12.6; five layers are named "Row value"). Values fill the row (flex) and size from the text line-height, like the baselined row-value sizes.',
   },
   figmaGaps: {
+    'a11y/space/section': 'consumed by the composed TypeCompare / TargetPreview / VisionSimGrid "Check preview"',
+    'a11y/space/inline': 'consumed by the composed TypeCompare / TargetPreview / VisionSimGrid "Check preview"',
+    'principle/operable/bg': 'consumed by the composed PrincipleTag (Mode=Touch target shows the Operable tag)',
+    'font/size-caption': 'the theme-chip labels (Theme › String, overridden to 10px Noto Sans on 2026-10-11) — rendered by the composed ThemeChip, not WcagCard.css',
     // The 2026-09-23 set binds the new sections to the semantic scale. Each of these is read by
     // the composed child that renders that section, not by WcagCard.css — verified by grepping
     // src/shared/ui for the CSS var.
@@ -105,7 +130,7 @@ export const figma = {
   gapProps: {
     /** Figma 2026-09-23: the set is now Mode=colors / Mode=Text, and the two booleans the
      *  earlier notes said were dropped are in fact still there. */
-    Mode: 'mode ("colors" | "text")',
+    Mode: 'mode — Figma "colors" | "Text" | "Touch target" | "Vision" → code "colors" | "text" | "touch" | "vision"',
     'Show fix': 'fix',
     'Show manual review': 'manualChecks',
     'Show severity': 'severity',
@@ -116,8 +141,8 @@ export const figma = {
     'Show metrics': 'metrics — bound in Mode=Colors, unbound and always on in Mode=Text',
     'Show thumbnails': 'thumbnail + thumbnailAfter',
     'Show snippet': 'snippet',
-    // No boolean: the Fix row is always on in Mode=colors and hidden in Mode=Text, so code renders
-    // `fix` only when mode is "colors".
+    // 2026-10-11: the Fix row is bound to "Show fix" in both modes (it was unbound before). Code
+    // still keeps text mode fix-free, which matches every Mode=Text instance in the file (Show fix off).
     Fix: 'fix (mode === "colors" only)',
     // No boolean either: Figma always draws this Body rule under the Fix row in Mode=colors (absent
     // from Mode=Text). `fix` is optional in code, so the rule rides with the rendered Fix row instead
@@ -126,5 +151,5 @@ export const figma = {
     'Show ignored': 'ignored',
     Annotated: "annotation.state === 'placed'",
   },
-  notes: '2026-09-23: Mode=Text was a byte-copy of Mode=Colors; it is now rebuilt from the finished Colors variant with the colour Preview row hidden and the Metrics panel shown. A later pass reordered Mode=Colors — Details → Metrics → divider → Brand modes → Thumbnails → Placeholder, with the Fix row moved below the colour Preview row — and dropped the "Show fix" and "Show manual review" booleans: Fix is now always on in Mode=Colors, and the manual-review list (manualChecks) stays code-only. Metrics is bound in Mode=Colors instead of being a Text-only section, so the panel rides along with the swatch pair. Both variants hug vertically so the optional sections can grow the card. The Principle tag is absolutely positioned at the card corner while Rating flows to the end of the header. The Occurrences roll-up and the "Understanding SC" link now share one right-hand column (40000163:15844) instead of sitting on the criterion row. The four visibility bindings are crossed in Figma (the Auditory indicator is toggled by "Cognitive" and vice versa); code maps each boolean to its own indicator kind. The last row is labelled "How to fix" twice in Figma; code labels the theme row "Themes" by default (themesLabel).',
+  notes: '2026-09-23: Mode=Text was a byte-copy of Mode=Colors; it is now rebuilt from the finished Colors variant with the colour Preview row hidden and the Metrics panel shown. A later pass reordered Mode=Colors — Details → Metrics → divider → Brand modes → Thumbnails → Placeholder, with the Fix row moved below the colour Preview row — and dropped the "Show fix" and "Show manual review" booleans: Fix is now always on in Mode=Colors, and the manual-review list (manualChecks) stays code-only. Metrics is bound in Mode=Colors instead of being a Text-only section, so the panel rides along with the swatch pair. Both variants hug vertically so the optional sections can grow the card. The Principle tag is absolutely positioned at the card corner while Rating flows to the end of the header. The Occurrences roll-up and the "Understanding SC" link now share one right-hand column (40000163:15844) instead of sitting on the criterion row. The last row is labelled "How to fix" twice in Figma; code labels the theme row "Themes" by default (themesLabel). 2026-10-11 audit: every property is now bound in both modes (Mode=Text had none), "Show fix" and "Show manual review" are bound again (Manual review layer added to Mode=colors, default false), the Cognitive/Auditory indicator bindings are no longer crossed, "Requried"/"How ti fix" are renamed "Required"/"How to fix", and all text is Noto Sans (wcag-card/font/family) at 10px minimum — the Code Snippet body stays mono.',
 } as const

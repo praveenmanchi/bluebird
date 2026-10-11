@@ -1,0 +1,48 @@
+/* ReadinessMeter — Figma "Readiness Meter" (40000275:8183). VERTICAL MIN MIN,
+ * FIXED 356 × 40, gap mcp/space/tight: Header (SPACE_BETWEEN, FILL × HUG),
+ * the Progress Bar instance (FILL × mcp/size/meter), Caption. The children
+ * add up to 43 tall, so the FIXED 40 is read as a minimum rather than clipping
+ * the caption. Track fill/radius/height come from the composed ProgressBar. */
+.bb-readiness-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--bb-mcp-space-tight);
+  box-sizing: border-box;
+  width: var(--bb-derived-readiness-meter-root-width);
+  max-width: 100%;
+  min-height: var(--bb-derived-readiness-meter-root-height);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-readiness-meter__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+}
+.bb-readiness-meter__label {
+  font-size: var(--bb-mcp-font-size-body);
+  font-weight: var(--bb-mcp-font-weight-medium);
+  line-height: var(--bb-mcp-font-line-body);
+  color: var(--bb-mcp-text-title);
+}
+.bb-readiness-meter__score {
+  font-size: var(--bb-mcp-font-size-heading);
+  font-weight: var(--bb-mcp-font-weight-strong);
+  line-height: var(--bb-mcp-font-line-label);
+  color: var(--bb-mcp-text-title);
+  font-variant-numeric: tabular-nums;
+}
+.bb-readiness-meter .bb-readiness-meter__bar {
+  align-self: stretch;
+  width: auto;
+}
+.bb-readiness-meter__caption {
+  margin: 0;
+  font-size: var(--bb-mcp-font-size-caption);
+  font-weight: var(--bb-mcp-font-weight-regular);
+  line-height: var(--bb-mcp-font-line-caption);
+  color: var(--bb-mcp-text-meta);
+}

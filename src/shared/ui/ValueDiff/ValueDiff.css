@@ -1,0 +1,42 @@
+/* ValueDiff — Figma "Value Diff" (40000341:8469). HORIZONTAL MIN CENTER,
+ * HUG × HUG, gap publish/space/tight: Old (swatch + value, gap
+ * publish/space/hair) · Arrow · New. Kind=Number drops both swatches. The
+ * swatch fill is the scanned value itself (--value-diff-swatch, set inline);
+ * the old value reads as removed (diff/old-text, struck through), the new one
+ * as the title colour in medium weight. */
+.bb-value-diff {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-tight);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  white-space: nowrap;
+}
+.bb-value-diff__side {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-hair);
+}
+.bb-value-diff__swatch {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+  border: var(--bb-derived-value-diff-swatch-stroke-width) solid var(--bb-publish-swatch-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--value-diff-swatch);
+}
+.bb-value-diff__old,
+.bb-value-diff__arrow {
+  font-weight: var(--bb-publish-font-weight-regular);
+  color: var(--bb-publish-diff-old-text);
+}
+.bb-value-diff__old { text-decoration: line-through; }
+.bb-value-diff__new {
+  font-weight: var(--bb-publish-font-weight-medium);
+  color: var(--bb-publish-text-title);
+  text-decoration: none;
+}

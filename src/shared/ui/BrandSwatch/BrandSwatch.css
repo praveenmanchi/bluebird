@@ -1,0 +1,23 @@
+/* BrandSwatch — Figma "Brand Swatch" (40000285:8153). VERTICAL, hugging, the
+ * Large Color Swatch over two caption lines. Only the swatch carries the
+ * brand mode (data-brand), exactly as the explicit mode sits on the Swatch
+ * instance in Figma, so the captions keep the surrounding brand's colours. */
+.bb-brand-swatch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-tight);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  line-height: var(--bb-uxai-font-line-caption);
+}
+.bb-brand-swatch__brand {
+  font-weight: var(--bb-uxai-font-weight-medium);
+  color: var(--bb-uxai-text-title);
+  white-space: nowrap;
+}
+.bb-brand-swatch__hex {
+  font-weight: var(--bb-uxai-font-weight-regular);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+}

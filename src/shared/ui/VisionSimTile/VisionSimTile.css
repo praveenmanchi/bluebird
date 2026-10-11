@@ -1,0 +1,38 @@
+/* Vision Sim Tile — Figma "Vision Sim Tile" (40000463:9248). Pill and sample colours are the
+ * simulated pair, set inline; everything else is a11y/* chrome. */
+.bb-vision-sim-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-a11y-space-tight);
+  box-sizing: border-box;
+  padding: var(--bb-a11y-space-inline);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-sunken);
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+}
+.bb-vision-sim-tile__sample {
+  display: flex;
+  align-self: stretch;
+  justify-content: center;
+  align-items: center;
+  gap: var(--bb-derived-vision-sim-tile-sample-gap);
+  padding: var(--bb-derived-vision-sim-tile-sample-padding-top) 0 var(--bb-derived-vision-sim-tile-sample-padding-bottom);
+  border-radius: var(--bb-derived-vision-sim-tile-sample-radius);
+}
+.bb-vision-sim-tile__pill {
+  padding: var(--bb-derived-vision-sim-tile-pill-error-padding-top) var(--bb-derived-vision-sim-tile-pill-error-padding-right) var(--bb-derived-vision-sim-tile-pill-error-padding-bottom) var(--bb-derived-vision-sim-tile-pill-error-padding-left);
+  border-radius: var(--bb-derived-vision-sim-tile-pill-error-radius);
+  color: var(--bb-derived-vision-sim-tile-label-color);
+  font-weight: var(--bb-derived-vision-sim-tile-label-font-weight);
+}
+.bb-vision-sim-tile__name {
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-title);
+}
+.bb-vision-sim-tile__caption {
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}

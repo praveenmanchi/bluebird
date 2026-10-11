@@ -1,0 +1,43 @@
+/* Pipeline — Figma "Pipeline" (40000345:8676). HORIZONTAL MIN MIN, FIXED 356
+ * × HUG, gap publish/space/hair: Node, Rail, Node, Rail, Node. Each Rail is
+ * FILL × FIXED 32 (VERTICAL CENTER CENTER) around an 18 × publish/size/rail
+ * Link, link-active after a finished stage and link otherwise. In code the
+ * root fills its parent, so each Rail is grouped with the node after it in one
+ * list item; the item and the rail grow while the nodes keep their FIXED width. */
+.bb-pipeline {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--bb-publish-space-hair);
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-pipeline__item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--bb-publish-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-pipeline__item[data-first] { flex: none; }
+.bb-pipeline__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--bb-derived-pipeline-rail-height);
+}
+.bb-pipeline__link {
+  display: block;
+  width: 100%;
+  min-width: var(--bb-derived-pipeline-link-width);
+  height: var(--bb-publish-size-rail);
+  background: var(--bb-publish-pipeline-link);
+}
+.bb-pipeline__link[data-active] { background: var(--bb-publish-pipeline-link-active); }

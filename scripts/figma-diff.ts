@@ -133,7 +133,7 @@ function diffProps(set: ComponentSetSnapshot, next: ComponentSetSnapshot, files:
   const added = Object.keys(next.props).filter((k) => !(k in set.props))
   const pairedOld = new Set<string>()
   const pairedNew = new Set<string>()
-  // Figma property renames are frequent (the file still carries "Requried" and "How ti fix").
+  // Figma property renames are frequent (WCAG Card "Requried" / "How ti fix" became "Required" / "How to fix" on 2026-10-11).
   for (const oldKey of removed) {
     const hit = added.find((k) => !pairedNew.has(k) && same(set.props[oldKey], next.props[k]))
     if (!hit) continue

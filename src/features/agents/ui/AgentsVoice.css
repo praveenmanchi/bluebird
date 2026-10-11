@@ -1,0 +1,82 @@
+/* Agent voice — Figma "Agents body" on "AI Agents · Voice" (40000299:6304).
+ * Vertical: Agent Header, Conversation (FILL, bottom-aligned: Messages, voice
+ * notes with a Voice Wave, Thinking Steps and Prompt Chip quick replies, the
+ * assistant rows indented by a 20-wide Gutter), Voice Bar. */
+.bb-agents-voice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-voice-root-width);
+  height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-voice > * { flex-shrink: 0; }
+.bb-agents-voice__back { align-self: flex-start; }
+.bb-agents-voice__header.bb-agent-header {
+  width: 100%;
+  max-width: var(--bb-derived-agents-voice-agent-header-width);
+  min-height: var(--bb-derived-agents-voice-agent-header-height);
+}
+
+/* Figma aligns the thread to the bottom (VERTICAL MAX); margin-top: auto on the
+ * first turn does that while keeping older turns reachable when it scrolls. */
+.bb-agents-voice__conversation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  flex: 1 1 auto;
+  /* In a short window keep a few turns visible; the body scrolls past that. */
+  min-height: calc(var(--bb-derived-agents-voice-message-height) * 4);
+  overflow-y: auto;
+}
+.bb-agents-voice__conversation > :first-child { margin-top: auto; }
+.bb-agents-voice__message.bb-message {
+  flex: none;
+  max-width: var(--bb-derived-agents-voice-message-width);
+  min-height: var(--bb-derived-agents-voice-message-height);
+}
+
+.bb-agents-voice__note,
+.bb-agents-voice__replies,
+.bb-agents-voice__indent {
+  display: flex;
+  flex: none;
+  gap: var(--bb-agents-space-tight);
+}
+.bb-agents-voice__note { align-items: center; }
+.bb-agents-voice__note--user { justify-content: flex-end; }
+.bb-agents-voice__replies { flex-wrap: wrap; align-items: flex-start; }
+.bb-agents-voice__indent { gap: var(--bb-agents-space-inline); }
+.bb-agents-voice__gutter {
+  flex: none;
+  width: var(--bb-derived-agents-voice-gutter-width);
+  height: var(--bb-derived-agents-voice-gutter-height);
+}
+.bb-agents-voice__steps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-hair);
+}
+.bb-agents-voice__wave.bb-voice-wave {
+  flex: none;
+  width: var(--bb-derived-agents-voice-voice-wave-width);
+  height: var(--bb-derived-agents-voice-voice-wave-height);
+  gap: var(--bb-agents-space-hair);
+}
+.bb-agents-voice__caption {
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+}
+
+.bb-agents-voice__bar.bb-voice-bar {
+  flex: none;
+  width: 100%;
+  max-width: var(--bb-derived-agents-voice-voice-bar-width);
+}

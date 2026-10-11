@@ -1,0 +1,21 @@
+/* Score Value — Figma "Score Value" (40000446:8644). */
+.bb-score-value {
+  display: inline-flex;
+  flex-direction: column;
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-score-value__score {
+  font-size: var(--bb-a11y-font-size-display);
+  line-height: var(--bb-a11y-font-line-display);
+  font-weight: var(--bb-a11y-font-weight-bold);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-score-value[data-tone='success'] .bb-score-value__score { color: var(--bb-a11y-status-success); }
+.bb-score-value[data-tone='warning'] .bb-score-value__score { color: var(--bb-a11y-status-warning); }
+.bb-score-value[data-tone='danger'] .bb-score-value__score { color: var(--bb-a11y-status-danger); }
+.bb-score-value__label {
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}

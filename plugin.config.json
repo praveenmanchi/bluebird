@@ -51,14 +51,22 @@
     "product-designer": {
       "label": "Product Designer",
       "tabs": [
-        "a11y"
+        "a11y",
+        "jira",
+        "mcp",
+        "publish",
+        "uxai",
+        "agents"
       ]
     },
     "design-system": {
       "label": "Design System",
       "tabs": [
         "tokens",
-        "a11y"
+        "publish",
+        "a11y",
+        "uxai",
+        "agents"
       ]
     }
   },
@@ -72,6 +80,31 @@
       "enabled": true,
       "label": "Design tokens",
       "icon": "variables"
+    },
+    "jira": {
+      "enabled": true,
+      "label": "Jira board",
+      "icon": "jira"
+    },
+    "mcp": {
+      "enabled": true,
+      "label": "MCP handoff",
+      "icon": "mcp"
+    },
+    "uxai": {
+      "enabled": true,
+      "label": "UXAI",
+      "icon": "uxai"
+    },
+    "agents": {
+      "enabled": true,
+      "label": "UX AI agents",
+      "icon": "uxai"
+    },
+    "publish": {
+      "enabled": true,
+      "label": "Publish",
+      "icon": "change-log"
     }
   },
   "window": {

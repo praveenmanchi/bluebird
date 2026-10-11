@@ -9,13 +9,42 @@ export const MSG = {
   applyFix: 'a11y:apply-fix',
   annotate: 'a11y:annotate',
   progress: 'a11y:progress',
+  /** What a scan of the scope would read (Ready to scan's heading and counts). Read-only. */
+  target: 'a11y:target',
+  /** Opens the WCAG 2.2 Quick Reference ("Check rules"); the URL is fixed in the sandbox. */
+  openRules: 'a11y:open-rules',
 } as const
+
+
+/** What Ready to scan describes: the selection (or page) a scan would read. */
+export interface ScanTarget {
+  scope: ScanScope
+  /** The selected layer's name, "3 layers", or the page name. */
+  name: string
+  /** Layers selected (0 for nothing selected; the page's top-level layers for a page). */
+  selected: number
+  /** How many of those are frames (frames, components, sections). */
+  frames: number
+  textLayers: number
+  instances: number
+  /** The walk stopped at TARGET_NODE_LIMIT; counts are "at least". */
+  truncated: boolean
+}
+
+/** Enough to describe a busy page without stalling the sandbox on every selection change. */
+export const TARGET_NODE_LIMIT = 5000
 
 export const scanScopeSchema = z.enum(['selection', 'page'])
 export type ScanScope = z.infer<typeof scanScopeSchema>
 
+export const targetRequestSchema = z.object({ scope: scanScopeSchema })
+
+export const platformSchema = z.enum(['web', 'ios', 'android'])
+
 export const scanRequestSchema = z.object({
   scope: scanScopeSchema,
+  /** Which target-size minimum applies (WCAG on the web, Apple HIG on iOS, Material on Android). Default web. */
+  platform: z.optional(platformSchema),
   /** Scan the first instance of each component and skip the rest. Default true. */
   dedupeInstances: z.optional(z.boolean()),
 })
@@ -95,8 +124,10 @@ export interface TargetSizeIssue {
   name: string
   width: number
   height: number
-  /** 24 (AA) or 44 (AAA), whichever this finding is measured against. */
+  /** The minimum this finding is measured against: 24 / 44 px on the web, 44 pt on iOS, 48 dp on Android. */
   required: number
+  /** The platform whose minimum applies; absent means web (scans before platforms existed). */
+  platform?: 'web' | 'ios' | 'android'
   /** 'reaction' when Figma told us it is interactive; 'control' when the name did. */
   evidence: 'reaction' | 'control'
 }
@@ -117,6 +148,33 @@ export interface ScanMeta {
   brand: string
 }
 
+/** Atomic-design level, read from how deeply a component nests other components:
+ *  an atom holds none, a molecule holds atoms, an organism holds molecules or deeper. */
+export type ComponentLevel = 'atom' | 'molecule' | 'organism'
+
+/** One distinct main component met in the scan (all its instances count as one). */
+export interface ScannedComponent {
+  key: string
+  name: string
+  level: ComponentLevel
+  instances: number
+  /** True when a finding sits in this component's own layers (not in a nested component). */
+  failing: boolean
+}
+
+/** A top-level frame in scope. It fails when anything inside it does. */
+export interface ScannedFrame {
+  nodeId: string
+  name: string
+  failing: boolean
+}
+
+/** What the scan walked, for the Scan Summary dashboard. */
+export interface ScanInventory {
+  components: readonly ScannedComponent[]
+  frames: readonly ScannedFrame[]
+}
+
 export interface ScanResult {
   scope: ScanScope
   meta: ScanMeta
@@ -135,6 +193,8 @@ export interface ScanResult {
   /** Repeated component instances whose subtree was scanned only once. */
   instancesSkipped: number
   durationMs: number
+  /** Components and frames in scope with their pass/fail. Absent from scans made before 2026-10-11. */
+  inventory?: ScanInventory
 }
 
 export interface ScanProgress { visited: number }

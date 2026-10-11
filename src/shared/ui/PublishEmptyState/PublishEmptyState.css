@@ -1,0 +1,58 @@
+/* PublishEmptyState — Figma "Publish Empty State" (40000346:8697). VERTICAL
+ * MIN CENTER, FIXED 400 × HUG, padding publish/space/section, gap
+ * publish/space/inline: Icon box (pill, field surface, 1 raw → derived
+ * stroke, padding row-x on all sides around a 16 Status error icon or a 24
+ * Tab icon), Title, Body (centred), Actions (HUG row of 120-wide Buttons, gap
+ * inline). Code fills the parent width instead of the FIXED 400. */
+.bb-publish-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-publish-space-section);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  text-align: center;
+}
+.bb-publish-empty-state__icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: var(--bb-publish-space-row-x);
+  border: var(--bb-derived-publish-empty-state-icon-box-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-pill);
+  background: var(--bb-publish-surface-field);
+}
+/* Status error icons keep the connection/icon/* colours their set binds. */
+.bb-publish-empty-state__status {
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+  color: var(--bb-connection-icon-ok);
+}
+.bb-publish-empty-state[data-state='failed'] .bb-publish-empty-state__status { color: var(--bb-connection-icon-error); }
+.bb-publish-empty-state__title {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-heading);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-label);
+  color: var(--bb-publish-text-title);
+}
+.bb-publish-empty-state__body {
+  margin: 0;
+  align-self: stretch;
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-body);
+}
+.bb-publish-empty-state__actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-publish-space-inline);
+}

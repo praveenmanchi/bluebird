@@ -1,0 +1,30 @@
+/* Brand Count — Figma "Brand Count" (40000447:8631). */
+.bb-brand-count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-hair);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--bb-a11y-space-inline) var(--bb-a11y-space-row-x);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-sunken);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-brand-count__brand {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-brand-count__value {
+  font-size: var(--bb-a11y-font-size-title);
+  line-height: var(--bb-a11y-font-line-title);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-brand-count[data-tone='success'] .bb-brand-count__value { color: var(--bb-a11y-status-success); }
+.bb-brand-count[data-tone='warning'] .bb-brand-count__value { color: var(--bb-a11y-status-warning); }
+.bb-brand-count[data-tone='danger'] .bb-brand-count__value { color: var(--bb-a11y-status-danger); }

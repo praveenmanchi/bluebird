@@ -1,0 +1,67 @@
+/* ChangeItem — Figma "Change Item" (40000483:9599). VERTICAL MIN MIN, FIXED
+ * 600 × HUG, field surface, 1 (raw → derived) stroke — panel-border, or
+ * row-selected-border when Expanded=Yes — radius publish/radius/control.
+ * Header (HORIZONTAL MIN CENTER, padding-right publish/space/row-x) holds the
+ * exposed Change Row (FILL, its own fill and stroke cleared) and the
+ * Disclosure Toggle with its label hidden. Details (hidden when collapsed)
+ * has a panel-border top rule, padding publish/space/row-y × row-x, gap
+ * publish/space/inline: label, Brand Diff Rows (gap publish/space/tight),
+ * label, Context Chips (gap publish/space/tight), source line. */
+.bb-change-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  border: var(--bb-derived-change-item-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-change-item[data-expanded='true'] { border-color: var(--bb-publish-surface-row-selected-border); }
+.bb-change-item__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-right: var(--bb-publish-space-row-x);
+}
+.bb-change-item__row.bb-change-item__row {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 0;
+  background: none;
+}
+.bb-change-item__disclosure { flex: none; }
+.bb-change-item__disclosure .bb-disclosure-toggle__label { display: none; }
+.bb-change-item__details {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--bb-publish-space-inline);
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border-top: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+}
+.bb-change-item__details[hidden] { display: none; }
+.bb-change-item__label,
+.bb-change-item__source {
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-change-item__label { font-weight: var(--bb-publish-font-weight-medium); }
+.bb-change-item__source { font-weight: var(--bb-publish-font-weight-regular); }
+.bb-change-item__brands,
+.bb-change-item__used-in {
+  display: flex;
+  gap: var(--bb-publish-space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-change-item__brands { flex-direction: column; }
+.bb-change-item__used-in {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.bb-change-item__used-in > li { display: flex; }

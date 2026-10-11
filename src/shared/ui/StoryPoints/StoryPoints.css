@@ -1,0 +1,21 @@
+/* StoryPoints — Figma "Story Points" (40000265:8036). A hugging pill; the
+ * stroke weight is unbound in Figma, so it comes through the derived token. */
+.bb-story-points {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  padding: var(--bb-jira-space-hair) var(--bb-jira-space-inline);
+  border: var(--bb-derived-story-points-root-stroke-width) solid var(--bb-jira-points-border);
+  border-radius: var(--bb-jira-radius-pill);
+  background: var(--bb-jira-points-bg);
+}
+.bb-story-points__value {
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-caption);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-caption);
+  color: var(--bb-jira-points-fg);
+  white-space: nowrap;
+}
