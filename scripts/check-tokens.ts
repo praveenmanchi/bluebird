@@ -15,6 +15,9 @@
 //     (scripts/check-props.ts).
 //  7. Variable layering: Semantics is single-mode and aliases Foundations only; the brand
 //     switch lives in Brand UI (checkLayering).
+//  8. Every brand in plugin.config.json names a collection and mode the pulled Figma
+//     snapshot has, so the plugin never silently falls back to config tokens
+//     (checkBrandSources).
 //
 // Warnings (printed, never fail the gate): same-named Figma layers in one variant that the
 // generator told apart by position (`vector--1`) — see layerCollisionWarnings.
@@ -169,6 +172,24 @@ export function checkLayering(tokens: TokenSnapshot, file = 'figma/tokens.json')
  * are safe to read, but they renumber when a layer is added or moved: the fix is distinct layer
  * names in Figma, so this lists what to rename.
  */
+interface BrandSourceRef { source: { collection: string; mode: string } }
+
+/** The sandbox resolves a brand by collection + mode NAME (src/shared/brand/resolve.ts); a
+ *  rename in Figma that misses plugin.config.json only shows up as a fallback banner at runtime. */
+export function checkBrandSources(brands: Record<string, BrandSourceRef>, tokens: TokenSnapshot, file = 'plugin.config.json'): Finding[] {
+  const findings: Finding[] = []
+  const byName = new Map(tokens.collections.map((c) => [c.name, c]))
+  for (const [id, { source }] of Object.entries(brands)) {
+    const collection = byName.get(source.collection)
+    if (!collection) {
+      findings.push({ rule: 'brand-source-collection', file, message: `brand "${id}" uses collection "${source.collection}", which figma/tokens.json does not have (${[...byName.keys()].join(', ')})` })
+    } else if (!collection.modes.includes(source.mode)) {
+      findings.push({ rule: 'brand-source-mode', file, message: `brand "${id}" uses mode "${source.mode}", which "${source.collection}" does not have (${collection.modes.join(', ')})` })
+    }
+  }
+  return findings
+}
+
 export function layerCollisionWarnings(components: ComponentsSnapshot): string[] {
   return derivedLayerCollisions(components).map((c) => {
     const parts = [...new Set(c.tokens.map((t) => t.replace(/(--\d+)-.*$/, '$1')))]
@@ -180,6 +201,8 @@ export async function runChecks(root = ROOT, options: { writeBaseline?: boolean 
   const findings: Finding[] = []
   const inputs = readInputs(root)
   findings.push(...checkLayering(inputs.tokens))
+  const config = JSON.parse(readFileSync(resolve(root, 'plugin.config.json'), 'utf8')) as { brand: { brands: Record<string, BrandSourceRef> } }
+  findings.push(...checkBrandSources(config.brand.brands, inputs.tokens))
   const files = generate(inputs)
   for (const [rel, content] of Object.entries(files)) {
     const abs = resolve(root, rel)

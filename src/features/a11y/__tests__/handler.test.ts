@@ -206,7 +206,7 @@ describe('a11y:scan token awareness', () => {
       currentPage: { selection: [], children: [frame] } as unknown as PageNode,
       variables: {
         getLocalVariableCollectionsAsync: vi.fn(async () => [
-          { id: 'c1', name: 'Brand', modes: BRAND_MODES, defaultModeId: 'm1', variableIds: Object.keys(variables) },
+          { id: 'c1', name: 'Brand UI', modes: BRAND_MODES, defaultModeId: 'm1', variableIds: Object.keys(variables) },
         ]),
         getVariableByIdAsync: vi.fn(async (id: string) => variables[id] ?? null),
         getVariableCollectionByIdAsync: vi.fn(async () => ({ id: 'c1', defaultModeId: 'm1' })),
@@ -547,7 +547,7 @@ describe('a11y:scan — hardening', () => {
     }
     page((frame) => [text('t', 'faint', faint, 12, frame)], {
       variables: {
-        getLocalVariableCollectionsAsync: vi.fn(async () => [{ id: 'c1', name: 'Brand', modes: [{ modeId: 'm1', name: 'Bridge' }], defaultModeId: 'm1', variableIds: Object.keys(variables) }]),
+        getLocalVariableCollectionsAsync: vi.fn(async () => [{ id: 'c1', name: 'Brand UI', modes: [{ modeId: 'm1', name: 'Bridge' }], defaultModeId: 'm1', variableIds: Object.keys(variables) }]),
         getVariableByIdAsync: vi.fn(async (id: string) => variables[id] ?? null),
         getVariableCollectionByIdAsync: vi.fn(async () => ({ id: 'c1', defaultModeId: 'm1' })),
       } as unknown as PluginAPI['variables'],

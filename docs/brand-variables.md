@@ -8,8 +8,8 @@
 
 ```json
 "brands": {
-  "bridge":    { "label": "Bridge",    "source": { "collection": "Brand", "mode": "Bridge" } },
-  "ikea":      { "label": "Ikea",      "source": { "collection": "Brand", "mode": "Ikea" } }
+  "bridge":    { "label": "Bridge",    "source": { "collection": "Brand UI", "mode": "Bridge" } },
+  "ikea":      { "label": "Ikea",      "source": { "collection": "Brand UI", "mode": "Ikea" } }
 }
 ```
 
