@@ -1,0 +1,57 @@
+/* ConnectionRow — Figma "Connection Row" (40000275:8211). HORIZONTAL MIN
+ * CENTER, FIXED 356 × 40, field surface with a 1 (raw → derived) panel-border
+ * stroke, radius mcp/radius/control, padding mcp/space/row-y × row-x, gap
+ * mcp/space/inline. The ~32 Text frame is centred in the FIXED 40 box and
+ * overflows the vertical padding evenly, exactly as in Figma, so the height
+ * is kept fixed. Icon colours follow the Status error icons set. */
+.bb-connection-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-mcp-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-connection-row-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-connection-row-root-height);
+  padding: var(--bb-mcp-space-row-y) var(--bb-mcp-space-row-x);
+  border: var(--bb-derived-connection-row-root-stroke-width) solid var(--bb-mcp-surface-panel-border);
+  border-radius: var(--bb-mcp-radius-control);
+  background: var(--bb-mcp-surface-field);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-connection-row__icon {
+  width: var(--bb-mcp-size-icon);
+  height: var(--bb-mcp-size-icon);
+  color: var(--bb-connection-icon-ok);
+}
+.bb-connection-row[data-status='issue'] .bb-connection-row__icon { color: var(--bb-connection-icon-warn); }
+.bb-connection-row[data-status='error'] .bb-connection-row__icon { color: var(--bb-connection-icon-error); }
+.bb-connection-row__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-mcp-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-connection-row__name,
+.bb-connection-row__detail {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-connection-row__name {
+  font-size: var(--bb-mcp-font-size-body);
+  font-weight: var(--bb-mcp-font-weight-medium);
+  line-height: var(--bb-mcp-font-line-body);
+  color: var(--bb-mcp-text-title);
+}
+.bb-connection-row__detail {
+  font-size: var(--bb-mcp-font-size-caption);
+  font-weight: var(--bb-mcp-font-weight-regular);
+  line-height: var(--bb-mcp-font-line-caption);
+  color: var(--bb-mcp-text-meta);
+}
+.bb-connection-row__action { flex: none; }

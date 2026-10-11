@@ -6,6 +6,7 @@
 // what was skipped and why, so the report cannot be mistaken for full coverage.
 import { NON_TEXT_MIN } from './nontext'
 import type { ScanResult } from './messages'
+import { requiredLabel, targetCriterion, unitOf } from './target'
 
 export interface ReportMeta {
   /** Figma file name. */
@@ -105,7 +106,7 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
   }
 
   for (const issue of result.targets) {
-    const enhanced = issue.required > 24
+    const enhanced = targetCriterion(issue) === '2.5.5'
     findings.push({
       criterion: enhanced ? '2.5.5' : '2.5.8',
       title: enhanced ? 'Target Size (Enhanced)' : 'Target Size (Minimum)',
@@ -113,8 +114,8 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
       layer: issue.name,
       nodeId: issue.nodeId,
       occurrences: issue.occurrences,
-      actual: `${issue.width} × ${issue.height} px`,
-      required: `${issue.required} × ${issue.required} px`,
+      actual: `${issue.width} × ${issue.height} ${unitOf(issue)}`,
+      required: requiredLabel(issue),
       fix: 'Grow the hit area to the minimum; padding counts.',
     })
   }

@@ -1,0 +1,421 @@
+/* Product tour — Figma "Onboarding flow" (page "onboarding screens", 40000423:5239;
+ * contract frame "Onboarding · 2 · Accessibility" 40000423:5240). Header (logo) · Body
+ * (tour tab list · demo stage · counter · copy) · Footer (dots · Skip / Back / Next).
+ * Every value is an onboarding/* token or the frame's derived geometry. The demo
+ * scenes mirror the Figma Motion keyframes on each "Video · <step>" frame: resting
+ * styles are the END state, animations play the way in, so `.bb-ob-still` (stories,
+ * prefers-reduced-motion) only has to switch animations off. Durations and easing
+ * curves are motion constants — Figma Motion keeps them on keyframes, not variables. */
+.bb-onboarding {
+  --ob-dur: 450ms;
+  --ob-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ob-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ob-ease-bounce: cubic-bezier(0.3, 1.9, 0.5, 1);
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 0;
+  height: 100%;
+  background: var(--bb-onboarding-surface-plugin);
+  color: var(--bb-onboarding-text-title);
+  font-family: var(--bb-onboarding-font-family), ui-sans-serif, system-ui, sans-serif;
+  outline: none;
+}
+
+/* Header — brand logos instance, bottom rule. */
+.bb-onboarding__header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: var(--bb-onboarding-header-padding-y) var(--bb-onboarding-plugin-padding-x);
+  border-bottom: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-plugin);
+}
+.bb-brand-logo.bb-onboarding__logo {
+  width: var(--bb-derived-onboarding-screen-brand-logos-width);
+  height: var(--bb-derived-onboarding-screen-brand-logos-height);
+}
+
+.bb-onboarding__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-onboarding-plugin-padding-y);
+  min-height: 0;
+  padding: var(--bb-onboarding-plugin-padding-y) var(--bb-onboarding-plugin-padding-x) var(--bb-onboarding-plugin-padding-x);
+}
+
+/* Tour tab list — the explained tab shows its label, fill and indicator. */
+.bb-onboarding__tabs {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--bb-onboarding-tab-gap);
+  padding: var(--bb-onboarding-tablist-padding);
+  border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-plugin);
+  border-radius: var(--bb-onboarding-tablist-radius);
+}
+.bb-onboarding__tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-onboarding-gap-xs);
+  box-sizing: border-box;
+  min-width: var(--bb-onboarding-tab-size);
+  height: var(--bb-onboarding-tab-size);
+  padding: 0 var(--bb-onboarding-tab-padding-x);
+  border: 0;
+  border-radius: var(--bb-onboarding-tab-radius);
+  background: none;
+  color: var(--bb-onboarding-text-meta);
+  font: inherit;
+  font-size: var(--bb-onboarding-font-tab-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-tab-line);
+  cursor: pointer;
+}
+.bb-onboarding__tab .bb-icon { width: var(--bb-onboarding-icon-size-sm); height: var(--bb-onboarding-icon-size-sm); }
+.bb-onboarding__tab:focus-visible { outline: var(--bb-onboarding-border-width) solid var(--bb-onboarding-tab-indicator); }
+.bb-onboarding__tab.is-active { background: var(--bb-onboarding-surface-tab-active); color: var(--bb-onboarding-text-title); }
+.bb-onboarding__tab-label { white-space: nowrap; }
+.bb-onboarding__indicator {
+  position: absolute;
+  right: var(--bb-onboarding-gap-xs);
+  bottom: 0;
+  left: var(--bb-onboarding-gap-xs);
+  height: var(--bb-onboarding-tab-indicator-height);
+  border-radius: var(--bb-onboarding-counter-radius);
+  background: var(--bb-onboarding-tab-indicator);
+  animation: bb-ob-grow 350ms var(--ob-ease) 150ms both;
+}
+.bb-onboarding__spacer { flex: 1 1 auto; }
+.bb-onboarding__divider {
+  flex: none;
+  width: var(--bb-onboarding-border-width);
+  height: var(--bb-onboarding-icon-size-sm);
+  background: var(--bb-onboarding-tab-divider);
+}
+
+/* Demo stage — the Figma "Video" frame. */
+.bb-onboarding__media {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-plugin);
+  border-radius: var(--bb-onboarding-media-radius);
+  background: var(--bb-onboarding-surface-media);
+  animation: bb-ob-media 500ms var(--ob-ease) both;
+}
+
+/* Counter + copy. */
+.bb-onboarding__copy { display: flex; flex: none; flex-direction: column; gap: var(--bb-onboarding-copy-gap); }
+.bb-onboarding__counter {
+  align-self: flex-start;
+  margin-bottom: calc(var(--bb-onboarding-plugin-padding-y) - var(--bb-onboarding-copy-gap));
+  padding: var(--bb-onboarding-counter-padding-y) var(--bb-onboarding-counter-padding-x);
+  border-radius: var(--bb-onboarding-counter-radius);
+  background: var(--bb-onboarding-surface-counter);
+  color: var(--bb-onboarding-text-meta);
+  font-family: var(--bb-derived-onboarding-screen-count-font-family), ui-monospace, monospace;
+  font-size: var(--bb-derived-onboarding-screen-count-font-size);
+  font-weight: var(--bb-derived-onboarding-screen-count-font-weight);
+  line-height: var(--bb-derived-onboarding-screen-count-line-height);
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 200ms both;
+}
+.bb-onboarding__title {
+  margin: 0;
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-heading-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-heading-line);
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 280ms both;
+}
+.bb-onboarding__text {
+  margin: 0;
+  color: var(--bb-onboarding-text-meta);
+  font-size: var(--bb-onboarding-font-text-size);
+  font-weight: var(--bb-onboarding-font-weight-regular);
+  line-height: var(--bb-onboarding-font-text-line);
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 360ms both;
+}
+
+/* Footer — progress dots and navigation. */
+.bb-onboarding__footer {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--bb-onboarding-footer-gap);
+  padding: var(--bb-onboarding-footer-padding-top) var(--bb-onboarding-plugin-padding-x) var(--bb-onboarding-plugin-padding-y);
+  border-top: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-plugin);
+}
+.bb-onboarding__dots { display: flex; align-items: center; justify-content: center; gap: var(--bb-onboarding-copy-gap); }
+.bb-onboarding__dot {
+  position: relative;
+  flex: none;
+  width: var(--bb-onboarding-dot-size);
+  height: var(--bb-onboarding-dot-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-onboarding-dot-radius);
+  background: var(--bb-onboarding-dot-idle);
+  cursor: pointer;
+  transition: width 300ms var(--ob-ease), background-color 300ms var(--ob-ease);
+}
+/* Larger hit area than the 6px dot; Back / Next stay the primary way to move. */
+.bb-onboarding__dot::after { position: absolute; inset: calc(-1 * var(--bb-onboarding-gap-xs)); content: ''; }
+.bb-onboarding__dot:focus-visible { outline: var(--bb-onboarding-border-width) solid var(--bb-onboarding-tab-indicator); outline-offset: var(--bb-onboarding-border-width); }
+.bb-onboarding__dot.is-active { width: var(--bb-onboarding-dot-width-active); background: var(--bb-onboarding-dot-active); }
+.bb-onboarding__nav { display: flex; align-items: center; gap: var(--bb-onboarding-copy-gap); }
+.bb-onboarding__next { flex: 1 1 auto; animation: 500ms ease-in-out 1800ms both; }
+.bb-onboarding__next--even { animation-name: bb-ob-pulse; }
+.bb-onboarding__next--odd { animation-name: bb-ob-pulse-alt; }
+
+/* ── Scene engine (src/shell/onboarding/stage.tsx) ─────────────────────────── */
+.bb-ob-stage { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; overflow: hidden; }
+.bb-ob-stage__inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-sizing: border-box;
+  width: calc(100% / var(--ob-scale, 1));
+  padding: var(--bb-onboarding-scene-padding);
+  transform: translate(-50%, -50%) scale(var(--ob-scale, 1));
+  transform-origin: center;
+}
+.bb-ob-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: var(--bb-derived-onboarding-screen-cursor-width);
+  height: var(--bb-derived-onboarding-screen-cursor-height);
+  overflow: visible;
+  fill: var(--bb-onboarding-cursor-fill);
+  stroke: var(--bb-onboarding-cursor-stroke);
+  stroke-width: var(--bb-onboarding-border-width);
+  stroke-linejoin: round;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+.bb-ob-ripple {
+  position: absolute;
+  z-index: 1;
+  width: var(--bb-onboarding-tile-size);
+  height: var(--bb-onboarding-tile-size);
+  margin: calc(var(--bb-onboarding-tile-size) / -2) 0 0 calc(var(--bb-onboarding-tile-size) / -2);
+  border-radius: var(--bb-onboarding-dot-radius);
+  background: var(--bb-onboarding-ripple);
+  opacity: 0;
+  pointer-events: none;
+  animation: bb-ob-ripple 550ms ease-out var(--ob-d) forwards;
+}
+
+/* Entrances (reveal()), effects (<Fx>), state swaps (<Swap>). */
+.bb-ob-rv { animation: bb-ob-up var(--ob-dur) var(--ob-ease) var(--ob-d, 0ms) both; }
+.bb-ob-rv--down { animation-name: bb-ob-down; }
+.bb-ob-rv--left { animation-name: bb-ob-left; }
+.bb-ob-rv--right { animation-name: bb-ob-right; }
+.bb-ob-rv--fade { animation-name: bb-ob-fade; }
+.bb-ob-rv--pop { animation-name: bb-ob-pop; animation-timing-function: var(--ob-ease-back); }
+.bb-ob-rv--bounce { animation-name: bb-ob-bounce; animation-duration: 600ms; animation-timing-function: var(--ob-ease-bounce); }
+.bb-ob-fx { animation-delay: var(--ob-fx); animation-fill-mode: both; }
+.bb-ob-fx--pulse { animation-name: bb-ob-pulse; animation-duration: 400ms; animation-timing-function: ease-in-out; }
+.bb-ob-fx--wiggle { animation-name: bb-ob-wiggle; animation-duration: 320ms; animation-timing-function: ease-in-out; }
+.bb-ob-fx--dim { opacity: 0.4; animation-name: bb-ob-dim; animation-duration: 250ms; animation-timing-function: ease-out; }
+.bb-ob-fx--float { animation-name: bb-ob-float; animation-duration: 2700ms; animation-timing-function: ease-in-out; }
+.bb-ob-fx--spin { animation-name: bb-ob-spin; animation-duration: 1200ms; animation-timing-function: linear; }
+.bb-ob-swap { display: grid; }
+.bb-ob-swap > * { grid-area: 1 / 1; min-width: 0; }
+.bb-ob-swap__before { opacity: 0; animation: bb-ob-vanish 250ms ease-out var(--ob-swap) both; }
+.bb-ob-swap__after { animation: bb-ob-appear 300ms var(--ob-ease) var(--ob-swap) both; }
+.bb-ob-grow > :first-child { transform-origin: left center; animation: bb-ob-grow 800ms ease-in-out 500ms both; }
+.bb-ob-grow--slow > :first-child { animation-duration: 1400ms; animation-delay: 2500ms; }
+/* The typed text: a clip-path wipe in steps reads as typing. */
+.bb-ob-type { animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both; }
+
+.bb-ob-still .bb-ob-rv,
+.bb-ob-still .bb-ob-fx,
+.bb-ob-still .bb-ob-swap__before,
+.bb-ob-still .bb-ob-swap__after,
+.bb-ob-still .bb-ob-grow > :first-child,
+.bb-ob-still .bb-ob-type,
+.bb-ob-still .bb-ob-scanner,
+.bb-ob-still .bb-ob-field__ring,
+.bb-ob-still .bb-ob-check,
+.bb-ob-still .bb-ob-check path,
+.bb-ob-still .bb-ob-composer__text { animation: none; }
+
+/* ── Scene parts ───────────────────────────────────────────────────────────── */
+.bb-ob-scene { display: flex; flex-direction: column; gap: var(--bb-onboarding-gap-md); }
+.bb-ob-scene--center { align-items: center; text-align: center; }
+.bb-ob-row { display: flex; align-items: center; justify-content: space-between; gap: var(--bb-onboarding-gap-sm); }
+.bb-ob-row--start { justify-content: flex-start; }
+.bb-ob-row--end { justify-content: flex-end; }
+.bb-ob-start { align-self: flex-start; }
+.bb-ob-list { display: flex; flex-direction: column; gap: var(--bb-onboarding-gap-xs); }
+.bb-ob-chips { display: flex; flex-wrap: wrap; gap: var(--bb-onboarding-gap-xs); }
+.bb-ob-chips--center { justify-content: center; gap: var(--bb-onboarding-gap-sm); }
+.bb-ob-heading { display: flex; flex-direction: column; gap: var(--bb-onboarding-gap-xs); }
+.bb-ob-label {
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-caption-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-caption-line);
+}
+.bb-ob-label--accent { color: var(--bb-onboarding-text-accent); }
+.bb-ob-meta {
+  color: var(--bb-onboarding-text-meta);
+  font-size: var(--bb-onboarding-font-caption-size);
+  font-weight: var(--bb-onboarding-font-weight-regular);
+  line-height: var(--bb-onboarding-font-caption-line);
+}
+.bb-ob-text {
+  color: var(--bb-onboarding-text-body);
+  font-size: var(--bb-onboarding-font-text-size);
+  line-height: var(--bb-onboarding-font-text-line);
+}
+.bb-ob-heading-text {
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-heading-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-heading-line);
+}
+.bb-ob-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-onboarding-gap-sm);
+  padding: var(--bb-onboarding-stage-padding);
+  border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-stage);
+  border-radius: var(--bb-onboarding-stage-radius);
+  background: var(--bb-onboarding-surface-stage);
+}
+.bb-ob-card > .bb-ob-row,
+.bb-ob-card > .bb-code-snippet { align-self: stretch; }
+.bb-ob-card--mock { overflow: hidden; }
+.bb-ob-scanner {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: var(--bb-onboarding-tile-size);
+  border-bottom: var(--bb-onboarding-border-width) solid var(--bb-onboarding-scan-line);
+  background: var(--bb-onboarding-surface-glow);
+  opacity: 0;
+  pointer-events: none;
+  animation: bb-ob-scan 1300ms ease-in-out var(--ob-d) both;
+}
+.bb-ob-tile-chip,
+.bb-ob-fix,
+.bb-ob-composer,
+.bb-ob-pill,
+.bb-ob-field {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-onboarding-gap-sm);
+  box-sizing: border-box;
+  padding: var(--bb-onboarding-gap-sm);
+  border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-tile);
+  border-radius: var(--bb-onboarding-tile-radius);
+  background: var(--bb-onboarding-surface-tile);
+}
+.bb-ob-tile-chip {
+  display: inline-flex;
+  gap: var(--bb-onboarding-gap-xs);
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-caption-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-caption-line);
+}
+.bb-ob-fix { justify-content: space-between; }
+.bb-ob-fix__map { display: inline-flex; align-items: center; gap: var(--bb-onboarding-gap-xs); }
+.bb-ob-composer__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-text-size);
+  line-height: var(--bb-onboarding-font-text-line);
+  white-space: nowrap;
+  opacity: 0;
+  animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both, bb-ob-vanish 150ms ease-out 1950ms both;
+}
+.bb-ob-pill { align-self: center; }
+.bb-ob-agents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--bb-onboarding-gap-lg) var(--bb-onboarding-gap-sm); }
+.bb-ob-agent { display: flex; flex-direction: column; align-items: center; gap: var(--bb-onboarding-gap-xs); text-align: center; }
+.bb-ob-field { position: relative; min-height: var(--bb-onboarding-tile-size); }
+.bb-ob-field__key {
+  color: var(--bb-onboarding-text-title);
+  font-family: var(--bb-derived-onboarding-screen-count-font-family), ui-monospace, monospace;
+  font-size: var(--bb-derived-onboarding-screen-count-font-size);
+  line-height: var(--bb-derived-onboarding-screen-count-line-height);
+  white-space: nowrap;
+}
+.bb-ob-field__ring {
+  position: absolute;
+  inset: calc(-1 * var(--bb-onboarding-border-width));
+  border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-field-ring);
+  border-radius: var(--bb-onboarding-tile-radius);
+  pointer-events: none;
+  animation: bb-ob-fade 150ms ease-out var(--ob-d) both;
+}
+.bb-ob-check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--bb-onboarding-tile-size);
+  height: var(--bb-onboarding-tile-size);
+  border-radius: var(--bb-onboarding-dot-radius);
+  background: var(--bb-onboarding-check-bg);
+  animation: bb-ob-bounce 600ms var(--ob-ease-bounce) var(--ob-d) both;
+}
+.bb-ob-check svg { width: var(--bb-onboarding-icon-size); height: var(--bb-onboarding-icon-size); overflow: visible; }
+.bb-ob-check path {
+  fill: none;
+  stroke: var(--bb-onboarding-check-icon);
+  stroke-width: var(--bb-onboarding-check-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: bb-ob-draw 400ms ease-out var(--ob-d) both;
+}
+
+/* ── Keyframes ─────────────────────────────────────────────────────────────── */
+@keyframes bb-ob-up { from { opacity: 0; transform: translateY(var(--bb-onboarding-gap-md)); } }
+@keyframes bb-ob-down { from { opacity: 0; transform: translateY(calc(-1 * var(--bb-onboarding-gap-md))); } }
+@keyframes bb-ob-left { from { opacity: 0; transform: translateX(calc(-1 * var(--bb-onboarding-gap-lg))); } }
+@keyframes bb-ob-right { from { opacity: 0; transform: translateX(var(--bb-onboarding-gap-lg)); } }
+@keyframes bb-ob-fade { from { opacity: 0; } }
+@keyframes bb-ob-pop { from { opacity: 0; transform: scale(0.6); } 40% { opacity: 1; } }
+@keyframes bb-ob-bounce { from { opacity: 0; transform: scale(0.3); } 30% { opacity: 1; } }
+@keyframes bb-ob-appear { from { opacity: 0; transform: scale(0.96); } }
+@keyframes bb-ob-vanish { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bb-ob-media { from { opacity: 0; transform: scale(0.98); } }
+@keyframes bb-ob-pulse { 50% { transform: scale(1.05); } }
+@keyframes bb-ob-pulse-alt { 50% { transform: scale(1.05); } }
+@keyframes bb-ob-wiggle { 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(2deg); } }
+@keyframes bb-ob-dim { from { opacity: 1; } to { opacity: 0.4; } }
+@keyframes bb-ob-float { 17%, 67% { transform: translateY(calc(-1 * var(--bb-onboarding-gap-xs))); } 33%, 83% { transform: none; } 50% { transform: translateY(calc(-1 * var(--bb-onboarding-gap-xs) / 2)); } }
+@keyframes bb-ob-spin { to { transform: rotate(-360deg); } }
+@keyframes bb-ob-grow { from { transform: scaleX(0.04); } }
+@keyframes bb-ob-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes bb-ob-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes bb-ob-ripple { from { opacity: 0.55; transform: scale(0.3); } to { opacity: 0; transform: scale(1.5); } }
+@keyframes bb-ob-scan {
+  from { top: calc(-1 * var(--bb-onboarding-tile-size)); opacity: 0; }
+  10%, 85% { opacity: 1; }
+  to { top: 100%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-onboarding__indicator,
+  .bb-onboarding__media,
+  .bb-onboarding__counter,
+  .bb-onboarding__title,
+  .bb-onboarding__text,
+  .bb-onboarding__next { animation: none; }
+  .bb-onboarding__dot { transition: none; }
+}

@@ -1,0 +1,11 @@
+/* Check step — Figma "MCP v2 · 2 Check" body (40000496:7041). Shell, cards and the Actions bar
+ * come from McpHandoff.css; this file holds only what this step adds. */
+/* Checks: VERTICAL, gap mcp/space/tight, FILL Check Items. */
+.bb-mcp-handoff__checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

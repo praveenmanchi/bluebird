@@ -1,0 +1,146 @@
+/* Publish tab — Figma "Publish flow v2 · 600" (page "web push", section
+ * 40000484:8068). VERTICAL, padding publish/space/panel, gap
+ * publish/space/section: Stepper, the step's stacked cards (publish/surface/
+ * panel, panel-border stroke, radius/panel, padding space/panel, gap
+ * space/section) in "Panels" (FILL, scrolls vertically), then "Actions" — a
+ * plain row (no fill, stroke or padding) under the panels. The body fills the
+ * shell's <main>, so only the panels scroll. Every composed row fills the card width. */
+.bb-publish {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--bb-publish-space-panel);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-publish-text-body);
+  container: publish / inline-size;
+}
+.bb-stepper.bb-publish__stepper { width: 100%; }
+
+/* Panels: FILL × FILL, overflow VERTICAL. */
+.bb-publish__scroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  min-height: 0;
+  overflow-y: auto;
+}
+.bb-publish__scroll > * { flex: none; }
+/* Review changes card: FILL in Figma — takes the panel height, grows past it with the list. */
+.bb-publish__scroll > .bb-publish__card--fill { flex: 1 0 auto; }
+
+.bb-publish__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-publish-space-panel);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-panel);
+  background: var(--bb-publish-surface-panel);
+}
+
+.bb-publish__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bb-publish__extract,
+.bb-publish__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+}
+.bb-publish__extract > span,
+.bb-publish__summary {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+
+/* Actions: HORIZONTAL, gap publish/space/inline, no fill or stroke — sits under the panels. */
+.bb-publish__actions { flex: none; }
+
+.bb-publish__filters,
+.bb-publish__counts,
+.bb-publish__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-publish-space-tight);
+}
+.bb-publish__buttons { gap: var(--bb-publish-space-inline); }
+
+.bb-publish__versions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bb-publish-space-inline);
+}
+.bb-publish__versions > * { flex: 1 1 0; min-width: 0; }
+
+.bb-publish__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-tight);
+}
+
+.bb-publish__more { align-self: flex-start; }
+
+.bb-publish__hint {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+
+.bb-publish__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+  padding: var(--bb-publish-space-panel);
+  font-size: var(--bb-publish-font-size-body);
+  color: var(--bb-publish-text-meta);
+}
+
+/* Success block — Figma "Success" frame on the Link screen. */
+.bb-publish__success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-inline);
+  padding: var(--bb-publish-space-section);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+}
+.bb-publish__success-title {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+  margin: 0;
+  font-size: var(--bb-publish-font-size-title);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-label);
+  color: var(--bb-publish-text-title);
+}
+.bb-publish__success-icon {
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+  color: var(--bb-publish-step-done);
+}
+
+@container publish (max-width: 420px) { /* allow-raw: S-window breakpoint (version cards stack), not a Figma value */
+  .bb-publish__versions { flex-direction: column; }
+  .bb-publish__actions { flex-wrap: wrap; }
+  .bb-publish__summary { flex-basis: 100%; }
+}

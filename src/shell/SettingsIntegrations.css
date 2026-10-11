@@ -1,0 +1,86 @@
+/* Settings · Integrations — Figma 40000408:8714 ("Settings body" 40000408:8720).
+ * Section rules, paddings and gaps come from settings/*; the fields are the
+ * composed Input / SelectField / Toggle / TextArea / ButtonGroup instances,
+ * which FILL their section in Figma, so their own set-width caps are lifted. */
+.bb-integrations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-page-gap);
+  container-type: inline-size;
+}
+
+/* "GitHub", "Notifications", … — top rule, padded stack. */
+.bb-integrations__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+  padding: var(--bb-settings-space-section);
+  border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
+}
+/* Direct children only: the section header's own Switch is a .bb-toggle that must keep hugging its track. */
+:is(.bb-integrations__section, .bb-integrations__column, .bb-integrations__select, .bb-integrations__provider-model, .bb-integrations__provider-key) > :is(.bb-section-header, .bb-input, .bb-toggle, .bb-select-field, .bb-text-area, .bb-button-group) {
+  width: 100%;
+  max-width: none;
+}
+
+/* "<Section> row N": side-by-side columns; one column below the breakpoint. */
+.bb-integrations__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+/* "<Section> rN column N": a stack of fields. */
+.bb-integrations__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-fields);
+  min-width: 0;
+}
+@container (min-width: 560px) { /* allow-raw: two Input Box columns + the columns gap, a layout breakpoint not a Figma value */
+  .bb-integrations__section[data-columns="halves"] .bb-integrations__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bb-integrations__section[data-columns="narrow-wide"] .bb-integrations__row {
+    grid-template-columns: var(--bb-derived-settings-integrations-dual-file-r1-column-1-width) minmax(0, 1fr);
+  }
+}
+
+/* "AI row N": AI service mark · Default Model (210) · API key (fill). Wraps the key under the model when narrow. */
+.bb-integrations__provider {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+.bb-integrations__provider-mark {
+  display: inline-flex;
+  flex: none;
+  align-self: center;
+  width: var(--bb-derived-settings-integrations-ai-service-width);
+  height: var(--bb-derived-settings-integrations-ai-service-height);
+  color: var(--bb-icon-default);
+}
+.bb-integrations__provider-mark > .bb-icon { width: 100%; height: 100%; }
+.bb-integrations__provider-model {
+  flex: 0 0 var(--bb-derived-settings-integrations-ai-r1-column-1-width);
+  min-width: 0;
+}
+.bb-integrations__provider-key {
+  flex: 1 1 var(--bb-derived-settings-integrations-ai-r1-column-1-width);
+  min-width: 0;
+}
+
+/* dropbox + its DropdownMenu */
+.bb-integrations__select { position: relative; }
+.bb-integrations__menu {
+  position: absolute;
+  top: calc(100% + var(--bb-space-inset-sm));
+  left: 0;
+  z-index: 1;
+  min-width: 100%;
+}
+
+.bb-integrations__status:empty { display: none; }
+.bb-integrations__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--bb-settings-space-page-gap);
+}

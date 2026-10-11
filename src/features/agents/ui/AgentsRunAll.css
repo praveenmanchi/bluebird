@@ -1,0 +1,139 @@
+/* Run all — Figma "Agents body" on "AI Agents · Run all" (40000299:18411).
+ * Vertical: Header (title + Stop all), Overall panel (head + Progress Bar),
+ * Pipeline (one field row per agent: Bot Avatar, name + status text, Meta
+ * Badge, Open), Merged (summary + actions), note, Voice Bar. The running row
+ * repaints with agents/surface/running; the skipped row fades. */
+.bb-agents-run-all {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-run-all-root-width);
+  min-height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+  flex: none;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-run-all > * { flex-shrink: 0; }
+.bb-agents-run-all__back { align-self: flex-start; }
+
+.bb-agents-run-all__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+}
+.bb-agents-run-all__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-hair);
+  min-width: 0;
+}
+.bb-agents-run-all__heading {
+  margin: 0;
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-title);
+  font-weight: var(--bb-agents-font-weight-strong);
+}
+.bb-agents-run-all__caption {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+}
+.bb-agents-run-all__label {
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-medium);
+  line-height: var(--bb-agents-font-line-body);
+}
+
+.bb-agents-run-all__overall {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+  padding: var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agents-run-all-overall-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-panel);
+  background: var(--bb-agents-surface-panel);
+}
+.bb-agents-run-all__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-run-all__percent {
+  flex: none;
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-heading);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: var(--bb-agents-font-line-label);
+  font-variant-numeric: tabular-nums;
+}
+.bb-agents-run-all__bar.bb-progress-bar {
+  width: 100%;
+  max-width: var(--bb-derived-agents-run-all-progress-bar-width);
+}
+
+.bb-agents-run-all__pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-run-all__row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+  padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agents-run-all-accessibility-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-control);
+  background: var(--bb-agents-surface-field);
+}
+/* Each row is its own layer in Figma; the stroke widths are read per row. */
+.bb-agents-run-all__row[data-agent='spelling'] { border-width: var(--bb-derived-agents-run-all-spelling-grammar-stroke-width); }
+.bb-agents-run-all__row[data-agent='writing'] { border-width: var(--bb-derived-agents-run-all-ux-writing-stroke-width); }
+.bb-agents-run-all__row[data-agent='content'] { border-width: var(--bb-derived-agents-run-all-content-stroke-width); }
+.bb-agents-run-all__row[data-agent='design-system'] { border-width: var(--bb-derived-agents-run-all-design-system-stroke-width); }
+.bb-agents-run-all__row[data-agent='localization'] { border-width: var(--bb-derived-agents-run-all-localization-stroke-width); }
+.bb-agents-run-all__row[data-state='running'] {
+  background: var(--bb-agents-surface-running);
+  border-color: var(--bb-agents-border-running);
+}
+.bb-agents-run-all__row[data-state='skipped'] { opacity: var(--bb-derived-agents-run-all-localization-opacity); }
+.bb-agents-run-all__bot {
+  flex: none;
+  width: var(--bb-agents-size-bot);
+  height: var(--bb-agents-size-bot);
+}
+.bb-agents-run-all__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.bb-agents-run-all__merged {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-inline) var(--bb-agents-space-section);
+}
+.bb-agents-run-all__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-run-all__note { align-self: flex-end; text-align: end; }
+
+.bb-agents-run-all__voice.bb-voice-bar {
+  width: 100%;
+  max-width: var(--bb-derived-agents-run-all-voice-bar-width);
+  margin-top: auto;
+}

@@ -76,6 +76,53 @@ export const TextMode: Story = {
     metrics: { size: '13px', weight: '400 Regular', lineHeight: '16px (1.23)', letterSpacing: '0px', measure: '96 characters', largeText: false },
     required: 'Line height ≥ 1.5 · measure ≤ 80 characters',
     actual: 'Line height 1.23 · 96 characters',
+    typeCompare: { current: { size: 13, lineHeight: 16 }, suggested: { size: 16, lineHeight: 24 } },
+  },
+}
+
+/** Figma Mode=Touch target — the hit-area diagram replaces the colour sample. */
+export const TouchMode: Story = {
+  parameters: { figma: { variant: 'Mode=Touch target' } },
+  args: {
+    mode: 'touch',
+    code: '2.5.8',
+    title: 'Target Size (Minimum)',
+    description: 'The size of the target for pointer inputs is at least 24 by 24 CSS pixels, or the target has enough space around it.',
+    rating: 'AA',
+    principle: 'operable',
+    disabilities: ['physical'],
+    node: 'Close button',
+    colors: undefined,
+    ratio: undefined,
+    actual: '18 × 18px, 4px from Info',
+    required: '24 × 24px, or 24px spacing',
+    whyItFails: 'A 24px circle centred on the close icon overlaps the Info button.',
+    howToFix: 'Pad the button to 24 × 24 (3px each side) or move Info 24px away.',
+    themes: ['gestures'],
+    target: { width: 18, height: 18, spacing: 4 },
+    link: { label: 'Understanding SC 2.5.8 ↗', href: 'https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html' },
+  },
+}
+
+/** Figma Mode=Vision — six colour-vision simulations of a hue-only pair (1.4.1 Use of Color). */
+export const VisionMode: Story = {
+  parameters: { figma: { variant: 'Mode=Vision' } },
+  args: {
+    mode: 'vision',
+    code: '1.4.1',
+    title: 'Use of Color',
+    description: 'Colour is not the only visual means of conveying information, indicating an action, or distinguishing an element.',
+    rating: 'A',
+    disabilities: ['visual'],
+    node: 'Status badge',
+    colors: { fg: '#D93025', bg: '#1E8E3E' },
+    ratio: undefined,
+    actual: 'Error and Success differ only by hue',
+    required: 'A second cue: icon, text or pattern',
+    whyItFails: 'Red and green badges look the same with protanopia, deuteranopia and achromatopsia.',
+    howToFix: 'Add ✕ / ✓ icons or the words Error / Success to each badge.',
+    vision: { colors: { a: '#D93025', b: '#1E8E3E', bg: '#FFFFFF' } },
+    link: { label: 'Understanding SC 1.4.1 ↗', href: 'https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html' },
   },
 }
 

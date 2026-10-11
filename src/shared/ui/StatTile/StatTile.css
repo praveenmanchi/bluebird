@@ -2,7 +2,8 @@
  * every value is raw → --bb-derived-stat-tile-*. The large glyph size is not
  * emitted as a derived token (instance sizes are not), so it is composed
  * from icon/size/lg + space/inline-sm (24 + 6) until a stat-tile/icon/size
- * variable exists. */
+ * variable exists. Both texts are Museo Sans 300 (raw); Museo Sans is not a
+ * web font, so where it is not installed the brand family stands in. */
 .bb-stat-tile {
   display: inline-flex;
   align-items: center;
@@ -25,14 +26,14 @@
 }
 .bb-stat-tile__value {
   color: var(--bb-derived-stat-tile-68-color);
-  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-stat-tile-68-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-stat-tile-68-font-size);
   font-weight: var(--bb-derived-stat-tile-68-font-weight);
   line-height: var(--bb-derived-stat-tile-68-line-height);
 }
 .bb-stat-tile__label {
   color: var(--bb-derived-stat-tile-variables-color);
-  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-derived-stat-tile-variables-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-stat-tile-variables-font-size);
   font-weight: var(--bb-derived-stat-tile-variables-font-weight);
   line-height: var(--bb-derived-stat-tile-variables-line-height);

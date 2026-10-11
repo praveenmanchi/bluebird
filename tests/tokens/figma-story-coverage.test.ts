@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest'
 import { FIGMA_COMPONENTS } from '../../src/shared/brand/generated/tokens'
 
-const modules = import.meta.glob(['../../src/shared/ui/*/*.stories.tsx', '../../src/shell/*.stories.tsx'], { eager: true }) as Record<string, Record<string, unknown>>
+const modules = import.meta.glob(['../../src/shared/ui/*/*.stories.tsx', '../../src/shell/*.stories.tsx', '../../src/features/*/ui/*.stories.tsx'], { eager: true }) as Record<string, Record<string, unknown>>
 
 function coveredVariants(setId: string): string[] {
   const out: string[] = []

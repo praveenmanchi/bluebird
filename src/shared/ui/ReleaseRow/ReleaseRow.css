@@ -1,0 +1,54 @@
+/* ReleaseRow — Figma "Release Row" (40000345:8635). HORIZONTAL MIN CENTER,
+ * FIXED 356 × HUG, publish/surface/field fill with a 1 (raw → derived)
+ * panel-border stroke, radius publish/radius/control, padding
+ * publish/space/row-y × row-x, gap publish/space/inline: Version (strong),
+ * Text (VERTICAL, FILL × HUG, gap publish/space/hair: Summary + Meta) and a
+ * Meta Badge (Live → Success, Building → Accent, Failed → Danger). */
+.bb-release-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border: var(--bb-derived-release-row-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-release-row__version {
+  flex: none;
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+  white-space: nowrap;
+}
+.bb-release-row__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-publish-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-release-row__summary,
+.bb-release-row__meta {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.bb-release-row__summary {
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-body);
+}
+.bb-release-row__meta {
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-release-row__status { flex: none; }

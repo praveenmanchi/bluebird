@@ -1,0 +1,89 @@
+/* UX AI tab — layout shared by the five "UX AI body" frames. Values are local
+ * custom properties (--uxai-*) that each screen's own CSS (Uxai*.css) maps from
+ * the variables its Figma frame binds, so every gated frame owns its tokens and
+ * this file only owns structure. */
+.bb-uxai-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uxai-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--uxai-max-width);
+  height: 100%;
+  min-height: 0;
+  margin-inline: auto;
+  padding: var(--uxai-panel);
+  /* In a short window (S is 480 tall) the whole body scrolls once the Thread is at its floor. */
+  overflow-y: auto;
+  font-family: var(--uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Caption text: "Sources", "Thought for 2s", sub-lines. */
+.bb-uxai-caption {
+  margin: 0;
+  color: var(--uxai-caption-color);
+  font-size: var(--uxai-caption-size);
+  font-weight: var(--uxai-weight-regular);
+  line-height: var(--uxai-caption-line);
+}
+.bb-uxai-caption[data-weight='strong'] { font-weight: var(--uxai-weight-strong); }
+.bb-uxai-caption[data-weight='medium'] { font-weight: var(--uxai-weight-medium); }
+
+/* Sources bar — HORIZONTAL SPACE_BETWEEN; the chip row wraps in a narrow window. */
+.bb-uxai-sources-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--uxai-tight);
+  flex: none;
+}
+.bb-uxai-sources-bar__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--uxai-tight);
+  min-width: 0;
+}
+
+/* Thread — VERTICAL, bottom-aligned (Figma MAX), scrolls where the frame clips. */
+.bb-uxai-thread {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  /* Floor: four message rows stay visible however much the Selection Preview takes. */
+  min-height: calc(var(--uxai-message-min-height) * 4);
+  overflow-y: auto;
+}
+.bb-uxai-thread__turns,
+.bb-uxai-turn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uxai-section);
+}
+/* Pushes a short conversation to the bottom while keeping a long one scrollable. */
+.bb-uxai-thread__turns { margin-top: auto; }
+.bb-uxai-thread .bb-message { max-width: var(--uxai-message-max); min-height: var(--uxai-message-min-height); }
+
+/* Indent — gutter the width of the assistant orb, then the content (FILL). */
+.bb-uxai-indent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--uxai-inline);
+}
+.bb-uxai-gutter { flex: none; width: var(--uxai-gutter); }
+.bb-uxai-indent > :not(.bb-uxai-gutter) { flex: 1 1 auto; min-width: 0; }
+.bb-uxai-thinking {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--uxai-hair);
+}
+.bb-uxai-indent > .bb-uxai-artifact { box-sizing: border-box; width: 100%; max-width: var(--uxai-artifact-max); }
+.bb-uxai-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--uxai-tight);
+}
+
+/* Chat Input — FILL in every body; the component's own width is the set's. */
+.bb-chat-input.bb-uxai-composer { flex: none; width: 100%; max-width: var(--uxai-composer-max); }

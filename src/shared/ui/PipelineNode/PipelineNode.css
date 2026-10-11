@@ -1,0 +1,83 @@
+/* PipelineNode — Figma "Pipeline Node" (40000341:8511). VERTICAL MIN CENTER,
+ * FIXED 104 wide × HUG, gap publish/space/tight: Icon box (pill, node fill,
+ * 1 (raw → derived) node-border stroke, publish/space/inline padding around a
+ * 24 Tab Icons glyph), Name row (HORIZONTAL MIN CENTER, gap publish/space/hair:
+ * Status icon + Name) and Meta. Status=Idle hides the Status icon; Running
+ * swaps it for a Tone=Accent Spinner. Icon colours follow the Status error
+ * icons set (connection/icon/ok · error). */
+.bb-pipeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-tight);
+  box-sizing: border-box;
+  flex: none;
+  width: var(--bb-derived-pipeline-node-root-width);
+  max-width: 100%;
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  text-align: center;
+}
+.bb-pipeline-node__icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: var(--bb-publish-space-inline);
+  border: var(--bb-derived-pipeline-node-icon-box-stroke-width) solid var(--bb-publish-pipeline-node-border);
+  border-radius: var(--bb-publish-radius-pill);
+  background: var(--bb-publish-pipeline-node);
+}
+.bb-pipeline-node__icon {
+  display: block;
+  flex: none;
+  width: var(--bb-icon-size-lg);
+  height: var(--bb-icon-size-lg);
+  color: var(--bb-icon-glyph-default);
+}
+.bb-pipeline-node__name-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bb-publish-space-hair);
+  max-width: 100%;
+}
+.bb-pipeline-node__status {
+  flex: none;
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+  color: var(--bb-connection-icon-ok);
+}
+.bb-pipeline-node[data-status='error'] .bb-pipeline-node__status { color: var(--bb-connection-icon-error); }
+.bb-pipeline-node[data-status='running'] .bb-pipeline-node__status {
+  width: var(--bb-login-spinner-size);
+  height: var(--bb-login-spinner-size);
+}
+.bb-pipeline-node__name,
+.bb-pipeline-node__meta {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.bb-pipeline-node__name {
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-medium);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-pipeline-node__meta {
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+/* Status=Idle draws no glyph; the status word stays available to assistive tech. */
+.bb-pipeline-node__sr {
+  position: absolute;
+  width: 1px; /* allow-raw: visually-hidden pattern */
+  height: 1px; /* allow-raw */
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

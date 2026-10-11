@@ -7,6 +7,9 @@
 import * as z from 'zod/mini'
 
 const TYPE = /^[a-z0-9-]+:[a-z0-9-]+$/
+
+/** Whether a message type is one the bridge accepts (`namespace:action`, lower-case). Others are dropped on receipt. */
+export const isMessageType = (type: string): boolean => TYPE.test(type)
 const nonEmpty = () => z.string().check(z.minLength(1))
 
 export const requestSchema = z.object({

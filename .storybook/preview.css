@@ -17,3 +17,7 @@ body {
   color: var(--bb-card-variable-title-fg);
 }
 .sb-show-main.sb-main-padded { padding: 0; }
+
+/* Style-guide site pages (.storybook/site) are full-bleed: drop the docs column and its padding. */
+.sbdocs-wrapper:has(.bbs-page) { padding: 0; background: var(--bb-surface-canvas); }
+.sbdocs-content:has(.bbs-page) { max-width: none; }

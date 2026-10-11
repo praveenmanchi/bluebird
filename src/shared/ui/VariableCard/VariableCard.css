@@ -48,7 +48,8 @@
   color: var(--bb-card-variable-title-fg);
   font-family: var(--bb-derived-variable-card-black-font-family), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-title-font-size);
-  font-weight: var(--bb-card-variable-title-font-weight);
+  /* Raw Museo Sans 300 since the 2026-10-11 pull: Figma no longer binds card-variable/title/font-weight here. */
+  font-weight: var(--bb-derived-variable-card-black-font-weight);
   line-height: var(--bb-card-variable-title-line-height);
 }
 /* "Universal Toolkit · Used by 52 components · Affects 1 mode/brands" */

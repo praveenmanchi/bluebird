@@ -1,0 +1,92 @@
+/* AccessCodeField — Figma "Access Code Field" (40000321:20076). Label · Box
+ * (leading key, value, status, reveal) · Helper. The box reuses the input/*
+ * tokens; the login/field/* tokens add the focus ring, success border, caret
+ * and active icon. */
+.bb-access-code-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-login-gap-xs);
+  width: 100%;
+  font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-access-code-field__label {
+  color: var(--bb-input-fg-label);
+  font-size: var(--bb-login-font-body-size);
+  font-weight: var(--bb-login-font-weight-medium);
+  line-height: var(--bb-login-font-body-line);
+}
+.bb-access-code-field__box {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-login-gap-sm);
+  box-sizing: border-box;
+  height: var(--bb-login-field-height);
+  padding: 0 var(--bb-input-padding-x);
+  border: var(--bb-input-border-width) solid var(--bb-input-border-default);
+  border-radius: var(--bb-input-radius);
+  background: var(--bb-input-bg-default);
+  overflow: hidden;
+}
+.bb-access-code-field__lead { width: var(--bb-login-icon-size-sm); height: var(--bb-login-icon-size-sm); color: var(--bb-input-icon-color); }
+.bb-access-code-field__input {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--bb-input-fg-value);
+  caret-color: var(--bb-login-field-caret);
+  font-family: inherit;
+  font-size: var(--bb-input-font-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-body-line);
+}
+.bb-access-code-field__input::placeholder { color: var(--bb-input-fg-placeholder); opacity: 1; }
+.bb-access-code-field__status { width: var(--bb-login-icon-size-sm); height: var(--bb-login-icon-size-sm); }
+.bb-access-code-field__reveal {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-login-icon-size);
+  height: var(--bb-login-icon-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-input-radius);
+  background: none;
+  color: var(--bb-input-icon-color);
+  cursor: pointer;
+}
+.bb-access-code-field__reveal .bb-icon { width: 100%; height: 100%; }
+.bb-access-code-field__reveal:focus-visible { outline: var(--bb-input-border-width) solid var(--bb-input-border-focus); }
+.bb-access-code-field__helper {
+  margin: 0;
+  color: var(--bb-login-text-meta);
+  font-size: var(--bb-login-font-caption-size);
+  font-weight: var(--bb-login-font-weight-regular);
+  line-height: var(--bb-login-font-caption-line);
+}
+
+/* State=Focused */
+.bb-access-code-field:focus-within .bb-access-code-field__box,
+.bb-access-code-field[data-state='focused'] .bb-access-code-field__box {
+  border-color: var(--bb-input-border-focus);
+  box-shadow: 0 0 0 var(--bb-login-field-ring-width) var(--bb-login-field-ring);
+}
+.bb-access-code-field:focus-within .bb-access-code-field__lead,
+.bb-access-code-field[data-state='focused'] .bb-access-code-field__lead { color: var(--bb-login-field-icon-active); }
+
+/* State=Error / Success (win over focus: the status is the news). */
+.bb-access-code-field[data-status='error'] .bb-access-code-field__box { border-color: var(--bb-input-border-error); box-shadow: none; }
+.bb-access-code-field[data-status='success'] .bb-access-code-field__box { border-color: var(--bb-login-field-border-success); box-shadow: none; }
+.bb-access-code-field[data-status='error'] :is(.bb-access-code-field__lead, .bb-access-code-field__status, .bb-access-code-field__helper) { color: var(--bb-login-text-error); }
+.bb-access-code-field[data-status='success'] :is(.bb-access-code-field__lead, .bb-access-code-field__status, .bb-access-code-field__helper) { color: var(--bb-login-text-success); }
+
+/* State=Disabled — the code is being checked. */
+.bb-access-code-field[data-disabled] .bb-access-code-field__box { background: var(--bb-input-bg-disabled); border-color: var(--bb-input-border-default); box-shadow: none; }
+.bb-access-code-field[data-disabled] .bb-access-code-field__lead { color: var(--bb-input-icon-color); }
+.bb-access-code-field[data-disabled] .bb-access-code-field__input { color: var(--bb-input-fg-placeholder); }
+.bb-access-code-field[data-disabled] .bb-access-code-field__reveal { cursor: default; }

@@ -1,0 +1,34 @@
+/* BrandDiffRow — Figma "Brand Diff Row" (40000345:8584). HORIZONTAL MIN
+ * CENTER, FIXED 600 × HUG (FILL inside Change Item), padding
+ * publish/space/tight × publish/space/row-x, gap publish/space/inline:
+ * Brand · Value Diff (Changed) or value text (Unchanged) · Meta Badge.
+ * The nested Value Diff keeps its own publish/space/tight gap. */
+.bb-brand-diff-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-publish-space-tight) var(--bb-publish-space-row-x);
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-brand-diff-row__brand {
+  flex: none;
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-medium);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-brand-diff-row__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-brand-diff-row__badge { flex: none; }

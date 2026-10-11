@@ -1,0 +1,56 @@
+/* KPI Tile — Figma "KPI Tile" (40000447:8612). */
+.bb-kpi-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-tight);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--bb-a11y-space-inline);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-sunken);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-kpi-tile__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-a11y-space-tight);
+}
+.bb-kpi-tile__icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-a11y-size-icon-box);
+  height: var(--bb-a11y-size-icon-box);
+  border-radius: var(--bb-a11y-radius-control);
+  background: var(--bb-a11y-surface-panel);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-kpi-tile__icon > .bb-icon { width: var(--bb-a11y-size-icon); height: var(--bb-a11y-size-icon); }
+.bb-kpi-tile__value-group {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--bb-a11y-space-tight);
+  min-width: 0;
+}
+.bb-kpi-tile__value {
+  font-size: var(--bb-a11y-font-size-title);
+  line-height: var(--bb-a11y-font-line-title);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-title);
+  white-space: nowrap;
+}
+.bb-kpi-tile[data-tone='success'] .bb-kpi-tile__value { color: var(--bb-a11y-status-success); }
+.bb-kpi-tile[data-tone='warning'] .bb-kpi-tile__value { color: var(--bb-a11y-status-warning); }
+.bb-kpi-tile[data-tone='danger'] .bb-kpi-tile__value { color: var(--bb-a11y-status-danger); }
+.bb-kpi-tile[data-tone='empty'] .bb-kpi-tile__value { color: var(--bb-a11y-text-meta); }
+.bb-kpi-tile__label,
+.bb-kpi-tile__caption {
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-kpi-tile__label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bb-kpi-tile__caption { text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

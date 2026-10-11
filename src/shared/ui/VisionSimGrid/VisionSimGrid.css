@@ -1,0 +1,8 @@
+/* Vision Sim Grid — Figma "Vision Sim Grid" (40000463:9249): a wrapping row, three tiles wide. */
+.bb-vision-sim-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bb-a11y-space-section);
+  width: 100%;
+  max-width: var(--bb-derived-vision-sim-grid-root-width);
+}

@@ -1,0 +1,12 @@
+/* Ship step — Figma "MCP v2 · 4 Ship" body (40000496:7657). Shell, cards and the Actions bar
+ * come from McpHandoff.css; this file holds only what this step adds. */
+/* Branch and commit: HORIZONTAL, gap mcp/space/inline, two FILL Input Boxes. */
+.bb-mcp-handoff__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-mcp-space-inline);
+}
+.bb-mcp-handoff__field {
+  flex: 1 1 12rem;
+  min-width: 0;
+}

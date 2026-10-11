@@ -1,0 +1,29 @@
+/* ContactRow — Figma "Contact Row" (40000324:8452): Icon · Copy (Prompt, Links). */
+.bb-contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-login-gap-sm);
+  width: 100%;
+  font-family: var(--bb-login-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-login-font-caption-size);
+  line-height: var(--bb-login-font-caption-line);
+}
+.bb-contact-row__icon { width: var(--bb-login-icon-size-sm); height: var(--bb-login-icon-size-sm); color: var(--bb-login-text-meta); }
+.bb-contact-row__copy {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--bb-login-gap-xs);
+  min-width: 0;
+}
+.bb-contact-row__prompt, .bb-contact-row__links { margin: 0; }
+.bb-contact-row__prompt { color: var(--bb-login-text-meta); font-weight: var(--bb-login-font-weight-regular); }
+.bb-contact-row__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-login-gap-sm);
+  white-space: nowrap;
+}
+.bb-contact-row__link { color: var(--bb-login-text-link); font-weight: var(--bb-login-font-weight-medium); text-decoration: underline; text-underline-position: from-font; }
+.bb-contact-row__link:focus-visible { outline: var(--bb-input-border-width) solid var(--bb-input-border-focus); }
+.bb-contact-row__dot { color: var(--bb-login-text-meta); font-weight: var(--bb-login-font-weight-regular); }

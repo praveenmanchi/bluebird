@@ -10,8 +10,11 @@
   padding: var(--bb-space-inline-md) var(--bb-space-inset-md) var(--bb-space-inset-md);
   border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
 }
-.bb-a11y__filters { display: flex; align-items: center; gap: var(--bb-space-inline-md); flex-wrap: wrap; }
-.bb-a11y__filter { position: relative; width: calc(var(--bb-dimension-size-control-32) * 4); }
+/* One row at every plugin size (Figma: three FILL dropdowns + Scan). The dropdowns share
+ * what is left after the Scan button and truncate their value before anything wraps. */
+.bb-a11y__filters { display: flex; flex: 1 1 auto; min-width: 0; align-items: center; gap: var(--bb-space-inline-md); }
+.bb-a11y__filter { position: relative; flex: 1 1 0; min-width: 0; }
+.bb-a11y__toolbar > .bb-button { flex: none; }
 .bb-a11y__menu { position: absolute; top: calc(100% + var(--bb-space-inset-sm)); left: 0; z-index: 1; min-width: 100%; }
 .bb-a11y__results { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); padding: var(--bb-space-stack-md) var(--bb-space-inset-md); }
 .bb-a11y__summary {
@@ -85,3 +88,63 @@
   color: var(--bb-text-tertiary);
   text-transform: uppercase;
 }
+
+/* Figma L "Results": Findings title + filter tabs above the stacked WCAG cards. */
+.bb-a11y__findings { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); }
+.bb-a11y__kinds { display: flex; flex-wrap: wrap; gap: var(--bb-space-inline-xs); }
+.bb-a11y__empty { margin: 0; color: var(--bb-text-secondary); font-size: var(--bb-font-size-body); }
+.bb-a11y__summary { flex-wrap: wrap; }
+.bb-a11y__summary:empty { display: none; }
+
+/* Ready to scan — Figma "Accessibility L · Ready to scan" (40000386:31267) › Start: a panel
+ * (a11y/surface/panel, radius/panel, space/section) holding the empty state and "What we
+ * check". The frame's raw 24 / 14 / 20 gaps have no variable; they read from the a11y scale. */
+.bb-a11y-ready {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--bb-a11y-space-section) * 2);
+  padding: var(--bb-a11y-space-section);
+  border-radius: var(--bb-a11y-radius-panel);
+  background: var(--bb-a11y-surface-panel);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-a11y-ready__start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-a11y-space-inline);
+  padding-block: var(--bb-a11y-space-section);
+  text-align: center;
+}
+.bb-a11y-ready__title {
+  margin: 0;
+  color: var(--bb-a11y-text-title);
+  font-size: var(--bb-a11y-font-size-heading);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  line-height: var(--bb-a11y-font-line-label);
+}
+.bb-a11y-ready__body {
+  margin: 0;
+  color: var(--bb-a11y-text-body);
+  font-size: var(--bb-a11y-font-size-body);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  line-height: var(--bb-a11y-font-line-body);
+}
+.bb-a11y-ready__checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-section);
+}
+.bb-a11y-ready__principles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--bb-a11y-space-section);
+}
+.bb-a11y-ready__rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-a11y-space-tight);
+}
+.bb-a11y-ready__rule,
+.bb-a11y-ready__heading { width: 100%; }

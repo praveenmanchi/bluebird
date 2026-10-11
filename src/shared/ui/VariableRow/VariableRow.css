@@ -1,0 +1,78 @@
+/* VariableRow — Figma "Variable Row" (40000287:8277). HORIZONTAL, centred,
+ * FIXED 600 × 40: Preview, the Text column (FILL) and the Swap Dropdown
+ * (FIXED at the Dropdown set's own width). Kind=Color previews with a Small
+ * Color Swatch; Kind=Number with a sunken value tile. State=Changed fills the
+ * row (uxai/changed/*) and gives the Swap its focus border — in Figma that is
+ * the Dropdown's State=Open instance; code keeps the menu closed and borrows
+ * only the border, so aria-expanded stays truthful. The Changed stroke takes
+ * layout space in Figma (Text shrinks 316 → 314), so it is a real border. */
+.bb-variable-row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: var(--bb-derived-variable-row-root-width);
+  height: var(--bb-derived-variable-row-root-height);
+  gap: var(--bb-uxai-space-inline);
+  padding: var(--bb-uxai-space-hair) var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-control);
+}
+.bb-variable-row[data-state='changed'] {
+  background: var(--bb-uxai-changed-bg);
+  border: var(--bb-derived-variable-row-root-stroke-width) solid var(--bb-uxai-changed-border);
+}
+.bb-variable-row__amount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--bb-uxai-size-swatch);
+  height: var(--bb-uxai-size-swatch);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-surface-sunken);
+  border: var(--bb-derived-variable-row-preview-stroke-width) solid var(--bb-uxai-chip-border);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-title);
+}
+.bb-variable-row__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--bb-uxai-space-hair);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-variable-row__token,
+.bb-variable-row__where {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-variable-row__token {
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-body);
+  color: var(--bb-uxai-text-title);
+}
+.bb-variable-row__where {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-variable-row__swap {
+  position: relative;
+  flex: none;
+  width: var(--bb-derived-dropdown-root-width);
+}
+.bb-variable-row[data-state="changed"] .bb-variable-row__swap .bb-dropdown { border-color: var(--bb-dropdown-border-focus); }
+.bb-variable-row__menu {
+  position: absolute;
+  top: calc(100% + var(--bb-space-inset-xs));
+  left: 0;
+  right: 0;
+  z-index: 1;
+}

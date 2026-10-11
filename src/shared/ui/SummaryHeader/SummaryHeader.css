@@ -1,0 +1,24 @@
+/* Summary Header — Figma "Summary Header" (40000447:8665). */
+.bb-summary-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-a11y-space-inline);
+  font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-summary-header__title {
+  margin: 0;
+  font-size: var(--bb-a11y-font-size-heading);
+  line-height: var(--bb-a11y-font-line-label);
+  font-weight: var(--bb-a11y-font-weight-strong);
+  color: var(--bb-a11y-text-title);
+}
+.bb-summary-header__stats {
+  margin-left: auto;
+  font-size: var(--bb-a11y-font-size-caption);
+  line-height: var(--bb-a11y-font-line-caption);
+  font-weight: var(--bb-a11y-font-weight-regular);
+  color: var(--bb-a11y-text-meta);
+}
+.bb-summary-header__toggle { margin-left: auto; }
+.bb-summary-header__stats + .bb-summary-header__toggle { margin-left: 0; }

@@ -1,0 +1,57 @@
+/* AgentCard — Figma "Agent Card" (40000296:8379). FIXED 260-wide panel,
+ * vertical (agents/space/inline gap, agents/space/row-x padding): Top (Bot +
+ * Status, space-between), Name, Purpose, Rules chip, Footer (Meta + Action
+ * Button, space-between). Running repaints the panel (agents/surface/running,
+ * agents/border/running); Coming soon fades Name and Purpose (raw 0.6 in
+ * Figma) and disables the Action Button (Button.css fades it). */
+.bb-agent-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-agent-card-root-width);
+  max-width: 100%;
+  padding: var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agent-card-root-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-panel);
+  background: var(--bb-agents-surface-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-agent-card[data-state='running'] {
+  background: var(--bb-agents-surface-running);
+  border-color: var(--bb-agents-border-running);
+}
+.bb-agent-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-self: stretch;
+}
+.bb-agent-card__name {
+  margin: 0;
+  font-size: var(--bb-agents-font-size-heading);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: var(--bb-agents-font-line-label);
+  color: var(--bb-agents-text-title);
+}
+.bb-agent-card__purpose,
+.bb-agent-card__meta {
+  margin: 0;
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+  color: var(--bb-agents-text-meta);
+}
+.bb-agent-card[data-state='coming-soon'] .bb-agent-card__name { opacity: var(--bb-derived-agent-card-name-opacity); }
+.bb-agent-card[data-state='coming-soon'] .bb-agent-card__purpose { opacity: var(--bb-derived-agent-card-purpose-opacity); }
+.bb-agent-card__rules { max-width: 100%; }
+.bb-agent-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+  align-self: stretch;
+}
+.bb-agent-card__meta { min-width: 0; }
+.bb-agent-card__action { flex: none; }

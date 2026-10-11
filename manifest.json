@@ -29,12 +29,16 @@
   "networkAccess": {
     "allowedDomains": [
       "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "https://fonts.gstatic.com",
+      "https://api.figma.com",
+      "https://api.anthropic.com",
+      "https://api.github.com"
     ],
     "devAllowedDomains": [
       "http://localhost:5173",
-      "ws://localhost:4001"
+      "ws://localhost:4001",
+      "http://localhost:8787"
     ],
-    "reasoning": "Loads the Noto Sans web font used by the brand type ramp."
+    "reasoning": "Loads the Noto Sans web font used by the brand type ramp. Dual File Mode reads the library files the user configures (variables and published components) from the Figma REST API. UX AI sends questions, with the matching library context, to Claude (api.anthropic.com) using the user's own API key. In development the Jira tab calls the local Jira proxy (npm run jira:proxy) on localhost:8787. Publish commits design-system releases (token JSON, release notes, changelog) to the GitHub repository the user configures, opens the pull request and follows its GitHub Actions run, using the user's own access token (api.github.com)."
   }
 }

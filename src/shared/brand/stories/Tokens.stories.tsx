@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite'
 import { BRANDS, BRAND_LABELS, COMPONENT_TOKENS, TOKEN_NAMES } from '../generated/tokens'
 
-const meta = { title: 'Foundations/Tokens' } satisfies Meta
+const meta = { title: 'Style guide/Token reference' } satisfies Meta
 export default meta
 type Story = StoryObj
 

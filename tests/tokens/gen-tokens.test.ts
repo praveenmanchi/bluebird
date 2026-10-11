@@ -85,7 +85,7 @@ describe('generate()', () => {
     expect(derived).toContain('--bb-derived-button-disabled-opacity: 0.55;')
     expect(derived).toContain('--bb-derived-checkbox-disabled-opacity: 0.6;')
     expect(derived).toContain('--bb-derived-menu-item-disabled-opacity: 0.5;')
-    expect(derived).toContain('--bb-derived-checkbox-check-stroke-width: 2px;')
+    expect(derived).toContain('--bb-derived-checkbox-vector-width: 10.7px;')
     expect(derived).toContain('--bb-derived-checkbox-dash-radius: 1px;')
   })
   it('lists per-component Figma bindings in tokens.ts', () => {
@@ -132,6 +132,30 @@ describe('generate()', () => {
       set: 'Logo', variant: 'Brand=b', layer: 'Vector', nodes: ['2:1', '2:2'],
       tokens: ['--bb-derived-logo-vector--1-fill', '--bb-derived-logo-vector--1-height', '--bb-derived-logo-vector--1-width'],
     }])
+  })
+  it('reads the weight from numeric style names as well as named ones', () => {
+    // Museo Sans names its styles by weight ("100", "300"); MuseoModerno uses words ("ExtraBold").
+    const text = (id: string, name: string, font: string, style: string) => ({ id, p: `Card/${name}`, t: 'TEXT', b: {}, r: { fill: '#000000', fontSize: 12, font, style } })
+    const components = {
+      fileKey: 'test', page: { id: '0:1', name: 'Components' }, pulledAt: '2026-10-11', coverage: [],
+      sets: [{
+        code: 'Card', id: '8:8', name: 'Card', description: '', props: {}, status: 'built',
+        variants: [{ id: '8:8', name: 'Card', props: {}, nodes: [
+          { id: '8:8', p: 'Card', t: 'COMPONENT', b: {} },
+          text('8:1', 'Light', 'Museo Sans', '300'),
+          text('8:2', 'Thin', 'Museo Sans', '100'),
+          text('8:3', 'Heavy', 'MuseoModerno', 'ExtraBold'),
+          text('8:4', 'Odd', 'Museo Sans', '1000'),
+        ] }],
+      }],
+    } as ComponentsSnapshot
+    const derived = Object.fromEntries(derivedDeclarations(components).map((d) => [d.name, d.value]))
+    expect(derived['--bb-derived-card-light-font-family']).toBe('"Museo Sans"')
+    expect(derived['--bb-derived-card-light-font-weight']).toBe('300')
+    expect(derived['--bb-derived-card-thin-font-weight']).toBe('100')
+    expect(derived['--bb-derived-card-heavy-font-weight']).toBe('800')
+    // Only the CSS weight range 100–900 counts; anything else is not a weight.
+    expect(derived['--bb-derived-card-odd-font-weight']).toBeUndefined()
   })
   it('adds nothing for same-named layers whose values agree', () => {
     const components = logoFixture([{ name: 'Brand=a', layers: [

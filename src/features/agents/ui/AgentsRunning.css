@@ -1,0 +1,108 @@
+/* Agent running — Figma "Agents body" on "AI Agents · Running" (40000298:6038).
+ * Vertical: Agent Header, Progress panel (head, Progress Bar, Thinking Steps),
+ * Found so far (FILL: head + Finding Rows, scrolls here), Footer (note + Stop). */
+.bb-agents-running {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-running-root-width);
+  height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-running > * { flex-shrink: 0; }
+.bb-agents-running__back { align-self: flex-start; }
+.bb-agents-running__header.bb-agent-header {
+  width: 100%;
+  max-width: var(--bb-derived-agents-running-agent-header-width);
+  min-height: var(--bb-derived-agents-running-agent-header-height);
+}
+
+.bb-agents-running__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+  padding: var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agents-running-progress-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-panel);
+  background: var(--bb-agents-surface-panel);
+}
+.bb-agents-running__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-running__label {
+  min-width: 0;
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-medium);
+  line-height: var(--bb-agents-font-line-body);
+}
+.bb-agents-running__percent {
+  flex: none;
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-heading);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: var(--bb-agents-font-line-label);
+  font-variant-numeric: tabular-nums;
+}
+.bb-agents-running__bar.bb-progress-bar {
+  width: 100%;
+  max-width: var(--bb-derived-agents-running-progress-bar-width);
+}
+.bb-agents-running__steps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-tight);
+}
+
+.bb-agents-running__found {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+  flex: 1 1 auto;
+  /* In a short window keep two rows visible; the body scrolls past that. */
+  min-height: calc(var(--bb-derived-agents-running-finding-row-height) * 2);
+}
+.bb-agents-running__found-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight) var(--bb-agents-space-inline);
+}
+.bb-agents-running__caption {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+}
+.bb-agents-running__caption--strong { font-weight: var(--bb-agents-font-weight-strong); }
+/* The design clips the list at the frame; here it scrolls. */
+.bb-agents-running__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+  min-height: 0;
+  overflow-y: auto;
+}
+.bb-agents-running__finding.bb-finding-row {
+  flex: none;
+  width: 100%;
+  max-width: var(--bb-derived-agents-running-finding-row-width);
+  min-height: var(--bb-derived-agents-running-finding-row-height);
+}
+
+.bb-agents-running__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+}

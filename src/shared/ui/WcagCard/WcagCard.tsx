@@ -14,6 +14,9 @@ import { MetricsPanel, type MetricsPanelMetric } from '../MetricsPanel/MetricsPa
 import { Occurrences } from '../Occurrences/Occurrences'
 import { ThumbnailPair } from '../ThumbnailPair/ThumbnailPair'
 import { TokenRef } from '../TokenRef/TokenRef'
+import { TargetPreview, type TargetPreviewProps } from '../TargetPreview/TargetPreview'
+import { TypeCompare, type TypeCompareProps } from '../TypeCompare/TypeCompare'
+import { VisionSimGrid, type VisionSimGridProps } from '../VisionSimGrid/VisionSimGrid'
 import {
   CHANGE_LABEL, CHANGE_TONE, IGNORE_SCOPE_LABEL, SEVERITY_LABEL, SEVERITY_TONE,
   type WcagCardAnnotation, type WcagCardBrandVerdict, type WcagCardChange, type WcagCardFix,
@@ -95,11 +98,11 @@ export interface WcagCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ti
   colors?: WcagCardColors
   /** Figma "Actual" — the measured value row. */
   actual?: ComponentChildren
-  /** Figma "Requried" — the required value row. */
+  /** Figma "Required" — the required value row. */
   required?: ComponentChildren
   /** Figma "why it fails" row. */
   whyItFails?: ComponentChildren
-  /** Figma "How ti fix" row. */
+  /** Figma "How to fix" row. */
   howToFix?: ComponentChildren
   /** "Theme chips" — the Component 13/14/15 Theme instances. */
   themes?: readonly ThemeChipTheme[]
@@ -138,6 +141,13 @@ export interface WcagCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ti
   lastSeen?: ComponentChildren
   /** Gap 11 — the implementation snippet for the developer. */
   snippet?: WcagCardSnippet
+
+  /** Mode=Text "Check preview" — the scanned type next to the suggested style. Text mode only. */
+  typeCompare?: TypeCompareProps
+  /** Mode=Touch target "Check preview" — the hit-area diagram. Touch mode only. */
+  target?: TargetPreviewProps
+  /** Mode=Vision "Check preview" — the six colour-vision simulations of a hue-only pair. Vision mode only. */
+  vision?: VisionSimGridProps
 
   /** Copy inside the colour sample ("Aa" + caption). */
   sampleText?: ComponentChildren
@@ -214,6 +224,7 @@ export function WcagCard({
   node, nodeToken, colors, actual, required, whyItFails, howToFix, themes = [], themesLabel = 'Themes', preview,
   mode = 'colors', metrics, fix, brandModes, brandModesLabel, severity, occurrences, ignored, annotation,
   manualChecks, manualChecksLabel, onToggleManualCheck, thumbnail, thumbnailAfter, change, lastSeen, snippet,
+  typeCompare, target, vision,
   sampleText = 'Aa', sampleCaption = 'Sample of this exact pair', ratio,
   checks = DEFAULT_CHECKS, onIgnore, onAnnotate, onSelect,
   ignoreLabel = 'Ignore', annotateLabel, selectLabel = 'Select in Figma', checkLabel = 'Check With :',
@@ -308,6 +319,10 @@ export function WcagCard({
           {showBrandModes && <hr class="bb-wcag-card__divider bb-wcag-card__divider--brand-modes" />}
           {showBrandModes && <BrandModes modes={brandModes} label={brandModesLabel} />}
           {(thumbnail || thumbnailAfter) && <ThumbnailPair before={thumbnail} after={thumbnailAfter} />}
+          {/* Figma "Check preview": the one picture each check type gets, where Mode=colors keeps its Placeholder. */}
+          {mode === 'text' && typeCompare && <TypeCompare {...typeCompare} class="bb-wcag-card__check-preview" />}
+          {mode === 'touch' && target && <TargetPreview {...target} class="bb-wcag-card__check-preview" />}
+          {mode === 'vision' && vision && <VisionSimGrid {...vision} class="bb-wcag-card__check-preview" />}
           {preview !== undefined && <div class="bb-wcag-card__placeholder">{preview}</div>}
         </div>
         {showSample && (

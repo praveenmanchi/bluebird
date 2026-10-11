@@ -1,0 +1,82 @@
+/* FigmaLinkCard — Figma "Figma Link Card" (40000268:8066). A fixed 360×40
+ * card (jira/surface/field, inside stroke jira/surface/panel-border): a
+ * sunken Thumb with the component glyph, two ellipsised text lines that fill
+ * the middle, and the Open / Copy icon actions. */
+.bb-figma-link-card {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-figma-link-card-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-figma-link-card-root-height);
+  padding: var(--bb-jira-space-row-y) var(--bb-jira-space-row-x);
+  border: var(--bb-derived-figma-link-card-root-stroke-width) solid var(--bb-jira-surface-panel-border);
+  border-radius: var(--bb-jira-radius-control);
+  background: var(--bb-jira-surface-field);
+}
+.bb-figma-link-card__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-jira-size-avatar);
+  height: var(--bb-jira-size-avatar);
+  border-radius: var(--bb-jira-radius-icon);
+  background: var(--bb-jira-surface-sunken);
+  overflow: hidden;
+}
+.bb-figma-link-card__thumb .bb-icon,
+.bb-figma-link-card__action .bb-icon {
+  width: var(--bb-jira-size-icon);
+  height: var(--bb-jira-size-icon);
+}
+.bb-figma-link-card__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-jira-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-figma-link-card__frame,
+.bb-figma-link-card__path {
+  display: block;
+  align-self: stretch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-figma-link-card__frame {
+  font-size: var(--bb-jira-font-size-body);
+  font-weight: var(--bb-jira-font-weight-medium);
+  line-height: var(--bb-jira-font-line-body);
+  color: var(--bb-jira-text-title);
+}
+.bb-figma-link-card__path {
+  font-size: var(--bb-jira-font-size-caption);
+  font-weight: var(--bb-jira-font-weight-regular);
+  line-height: var(--bb-jira-font-line-caption);
+  color: var(--bb-jira-text-meta);
+}
+.bb-figma-link-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-jira-space-inline);
+  flex: none;
+}
+.bb-figma-link-card__action {
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-transparent);
+  cursor: pointer;
+  outline: none;
+}
+.bb-figma-link-card__action:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}

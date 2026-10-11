@@ -1,0 +1,51 @@
+/* IssueType — Figma "Issue Type" (40000265:8019). The square takes the
+ * per-type colour (jira/type/*). Story, Bug and Epic fill their glyph with a
+ * per-type token (jira/type/{story,bug,epic}-glyph) because the light Story and
+ * Epic squares need a dark glyph; Task and Subtask stroke theirs with the
+ * shared jira/type/glyph at jira/icon-stroke. Glyph sizes are the Figma
+ * "Vector" layer sizes (derived tokens), centred like the Figma frame. */
+.bb-issue-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-jira-size-icon);
+  height: var(--bb-jira-size-icon);
+  border-radius: var(--bb-jira-radius-icon);
+  background: var(--bb-jira-type-story);
+}
+.bb-issue-type__glyph { display: block; overflow: visible; }
+.bb-issue-type__glyph[data-paint='fill'] { stroke: none; }
+.bb-issue-type__glyph[data-paint='stroke'] {
+  fill: none;
+  stroke: var(--bb-jira-type-glyph);
+  stroke-width: var(--bb-jira-icon-stroke);
+}
+
+.bb-issue-type[data-type='story'] .bb-issue-type__glyph {
+  width: var(--bb-derived-issue-type-vector-type-story-width);
+  height: var(--bb-derived-issue-type-vector-type-story-height);
+  fill: var(--bb-jira-type-story-glyph);
+}
+.bb-issue-type[data-type='bug'] { background: var(--bb-jira-type-bug); }
+.bb-issue-type[data-type='bug'] .bb-issue-type__glyph {
+  width: var(--bb-derived-issue-type-vector-type-bug-width);
+  height: var(--bb-derived-issue-type-vector-type-bug-height);
+  fill: var(--bb-jira-type-bug-glyph);
+}
+.bb-issue-type[data-type='task'] { background: var(--bb-jira-type-task); }
+.bb-issue-type[data-type='task'] .bb-issue-type__glyph {
+  width: var(--bb-derived-issue-type-vector-type-task-width);
+  height: var(--bb-derived-issue-type-vector-type-task-height);
+}
+.bb-issue-type[data-type='epic'] { background: var(--bb-jira-type-epic); }
+.bb-issue-type[data-type='epic'] .bb-issue-type__glyph {
+  width: var(--bb-derived-issue-type-vector-type-epic-width);
+  height: var(--bb-derived-issue-type-vector-type-epic-height);
+  fill: var(--bb-jira-type-epic-glyph);
+}
+.bb-issue-type[data-type='subtask'] { background: var(--bb-jira-type-subtask); }
+.bb-issue-type[data-type='subtask'] .bb-issue-type__glyph {
+  width: var(--bb-derived-issue-type-vector-type-subtask-width);
+  height: var(--bb-derived-issue-type-vector-type-subtask-height);
+}

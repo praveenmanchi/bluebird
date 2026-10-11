@@ -8,12 +8,15 @@ import { brand } from '@shared/config'
 import { isBoldStyle, rateContrast, requiredRatio, roundRatio } from '../contrast'
 import { exemptionFor } from '../exempt'
 import { isDecorativeName, passesNonText } from '../nontext'
-import { isControlName, hasSpacingException, rateTarget, requiredTarget, type Box } from '../target'
+import { isControlName, hasSpacingException, rateTarget, requiredTarget, PLATFORM_TARGETS, type Box, type Platform } from '../target'
 import { nearestPassingToken, verdictsAcrossModes } from '../tokens'
 import { loadBrandPalette, modeColors, type BrandPalette } from './variables'
+import { buildInventory, type InventoryNode } from '../inventory'
+import { summarizeScope } from '../scope-summary'
+import { RULES_URL } from '../rules'
 import {
-  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema,
-  type ContrastIssue, type ScanResult, type ScanProgress, type UnmeasurableText,
+  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema,
+  type ContrastIssue, type ScanTarget, type ScanResult, type ScanProgress, type UnmeasurableText,
   type NonTextIssue, type TargetSizeIssue,
 } from '../messages'
 
@@ -25,7 +28,7 @@ type Finding =
   | { kind: 'issue'; entry: Omit<ContrastIssue, 'nodeIds' | 'occurrences'> }
 
 async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> {
-  const { scope, dedupeInstances = true } = scanRequestSchema.parse(payload)
+  const { scope, dedupeInstances = true, platform = 'web' } = scanRequestSchema.parse(payload)
   const started = Date.now()
   const roots = scopeRoots(scope)
   const textNodes: TextNode[] = []
@@ -54,11 +57,14 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
   // One pass feeds all three criteria: 1.4.3/1.4.6 text, 1.4.11 borders, 2.5.8 targets.
   const strokeNodes: SceneNode[] = []
   const targetNodes: { node: SceneNode; evidence: 'reaction' | 'control' }[] = []
+  // Every instance met, for the Scan Summary's component inventory.
+  const instanceNodes: InstanceNode[] = []
 
   const scanned = await traverse(
     roots,
     (node) => {
       if (!node.visible) return
+      if (node.type === 'INSTANCE') instanceNodes.push(node)
       if (node.type === 'TEXT') { textNodes.push(node); return }
       if (hasVisibleStroke(node)) strokeNodes.push(node)
       const evidence = targetEvidence(node)
@@ -95,6 +101,19 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
   }
 
   const issues = [...grouped.values()].sort((a, b) => a.ratio - b.ratio)
+  const nonText = collectNonText(strokeNodes)
+  const targets = collectTargets(targetNodes, platform)
+
+  // Inventory: which components and frames hold a finding.
+  const flagged = new Set([...issues, ...nonText, ...targets].flatMap((f) => f.nodeIds))
+  const candidates: SceneNode[] = [...textNodes, ...strokeNodes, ...targetNodes.map((t) => t.node)]
+  const identities = await componentIdentities(instanceNodes)
+  const inventory = buildInventory({
+    roots: roots as unknown as readonly InventoryNode[],
+    instances: instanceNodes as unknown as readonly InventoryNode[],
+    findingNodes: candidates.filter((n) => flagged.has(n.id)) as unknown as readonly InventoryNode[],
+    identityOf: (n) => identities.get(n.id),
+  })
 
   return {
     scope,
@@ -102,13 +121,31 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
     scanned,
     textNodes: textNodes.length,
     issues,
-    nonText: collectNonText(strokeNodes),
-    targets: collectTargets(targetNodes),
+    nonText,
+    targets,
     exempt,
     unmeasurable,
     instancesSkipped,
     durationMs: Date.now() - started,
+    inventory,
   }
+}
+
+/** Instance id → its component, at set level for variants (a Button's six variants are one
+ *  component). Detached or unloadable instances are left out of the inventory. */
+async function componentIdentities(instances: readonly InstanceNode[]): Promise<Map<string, { key: string; name: string }>> {
+  const out = new Map<string, { key: string; name: string }>()
+  for (const inst of instances) {
+    try {
+      const main = await inst.getMainComponentAsync()
+      if (!main) continue
+      const owner = main.parent?.type === 'COMPONENT_SET' ? main.parent : main
+      out.set(inst.id, { key: owner.id, name: owner.name })
+    } catch {
+      // A component from a library that is not loaded: count nothing rather than guess.
+    }
+  }
+  return out
 }
 
 function hasVisibleStroke(node: SceneNode): boolean {
@@ -160,8 +197,8 @@ function collectNonText(nodes: readonly SceneNode[]): NonTextIssue[] {
   return [...grouped.values()].sort((a, b) => a.ratio - b.ratio)
 }
 
-/** WCAG 2.5.8 / 2.5.5: a target's smaller side decides. */
-function collectTargets(candidates: readonly { node: SceneNode; evidence: 'reaction' | 'control' }[]): TargetSizeIssue[] {
+/** WCAG 2.5.8 / 2.5.5, or the platform's minimum on iOS / Android: a target's smaller side decides. */
+function collectTargets(candidates: readonly { node: SceneNode; evidence: 'reaction' | 'control' }[], platform: Platform): TargetSizeIssue[] {
   // The icon inside a button is not a second target; only the outermost
   // interactive node counts, or a 16px glyph in a 44px button gets flagged.
   const ids = new Set(candidates.map((c) => c.node.id))
@@ -180,10 +217,10 @@ function collectTargets(candidates: readonly { node: SceneNode; evidence: 'react
     const box = boxes.get(node.id)!
     const width = Math.round(box.width * 100) / 100
     const height = Math.round(box.height * 100) / 100
-    const level = rateTarget(width, height)
+    const level = rateTarget(width, height, platform)
     if (level === 'aaa') continue
-    // 2.5.8 forgives an undersized target with clear space around it.
-    if (level === 'fail') {
+    // 2.5.8 forgives an undersized target with clear space around it (web only: Apple and Material ask for the hit area itself).
+    if (level === 'fail' && PLATFORM_TARGETS[platform].spacingException) {
       const others = [...boxes].filter(([id]) => id !== node.id).map(([, b]) => b)
       if (hasSpacingException(box, others)) continue
     }
@@ -196,7 +233,7 @@ function collectTargets(candidates: readonly { node: SceneNode; evidence: 'react
     } else {
       grouped.set(key, {
         nodeId: node.id, nodeIds: [node.id], occurrences: 1, name: node.name,
-        width, height, required: requiredTarget(level), evidence,
+        width, height, required: requiredTarget(level, platform), evidence, platform,
       })
     }
   }
@@ -437,8 +474,19 @@ async function annotate(payload: unknown): Promise<{ annotated: number }> {
   return { annotated }
 }
 
+/** Ready to scan: what a scan of the scope would read. Null when the scope is the selection and nothing is selected. */
+async function target(payload: unknown): Promise<ScanTarget | null> {
+  const { scope } = targetRequestSchema.parse(payload)
+  const page = figma.currentPage
+  const roots = scope === 'page' ? page.children : page.selection
+  if (scope === 'selection' && !roots.length) return null
+  return summarizeScope(scope, roots, page.name)
+}
+
 export const handlers: HandlerMap = {
   [MSG.scan]: scan,
+  [MSG.target]: target,
+  [MSG.openRules]: () => { figma.openExternal(RULES_URL) },
   [MSG.focus]: focus,
   [MSG.selectAll]: selectAll,
   [MSG.applyFix]: applyFix,

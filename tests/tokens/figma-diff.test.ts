@@ -54,11 +54,11 @@ describe('diffSnapshots', () => {
     const before = readCommitted()
     const after = mergeCommitted(clone(before))
     const set = after.components.sets.find((s) => s.code === 'WcagCard')!
-    set.props.Required = set.props.Requried!
-    delete set.props.Requried
+    set.props['Required value'] = set.props.Required!
+    delete set.props.Required
     const findings = diffSnapshots(before, after).filter((f) => f.kind.startsWith('prop-'))
     expect(findings).toHaveLength(1)
-    expect(findings[0]).toMatchObject({ kind: 'prop-renamed', before: 'Requried', after: 'Required' })
+    expect(findings[0]).toMatchObject({ kind: 'prop-renamed', before: 'Required', after: 'Required value' })
   })
 
   it('reports a renamed container once, not once per descendant', () => {

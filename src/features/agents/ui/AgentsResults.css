@@ -1,0 +1,88 @@
+/* Agent results — Figma "Agents body" on "AI Agents · Results" (40000299:6101).
+ * Vertical: Agent Header, Summary panel (Readiness Meter FILL + By severity
+ * Meta Badges), Filters (Tab selecters), Findings (FILL, scrolls here),
+ * Actions (right-aligned buttons). */
+.bb-agents-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-results-root-width);
+  height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-results > * { flex-shrink: 0; }
+.bb-agents-results__back { align-self: flex-start; }
+.bb-agents-results__header.bb-agent-header {
+  width: 100%;
+  max-width: var(--bb-derived-agents-results-agent-header-width);
+  min-height: var(--bb-derived-agents-results-agent-header-height);
+}
+
+.bb-agents-results__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-panel);
+  padding: var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agents-results-summary-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-panel);
+  background: var(--bb-agents-surface-panel);
+}
+.bb-agents-results__meter.bb-readiness-meter {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: var(--bb-derived-agents-results-readiness-meter-width);
+  min-height: var(--bb-derived-agents-results-readiness-meter-height);
+}
+.bb-agents-results__severity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: none;
+  gap: var(--bb-agents-space-tight);
+}
+
+.bb-agents-results__filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight);
+}
+
+/* The design clips the list at the frame; here it scrolls. */
+.bb-agents-results__findings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-inline);
+  flex: 1 1 auto;
+  /* In a short window keep two rows visible; the body scrolls past that. */
+  min-height: calc(var(--bb-derived-agents-results-finding-row-height) * 2);
+  overflow-y: auto;
+}
+.bb-agents-results__item { display: flex; flex: none; }
+.bb-agents-results__finding.bb-finding-row {
+  width: 100%;
+  max-width: var(--bb-derived-agents-results-finding-row-width);
+  min-height: var(--bb-derived-agents-results-finding-row-height);
+}
+.bb-agents-results__empty {
+  margin: 0;
+  padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
+  border-radius: var(--bb-agents-radius-control);
+  background: var(--bb-agents-surface-field);
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  line-height: var(--bb-agents-font-line-caption);
+}
+
+.bb-agents-results__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-inline);
+}

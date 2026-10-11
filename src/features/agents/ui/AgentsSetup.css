@@ -1,0 +1,115 @@
+/* Agent setup — Figma "Agents body" on "AI Agents · Setup" (40000298:5805).
+ * Vertical: Agent Header, Scope, Columns (Rule pack | How it works, two FILL
+ * panels), Run (Voice Bar + Large primary Button). The 859-wide mock renders in
+ * a 360–760 window: the columns wrap on the Rule Row's Figma width and the run
+ * row wraps on the Voice Bar's. */
+.bb-agents-setup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-setup-root-width);
+  min-height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+  flex: none;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-setup > * { flex-shrink: 0; }
+.bb-agents-setup > * { align-self: stretch; }
+.bb-agents-setup > .bb-agents-setup__back { align-self: flex-start; }
+.bb-agents-setup__header.bb-agent-header {
+  width: 100%;
+  max-width: var(--bb-derived-agents-setup-agent-header-width);
+  min-height: var(--bb-derived-agents-setup-agent-header-height);
+}
+
+.bb-agents-setup__scope {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight) var(--bb-agents-space-section);
+}
+.bb-agents-setup__options,
+.bb-agents-setup__tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight);
+}
+.bb-agents-setup__label {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: var(--bb-agents-font-line-caption);
+}
+.bb-agents-setup__meta {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+}
+
+.bb-agents-setup__columns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-section);
+}
+/* Rule pack and How it works: FILL panels; each wraps below the other once it
+ * cannot hold a Rule Row at its Figma width. */
+.bb-agents-setup__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-inline);
+  flex: 1 1 var(--bb-derived-agents-setup-rule-row-width);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-agents-space-row-x);
+  border: var(--bb-derived-agents-setup-rule-pack-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-panel);
+  background: var(--bb-agents-surface-panel);
+}
+.bb-agents-setup__panel + .bb-agents-setup__panel { border-width: var(--bb-derived-agents-setup-how-it-works-stroke-width); }
+.bb-agents-setup__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-setup__rule.bb-rule-row {
+  align-self: stretch;
+  width: auto;
+  max-width: none;
+  padding-block: var(--bb-agents-space-hair);
+}
+/* Rule packs other than WCAG carry no conformance level (Rule Row always draws a Rating). */
+.bb-agents-setup__rule:not([data-levels]) .bb-rule-row__level { display: none; }
+.bb-agents-setup__brands {
+  display: flex;
+  flex-wrap: wrap;
+  align-self: stretch;
+  gap: var(--bb-agents-space-inline);
+}
+
+.bb-agents-setup__run {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+}
+.bb-agents-setup__voice.bb-voice-bar {
+  /* FILL beside the button; it keeps at least half its Figma width before the row wraps. */
+  flex: 1 1 0;
+  width: auto;
+  min-width: min(100%, calc(var(--bb-derived-agents-setup-voice-bar-width) / 2));
+  max-width: none;
+}
+.bb-agents-setup__go { flex: none; margin-inline-start: auto; }

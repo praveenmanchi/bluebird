@@ -1,0 +1,48 @@
+/* Step — Figma "Step" (40000275:8141). HORIZONTAL MIN CENTER, HUG × HUG,
+ * gap mcp/space/inline. The Index is a FIXED mcp/size/step pill; only the
+ * Upcoming one carries a stroke (raw 1 → derived). Done draws a check vector
+ * (checkbox/mark/color, raw 10.7 × 8 → derived) instead of the Number. Current sets its Label in
+ * the strong weight; Upcoming mutes both the number and the label. */
+.bb-step {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bb-mcp-space-inline);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-step__index {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--bb-mcp-size-step);
+  height: var(--bb-mcp-size-step);
+  border-radius: var(--bb-mcp-radius-pill);
+  background: var(--bb-mcp-step-done-bg);
+  color: var(--bb-mcp-step-fg-on);
+  font-size: var(--bb-mcp-font-size-caption);
+  font-weight: var(--bb-mcp-font-weight-strong);
+  line-height: var(--bb-mcp-font-line-caption);
+}
+.bb-step__mark {
+  width: var(--bb-derived-step-vector-width);
+  height: var(--bb-derived-step-vector-height);
+  color: var(--bb-checkbox-mark-color);
+}
+.bb-step[data-state='current'] .bb-step__index { background: var(--bb-mcp-step-current-bg); }
+.bb-step[data-state='upcoming'] .bb-step__index {
+  background: var(--bb-mcp-step-upcoming-bg);
+  border: var(--bb-derived-step-index-stroke-width) solid var(--bb-mcp-step-upcoming-border);
+  color: var(--bb-mcp-step-fg-muted);
+}
+.bb-step__label {
+  font-size: var(--bb-mcp-font-size-body);
+  font-weight: var(--bb-mcp-font-weight-medium);
+  line-height: var(--bb-mcp-font-line-body);
+  color: var(--bb-mcp-step-label);
+  white-space: nowrap;
+}
+.bb-step[data-state='current'] .bb-step__label { font-weight: var(--bb-mcp-font-weight-strong); }
+.bb-step[data-state='upcoming'] .bb-step__label { color: var(--bb-mcp-step-label-muted); }

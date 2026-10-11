@@ -1,0 +1,29 @@
+/* Generate step — Figma "MCP v2 · 3 Generate" body (40000496:7353). Shell, cards and the Actions bar
+ * come from McpHandoff.css; this file holds only what this step adds. */
+/* Options: HORIZONTAL, gap mcp/space/inline, three FILL Dropdowns. */
+.bb-mcp-handoff__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-mcp-space-inline);
+}
+.bb-mcp-handoff__select {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 9rem;
+}
+.bb-mcp-handoff__select > .bb-dropdown { width: 100%; }
+.bb-mcp-handoff__menu {
+  position: absolute;
+  top: calc(100% + var(--bb-mcp-space-tight));
+  left: 0;
+  z-index: 1;
+  min-width: 100%;
+}
+
+/* Files: HORIZONTAL, gap mcp/space/tight, Tab selecters instances. */
+.bb-mcp-handoff__files {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-mcp-space-tight);
+}

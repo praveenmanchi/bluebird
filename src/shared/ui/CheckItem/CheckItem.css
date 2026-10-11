@@ -1,0 +1,46 @@
+/* CheckItem — Figma "Check Item" (40000275:8210). HORIZONTAL MIN MIN, FIXED
+ * 356 × 30, gap mcp/space/inline: Status icon (16), Text (VERTICAL, FILL ×
+ * HUG, gap mcp/space/hair), Action (Link Button, hidden in Status=Pass).
+ * The Text frame is ~32 tall inside the FIXED 30 root, so the height is
+ * read as a minimum. Icon colours follow the Status error icons set
+ * (connection/icon/ok · warn · error). */
+.bb-check-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--bb-mcp-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-check-item-root-width);
+  max-width: 100%;
+  min-height: var(--bb-derived-check-item-root-height);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-check-item__icon {
+  width: var(--bb-mcp-size-icon);
+  height: var(--bb-mcp-size-icon);
+  color: var(--bb-connection-icon-ok);
+}
+.bb-check-item[data-status='warning'] .bb-check-item__icon { color: var(--bb-connection-icon-warn); }
+.bb-check-item[data-status='fail'] .bb-check-item__icon { color: var(--bb-connection-icon-error); }
+.bb-check-item__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-mcp-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-check-item__title {
+  font-size: var(--bb-mcp-font-size-body);
+  font-weight: var(--bb-mcp-font-weight-medium);
+  line-height: var(--bb-mcp-font-line-body);
+  color: var(--bb-mcp-text-title);
+}
+.bb-check-item__detail {
+  font-size: var(--bb-mcp-font-size-caption);
+  font-weight: var(--bb-mcp-font-weight-regular);
+  line-height: var(--bb-mcp-font-line-caption);
+  color: var(--bb-mcp-text-meta);
+}
+.bb-check-item__action { flex: none; }

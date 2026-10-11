@@ -1,0 +1,29 @@
+/* ProgressBar — Figma "Progress Bar" (40000275:8128). The track is a FIXED
+ * 320 × mcp/size/meter pill (HORIZONTAL MIN MIN); the Fill hugs the left edge.
+ * Figma models the fill width as Value variants only because the plugin API
+ * ignores instance resizes — here the width is set at runtime from `value`. */
+.bb-progress-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: var(--bb-derived-progress-bar-root-width);
+  max-width: 100%;
+  height: var(--bb-mcp-size-meter);
+  border-radius: var(--bb-mcp-radius-pill);
+  background: var(--bb-mcp-meter-track);
+  overflow: hidden;
+}
+.bb-progress-bar__fill {
+  flex: none;
+  height: var(--bb-derived-progress-bar-fill-height);
+  border-radius: var(--bb-mcp-radius-pill);
+  background: var(--bb-mcp-meter-success);
+}
+.bb-progress-bar[data-tone='warning'] .bb-progress-bar__fill { background: var(--bb-mcp-meter-warning); }
+.bb-progress-bar[data-tone='danger'] .bb-progress-bar__fill { background: var(--bb-mcp-meter-danger); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bb-progress-bar__fill { transition: width 200ms ease-out; } /* allow-raw */
+}

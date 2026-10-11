@@ -1,0 +1,58 @@
+/* TextArea — Figma "Text Area" set (40000408:8646): State=Default / Focused /
+ * Filled / Disabled. Same chrome as Input Box: every colour, type value,
+ * padding and the field height come from input/* and input/textarea/*. */
+.bb-text-area {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--bb-input-gap-label);
+  font-family: var(--bb-input-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+
+.bb-text-area__label {
+  color: var(--bb-input-fg-label);
+  font-family: var(--bb-input-label-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-input-label-font-size);
+  font-weight: var(--bb-input-label-font-weight);
+  line-height: var(--bb-input-label-line-height);
+  cursor: pointer;
+}
+
+/* Field: the bordered box; the text is the native textarea value (Figma "Value"). */
+.bb-text-area__field {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--bb-input-textarea-height);
+  margin: 0;
+  padding: var(--bb-input-textarea-padding-y) var(--bb-input-padding-x);
+  border: var(--bb-input-border-width) solid var(--bb-input-border-default);
+  border-radius: var(--bb-input-radius);
+  outline: none;
+  background: var(--bb-input-bg-default);
+  color: var(--bb-input-fg-value);
+  font-family: inherit;
+  font-size: var(--bb-input-font-size);
+  font-weight: var(--bb-input-font-weight);
+  line-height: var(--bb-input-textarea-line-height);
+  resize: vertical;
+  transition: border-color 120ms ease, background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-text-area__field::placeholder { color: var(--bb-input-fg-placeholder); }
+
+.bb-text-area__helper {
+  margin: 0;
+  color: var(--bb-input-fg-helper);
+  font-size: var(--bb-input-helper-font-size);
+  font-weight: var(--bb-input-font-weight);
+  line-height: var(--bb-input-helper-line-height);
+}
+
+/* States */
+.bb-text-area:not([data-disabled]):is(:focus-within, [data-state="focused"]) .bb-text-area__field { border-color: var(--bb-input-border-focus); }
+.bb-text-area[data-disabled] .bb-text-area__field {
+  background: var(--bb-input-bg-disabled);
+  cursor: not-allowed;
+}
+.bb-text-area[data-disabled] .bb-text-area__label { cursor: not-allowed; }

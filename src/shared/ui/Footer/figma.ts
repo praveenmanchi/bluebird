@@ -3,7 +3,7 @@ export const figma = {
   setId: '133:1675',
   name: 'footer',
   props: {
-    Local: 'local (or pills[0])',
+    Git: 'git (or pills[0])',
     UXAI: 'uxai (or pills[1])',
     MCP: 'mcp (or pills[2])',
     'Dual File': 'dualFile (or pills[3])',

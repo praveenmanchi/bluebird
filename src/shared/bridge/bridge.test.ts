@@ -50,6 +50,13 @@ describe('router', () => {
 })
 
 describe('rpc client over mock transport', () => {
+  it('rejects a type the router would drop instead of waiting for the timeout', async () => {
+    const send = vi.fn()
+    const client = createRpcClient({ send, subscribe: () => () => undefined })
+    await expect(client.call('dualFile:test')).rejects.toThrow('isn’t a valid message type')
+    expect(send).not.toHaveBeenCalled()
+  })
+
   it('round-trips a request and delivers events', async () => {
     const transport = createMockTransport({
       'x:sum': (p: { a: number; b: number }, ctx) => { ctx.emit('x:tick', 'hi'); return p.a + p.b },

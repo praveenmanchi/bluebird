@@ -1,0 +1,78 @@
+/* PublishStep — Figma "Publish Step" (40000341:8605). HORIZONTAL MIN MIN,
+ * FIXED 600 × HUG, gap publish/space/inline, padding publish/space/tight top
+ * and bottom: Indicator (publish/size/icon square, centred), Text (VERTICAL,
+ * FILL × HUG, gap publish/space/hair: Title + Detail) and Time. The indicator
+ * holds a Status error icons glyph (Done → Good, Failed → error), a Tone=Accent
+ * Spinner (Running) or a 12 × 12 ring stroked publish/step/queued-border
+ * (Queued). Queued mutes the Title to publish/text/meta; Failed paints the
+ * Detail publish/diff/removed. */
+.bb-publish-step {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-publish-space-tight) 0;
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-publish-step__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+}
+.bb-publish-step__icon {
+  width: var(--bb-publish-size-icon);
+  height: var(--bb-publish-size-icon);
+  color: var(--bb-connection-icon-ok);
+}
+.bb-publish-step[data-status='failed'] .bb-publish-step__icon { color: var(--bb-connection-icon-error); }
+.bb-publish-step__spinner {
+  width: var(--bb-login-spinner-size);
+  height: var(--bb-login-spinner-size);
+}
+.bb-publish-step__ring {
+  display: block;
+  box-sizing: border-box;
+  flex: none;
+  width: var(--bb-derived-publish-step-queued-ring-width);
+  height: var(--bb-derived-publish-step-queued-ring-height);
+  border: var(--bb-derived-publish-step-queued-ring-stroke-width) solid var(--bb-publish-step-queued-border);
+  border-radius: var(--bb-publish-radius-pill);
+}
+.bb-publish-step__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-publish-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-publish-step__title,
+.bb-publish-step__detail {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.bb-publish-step__title {
+  font-size: var(--bb-publish-font-size-body);
+  font-weight: var(--bb-publish-font-weight-medium);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
+.bb-publish-step[data-status='queued'] .bb-publish-step__title { color: var(--bb-publish-text-meta); }
+.bb-publish-step__detail,
+.bb-publish-step__time {
+  font-size: var(--bb-publish-font-size-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-publish-step[data-status='failed'] .bb-publish-step__detail { color: var(--bb-publish-diff-removed); }
+.bb-publish-step__time {
+  flex: none;
+  white-space: nowrap;
+}

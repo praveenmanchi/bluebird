@@ -375,6 +375,7 @@
   --bb-type-tracking-0-5: -0.5px;
   --bb-type-tracking-0: 0px;
   --bb-type-tracking-0-5: 0.5px;
+  --bb-dimension-size-textarea-80: 80px;
   --bb-surface-transparent: #ffffff00;
   --bb-border-on-accent: #ffffff4a;
   --bb-space-inset-xs: 2px;
@@ -433,4 +434,5 @@
   --bb-font-line-tight-lg: 13px;
   --bb-size-control-width-md: 120px;
   --bb-size-control-width-lg: 160px;
+  --bb-size-textarea-height: 80px;
 }

@@ -1,4 +1,4 @@
-import { nextId, type BridgeMessage } from './messages'
+import { isMessageType, nextId, type BridgeMessage } from './messages'
 import type { Transport } from './transport'
 
 export class BridgeError extends Error {
@@ -42,6 +42,8 @@ export function createRpcClient(transport: Transport): RpcClient {
 
   return {
     call<TResult>(type: string, payload: unknown = null, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<TResult> {
+      // The receiving router drops a malformed type without answering; fail now instead of at the timeout.
+      if (!isMessageType(type)) return Promise.reject(new BridgeError(`"${type}" isn’t a valid message type (use namespace:action in lower case)`))
       const id = nextId()
       return new Promise<TResult>((resolve, reject) => {
         const timer = setTimeout(() => {

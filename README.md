@@ -15,6 +15,7 @@ npm install
 npm run dev            # browser preview with fixtures  → http://localhost:5173/?mode=mock
 npm run dev:sandbox    # rebuild dist/code.js on change (Figma side)
 npm run dev:relay      # WebSocket relay for live mode (port 4001)
+npm run jira:proxy     # local CORS proxy the Jira tab calls Jira through (port 8787)
 npm run build          # dist/index.html + dist/bridge.html + dist/code.js, enforces size budget
 npm run test           # vitest
 npm run storybook      # component workshop with a Brand switcher → http://localhost:6006
@@ -45,6 +46,30 @@ browser  ─►  ws://127.0.0.1:4001 relay  ─►  bridge page inside Figma  �
 4. Open `http://localhost:5173/?mode=live` (append `&token=abc` if you set one)
 
 Sandbox changes still need a plugin re-run in Figma (`Cmd+Opt+P`). UI changes hot-reload in the browser.
+
+## Jira tab (live Jira)
+
+Figma plugins call the web from a `null` origin, and Jira Cloud sends no CORS headers for
+API-token calls, so the Jira tab reaches Jira through a small proxy
+(`tools/jira-proxy`). It forwards only to `https://*.atlassian.net` (plus hosts in
+`JIRA_PROXY_HOSTS` for Server / Data Center), listens on loopback only and stores nothing.
+
+1. `npm run jira:proxy`
+2. Create an API token at https://id.atlassian.com/manage-profile/security/api-tokens
+3. Settings › **Jira Integration**: switch it on; fill Email ID, Jira API Key, Site URL
+   (`https://yourteam.atlassian.net`), Proxy URL `http://localhost:8787`, optionally
+   Project Key; Save. For Jira Server / Data Center use Base URL and a personal access
+   token, leave Email empty.
+4. Open the Jira board tab: it loads your assigned / reported / watched issues (open,
+   plus done in the last two weeks). Status, story points, comments, Log work (1h),
+   subtasks and "Attach Figma link" write to Jira.
+
+Works in Figma (`npm run build`, then run the plugin; `manifest.json` allows
+`localhost:8787` in development) and in the browser preview (`npm run dev`): once the
+mock Settings hold a complete Jira connection, the dev harness calls real Jira too.
+Attaching a Figma link needs the file's link, which Figma only gives private /
+organisation plugins (`figma.fileKey`). Shipping to a team needs a hosted proxy (and its
+domain in `manifest.json` → `allowedDomains`) or an Atlassian OAuth 2.0 (3LO) app.
 
 ## Layout
 

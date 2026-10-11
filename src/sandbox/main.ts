@@ -1,6 +1,10 @@
 // Figma sandbox entry. Has access to the `figma` global, no DOM.
 import { config, brand, clampWindow, type WindowSize } from '@shared/config'
 import { createSessionHandlers, clientStorageStore, SESSION_KEY } from './session'
+import { createIntegrationsHandlers } from './integrations'
+import { INTEGRATIONS_KEY, mergeIntegrations } from '@shared/integrations'
+import { createLibrariesHandlers } from '@shared/libraries/handlers'
+import { createOnboardingHandlers } from './onboarding'
 import type { Session } from '@shared/session'
 import { createRouter, type HandlerMap } from '@shared/bridge'
 import { resolveBrandTokens } from '@shared/brand/resolve'
@@ -22,6 +26,13 @@ async function brandTokens(payload?: { brandId?: string }) {
 const coreHandlers: HandlerMap = {
   'brand:tokens': brandTokens,
   ...createSessionHandlers(config, store),
+  ...createIntegrationsHandlers(store),
+  ...createOnboardingHandlers(store),
+  // Dual File Mode: library files read over the Figma REST API, shared by the tabs that ask.
+  ...createLibrariesHandlers({
+    readSettings: async () => mergeIntegrations(await store.get(INTEGRATIONS_KEY)).dualFile,
+    fetch: (url, init) => fetch(url, init),
+  }),
   'shell:close': () => { figma.closePlugin() },
   'shell:resize': (size: WindowSize) => { const { width, height } = clampWindow(size); figma.ui.resize(width, height) },
   // Design-token snapshot for scripts/figma-pull.ts (plugin backend). Read-only.

@@ -1,0 +1,25 @@
+/* Avatar — Figma "Avatar" (40000265:8042). Size=Small is jira/size/avatar-sm,
+ * Size=Medium jira/size/avatar; the initials style is shared. */
+.bb-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-jira-size-avatar-sm);
+  height: var(--bb-jira-size-avatar-sm);
+  border-radius: var(--bb-jira-radius-pill);
+  background: var(--bb-jira-avatar-bg);
+  overflow: hidden;
+}
+.bb-avatar[data-size='md'] {
+  width: var(--bb-jira-size-avatar);
+  height: var(--bb-jira-size-avatar);
+}
+.bb-avatar__initials {
+  font-family: var(--bb-jira-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-jira-font-size-caption);
+  font-weight: var(--bb-jira-font-weight-strong);
+  line-height: var(--bb-jira-font-line-caption);
+  color: var(--bb-jira-avatar-fg);
+  white-space: nowrap;
+}

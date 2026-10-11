@@ -1,0 +1,45 @@
+/* Message — Figma "Message" (40000284:8190): one turn in the UX AI chat.
+ * User = a right-aligned uxai/bubble/user bubble; Assistant = the Thinking Orb
+ * (Breathing, 20) beside plain uxai/text/body text. Figma fixes the row at
+ * 640 × 40 (→ derived): the code treats them as the row's max width and min
+ * height so long answers and rich content (artifacts) can grow it. */
+.bb-message {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-message-root-width);
+  min-height: var(--bb-derived-message-root-height);
+}
+.bb-message[data-role='user'] { justify-content: flex-end; }
+.bb-message[data-role='assistant'] { gap: var(--bb-uxai-space-inline); }
+.bb-message__bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-inline);
+  max-width: 100%;
+  padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-control);
+  background: var(--bb-uxai-bubble-user-bg);
+}
+.bb-message__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-uxai-space-inline);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bb-message__orb { flex: none; }
+.bb-message__text {
+  margin: 0;
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-label);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-label);
+  color: var(--bb-uxai-text-body);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bb-message[data-role='user'] .bb-message__text { color: var(--bb-uxai-text-title); }

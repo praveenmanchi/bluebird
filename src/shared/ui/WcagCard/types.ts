@@ -11,8 +11,9 @@ import type { ComponentChildren } from 'preact'
 import type { DisabilityKind } from '../DisabilityIndicator/DisabilityIndicator'
 import type { MetaBadgeTone } from '../MetaBadge/MetaBadge'
 
-/** Which face of the card is showing. Figma has `Mode=Colors` / `Mode=Text`; in Figma both render colours (gap 1). */
-export type WcagCardMode = 'colors' | 'text'
+/** Which face of the card is showing — one per check type. Figma `Mode=colors` (contrast), `Mode=Text`
+ *  (typography), `Mode=Touch target` and `Mode=Vision` (colour-vision simulators, 2026-10-11). */
+export type WcagCardMode = 'colors' | 'text' | 'touch' | 'vision'
 
 /** Impact ranking, so a page of findings can be ordered and triaged (gap 5). */
 export type WcagCardSeverity = 'critical' | 'serious' | 'moderate' | 'minor'

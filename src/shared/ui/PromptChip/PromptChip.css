@@ -1,0 +1,40 @@
+/* PromptChip — Figma "Prompt Chip" (40000284:8202): a suggested question in the
+ * UX AI empty state. A real button; the pill, fill, stroke and type are all
+ * uxai/* bound, the stroke width is raw → derived. Hover/focus are not drawn in
+ * Figma: hover reuses the uxai/text/meta stroke, focus the shared focus ring. */
+.bb-prompt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-inline);
+  padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
+  border: var(--bb-derived-prompt-chip-root-stroke-width) solid var(--bb-uxai-chip-border);
+  border-radius: var(--bb-uxai-radius-pill);
+  background: var(--bb-uxai-chip-bg);
+  max-width: 100%;
+  cursor: pointer;
+  appearance: none;
+  font: inherit;
+  text-align: start;
+  transition: border-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+}
+.bb-prompt-chip:hover,
+.bb-prompt-chip[data-state='hover'] { border-color: var(--bb-uxai-text-meta); }
+.bb-prompt-chip:focus-visible {
+  outline: var(--bb-uxai-border-width) solid var(--bb-border-focus);
+  outline-offset: var(--bb-uxai-space-hair);
+}
+.bb-prompt-chip:disabled { cursor: default; }
+.bb-prompt-chip__icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-prompt-chip__label {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-body);
+  color: var(--bb-uxai-text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

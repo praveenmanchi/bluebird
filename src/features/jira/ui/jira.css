@@ -1,0 +1,18 @@
+/* Jira tab — styles shared by its views (tokens only). */
+.bb-jira-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: var(--bb-jira-space-panel);
+}
+.bb-jira-popover { position: relative; }
+.bb-jira-popover__menu {
+  position: absolute;
+  top: calc(100% + var(--bb-space-inset-sm));
+  left: 0;
+  z-index: 1;
+  width: max-content;
+  min-width: 100%;
+}

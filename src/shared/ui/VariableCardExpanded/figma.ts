@@ -12,16 +12,13 @@ export const figma = {
   },
   figmaGaps: {
     'card-variable/title/font-size': 'consumed by the composed VariableCard (header row title)',
-    'card-variable/title/font-weight': 'consumed by the composed VariableCard (header row title); the header rule here swaps only the family, so the bound weight applies',
-  },
-  derivedGaps: {
-    '--bb-derived-variable-card-expanded-black-font-weight': 'Raw "Regular" (400) on the header title, whose fontWeight Figma binds to card-variable/title/font-weight; the binding wins and the composed VariableCard reads it.',
   },
   notes: [
     'The root has no auto-layout in Figma; children are 1025 wide inside a 1049 frame (12 each side) → card-variable/padding (13) and card-variable/gap-row are used for the box.',
     'All chips ("Frame 1430102562", "Frame 1430102572") are instances of "change status" → composed ChangeStatus.',
     'The header chip caption is overridden to "Usage No." (I84:1285;83:672) → VariableCard\'s changeLabel default; summary and row captions come from summary[].label / rows[].valueLabel ("Total No. of Usage No.", "Total No. of Nodes  Using", " Nodes  Using" in Figma, mirrored by the Default story).',
     'Every chip in Figma is Property 1=Default with its caption and count text rebound to card-variable/title/fg, and its count square (Frame 1430102560) overridden to badge-count/* and a raw 1px stroke. For an added / removed summary or row status, ChangeStatus\'s own [data-status] fill and border colour outrank that override, so only its radius and stroke width carry over.',
-    'Header type is Gap Inc Sans → type/family/brand; the section title is MuseoModerno → type/family/museo.',
+    'Header and row type is Museo Sans (300, raw since the 2026-10-11 pull; it was Gap Inc Sans) → the derived family first, type/family/brand as the fallback because Museo Sans is not a web font. The section title is MuseoModerno → type/family/display.',
+    '2026-10-11: Figma dropped the card-variable/title/font-weight binding on the header title ("Black"); its raw 300 is read from the derived token, here and in VariableCard.',
   ],
 } as const

@@ -1,0 +1,59 @@
+/* FindingRow — Figma "Finding Row" (40000296:8483). FIXED 640-wide field row,
+ * top-aligned: Severity (Meta Badge), Text (FILL: Title, Meta, Fix chip) and
+ * Actions (three Link Buttons). Figma fixes it at 60 high, but Text is 60
+ * high on its own plus agents/space/row-y top and bottom, so the Fix chip
+ * spills over the frame edge on the canvas; code uses 60 as min-height. */
+.bb-finding-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-inline);
+  box-sizing: border-box;
+  width: var(--bb-derived-finding-row-root-width);
+  max-width: 100%;
+  min-height: var(--bb-derived-finding-row-root-height);
+  padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
+  border: var(--bb-derived-finding-row-root-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-control);
+  background: var(--bb-agents-surface-field);
+}
+.bb-finding-row__severity { flex: none; }
+.bb-finding-row__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--bb-agents-space-tight);
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-finding-row__title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: start;
+  font-family: inherit;
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-medium);
+  line-height: var(--bb-agents-font-line-body);
+  color: var(--bb-agents-text-title);
+}
+button.bb-finding-row__title { cursor: pointer; }
+button.bb-finding-row__title:is(:hover, :focus-visible) { text-decoration: underline; }
+button.bb-finding-row__title:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-agents-space-hair);
+}
+.bb-finding-row__meta {
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+  color: var(--bb-agents-text-meta);
+}
+.bb-finding-row__fix { max-width: 100%; }
+.bb-finding-row__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+  flex: none;
+}

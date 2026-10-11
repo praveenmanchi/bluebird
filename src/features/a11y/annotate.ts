@@ -6,6 +6,7 @@
 // layer they describe.
 import type { ContrastIssue, NonTextIssue, TargetSizeIssue } from './messages'
 import { NON_TEXT_MIN } from './nontext'
+import { PLATFORM_TARGETS, targetCriterion, unitOf } from './target'
 
 /** One annotation: a title line Dev Mode shows, and the body under it. */
 export interface AnnotationText {
@@ -32,9 +33,9 @@ export function annotationForNonText(issue: NonTextIssue): AnnotationText {
 }
 
 export function annotationForTarget(issue: TargetSizeIssue): AnnotationText {
-  const code = issue.required > 24 ? '2.5.5' : '2.5.8'
+  const code = targetCriterion(issue)
   return {
-    label: `WCAG ${code} — target is ${issue.width}×${issue.height}px, needs ${issue.required}×${issue.required}px. `
+    label: `WCAG ${code} — target is ${issue.width}×${issue.height}${unitOf(issue)}, needs ${issue.required}×${issue.required}${unitOf(issue)}${issue.platform && issue.platform !== 'web' ? ` (${PLATFORM_TARGETS[issue.platform].source})` : ''}. `
       + `Grow the hit area, padding is enough.`,
   }
 }

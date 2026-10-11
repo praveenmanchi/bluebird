@@ -5,7 +5,7 @@
   gap: var(--bb-space-inset-sm);
 }
 .bb-brand-modes__label {
-  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);

@@ -1,0 +1,52 @@
+/* ArtifactHeader — Figma "Artifact Header" (40000285:8144). HORIZONTAL,
+ * centred, FIXED 560 × 32 in the set; the artifacts stretch it (FILL). The
+ * Text column fills the free width so the Link Button sits at the right edge. */
+.bb-artifact-header {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: var(--bb-derived-artifact-header-root-width);
+  height: var(--bb-derived-artifact-header-root-height);
+  gap: var(--bb-uxai-space-inline);
+}
+.bb-artifact-header__type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-uxai-size-control);
+  height: var(--bb-uxai-size-control);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-surface-sunken);
+}
+.bb-artifact-header__icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-artifact-header__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--bb-uxai-space-hair);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-artifact-header__title,
+.bb-artifact-header__subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-artifact-header__title {
+  font-size: var(--bb-uxai-font-size-heading);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: var(--bb-uxai-font-line-label);
+  color: var(--bb-uxai-text-title);
+}
+.bb-artifact-header__subtitle {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+}
+.bb-artifact-header__open { flex: none; }

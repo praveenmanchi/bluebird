@@ -6,7 +6,7 @@
   padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
   border: var(--bb-border-width-default) solid var(--bb-feedback-danger);
   border-radius: var(--bb-radius-pill);
-  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-10);
   line-height: var(--bb-type-line-11);
   color: var(--bb-feedback-danger);
@@ -28,6 +28,6 @@
   flex: none;
 }
 .bb-brand-mode-chip__ratio {
-  font-weight: var(--bb-derived-brand-mode-chip-ratio-font-weight);
+  font-weight: var(--bb-type-weight-400);
   color: var(--bb-text-tertiary);
 }

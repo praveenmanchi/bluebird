@@ -29,7 +29,16 @@ const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
     controls: { expanded: true },
-    options: { storySort: { order: ['Foundations', 'Atoms', 'Molecules', 'Organisms', 'Shell'] } },
+    options: {
+      storySort: {
+        order: [
+          'Home',
+          'Style guide', ['Colour', 'Typography', 'Iconography', 'Spacing & shape', 'Brands', 'Token reference'],
+          'Components', ['Overview'],
+          'Atoms', 'Molecules', 'Organisms', 'Screens', 'Shell',
+        ],
+      },
+    },
   },
 }
 export default preview

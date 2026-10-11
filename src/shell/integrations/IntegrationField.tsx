@@ -1,0 +1,61 @@
+import { Icon, Input, TextArea, Toggle } from '@shared/ui'
+import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors } from '@shared/integrations'
+import { SelectInput } from './SelectInput'
+import type { ColumnSpec, FieldSpec } from './sections'
+
+export type FieldValues = Record<string, string | boolean>
+
+export interface FieldContext {
+  values: FieldValues
+  errors: FieldErrors
+  disabled: boolean
+  onChange: (key: string, value: string | boolean) => void
+}
+
+const str = (v: string | boolean | undefined) => typeof v === 'string' ? v : ''
+
+/** One Figma instance of a settings section: Input Box, dropbox, Toggle, Text Area or an AI provider row. */
+export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldContext }) {
+  const { values, errors, disabled, onChange } = ctx
+  switch (spec.kind) {
+    case 'text': {
+      const error = errors[spec.key]
+      return (
+        <Input
+          label={spec.label}
+          icon={spec.icon}
+          password={spec.secret}
+          value={str(values[spec.key])}
+          placeholder={spec.placeholder}
+          helperText={error ?? spec.helper}
+          error={error !== undefined}
+          disabled={disabled}
+          maxLength={MAX_TEXT}
+          autoComplete={spec.secret ? 'new-password' : 'off'}
+          spellcheck={false}
+          onValueChange={(v) => onChange(spec.key, v)}
+        />
+      )
+    }
+    case 'select':
+      return <SelectInput label={spec.label} icon={spec.icon} value={str(values[spec.key])} options={spec.options} disabled={disabled} onChange={(v) => onChange(spec.key, v)} />
+    case 'switch':
+      return <Toggle class="bb-integrations__switch" title={spec.title} description={spec.description} checked={values[spec.key] === true} disabled={disabled} onChange={(v) => onChange(spec.key, v)} />
+    case 'textarea':
+      return <TextArea label={spec.label} placeholder={spec.placeholder} helperText={spec.helper} maxLength={MAX_INSTRUCTIONS} value={str(values[spec.key])} disabled={disabled} onValueChange={(v) => onChange(spec.key, v)} />
+    case 'provider':
+      return (
+        <div class="bb-integrations__provider">
+          <span class="bb-integrations__provider-mark"><Icon name={`ai-${spec.provider}`} /></span>
+          <div class="bb-integrations__provider-model"><IntegrationField spec={spec.model} ctx={ctx} /></div>
+          <div class="bb-integrations__provider-key"><IntegrationField spec={spec.apiKey} ctx={ctx} /></div>
+        </div>
+      )
+  }
+}
+
+/** A column of a row: one field, or a stack of fields. */
+export function IntegrationColumn({ spec, ctx }: { spec: ColumnSpec; ctx: FieldContext }) {
+  if (!Array.isArray(spec)) return <div class="bb-integrations__column"><IntegrationField spec={spec as FieldSpec} ctx={ctx} /></div>
+  return <div class="bb-integrations__column">{(spec as readonly FieldSpec[]).map((field, i) => <IntegrationField key={i} spec={field} ctx={ctx} />)}</div>
+}

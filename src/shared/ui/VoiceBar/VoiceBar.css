@@ -1,0 +1,101 @@
+/* VoiceBar — Figma "Voice Bar" (40000296:8535). FIXED 640 × 56 row: Mic
+ * (agents/size/mic pill), Text (FILL, two lines) and a nested Voice Wave.
+ * Listening wraps the bar in the UX AI Beam: the uxai/beam/1–5 gradient drawn
+ * on the border box at the Figma stroke width (1.4), with the field colour on
+ * the padding box. The beam rotates slowly; reduced motion holds it still. */
+@property --voice-bar-beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.bb-voice-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: var(--bb-derived-voice-bar-root-width);
+  max-width: 100%;
+  height: var(--bb-derived-voice-bar-root-height);
+  padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
+  border: var(--bb-derived-voice-bar-root-state-idle-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border-radius: var(--bb-agents-radius-control);
+  background: var(--bb-agents-surface-field);
+}
+.bb-voice-bar[data-state='speaking'] { border-width: var(--bb-derived-voice-bar-root-state-speaking-stroke-width); }
+.bb-voice-bar[data-state='listening'] {
+  border-width: var(--bb-derived-voice-bar-root-state-listening-stroke-width);
+  border-color: var(--bb-surface-transparent);
+  background:
+    linear-gradient(var(--bb-agents-surface-field), var(--bb-agents-surface-field)) padding-box,
+    conic-gradient(
+      from var(--voice-bar-beam-angle),
+      var(--bb-uxai-beam-1),
+      var(--bb-uxai-beam-5),
+      var(--bb-uxai-beam-4),
+      var(--bb-uxai-beam-2),
+      var(--bb-uxai-beam-3),
+      var(--bb-uxai-beam-1)
+    ) border-box;
+  animation: bb-voice-bar-beam 6s linear infinite; /* allow-raw */
+}
+@keyframes bb-voice-bar-beam { to { --voice-bar-beam-angle: 360deg; } }
+
+.bb-voice-bar__mic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-agents-size-mic);
+  height: var(--bb-agents-size-mic);
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-agents-radius-pill);
+  background: var(--bb-agents-mic-bg);
+  overflow: hidden;
+  cursor: pointer;
+}
+.bb-voice-bar[data-state='listening'] .bb-voice-bar__mic { background: var(--bb-agents-mic-listening); }
+.bb-voice-bar__mic:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-agents-space-hair);
+}
+.bb-voice-bar__glyph {
+  width: var(--bb-derived-voice-bar-mic-glyph-width);
+  height: var(--bb-derived-voice-bar-mic-glyph-height);
+  stroke: var(--bb-agents-bot-face);
+  stroke-width: var(--bb-agents-face-stroke);
+  stroke-linecap: round;
+}
+
+.bb-voice-bar__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-weight: var(--bb-agents-font-weight-regular);
+}
+.bb-voice-bar__transcript,
+.bb-voice-bar__caption {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-voice-bar__transcript {
+  font-size: var(--bb-agents-font-size-label);
+  line-height: var(--bb-agents-font-line-label);
+  color: var(--bb-agents-text-title);
+}
+.bb-voice-bar[data-state='idle'] .bb-voice-bar__transcript { color: var(--bb-agents-text-meta); }
+.bb-voice-bar__caption {
+  font-size: var(--bb-agents-font-size-caption);
+  line-height: var(--bb-agents-font-line-caption);
+  color: var(--bb-agents-text-meta);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-voice-bar[data-state='listening'] { animation: none; }
+}

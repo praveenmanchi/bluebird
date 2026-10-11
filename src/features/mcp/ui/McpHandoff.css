@@ -1,0 +1,94 @@
+/* MCP handoff — Figma "MCP flow v2 · 600" (MCP page; happy path 40000496:6690,
+ * empty states 40000497:7749, error states 40000497:8630). This file is the
+ * shared shell and the Select step ("MCP v2 · 1 Select" body 40000496:6698);
+ * each other step's own layout sits in <Step>.css. Same layout as the
+ * Publish v2 flow: VERTICAL, padding mcp/space/panel, gap mcp/space/section —
+ * the Stepper, the step's stacked cards (mcp/surface/panel, panel-border stroke,
+ * radius/panel, padding space/panel, gap space/section) in "Panels" (FILL,
+ * scrolls vertically), then "Actions" — a plain row (no fill, stroke or padding)
+ * under the panels. The body fills the shell's <main>, so only the panels scroll. Every composed row FILLs
+ * its card, so instances take the card width here instead of their set width. */
+.bb-mcp-handoff {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: var(--bb-mcp-space-panel);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-stepper.bb-mcp-handoff__stepper { width: 100%; }
+
+/* Panels: VERTICAL, gap mcp/space/section, FILL × FILL, overflow VERTICAL. */
+.bb-mcp-handoff__panels {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-section);
+  min-height: 0;
+  overflow-y: auto;
+}
+.bb-mcp-handoff__panels > * { flex: none; }
+.bb-mcp-handoff__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-section);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-mcp-space-panel);
+  border: var(--bb-mcp-border-width) solid var(--bb-mcp-surface-panel-border);
+  border-radius: var(--bb-mcp-radius-panel);
+  background: var(--bb-mcp-surface-panel);
+}
+.bb-mcp-handoff__card > :is(.bb-section-title, .bb-figma-link-card, .bb-ticket-row, .bb-readiness-meter, .bb-code-snippet, .bb-publish-empty-state, .bb-notice, .bb-input) {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Connections, Checks, Files, Ship steps: VERTICAL, gap mcp/space/tight, FILL × HUG. */
+.bb-mcp-handoff__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-mcp-space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-mcp-handoff__stack > li { display: flex; flex-direction: column; }
+.bb-mcp-handoff__stack :is(.bb-connection-row, .bb-check-item, .bb-publish-step) { width: 100%; box-sizing: border-box; }
+.bb-mcp-handoff__stack > li > *,
+.bb-mcp-handoff__steps > li > *,
+.bb-mcp-handoff__checks > li > * { width: 100%; box-sizing: border-box; }
+
+/* Include and After push: HORIZONTAL, gap mcp/space/panel, hugging Checkboxes. */
+.bb-mcp-handoff__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-mcp-space-tight) var(--bb-mcp-space-panel);
+}
+
+.bb-mcp-handoff__caption,
+.bb-mcp-handoff__summary {
+  margin: 0;
+  color: var(--bb-mcp-text-meta);
+  font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-mcp-font-size-caption);
+  font-weight: var(--bb-mcp-font-weight-regular);
+  line-height: var(--bb-mcp-font-line-caption);
+}
+
+/* Actions: HORIZONTAL, gap mcp/space/inline, no fill or stroke — summary FILL,
+ * then hugging Buttons, under the scrolling panels. */
+.bb-mcp-handoff__actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--bb-mcp-space-inline);
+}
+.bb-mcp-handoff__summary {
+  flex: 1 1 10rem;
+  min-width: 0;
+}

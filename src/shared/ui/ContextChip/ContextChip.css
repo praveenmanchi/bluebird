@@ -1,0 +1,32 @@
+/* ContextChip — Figma "Context Chip" (40000283:8207). Type=Selection is the
+ * accent chip (the user's bubble colours); Source and Citation share the
+ * neutral chip surface and differ only in glyph. */
+.bb-context-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-uxai-space-tight);
+  padding: var(--bb-uxai-space-hair) var(--bb-uxai-space-inline);
+  border: var(--bb-derived-context-chip-root-stroke-width) solid var(--bb-uxai-chip-border);
+  border-radius: var(--bb-uxai-radius-chip);
+  background: var(--bb-uxai-chip-bg);
+  max-width: 100%;
+}
+.bb-context-chip[data-type='selection'] {
+  background: var(--bb-uxai-bubble-user-bg);
+  border-color: var(--bb-uxai-bubble-user-border);
+}
+.bb-context-chip__icon {
+  width: var(--bb-uxai-size-icon);
+  height: var(--bb-uxai-size-icon);
+}
+.bb-context-chip__label {
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-context-chip[data-type='selection'] .bb-context-chip__label { color: var(--bb-uxai-text-title); }

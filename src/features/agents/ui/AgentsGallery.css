@@ -1,0 +1,123 @@
+/* Agents gallery — Figma "Agents body" on "AI Agents · Gallery" (40000297:8491).
+ * Vertical: Header (title + Run all), Scope (Tab selecters + selection meta),
+ * Agents (two rows of three Agent Cards → a wrapping grid here), Recent runs,
+ * Voice Bar. The frame is an 859 × 724 desktop mock; the plugin renders it in a
+ * 360–760 window, so the card grid wraps on the card's Figma width. */
+.bb-agents-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--bb-derived-agents-gallery-root-width);
+  min-height: 100%;
+  padding: var(--bb-agents-space-panel);
+  font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
+  flex: none;
+}
+/* Sections keep their content height; only the scroll region (if any) gives way. */
+.bb-agents-gallery > * { flex-shrink: 0; }
+
+.bb-agents-gallery__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-section);
+}
+.bb-agents-gallery__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-hair);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bb-agents-gallery__heading {
+  margin: 0;
+  color: var(--bb-agents-text-title);
+  font-size: var(--bb-agents-font-size-title);
+  font-weight: var(--bb-agents-font-weight-strong);
+}
+.bb-agents-gallery__subtitle,
+.bb-agents-gallery__meta {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-caption);
+}
+.bb-agents-gallery__run-all { flex: none; }
+
+.bb-agents-gallery__scope {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight) var(--bb-agents-space-section);
+}
+.bb-agents-gallery__options,
+.bb-agents-gallery__tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--bb-agents-space-tight);
+}
+.bb-agents-gallery__label {
+  margin: 0;
+  color: var(--bb-agents-text-meta);
+  font-size: var(--bb-agents-font-size-caption);
+  font-weight: var(--bb-agents-font-weight-strong);
+  line-height: var(--bb-agents-font-line-caption);
+}
+
+/* Agents: Figma lays two Rows of three FILL cards; a grid on the card's Figma
+ * width keeps three across at the design width and wraps below it. */
+.bb-agents-gallery__agents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--bb-derived-agents-gallery-agent-card-width)), 1fr));
+  gap: var(--bb-agents-space-section);
+}
+.bb-agents-gallery__card.bb-agent-card {
+  width: auto;
+  max-width: none;
+  min-height: var(--bb-derived-agents-gallery-agent-card-height);
+  cursor: pointer;
+}
+.bb-agents-gallery__card.bb-agent-card[data-state='coming-soon'] { cursor: default; }
+
+.bb-agents-gallery__recent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-agents-space-tight);
+}
+.bb-agents-gallery__run {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+}
+.bb-agents-gallery__run-left {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-agents-space-inline);
+  min-width: 0;
+}
+/* The instance binds agents/size/bot (40) but is drawn at 20 in the row. */
+.bb-agents-gallery__run-bot {
+  flex: none;
+  width: calc(var(--bb-agents-size-bot) / 2);
+  height: calc(var(--bb-agents-size-bot) / 2);
+}
+.bb-agents-gallery__run-text {
+  min-width: 0;
+  color: var(--bb-agents-text-body);
+  font-size: var(--bb-agents-font-size-body);
+  font-weight: var(--bb-agents-font-weight-regular);
+  line-height: var(--bb-agents-font-line-body);
+}
+
+.bb-agents-gallery__voice.bb-voice-bar {
+  width: 100%;
+  max-width: var(--bb-derived-agents-gallery-voice-bar-width);
+  margin-top: auto;
+}

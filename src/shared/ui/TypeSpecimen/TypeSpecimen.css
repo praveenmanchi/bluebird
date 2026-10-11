@@ -1,0 +1,49 @@
+/* TypeSpecimen — Figma "Type Specimen" (40000285:8230). HORIZONTAL, centred,
+ * FIXED 536 × 24 in the set (Type Artifact stretches it to FILL). The sample
+ * takes the free width so the spec sits at the right edge. Level=Title binds
+ * no line height in Figma (Auto), so it keeps the font's normal leading. */
+.bb-type-specimen {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: var(--bb-derived-type-specimen-root-width);
+  height: var(--bb-derived-type-specimen-root-height);
+  gap: var(--bb-uxai-space-section);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-type-specimen__specimen {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--bb-uxai-text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bb-type-specimen__spec {
+  flex: none;
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+  color: var(--bb-uxai-text-meta);
+  white-space: nowrap;
+}
+.bb-type-specimen[data-level='title'] .bb-type-specimen__specimen {
+  font-size: var(--bb-uxai-font-size-title);
+  font-weight: var(--bb-uxai-font-weight-strong);
+  line-height: normal;
+}
+.bb-type-specimen[data-level='label'] .bb-type-specimen__specimen {
+  font-size: var(--bb-uxai-font-size-label);
+  font-weight: var(--bb-uxai-font-weight-medium);
+  line-height: var(--bb-uxai-font-line-label);
+}
+.bb-type-specimen[data-level='body'] .bb-type-specimen__specimen {
+  font-size: var(--bb-uxai-font-size-body);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-body);
+}
+.bb-type-specimen[data-level='caption'] .bb-type-specimen__specimen {
+  font-size: var(--bb-uxai-font-size-caption);
+  font-weight: var(--bb-uxai-font-weight-regular);
+  line-height: var(--bb-uxai-font-line-caption);
+}
