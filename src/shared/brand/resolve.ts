@@ -1,7 +1,8 @@
 // Runs in the Figma sandbox. Resolves a brand's variable collection + mode
-// into a flat TokenMap. Falls back to plugin.config.json tokens when the
-// collection or mode is missing in the current file.
+// into a flat TokenMap. The collection comes from the open file or, failing that,
+// its enabled libraries. Falls back to plugin.config.json tokens when neither has it.
 import { rgbaToHex } from '../figma/color'
+import { findVariableCollection, type FoundCollection } from './collection'
 import { cssValueFor } from './snapshot'
 import { mergeTokens, tokenKeyFromVariableName, type BrandTokensResult, type TokenMap } from './tokens'
 
@@ -18,10 +19,15 @@ export async function resolveBrandTokens(source: BrandSource): Promise<BrandToke
     source: 'fallback',
     tokens: source.fallbackTokens,
   }
-  const collections = await figma.variables.getLocalVariableCollectionsAsync()
-  const collection = collections.find((c) => c.name === source.collection)
+  let collection: FoundCollection | null
+  try {
+    collection = await findVariableCollection(source.collection)
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error)
+    return { ...fallback, note: `Could not read the "${source.collection}" library collection (${reason}). Using fallback tokens.` }
+  }
   if (!collection) {
-    return { ...fallback, note: `Variable collection "${source.collection}" not found in this file. Using fallback tokens.` }
+    return { ...fallback, note: `Variable collection "${source.collection}" not found in this file or its enabled libraries. Using fallback tokens.` }
   }
   const mode = collection.modes.find((m) => m.name === source.mode)
   if (!mode) {
@@ -29,9 +35,7 @@ export async function resolveBrandTokens(source: BrandSource): Promise<BrandToke
   }
 
   const resolved: Record<string, string> = {}
-  for (const variableId of collection.variableIds) {
-    const variable = await figma.variables.getVariableByIdAsync(variableId)
-    if (!variable) continue
+  for (const variable of collection.variables) {
     const value = await resolveValue(variable.valuesByMode[mode.modeId], mode.modeId, 0)
     const css = toCssValue(value, variable.resolvedType, variable.name)
     if (css !== null) resolved[tokenKeyFromVariableName(variable.name)] = css

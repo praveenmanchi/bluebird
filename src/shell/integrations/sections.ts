@@ -161,3 +161,10 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
 ]
+
+/** Every value key a section's fields edit, header switch included. */
+export function sectionFieldKeys(spec: SectionSpec): string[] {
+  const keys = (field: FieldSpec): string[] => field.kind === 'provider' ? [field.model.key, field.apiKey.key] : [field.key]
+  const flat = (block: BlockSpec | ColumnSpec): FieldSpec[] => Array.isArray(block) ? (block as readonly (ColumnSpec)[]).flatMap(flat) : [block as FieldSpec]
+  return [...(spec.toggleKey ? [spec.toggleKey] : []), ...spec.blocks.flatMap(flat).flatMap(keys)]
+}

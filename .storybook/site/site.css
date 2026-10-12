@@ -1,6 +1,6 @@
 /*
  * Style-guide site chrome. Colour, type, radius and spacing all come from the
- * generated --bb-* tokens, so the site re-skins with the brand picker. The plugin
+ * generated --bb-* tokens, so the site re-skins with the active brand. The plugin
  * scale tops out at 24px type / 16px spacing, so website sizes are multiples of
  * those tokens. Only page-layout widths below are literals: Figma has no
  * variables for a docs-site grid.
@@ -49,7 +49,7 @@
   font-weight: var(--bb-type-weight-600);
   white-space: nowrap;
 }
-.bbs-header__nav { display: flex; gap: var(--bb-space-inline-xs); flex: 1; min-width: 0; overflow-x: auto; }
+.bbs-header__nav { display: flex; align-items: center; justify-content: flex-end; gap: var(--bb-space-inline-xs); flex: 1; min-width: 0; overflow-x: auto; }
 .bbs-header__nav a {
   padding: var(--bb-space-inset-md) var(--bb-space-inline-lg);
   border-radius: var(--bb-radius-xl);
@@ -61,18 +61,8 @@
 }
 .bbs-header__nav a:hover { background: var(--bbs-header-tint); opacity: 1; }
 .bbs-header__nav a[aria-current="page"] { background: var(--bbs-header-tint); opacity: 1; font-weight: var(--bb-type-weight-600); }
-.bbs-brand-picker select {
-  height: var(--bb-size-control-height);
-  padding: 0 var(--bb-space-inline-lg);
-  border: var(--bb-border-width-default) solid var(--bbs-header-tint);
-  border-radius: var(--bb-radius-xl);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: var(--bb-type-size-13);
-  cursor: pointer;
-}
-.bbs-brand-picker option { color: var(--bb-text-primary); background: var(--bb-surface-raised); }
+.bbs-header__nav a.bbs-header__icon-link { display: grid; place-items: center; padding: var(--bb-space-inset-md); }
+.bbs-header__home-icon { width: var(--bb-size-icon-lg); height: var(--bb-size-icon-lg); }
 
 .bbs-subnav { background: var(--bb-surface-sunken); border-bottom: var(--bb-border-width-default) solid var(--bb-border-subtle); }
 .bbs-subnav__inner { display: flex; gap: var(--bb-space-inline-xs); overflow-x: auto; padding-block: var(--bb-space-inset-md); }
@@ -201,7 +191,7 @@ a.bbs-card:hover { border-color: var(--bb-border-focus); transform: translateY(-
 @media (max-width: 720px) {
   .bbs-page { --bbs-gutter: var(--bb-space-inset-xl); }
   .bbs-header__inner { flex-wrap: wrap; gap: var(--bb-space-inline-md); padding-block: var(--bb-space-inset-md); }
-  .bbs-header__nav { order: 3; flex-basis: 100%; overflow-x: auto; }
+  .bbs-header__nav { order: 3; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; }
   .bbs-title { font-size: calc(var(--bb-type-size-24) * 1.5); }
   .bbs-footer { flex-direction: column; }
 }

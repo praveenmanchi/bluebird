@@ -5,14 +5,14 @@ import type { RpcClient, Transport } from '@shared/bridge'
 import { features } from './registry.generated'
 import { Banner } from './Banner'
 import { TabBar } from './TabBar'
-import { activePersonaId, activeTabId, brandStatus, connection, screen, selectPersona, session, visibleTabs, windowSize } from './state'
+import { activePersonaId, activeTabId, brandPersonas, brandStatus, connection, screen, selectPersona, session, visibleTabs, windowSize } from './state'
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
 import { OnboardingScreen } from './OnboardingScreen'
 import { bootSession, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
 import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
-import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, personas, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
+import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { OPEN_SETTINGS_EVENT } from '@shared/navigation'
 import { ensureLibraryState, libraryPill, libraryState, loadLibraryState } from '@shared/libraries/status'
 import { gitPill, integrationSettings, mcpPill, uxaiPill } from './footerStatus'
@@ -117,10 +117,10 @@ export function App({ client, transport }: AppProps) {
         <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
           {inSettings
-            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} personas={personas} personaId={activePersonaId.value} onPersonaChange={selectPersona} integrations={integrations} onReplayTour={replayOnboarding} />
+            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onPersonaChange={selectPersona} integrations={integrations} onReplayTour={replayOnboarding} />
             : entry
               ? <entry.Tab key={entry.manifest.id} />
-              : <EmptyState icon="inspect" title="No tabs enabled" description="Enable a tab for this persona in plugin.config.json and rebuild." />}
+              : <EmptyState icon="inspect" title="No tabs enabled" description="Turn a tab on for this brand in dev.html › Plugin configuration (or plugin.config.json) and rebuild." />}
         </main>
         <Footer size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} git={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} statuses={{ git: gitPill(pillSettings?.github), uxai: uxaiPill(pillSettings?.ai), mcp: mcpPill(pillSettings?.mcp), dualFile: libraryPill(libraryState.value) }} />
       </div>

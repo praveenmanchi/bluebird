@@ -1,7 +1,8 @@
-// Reads the Brand variable collection so a finding can talk in tokens, not hexes.
+// Reads the brand variable collection (local or from a library) so a finding can talk in tokens, not hexes.
 // Runs inside Figma. The maths it feeds lives in ../tokens.ts and is pure.
 import type { RGB } from '@shared/figma/color'
 import type { PaletteEntry } from '../tokens'
+import { findVariableCollection } from '@shared/brand/collection'
 
 export interface BrandPalette {
   /** Mode names in file order, e.g. Bridge / Ikea / Richemont / Disney / Fiskars. */
@@ -50,12 +51,12 @@ async function resolveColor(variable: Variable, modeId: string, depth = 0): Prom
 /**
  * Load the brand palette once per scan.
  *
- * Returns null when the file has no such collection — the plugin then falls
- * back to reporting hexes, which is what it did before tokens existed.
+ * Returns null when neither the file nor its enabled libraries have the
+ * collection — the plugin then falls back to reporting hexes, which is what
+ * it did before tokens existed.
  */
 export async function loadBrandPalette(collectionName: string, activeModeName: string): Promise<BrandPalette | null> {
-  const collections = await figma.variables.getLocalVariableCollectionsAsync()
-  const collection = collections.find((c) => c.name === collectionName)
+  const collection = await findVariableCollection(collectionName)
   if (!collection) return null
 
   const modes = collection.modes
@@ -66,9 +67,9 @@ export async function loadBrandPalette(collectionName: string, activeModeName: s
   const byMode = new Map<string, Record<string, RGB | null>>()
   const names = new Map<string, string>()
 
-  for (const id of collection.variableIds) {
-    const variable = await figma.variables.getVariableByIdAsync(id)
-    if (!variable || variable.resolvedType !== 'COLOR') continue
+  for (const variable of collection.variables) {
+    if (variable.resolvedType !== 'COLOR') continue
+    const id = variable.id
     names.set(id, variable.name)
 
     const perMode: Record<string, RGB | null> = {}

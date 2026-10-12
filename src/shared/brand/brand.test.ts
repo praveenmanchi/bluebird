@@ -42,7 +42,7 @@ describe('resolveBrandTokens', () => {
   it('falls back when the collection is missing', async () => {
     const result = await resolveBrandTokens(source)
     expect(result.source).toBe('fallback')
-    expect(result.note).toMatch(/collection "Brand" not found/)
+    expect(result.note).toMatch(/collection "Brand" not found in this file or its enabled libraries/)
     expect(result.tokens).toEqual(source.fallbackTokens)
   })
 
@@ -73,5 +73,32 @@ describe('resolveBrandTokens', () => {
     const result = await resolveBrandTokens(source)
     expect(result.source).toBe('figma')
     expect(result.tokens).toEqual({ 'color-brand': '#ff0000', 'radius-md': '12px' })
+  })
+
+  it('resolves from an enabled library when the file has no local copy', async () => {
+    installFigmaMock({
+      variables: {
+        getLocalVariableCollectionsAsync: async () => [],
+        getVariableByIdAsync: async () => null,
+        importVariableByKeyAsync: async () => ({ id: 'r1', name: 'color/brand', resolvedType: 'COLOR', variableCollectionId: 'rc', valuesByMode: { m1: { r: 0, g: 0, b: 1, a: 1 } } }),
+        getVariableCollectionByIdAsync: async () => ({ id: 'rc', name: 'Brand', modes: [{ name: 'Bridge', modeId: 'm1' }] }),
+      } as unknown as PluginAPI['variables'],
+      teamLibrary: {
+        getAvailableLibraryVariableCollectionsAsync: async () => [{ key: 'k', name: 'Brand', libraryName: 'Plugin UI' }],
+        getVariablesInLibraryCollectionAsync: async () => [{ key: 'r1', name: 'color/brand', resolvedType: 'COLOR' }],
+      } as unknown as PluginAPI['teamLibrary'],
+    })
+    const result = await resolveBrandTokens(source)
+    expect(result.source).toBe('figma')
+    expect(result.tokens).toEqual({ 'color-brand': '#0000ff' })
+  })
+
+  it('falls back with the reason when the library request fails', async () => {
+    installFigmaMock({
+      teamLibrary: { getAvailableLibraryVariableCollectionsAsync: async () => { throw new Error('offline') } } as unknown as PluginAPI['teamLibrary'],
+    })
+    const result = await resolveBrandTokens(source)
+    expect(result.source).toBe('fallback')
+    expect(result.note).toBe('Could not read the "Brand" library collection (offline). Using fallback tokens.')
   })
 })

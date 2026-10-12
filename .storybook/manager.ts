@@ -4,9 +4,19 @@ import { create } from 'storybook/theming'
 const BRAND_TITLE = 'The Bridge · Design Studio'
 
 // The Bridge wordmark is white, so the manager stays on the dark base.
-// The Home page carries its own header navigation, so it opens as a full-width
-// website page; every other entry keeps the sidebar and toolbar.
-const FULL_WIDTH_PAGES = new Set(['home--docs'])
+// The style-guide site pages (Home, Style guide, Components) carry their own
+// header navigation, so they open as full-width website pages; component
+// stories (the "Storybook" link) and Token reference, a plain story without the
+// site header, keep the sidebar and toolbar.
+const FULL_WIDTH_PAGES = new Set([
+  'home--docs',
+  'style-guide-colour--docs',
+  'style-guide-typography--docs',
+  'style-guide-iconography--docs',
+  'style-guide-spacing-shape--docs',
+  'style-guide-brands--docs',
+  'components-overview--docs',
+])
 
 addons.setConfig({
   theme: create({

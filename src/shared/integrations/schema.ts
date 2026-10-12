@@ -64,6 +64,40 @@ export type IntegrationSettings = { [K in IntegrationId]: IntegrationValues<K> }
 
 export const INTEGRATION_IDS = Object.keys(sectionSchemas) as IntegrationId[]
 
+/**
+ * Keys and tokens. Each person enters these in the plugin: a brand can manage every other
+ * field from plugin.config.json, which is committed and inlined into the plugin bundle.
+ */
+export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof IntegrationValues<K>)[] } = {
+  github: ['apiKey'],
+  // Power Automate / Teams workflow URLs carry a sig= signature: anyone holding one can post.
+  notifications: ['designSystemWebhook', 'devTeamWebhook'],
+  storybook: [],
+  zeroheight: ['apiKey'],
+  dualFile: ['file1Key', 'file2Key'],
+  ai: ['claudeKey', 'openaiKey', 'geminiKey'],
+  mcp: ['token'],
+  jira: ['apiKey'],
+}
+
+export const isSecretField = (section: IntegrationId, key: string): boolean => (SECRET_FIELDS[section] as readonly string[]).includes(key)
+
+/** Brand-managed sections (plugin.config.json → brand.brands.<id>.integrations): a section listed here is set by the brand; its keys are locked in the plugin. */
+export type ManagedIntegrations = { [K in IntegrationId]?: Partial<IntegrationValues<K>> }
+
+/** Values a brand manages win over what the person stored; secret fields are never managed, so they always come from the person. */
+export function applyManaged(settings: IntegrationSettings, managed: ManagedIntegrations | undefined): IntegrationSettings {
+  if (!managed) return settings
+  const out = { ...settings }
+  for (const id of INTEGRATION_IDS) {
+    const values = managed[id]
+    if (!values) continue
+    const locked = Object.fromEntries(Object.entries(values).filter(([k]) => !isSecretField(id, k)))
+    ;(out as Record<IntegrationId, unknown>)[id] = { ...settings[id], ...locked }
+  }
+  return out
+}
+
 /** First-run values: switches as the Figma screen shows them, selects on the Figma value, text empty. */
 export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true },

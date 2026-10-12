@@ -3,7 +3,7 @@
 import type { ComponentChildren } from 'preact'
 import { useState } from 'preact/hooks'
 import { BrandLogo } from '../../src/shared/ui/BrandLogo/BrandLogo'
-import { BRANDS, BRAND_LABELS, FIGMA_FILE_KEY, type BrandId } from '../../src/shared/brand/generated/tokens'
+import { BRAND_LABELS, FIGMA_FILE_KEY, type BrandId } from '../../src/shared/brand/generated/tokens'
 import { COMPONENT_GROUPS, PAGES, go, hrefFor, useBrand, useStoryIndex, type PageId } from './runtime'
 import './site.css'
 
@@ -36,18 +36,17 @@ function useWorkshopTarget(): string {
   return first?.id ?? PAGES.components
 }
 
-function BrandPicker({ brand, onChange }: { brand: BrandId; onChange: (b: BrandId) => void }) {
+/** The Figma icon set has no house glyph, so the site header draws its own (24px grid, currentColor). */
+function HomeIcon() {
   return (
-    <label class="bbs-brand-picker">
-      <span class="bbs-visually-hidden">Brand</span>
-      <select value={brand} onChange={(e) => onChange(e.currentTarget.value as BrandId)}>
-        {BRANDS.map((id) => <option key={id} value={id}>{BRAND_LABELS[id]}</option>)}
-      </select>
-    </label>
+    <svg class="bbs-header__home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3.5 10.5 12 3.5l8.5 7" />
+      <path d="M5.5 9v10.5h4.5v-6h4v6h4.5V9" />
+    </svg>
   )
 }
 
-function SiteHeader({ current, brand, onBrand }: { current: PageId; brand: BrandId; onBrand: (b: BrandId) => void }) {
+function SiteHeader({ current }: { current: PageId }) {
   const workshop = useWorkshopTarget()
   const inStyleGuide = STYLE_GUIDE_IDS.has(current)
   return (
@@ -58,12 +57,14 @@ function SiteHeader({ current, brand, onBrand }: { current: PageId; brand: Brand
           <span class="bbs-header__product">Design System</span>
         </PageLink>
         <nav class="bbs-header__nav" aria-label="Site">
-          <PageLink to={PAGES.home} current={current === PAGES.home}>Home</PageLink>
+          <PageLink to={PAGES.home} class="bbs-header__icon-link" current={current === PAGES.home}>
+            <HomeIcon />
+            <span class="bbs-visually-hidden">Home</span>
+          </PageLink>
           <PageLink to={PAGES.colour} current={inStyleGuide}>Style guide</PageLink>
           <PageLink to={PAGES.components} current={current === PAGES.components}>Components</PageLink>
           <PageLink to={workshop}>Storybook</PageLink>
         </nav>
-        <BrandPicker brand={brand} onChange={onBrand} />
       </div>
       {inStyleGuide && (
         <nav class="bbs-subnav" aria-label="Style guide">
@@ -90,7 +91,7 @@ export function SitePage({ current, eyebrow, title, description, children }: Sit
   const [brand, setBrand] = useBrand()
   return (
     <div class="bbs-page" data-brand={brand}>
-      <SiteHeader current={current} brand={brand} onBrand={setBrand} />
+      <SiteHeader current={current} />
       <main class="bbs-main">
         {title && (
           <div class="bbs-intro">

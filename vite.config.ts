@@ -6,6 +6,7 @@ import { fileURLToPath, URL } from 'node:url'
 import process from 'node:process'
 import { readFileSync } from 'node:fs'
 import type { Plugin } from 'vite'
+import { devConfigPlugin } from './tools/dev-config/vite-plugin'
 
 const activeBrand = (JSON.parse(readFileSync(new URL('./plugin.config.json', import.meta.url), 'utf8')) as { brand: { active: string } }).brand.active
 
@@ -23,7 +24,7 @@ const target = process.env.BB_TARGET === 'bridge' ? 'bridge' : 'index'
 // (thin WebSocket bridge used in "live" dev mode). Everything is inlined:
 // Figma loads the UI from a single HTML string.
 export default defineConfig(({ command }) => ({
-  plugins: [preact(), tailwindcss(), brandAttribute(), viteSingleFile({ removeViteModuleLoader: true })],
+  plugins: [preact(), tailwindcss(), brandAttribute(), devConfigPlugin(fileURLToPath(new URL('./plugin.config.json', import.meta.url))), viteSingleFile({ removeViteModuleLoader: true })],
   resolve: {
     alias: {
       '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),

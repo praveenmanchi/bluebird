@@ -64,6 +64,106 @@
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$",
                 "description": "SHA-256 hex of the brand access code (trimmed, upper-cased). Generate with `npm run access-code -- <code>`."
+              },
+              "tabs": {
+                "type": "array",
+                "description": "This brand's tab bar: array order is tab order, enabled:false hides the tab. Tabs not listed follow in persona order. Edit in dev.html \u203a Plugin configuration.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "enabled"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "integrations": {
+                "type": "object",
+                "description": "Settings sections this brand sets for everyone; the plugin shows these fields locked. API keys and tokens are not allowed here: each person enters them in the plugin.",
+                "additionalProperties": false,
+                "properties": {
+                  "github": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "notifications": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "storybook": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "zeroheight": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "dualFile": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "ai": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "mcp": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  },
+                  "jira": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ]
+                    }
+                  }
+                }
               }
             }
           }

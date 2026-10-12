@@ -4,6 +4,7 @@ import { Button, ButtonGroup, PersonaCard, SegmentedControl, TeamBanner, Toggle,
 import type { BrandTokensResult } from '@shared/brand'
 import { config, type ResolvedPersona } from '@shared/config'
 import type { Session } from '@shared/session'
+import { managedFor } from '@shared/integrations/effective'
 import { SettingsIntegrations } from './SettingsIntegrations'
 import type { IntegrationsApi } from './integrations/client'
 import './SettingsScreen.css'
@@ -115,7 +116,7 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
           <Button variant="secondary" onClick={onReplayTour}>Replay tour</Button>
         </div>
       )}
-      {integrations && <SettingsIntegrations api={integrations} />}
+      {integrations && <SettingsIntegrations api={integrations} managed={managedFor(session?.brandId)} managedBy={label} />}
       <TeamBanner class="bb-settings__team" taglineSize="auto" />
     </section>
   )

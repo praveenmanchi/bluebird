@@ -67,3 +67,36 @@ describe('integrations handlers', () => {
     expect(all.jira.projectKey).toBe('DS')
   })
 })
+
+describe('brand-managed sections', () => {
+  const brands = { acme: { integrations: { github: { repo: 'acme/tokens', branch: 'develop' }, dualFile: { enabled: true, file1Id: 'ABC123' } } } }
+  const signedIn = () => { const store = memoryStore(); store.data.set('bluebird:session', { brandId: 'acme', since: '2026-10-12' }); return store }
+
+  it('reads the brand values over the person’s and stores only the person’s', async () => {
+    const store = signedIn()
+    const h = createIntegrationsHandlers(store, brands)
+    const saved = await call(h, INTEGRATIONS_MSG.save, { section: 'github', values: { ...github, repo: 'me/fork' } }) as typeof github
+    expect(saved).toMatchObject({ repo: 'acme/tokens', branch: 'develop', apiKey: 'ghp_x' })
+    // A locked field isn't the person's to set: neither the brand value nor what the form sent for it is stored.
+    expect((store.data.get(INTEGRATIONS_KEY) as typeof DEFAULT_INTEGRATIONS).github).toMatchObject({ repo: '', apiKey: 'ghp_x' })
+    expect(((await call(h, INTEGRATIONS_MSG.get)) as typeof DEFAULT_INTEGRATIONS).github.repo).toBe('acme/tokens')
+  })
+
+  it('keeps the person’s own values when the form sends the locked brand values back (as the UI does)', async () => {
+    const store = signedIn()
+    store.data.set(INTEGRATIONS_KEY, { github: { ...DEFAULT_INTEGRATIONS.github, repo: 'me/fork' } })
+    const h = createIntegrationsHandlers(store, brands)
+    const shown = ((await call(h, INTEGRATIONS_MSG.get)) as typeof DEFAULT_INTEGRATIONS).github
+    await call(h, INTEGRATIONS_MSG.save, { section: 'github', values: { ...shown, apiKey: 'ghp_mine' } })
+    expect((store.data.get(INTEGRATIONS_KEY) as typeof DEFAULT_INTEGRATIONS).github).toMatchObject({ repo: 'me/fork', branch: 'main', apiKey: 'ghp_mine' })
+    store.data.delete('bluebird:session')
+    expect(((await call(h, INTEGRATIONS_MSG.get)) as typeof DEFAULT_INTEGRATIONS).github.repo).toBe('me/fork')
+  })
+
+  it('checks the rules on what the plugin acts on: a managed file still needs the person’s key', async () => {
+    const h = createIntegrationsHandlers(signedIn(), brands)
+    await expect(call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: DEFAULT_INTEGRATIONS.dualFile })).rejects.toThrow('API key that can open File 1')
+    expect(await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, file1Key: 'figd_x' } })).toMatchObject({ file1Id: 'ABC123', file1Key: 'figd_x' })
+  })
+})
+

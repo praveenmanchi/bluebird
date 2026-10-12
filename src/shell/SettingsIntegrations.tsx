@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks'
 import { Notice, Spinner } from '@shared/ui'
-import { TESTABLE_INTEGRATIONS, type IntegrationSettings } from '@shared/integrations'
+import { TESTABLE_INTEGRATIONS, type IntegrationSettings, type ManagedIntegrations } from '@shared/integrations'
 import { IntegrationSection } from './integrations/IntegrationSection'
 import { SECTIONS } from './integrations/sections'
 import type { IntegrationsApi } from './integrations/client'
@@ -9,6 +9,10 @@ import './SettingsIntegrations.css'
 export interface SettingsIntegrationsProps {
   /** Load / save calls (the sandbox store in the plugin, an in-memory fake in stories). */
   api: IntegrationsApi
+  /** Sections the signed-in brand sets (plugin.config.json); their fields show locked. */
+  managed?: ManagedIntegrations
+  /** Brand label for the locked sections' note. */
+  managedBy?: string
 }
 
 type Load = { kind: 'loading' } | { kind: 'ready'; settings: IntegrationSettings } | { kind: 'failed'; message: string }
@@ -19,7 +23,7 @@ type Load = { kind: 'loading' } | { kind: 'ready'; settings: IntegrationSettings
  * AI Agent Assistance, MCP + Code Sync, Jira), each saving on its own.
  * SettingsScreen places the frame's persona card above and its Team Banner below.
  */
-export function SettingsIntegrations({ api }: SettingsIntegrationsProps) {
+export function SettingsIntegrations({ api, managed, managedBy }: SettingsIntegrationsProps) {
   const [state, setState] = useState<Load>({ kind: 'loading' })
 
   useEffect(() => {
@@ -40,6 +44,8 @@ export function SettingsIntegrations({ api }: SettingsIntegrationsProps) {
             spec={spec}
             initial={state.settings[spec.id]}
             onSave={api.save}
+            locked={managed?.[spec.id] ? Object.keys(managed[spec.id]!) : undefined}
+            lockedBy={managedBy}
             onTest={api.test && TESTABLE_INTEGRATIONS.includes(spec.id) ? api.test : undefined}
           />
       ))}

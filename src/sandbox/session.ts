@@ -2,9 +2,9 @@
 // figma.clientStorage (per user, per plugin) so it survives plugin reopens.
 import type { HandlerMap } from '@shared/bridge'
 import type { PluginConfig } from '@shared/config'
-import { hashAccessCode, SESSION_MSG, type Session, type SessionLoginRequest } from '@shared/session'
+import { hashAccessCode, SESSION_KEY, SESSION_MSG, type Session, type SessionLoginRequest } from '@shared/session'
 
-export const SESSION_KEY = 'bluebird:session'
+export { SESSION_KEY }
 
 export interface SessionStore {
   get(key: string): Promise<unknown>
