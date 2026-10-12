@@ -1,5 +1,7 @@
-/* Dev harness chrome (browser only, never shipped). Tokens only, follows the selected brand. */
+/* dev.html shell: app header and the Dev mode page (browser only, never shipped).
+ * Tokens only, Bridge brand throughout; see ui.css for the shared primitives. */
 @import "../shared/brand/generated/all.css";
+@import "./ui.css";
 
 html, body, #root { height: 100%; margin: 0; }
 body {
@@ -8,38 +10,86 @@ body {
   color: var(--bb-card-variable-title-fg);
   background: var(--bb-card-variable-bg-default);
 }
-.dh { display: grid; grid-template-columns: max-content 1fr; height: 100%; }
-.dh__panel {
+
+/* ---------- App header: logo, product area, page tabs, account ---------- */
+.dh-shell { display: flex; flex-direction: column; height: 100%; }
+.dh-shell__page { flex: 1; min-height: 0; }
+.dh-nav {
   display: flex;
-  flex-direction: column;
-  gap: var(--bb-space-stack-md);
-  width: calc(var(--bb-dimension-size-control-32) * 8);
-  padding: var(--bb-space-inset-lg);
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  height: calc(var(--bb-dimension-size-control-32) * 1.5);
+  padding-inline: var(--bb-space-inset-lg);
   background: var(--bb-background);
-  border-right: var(--bb-border-width-default) solid var(--bb-boader);
-  overflow-y: auto;
+  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
 }
-.dh__title { font-size: var(--bb-font-size-label); font-weight: var(--bb-type-weight-600); }
-.dh__hint { color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); }
-.dh__field { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); }
-.dh__label { color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); text-transform: uppercase; letter-spacing: 0.04em; }
-.dh__select, .dh__input {
-  height: var(--bb-dropdown-height);
+.dh-nav__brand { display: inline-flex; align-items: center; gap: var(--bb-space-inline-md); border-radius: var(--bb-dropdown-radius); text-decoration: none; color: inherit; }
+.dh-nav__brand .bb-brand-logo { display: block; height: calc(var(--bb-dimension-size-control-32) * 0.8); width: auto; }
+.dh-nav__brand:focus-visible { outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-dropdown-border-focus); outline-offset: var(--bb-space-stack-xs); }
+.dh-nav__product { display: inline-flex; align-items: center; gap: var(--bb-space-inline-md); color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); }
+.dh-nav__product::before { content: ""; width: var(--bb-border-width-default); height: 16px; background: var(--bb-boader); } /* allow-raw */
+.dh-nav__tabs { display: flex; gap: var(--bb-space-stack-xs); align-self: stretch; margin-inline-start: auto; }
+.dh-nav__tab {
+  position: relative;
   padding-inline: var(--bb-space-inset-md);
-  border-radius: var(--bb-dropdown-radius);
-  border: var(--bb-border-width-default) solid var(--bb-dropdown-border-default);
-  background: var(--bb-dropdown-bg-default);
-  color: var(--bb-dropdown-fg-value);
+  border: 0;
+  background: none;
   font: inherit;
-  font-size: var(--bb-dropdown-font-size);
-  outline: none;
+  font-size: var(--bb-font-size-body);
+  color: var(--bb-card-variable-meta-fg);
+  cursor: pointer;
 }
-.dh__select:focus-visible, .dh__input:focus-visible { border-color: var(--bb-dropdown-border-focus); }
-.dh__row { display: flex; gap: var(--bb-space-inline-md); align-items: center; }
-.dh__row > * { flex: 1; min-width: 0; }
-.dh__size { font-variant-numeric: tabular-nums; color: var(--bb-card-variable-title-fg); }
-.dh__stage { display: grid; place-items: center; overflow: auto; padding: var(--bb-space-inset-lg); }
-.dh__window {
+.dh-nav__tab:hover { color: var(--bb-card-variable-title-fg); }
+.dh-nav__tab[aria-selected="true"] { color: var(--bb-card-variable-title-fg); font-weight: var(--bb-type-weight-600); }
+.dh-nav__tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: var(--bb-space-inset-md);
+  bottom: 0;
+  height: calc(var(--bb-border-width-default) * 2);
+  background: var(--bb-dropdown-border-focus);
+}
+.dh-nav__tab:focus-visible { outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-dropdown-border-focus); outline-offset: calc(var(--bb-border-width-default) * -2); }
+.dh-nav__divider { width: var(--bb-border-width-default); height: var(--bb-dimension-size-control-32); margin-inline: var(--bb-space-inline-md); background: var(--bb-boader); }
+.dh-nav__avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 28px; /* allow-raw */
+  height: 28px; /* allow-raw */
+  border-radius: 50%;
+  background: var(--bb-card-variable-bg-hover);
+  border: var(--bb-border-width-default) solid var(--bb-boader);
+  color: var(--bb-card-variable-meta-fg);
+  overflow: hidden;
+}
+.dh-nav__avatar svg { width: 60%; height: 60%; }
+
+/* ---------- Dev mode: stage ---------- */
+.dm { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.dm__toolbar, .dm__statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-stack-xs) var(--bb-space-inset-lg);
+  background: var(--bb-background);
+}
+.dm__toolbar { min-height: calc(var(--bb-dimension-size-control-32) * 1.25); border-bottom: var(--bb-border-width-default) solid var(--bb-boader); }
+.dm__statusbar { min-height: var(--bb-dimension-size-control-32); border-top: var(--bb-border-width-default) solid var(--bb-boader); }
+.dm__toolbar-actions { display: inline-flex; align-items: center; gap: var(--bb-space-stack-xs); }
+.dm__times { flex: none; color: var(--bb-card-variable-meta-fg); }
+/* The canvas: a dot grid, like the design tool the plugin lives in. */
+.dm__stage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: var(--bb-space-inset-lg);
+  background-color: var(--bb-card-variable-bg-default);
+  background-image: radial-gradient(var(--bb-boader) 1px, transparent 1px); /* allow-raw: dot grid */
+  background-size: 24px 24px; /* allow-raw */
+}
+.dm__window {
   display: flex;
   flex-direction: column;
   border-radius: var(--bb-radius-xl);
@@ -47,7 +97,7 @@ body {
   background: var(--bb-background);
   box-shadow: 0 0 0 var(--bb-border-width-default) var(--bb-boader), 0 var(--bb-space-stack-md) calc(var(--bb-space-stack-md) * 4) var(--bb-color-alpha-black-10);
 }
-.dh__titlebar {
+.dm__titlebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,7 +105,7 @@ body {
   padding-inline: var(--bb-space-inset-md);
   background: var(--bb-card-variable-bg-hover);
   border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
-  font-size: var(--bb-font-size-body);
-  color: var(--bb-card-variable-title-fg);
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-type-weight-600);
 }
-.dh__frame { display: block; border: 0; background: var(--bb-background); }
+.dm__frame { display: block; border: 0; background: var(--bb-background); }

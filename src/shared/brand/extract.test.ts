@@ -47,7 +47,7 @@ const variant = {
 const set = { id: 'set1', type: 'COMPONENT_SET', name: 'Button', description: 'desc', children: [variant], componentPropertyDefinitions: { 'Label#1:2': { type: 'TEXT', defaultValue: 'Button' }, Type: { type: 'VARIANT', variantOptions: ['Primary'], defaultValue: 'Primary' } }, findAll: () => [variant, label] }
 const icon = { id: 'i1', name: 'Tab Icon=Dropdown- down', exportAsync: async () => '<svg viewBox="0 0 24 24"><path fill="#F5F5F5"/></svg>' }
 const iconSet = { id: 'icons', type: 'COMPONENT_SET', name: 'Tab Icons', children: [icon] }
-const page = { id: 'page', type: 'PAGE', name: 'Components', children: [{ type: 'SECTION', name: '⚛ Atoms', children: [set] }] }
+const page = { id: 'page', type: 'PAGE', name: 'Components', children: [{ type: 'SECTION', name: '⚛ Atoms', children: [set] }], loadAsync: async () => undefined }
 
 beforeEach(() => {
   installFigmaMock({
@@ -83,6 +83,24 @@ describe('extractComponents', () => {
     expect(v.nodes[0]!.r).not.toHaveProperty('stroke') // a SOLID stroke with no colour object is skipped, never 'RAW'
     expect(v.nodes[1]!.b).toMatchObject({ fill: 'button/bg', fontSize: 'button/height' })
     expect(snap.sets[0]!.props).toEqual({ Label: { type: 'TEXT', default: 'Button' }, Type: { type: 'VARIANT', options: ['Primary'], default: 'Primary' } })
+    expect(snap.coverage).toEqual([{ section: 'Atoms', type: 'COMPONENT_SET', name: 'Button', id: 'set1', variants: 1, coverage: expect.any(Number) }])
+  })
+
+  it('walks the tier pages when the file has them, finding sets nested in doc frames', async () => {
+    const loaded: string[] = []
+    const tierPage = (id: string, name: string, children: unknown[]) => ({ id, type: 'PAGE', name, children, loadAsync: async () => { loaded.push(id) } })
+    const atoms = tierPage('pa', '  ↳ Atoms', [{ type: 'SECTION', name: 'Atoms', children: [{ type: 'FRAME', name: 'Doc/Button', children: [{ type: 'FRAME', name: 'Stage', children: [set] }] }] }])
+    const molecules = tierPage('pm', '  ↳ Molecules', [{ type: 'SECTION', name: 'Jira', children: [] }])
+    installFigmaMock({
+      root: { name: 'Plugin UI', children: [atoms, molecules, page] },
+      variables: { getLocalVariableCollectionsAsync: async () => collections, getLocalVariablesAsync: async () => variables },
+      getNodeByIdAsync: async (id: string) => ({ set1: set, icons: iconSet, page, pa: atoms, pm: molecules }[id] ?? null),
+      setCurrentPageAsync: async () => undefined,
+    } as unknown as Partial<PluginAPI>)
+    const snap = await extractComponents({ ...manifest, componentPages: [{ id: 'pa', name: 'Atoms' }, { id: 'pm', name: 'Molecules' }] })
+    expect(loaded).toEqual(['pa', 'pm'])
+    expect(snap.pages).toEqual([{ id: 'pa', name: 'Atoms' }, { id: 'pm', name: 'Molecules' }])
+    expect(snap.page).toEqual({ id: 'pa', name: 'Atoms' })
     expect(snap.coverage).toEqual([{ section: 'Atoms', type: 'COMPONENT_SET', name: 'Button', id: 'set1', variants: 1, coverage: expect.any(Number) }])
   })
 

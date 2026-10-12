@@ -1,6 +1,8 @@
 // zod/mini: tree-shakable functional API. The full `zod` import is ~440 KB
 // minified and would dominate every bundle; mini costs a few KB.
 import * as z from 'zod/mini'
+// The schema module, not the index: the index pulls in validate.ts, which the config doesn't need.
+import { sectionSchemas } from '../integrations/schema'
 
 const ID = /^[a-z0-9][a-z0-9-]*$/
 const TOKEN_KEY = /^[a-z0-9-]+$/
@@ -15,12 +17,36 @@ export const brandSourceSchema = z.object({
 
 const SHA256_HEX = /^[0-9a-f]{64}$/
 
+/** One row of a brand's tab bar: the tab and whether this brand shows it. Array order is the tab order. */
+export const brandTabSchema = z.object({
+  id: id(),
+  enabled: z.boolean(),
+})
+
+const managed = <S extends z.ZodMiniObject>(section: S) => z.optional(z.partial(section))
+
+/** Settings sections the brand sets for everyone (dev.html › Plugin configuration). Strict, so a misspelt section fails the build. */
+export const managedIntegrationsSchema = z.strictObject({
+  github: managed(sectionSchemas.github),
+  notifications: managed(sectionSchemas.notifications),
+  storybook: managed(sectionSchemas.storybook),
+  zeroheight: managed(sectionSchemas.zeroheight),
+  dualFile: managed(sectionSchemas.dualFile),
+  ai: managed(sectionSchemas.ai),
+  mcp: managed(sectionSchemas.mcp),
+  jira: managed(sectionSchemas.jira),
+})
+
 export const brandSchema = z.object({
   label: nonEmpty(),
   /** SHA-256 of the brand's access code (normalised: trimmed, upper-cased). `npm run access-code -- <code>` prints it. */
   accessCodeHash: z.string().check(z.regex(SHA256_HEX)),
   source: brandSourceSchema,
   fallbackTokens: z._default(z.record(z.string().check(z.regex(TOKEN_KEY)), nonEmpty()), {}),
+  /** Tab order and visibility for this brand. Omitted: every enabled tab, in persona order. */
+  tabs: z.optional(z.array(brandTabSchema)),
+  /** Settings sections this brand manages. Omitted: each person fills every section in the plugin. */
+  integrations: z.optional(managedIntegrationsSchema),
 })
 
 export const personaSchema = z.object({
@@ -57,3 +83,4 @@ export type PluginConfig = z.infer<typeof pluginConfigSchema>
 export type BrandConfig = z.infer<typeof brandSchema>
 export type PersonaConfig = z.infer<typeof personaSchema>
 export type TabConfig = z.infer<typeof tabSchema>
+export type BrandTabConfig = z.infer<typeof brandTabSchema>

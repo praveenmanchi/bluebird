@@ -6,6 +6,12 @@
     "id": "40000008:9592",
     "name": "Components"
   },
+  "componentPages": [
+    { "id": "40002208:6579", "name": "Atoms" },
+    { "id": "40002208:6580", "name": "Molecules" },
+    { "id": "40002208:6581", "name": "Organisms" },
+    { "id": "40002208:6576", "name": "Icons" }
+  ],
   "collections": {
     "primitives": "Foundations",
     "semantics": "Semantics",
@@ -806,6 +812,11 @@
       "code": "Pipeline",
       "figma": "Pipeline",
       "id": "40000345:8676"
+    },
+    {
+      "code": "SitePreview",
+      "figma": "Site Preview",
+      "id": "40000346:8646"
     },
     {
       "code": "PublishEmptyState",

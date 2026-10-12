@@ -3,9 +3,10 @@ import { signal } from '@preact/signals'
 import { VARIABLES, type BoundVariable, type PanelMode, type Source, type Turn } from './fixtures'
 
 export type { Turn, TurnStatus } from './fixtures'
+/** 'chat' = the welcome (no turns yet) or the conversation; 'sources' = "Manage sources" is open. */
 export type View = 'sources' | 'chat'
 
-export const view = signal<View>('sources')
+export const view = signal<View>('chat')
 /** The Dual File library files once loaded; empty until then (no sample cards in the tab). */
 export const sources = signal<readonly Source[]>([])
 export const turns = signal<readonly Turn[]>([])
@@ -23,7 +24,7 @@ export function setTimer(next: ReturnType<typeof setTimeout> | null): void {
 
 export function reset(): void {
   setTimer(null)
-  view.value = 'sources'
+  view.value = 'chat'
   sources.value = []
   turns.value = []
   draft.value = ''

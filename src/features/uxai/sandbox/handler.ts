@@ -2,7 +2,7 @@
 // component instances, with the keys that tie them to their library), and open a
 // library link. Read-only apart from the selection and viewport.
 import type { HandlerMap } from '@shared/bridge'
-import { INTEGRATIONS_KEY, mergeIntegrations } from '@shared/integrations'
+import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'
 import { createAskHandlers } from './ask'
 import { MSG, SELECTION_NODE_LIMIT, focusRequestSchema, openRequestSchema, type InstanceRef, type SelectionContext } from '../messages'
 
@@ -79,7 +79,7 @@ async function selection(): Promise<SelectionContext | null> {
 export const handlers: HandlerMap = {
   // Claude (uxai:ask) and Settings' AI Test Connection; the key is read here and never sent to the UI.
   ...createAskHandlers({
-    readSettings: async () => mergeIntegrations(await figma.clientStorage.getAsync(INTEGRATIONS_KEY)).ai,
+    readSettings: async () => (await readIntegrations(clientStorageRead)).ai,
     fetch: (url, init) => fetch(url, init),
   }),
   [MSG.focus]: focus,

@@ -1,22 +1,26 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, within } from '@testing-library/preact'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, within, fireEvent } from '@testing-library/preact'
 import { UxaiAnswer } from '../ui/UxaiAnswer'
 import { UxaiComponent } from '../ui/UxaiComponent'
 import { UxaiThinking } from '../ui/UxaiThinking'
 import { UxaiSelection } from '../ui/UxaiSelection'
 import { UxaiSources } from '../ui/UxaiSources'
+import { Composer } from '../ui/Composer'
 import { SCREEN_THREADS, SOURCES, VARIABLES, answerKindFor } from '../fixtures'
 
 describe('uxai screens on Figma fixtures', () => {
-  it('Answer: Sources bar collapses past four chips, Thought for, Color Artifact, follow-ups', () => {
-    render(<UxaiAnswer turns={SCREEN_THREADS.answer} sources={SOURCES} draft="" />)
-    const bar = screen.getByLabelText('Sources in use')
-    for (const chip of ['Brand UI variables', 'Components', 'Icons', 'Type styles', '+1']) expect(within(bar).getByText(chip)).toBeInTheDocument()
+  it('Answer: no screen Sources bar (Figma 2026-10-12); Thought for, Color Artifact, follow-ups; sources in the Chat Input', () => {
+    const { container } = render(<UxaiAnswer turns={SCREEN_THREADS.answer} sources={SOURCES} draft="" />)
+    expect(container.querySelector('.bb-uxai-sources-bar')).toBeNull()
+    expect(screen.queryByLabelText('Sources in use')).toBeNull()
     expect(screen.getByText('Thought for 2s')).toBeInTheDocument()
     expect(screen.getByText('Matched surface/accent via button/primary/bg/default')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Check contrast in every brand' })).toBeInTheDocument()
-    expect(screen.getByText('5 sources')).toBeInTheDocument()
     expect(screen.queryByText('Ticket Row · State=Selected')).toBeNull()
+    // The chips now live in the Chat Input's Sources bar, still collapsing past four.
+    fireEvent.click(screen.getByRole('button', { name: '5 sources' }))
+    const bar = screen.getByLabelText('Sources in use')
+    for (const chip of ['Brand UI variables', 'Components', 'Icons', 'Type styles', '+1']) expect(within(bar).getByText(chip)).toBeInTheDocument()
   })
 
   it('Component: the live Button preview and its code citation, no follow-ups', () => {
@@ -45,12 +49,40 @@ describe('uxai screens on Figma fixtures', () => {
     expect(screen.getByText('Ticket Row · State=Selected')).toBeInTheDocument()
   })
 
-  it('Sources: status badges and the unchecked failed source', () => {
+  it('Sources, first run: the welcome over the Chat Input, no sources list (Figma "UX AI body")', () => {
     render(<UxaiSources sources={SOURCES} draft="" />)
+    expect(screen.getByRole('heading', { name: 'Ask anything about your design system' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Knowledge sources' })).toBeNull()
+    expect(screen.queryByRole('list', { name: 'Sources' })).toBeNull()
+    expect(screen.getByRole('button', { name: '5 sources' })).toBeInTheDocument()
+    // Figma hides the Selection chip on this screen.
+    expect(screen.queryByText('Ticket Row · State=Selected')).toBeNull()
+  })
+
+  it('Sources, managing: status badges and the unchecked failed source', () => {
+    render(<UxaiSources sources={SOURCES} draft="" managing onBack={() => undefined} />)
+    expect(screen.getByRole('heading', { name: 'Knowledge sources' })).toBeInTheDocument()
     expect(screen.getByText('Indexing 62%')).toBeInTheDocument()
     expect(screen.getByText('Failed')).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Include tokens-export.json' })).not.toBeChecked()
-    expect(screen.getByRole('heading', { name: 'Ask anything about your design system' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Ask anything about your design system' })).toBeNull()
+  })
+
+  it('Composer: the sources chip expands into the Sources bar; Manage sources and Send collapse it', () => {
+    const onManageSources = vi.fn()
+    const { container } = render(<Composer sources={SOURCES} draft="Hi" onManageSources={onManageSources} />)
+    const state = () => container.querySelector('.bb-chat-input')!.getAttribute('data-state')
+    const toggle = screen.getByRole('button', { name: '5 sources' })
+    expect(toggle.getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(toggle)
+    expect(state()).toBe('sources')
+    expect(screen.getByLabelText('Sources in use')).toHaveTextContent(/Brand UI variables.*Components.*Icons.*Type styles.*\+1/)
+    fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
+    expect(onManageSources).toHaveBeenCalledTimes(1)
+    expect(state()).toBe('idle')
+    fireEvent.click(screen.getByRole('button', { name: '5 sources' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }))
+    expect(state()).toBe('idle')
   })
 
   it('routes prompts to the matching canned answer', () => {

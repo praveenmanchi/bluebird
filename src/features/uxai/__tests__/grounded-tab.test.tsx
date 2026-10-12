@@ -29,16 +29,23 @@ function ask(prompt: string) {
   fireEvent.click(screen.getByRole('button', { name: 'Send' }))
 }
 
+/** Sources are listed only under "Manage sources": expand the Chat Input's sources chip, then open it. */
+function manageSources(count: string) {
+  fireEvent.click(screen.getByRole('button', { name: count }))
+  fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
+}
+
 beforeEach(() => { vi.useFakeTimers() })
 afterEach(() => { cleanup(); vi.useRealTimers() })
 
 describe('uxai Tab with Dual File libraries', () => {
   it('lists the library files as its sources', async () => {
     await renderTab()
+    manageSources('2 sources')
     const cards = within(screen.getByRole('list', { name: 'Sources' })).getAllByRole('listitem')
     expect(cards.map((c) => c.textContent)).toEqual([expect.stringContaining('Brand UI'), expect.stringContaining('Components')])
     expect(screen.getByText(/From Settings › Dual File Mode · read just now/)).toBeInTheDocument()
-    expect(screen.getByText('2 sources')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '2 sources' })).toBeInTheDocument()
   })
 
   it('answers a colour question from the variables, with the real steps and values', async () => {
@@ -108,6 +115,7 @@ describe('uxai Tab with Dual File libraries', () => {
 
   it('keeps unticked files unticked across a refresh', async () => {
     await renderTab()
+    manageSources('2 sources')
     const cards = () => within(screen.getByRole('list', { name: 'Sources' })).getAllByRole('checkbox')
     fireEvent.click(cards()[1]!)
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }))

@@ -59,16 +59,18 @@ interface Declaration { name: string; value: string }
 
 /**
  * Glyph names the plugin bundle can reach: string literals in src (components, shell,
- * features — not stories/tests/generated) and tab icons in plugin.config.json, plus every
+ * features — not stories/tests/generated, and not src/dev, which is the browser-only
+ * dev.html and reads the full table) and tab icons in plugin.config.json, plus every
  * name matching a template prefix like `disability-${kind}`. Storybook and tests still load
  * the full table through the @icons alias → generated.ts.
  */
 export function usedIconNames(root: string, all: readonly string[]): string[] {
   const sources: string[] = []
+  const skip = new Set([resolve(root, 'src/dev')])
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const p = resolve(dir, entry.name)
-      if (entry.isDirectory()) { if (entry.name !== 'generated' && entry.name !== 'node_modules') walk(p); continue }
+      if (entry.isDirectory()) { if (entry.name !== 'generated' && entry.name !== 'node_modules' && !skip.has(p)) walk(p); continue }
       if (!/\.(ts|tsx)$/.test(entry.name) || /\.(stories|test)\.tsx?$/.test(entry.name) || /generated(\.active)?\.ts$/.test(entry.name)) continue
       sources.push(readFileSync(p, 'utf8'))
     }

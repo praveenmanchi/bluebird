@@ -2,7 +2,7 @@
 import { config, brand, clampWindow, type WindowSize } from '@shared/config'
 import { createSessionHandlers, clientStorageStore, SESSION_KEY } from './session'
 import { createIntegrationsHandlers } from './integrations'
-import { INTEGRATIONS_KEY, mergeIntegrations } from '@shared/integrations'
+import { readIntegrations } from '@shared/integrations/effective'
 import { createLibrariesHandlers } from '@shared/libraries/handlers'
 import { createOnboardingHandlers } from './onboarding'
 import type { Session } from '@shared/session'
@@ -30,7 +30,7 @@ const coreHandlers: HandlerMap = {
   ...createOnboardingHandlers(store),
   // Dual File Mode: library files read over the Figma REST API, shared by the tabs that ask.
   ...createLibrariesHandlers({
-    readSettings: async () => mergeIntegrations(await store.get(INTEGRATIONS_KEY)).dualFile,
+    readSettings: async () => (await readIntegrations((k) => store.get(k))).dualFile,
     fetch: (url, init) => fetch(url, init),
   }),
   'shell:close': () => { figma.closePlugin() },

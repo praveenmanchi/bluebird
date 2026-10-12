@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { checkLayering } from '../scripts/check-tokens'
+import { checkBrandSources, checkLayering } from '../scripts/check-tokens'
 import type { TokenSnapshot } from '../src/shared/brand/snapshot'
 
 function snapshot(overrides: Partial<Record<'Semantics' | 'Brand UI', Partial<TokenSnapshot['collections'][number]>>> = {}): TokenSnapshot {
@@ -44,5 +44,26 @@ describe('checkLayering', () => {
       'Brand UI': { variables: [{ name: 'x', type: 'COLOR', values: { Bridge: '#000', Ikea: '#000' }, aliases: { Bridge: 'Legacy/x', Ikea: 'Legacy/x' } }] },
     }))
     expect(findings.map((f) => f.rule)).toEqual(['brand-ui-alias-layer', 'brand-ui-alias-layer'])
+  })
+})
+
+describe('checkBrandSources', () => {
+  const brand = (collection: string, mode: string) => ({ source: { collection, mode } })
+
+  it('accepts brands whose collection and mode exist in the pulled snapshot', () => {
+    expect(checkBrandSources({ bridge: brand('Brand UI', 'Bridge'), ikea: brand('Brand UI', 'Ikea') }, snapshot())).toEqual([])
+  })
+
+  it('flags a brand pointing at a collection the snapshot does not have', () => {
+    const findings = checkBrandSources({ bridge: brand('Brand', 'Bridge') }, snapshot())
+    expect(findings.map((f) => f.rule)).toEqual(['brand-source-collection'])
+    expect(findings[0]!.message).toContain('"Brand"')
+    expect(findings[0]!.file).toBe('plugin.config.json')
+  })
+
+  it('flags a brand pointing at a mode the collection does not have', () => {
+    const findings = checkBrandSources({ disney: brand('Brand UI', 'Disney') }, snapshot())
+    expect(findings.map((f) => f.rule)).toEqual(['brand-source-mode'])
+    expect(findings[0]!.message).toContain('Bridge, Ikea')
   })
 })

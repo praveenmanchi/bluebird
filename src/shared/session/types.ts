@@ -7,6 +7,9 @@ export interface Session {
 
 export interface SessionLoginRequest { code: string }
 
+/** clientStorage key of the signed-in Session. */
+export const SESSION_KEY = 'bluebird:session'
+
 export const SESSION_MSG = {
   status: 'session:status',
   login: 'session:login',

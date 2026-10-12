@@ -27,16 +27,30 @@ beforeEach(() => { vi.useFakeTimers() })
 afterEach(() => { cleanup(); vi.useRealTimers() })
 
 describe('uxai Tab', () => {
-  it('starts on Sources with no sample cards and no unwired actions', () => {
+  it('starts on the welcome: no sources list, no header, no unwired actions', () => {
     renderTab()
-    expect(screen.getByRole('heading', { name: 'Knowledge sources' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Ask anything about your design system' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Knowledge sources' })).toBeNull()
     expect(screen.queryByRole('list', { name: 'Sources' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Upload file' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Add Figma library' })).toBeNull()
     expect(screen.queryByText(/^Drop variable, component/)).toBeNull()
     expect(screen.getByRole('button', { name: 'What is our primary colour?' })).toBeInTheDocument()
-    expect(screen.getByText('0 sources')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '0 sources' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Back to conversation' })).toBeNull()
+  })
+
+  it('manages sources from the first run through the Chat Input, and Done returns to the welcome', async () => {
+    renderTab(createMockHandlers({ libraries: { status: 'ready', index: SAMPLE_LIBRARY } }))
+    await act(async () => { await vi.advanceTimersByTimeAsync(0) })
+    fireEvent.click(screen.getByRole('button', { name: '2 sources' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
+    expect(screen.getByRole('heading', { name: 'Knowledge sources' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Include Brand UI' }))
+    expect(screen.getByRole('button', { name: '1 source' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }))
+    expect(screen.queryByRole('heading', { name: 'Knowledge sources' })).toBeNull()
+    expect(screen.getByRole('heading', { name: 'Ask anything about your design system' })).toBeInTheDocument()
   })
 
   it('answers a colour prompt chip after thinking, with the Color Artifact and follow-ups', () => {
@@ -116,18 +130,22 @@ describe('uxai Tab', () => {
     expect(screen.getByRole('button', { name: 'Swap surface/accent' })).toBeInTheDocument()
   })
 
-  it('goes to Sources from "Manage sources", and source toggles update the chips', async () => {
+  it('goes to Sources from the Answer screen\'s Chat Input, and source toggles update the chips', async () => {
     renderTab(createMockHandlers({ libraries: { status: 'ready', index: SAMPLE_LIBRARY } }))
     await act(async () => { await vi.advanceTimersByTimeAsync(0) })
     ask('What is our primary colour?')
     await act(async () => { await vi.advanceTimersByTimeAsync(STEP_MS * 4) })
+    // The Answer screen has no Sources bar of its own: the Chat Input's chip opens one.
+    expect(screen.queryByLabelText('Sources in use')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '2 sources' }))
     expect(screen.getByLabelText('Sources in use')).toHaveTextContent('Brand UI')
 
     fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Include Brand UI' }))
-    expect(screen.getByText('1 source')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '1 source' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Back to conversation' }))
+    fireEvent.click(screen.getByRole('button', { name: '1 source' }))
     expect(screen.getByLabelText('Sources in use')).not.toHaveTextContent('Brand UI')
     expect(screen.getByText(/surface\/accent \(Brand UI\)/)).toBeInTheDocument()
   })

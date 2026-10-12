@@ -84,3 +84,6 @@
   justify-content: center;
   padding: var(--bb-settings-space-page-gap);
 }
+
+/* "Set by <brand>": the section's managed fields come from plugin.config.json. */
+.bb-integrations__managed { width: 100%; max-width: none; }

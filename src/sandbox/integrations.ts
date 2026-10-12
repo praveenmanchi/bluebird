@@ -1,17 +1,24 @@
 // Settings › Integrations store: one clientStorage entry per user, validated
 // on the way in (zod shape + the screen's field rules) and merged over the
-// defaults on the way out. Connection tests are not wired yet, so nothing
-// here talks to GitHub, Jira or the AI providers.
+// defaults on the way out. The signed-in brand's managed sections
+// (plugin.config.json) are laid over what the person stored on every read;
+// only the person's own values are ever written. Nothing here talks to
+// GitHub, Jira or the AI providers.
 import * as z from 'zod/mini'
 import type { HandlerMap } from '@shared/bridge'
 import {
-  INTEGRATIONS_KEY, INTEGRATIONS_MSG, mergeIntegrations, normalizeIntegration, saveRequestSchema, sectionSchemas, validateIntegration,
+  applyManaged, isSecretField, INTEGRATIONS_KEY, INTEGRATIONS_MSG, mergeIntegrations, normalizeIntegration, saveRequestSchema, sectionSchemas, validateIntegration,
   type IntegrationId, type IntegrationSettings, type IntegrationValues,
 } from '@shared/integrations'
+import { readIntegrations, readManaged, type Brands } from '@shared/integrations/effective'
 import type { SessionStore } from './session'
 
-export function createIntegrationsHandlers(store: SessionStore): HandlerMap {
-  const read = async (): Promise<IntegrationSettings> => mergeIntegrations(await store.get(INTEGRATIONS_KEY))
+/** `brands` defaults to plugin.config.json; tests pass their own. */
+export function createIntegrationsHandlers(store: SessionStore, brands?: Brands): HandlerMap {
+  /** The person's own values: what gets written back. */
+  const stored = async (): Promise<IntegrationSettings> => mergeIntegrations(await store.get(INTEGRATIONS_KEY))
+  /** What the plugin acts on: stored values with the brand's managed ones on top. */
+  const read = (): Promise<IntegrationSettings> => readIntegrations((k) => store.get(k), brands)
   // Saves are read-modify-write of one key; chain them so two sections saved back to back can't drop each other.
   let queue: Promise<unknown> = Promise.resolve()
   const serial = <T>(task: () => Promise<T>): Promise<T> => {
@@ -28,11 +35,20 @@ export function createIntegrationsHandlers(store: SessionStore): HandlerMap {
       const values = z.safeParse(sectionSchemas[section], request.data.values)
       if (!values.success) throw new Error('Some values are missing or too long. Check the fields and try again.')
       const clean = normalizeIntegration(values.data as IntegrationValues<typeof section>, section)
-      const first = Object.values(validateIntegration(section, clean))[0]
-      if (first) throw new Error(first)
       return serial(async () => {
-        await store.set(INTEGRATIONS_KEY, { ...(await read()), [section]: clean })
-        return clean
+        const managed = await readManaged((k) => store.get(k), brands)
+        const own = await stored()
+        // The form sends locked fields back with the brand's values; keep the person's earlier value for those
+        // keys instead, so leaving the brand (or the brand changing it) never reveals a frozen copy.
+        const lockedKeys = Object.keys(managed?.[section] ?? {}).filter((key) => !isSecretField(section, key))
+        const kept = Object.fromEntries(lockedKeys.map((key) => [key, (own[section] as Record<string, unknown>)[key]]))
+        const mine = { ...own, [section]: { ...clean, ...kept } }
+        // Rules run on what the plugin will act on, so a managed File 1 ID still asks for the person's key.
+        const effective = applyManaged(mine, managed)[section]
+        const first = Object.values(validateIntegration(section, effective))[0]
+        if (first) throw new Error(first)
+        await store.set(INTEGRATIONS_KEY, mine)
+        return effective
       })
     },
   }

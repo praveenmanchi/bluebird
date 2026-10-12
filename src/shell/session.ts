@@ -2,9 +2,10 @@
 // session:* handlers and swaps the brand (data-brand + resolved tokens).
 import type { RpcClient } from '@shared/bridge'
 import { applyTokens, clearTokens, type BrandTokensResult } from '@shared/brand'
-import { config, personas, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
+import { config, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
 import { ONBOARDING_MSG, SESSION_MSG, type OnboardingStatus, type Session } from '@shared/session'
-import { brandStatus, screen, session, selectPersona, windowSize } from './state'
+import { loadLibraryState } from '@shared/libraries/status'
+import { brandPersonas, brandStatus, screen, session, selectPersona, syncTabs, windowSize } from './state'
 
 /** Point the UI at a brand: generated [data-brand] CSS first, then the tokens resolved from the Figma document. */
 export async function activateBrand(client: RpcClient, brandId: string): Promise<void> {
@@ -28,6 +29,9 @@ export async function bootSession(client: RpcClient): Promise<void> {
 
 async function enter(client: RpcClient, next: Session): Promise<void> {
   session.value = next
+  syncTabs()
+  // A brand can manage Dual File, so its libraries differ per brand: read them for this one.
+  void loadLibraryState(client)
   await activateBrand(client, next.brandId)
   screen.value = (await tourPending(client)) ? 'onboarding' : 'app'
 }
@@ -82,10 +86,11 @@ export async function logout(client: RpcClient): Promise<void> {
 /** Reset = log out and forget every stored preference; the UI returns to first-run state. */
 export async function reset(client: RpcClient): Promise<void> {
   await client.call(SESSION_MSG.reset)
-  selectPersona(personas.find((p) => p.id === config.activePersona)?.id ?? personas[0]?.id ?? '')
   windowSize.value = WINDOW_PRESETS[WINDOW_DEFAULT]
   void client.call('shell:resize', WINDOW_PRESETS[WINDOW_DEFAULT]).catch(() => undefined)
   leave()
+  // Signed out now, so this is the config's first-run persona, not the old brand's.
+  selectPersona(brandPersonas.value.find((p) => p.id === config.activePersona)?.id ?? brandPersonas.value[0]?.id ?? '')
 }
 
 function leave(): void {

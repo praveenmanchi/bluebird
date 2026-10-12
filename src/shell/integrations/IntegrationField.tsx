@@ -9,6 +9,8 @@ export interface FieldContext {
   values: FieldValues
   errors: FieldErrors
   disabled: boolean
+  /** Brand-managed keys: shown, not editable. */
+  locked?: ReadonlySet<string>
   onChange: (key: string, value: string | boolean) => void
 }
 
@@ -16,7 +18,8 @@ const str = (v: string | boolean | undefined) => typeof v === 'string' ? v : ''
 
 /** One Figma instance of a settings section: Input Box, dropbox, Toggle, Text Area or an AI provider row. */
 export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldContext }) {
-  const { values, errors, disabled, onChange } = ctx
+  const { values, errors, onChange } = ctx
+  const disabled = ctx.disabled || ('key' in spec && ctx.locked?.has(spec.key) === true)
   switch (spec.kind) {
     case 'text': {
       const error = errors[spec.key]

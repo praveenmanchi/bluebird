@@ -12,7 +12,7 @@ import { createAskHandlers } from '@features/uxai/sandbox/ask'
 import { createMockHandlers as agents } from '@features/agents/mock'
 import { createMockHandlers as publish } from '@features/publish/mock'
 import { config } from '@shared/config'
-import { INTEGRATIONS_KEY, mergeIntegrations } from '@shared/integrations'
+import { readIntegrations } from '@shared/integrations/effective'
 import { createSessionHandlers, type SessionStore } from '../../src/sandbox/session'
 import { createIntegrationsHandlers } from '../../src/sandbox/integrations'
 import { createOnboardingHandlers, ONBOARDING_KEY } from '../../src/sandbox/onboarding'
@@ -75,7 +75,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
     // Dev builds and tests only, so the plugin bundle doesn't ship a second REST loader (the sandbox has it).
     ...(import.meta.env.DEV
       ? createLibrariesHandlers({
-        readSettings: async () => mergeIntegrations(await store.get(INTEGRATIONS_KEY)).dualFile,
+        readSettings: async () => (await readIntegrations((k) => store.get(k))).dualFile,
         fetch: fetch ?? (persist ? (url, init) => globalThis.fetch(url, init) : offline),
       })
       : { [LIBRARIES_MSG.load]: async () => ({ status: 'not-configured', reason: 'empty', message: 'Dual File Mode needs Figma: open the plugin there.' }) }),
@@ -84,11 +84,11 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
   // through the browser's fetch (use Settings › Proxy URL = http://localhost:8787 with `npm run jira:proxy`).
   // Dev builds only, so the plugin bundle doesn't ship a second Jira client.
   const jiraHandlers = import.meta.env.DEV && persist
-    ? jiraLive({ readSettings: async () => mergeIntegrations(await store.get(INTEGRATIONS_KEY)).jira, fetch: (url, init) => globalThis.fetch(url, init) })
+    ? jiraLive({ readSettings: async () => (await readIntegrations((k) => store.get(k))).jira, fetch: (url, init) => globalThis.fetch(url, init) })
     : jira()
   // UX AI asks the real Claude API from the dev harness once Settings hold a Claude key (dev builds only).
   const uxaiHandlers = import.meta.env.DEV && persist
-    ? { ...uxai(), ...createAskHandlers({ readSettings: async () => mergeIntegrations(await store.get(INTEGRATIONS_KEY)).ai, fetch: (url, init) => globalThis.fetch(url, init) }) }
+    ? { ...uxai(), ...createAskHandlers({ readSettings: async () => (await readIntegrations((k) => store.get(k))).ai, fetch: (url, init) => globalThis.fetch(url, init) }) }
     : uxai()
   return { ...shell, ...a11y(scenario), ...tokens(), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario) }
 }

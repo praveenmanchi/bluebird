@@ -69,7 +69,7 @@ export function ComponentsPage() {
       current={PAGES.components}
       eyebrow="Components"
       title="Component library"
-      description="Every component mirrors a Figma component set and has a story for each variant. Open one to see its states, controls and docs. Use the brand picker to check it in every mode."
+      description="Every component mirrors a Figma component set and has a story for each variant. Open one to see its states, controls and docs. Switch brands from the Brand menu in its toolbar."
     >
       {() => <Catalogue />}
     </SitePage>

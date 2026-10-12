@@ -2,7 +2,7 @@
 // clientStorage, Figma's fetch and openExternal, plus the document-side
 // helpers (focus, selection).
 import type { HandlerMap } from '@shared/bridge'
-import { INTEGRATIONS_KEY, mergeIntegrations } from '@shared/integrations'
+import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'
 import { focusRequestSchema, type SelectionLink } from '../messages'
 import { createJiraHandlers } from './jira-handlers'
 
@@ -25,7 +25,7 @@ async function figmaSelection(): Promise<SelectionLink | null> {
 
 /** Live wiring. Building it touches nothing: `figma` is only read when a call arrives. */
 export const handlers: HandlerMap = createJiraHandlers({
-  readSettings: async () => mergeIntegrations(await figma.clientStorage.getAsync(INTEGRATIONS_KEY)).jira,
+  readSettings: async () => (await readIntegrations(clientStorageRead)).jira,
   fetch: (url, init) => fetch(url, init),
   openExternal: (url) => figma.openExternal(url),
   selection: figmaSelection,

@@ -21,7 +21,7 @@ export interface Source {
 export const SOURCES: readonly Source[] = [
   { id: 'brand-ui', name: 'Brand UI variables', chip: 'Brand UI variables', meta: 'Variables · 421 tokens · 5 brand modes', icon: 'variables', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'components', name: 'Components library', chip: 'Components', meta: 'Components · 87 sets · 34 atoms, 41 molecules, 12 organisms', icon: 'component', status: 'Indexed', statusTone: 'success', selected: true },
-  { id: 'icons', name: 'Iconography', chip: 'Icons', meta: 'Icons · 69 glyphs · 16 / 24 px', icon: 'section-frame', status: 'Indexed', statusTone: 'success', selected: true },
+  { id: 'icons', name: 'Iconography', chip: 'Icons', meta: 'Icons · 69 glyphs · 16 / 24 px', icon: 'layers', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'type', name: 'Typography styles', chip: 'Type styles', meta: 'Type · 12 styles · Noto Sans, MuseoModerno, Noto Serif', icon: 'text', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'guidelines', name: 'Brand guidelines.pdf', chip: 'Brand guidelines', meta: 'Docs · 48 pages · uploaded today', icon: 'documentation', status: 'Indexing 62%', statusTone: 'accent', selected: true },
   { id: 'tokens-export', name: 'tokens-export.json', chip: 'tokens-export.json', meta: 'Data · 1.2 MB · line 1840: unexpected token', icon: 'json', status: 'Failed', statusTone: 'danger', selected: false },

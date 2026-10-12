@@ -58,6 +58,30 @@ describe('ChatInput', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Stop generating' }))
     expect(onStop).toHaveBeenCalledTimes(1)
   })
+  it('shows the Sources bar in place of the context row in the Sources state (Figma "source expend")', () => {
+    const onManageSources = vi.fn()
+    const onSend = vi.fn()
+    const { container } = render(
+      <ChatInput state="sources" value="Primary colour?" onManageSources={onManageSources} onSend={onSend} sources={[<span key="a">Brand UI variables</span>, <span key="b">+2</span>]} />,
+    )
+    expect(container.querySelector('.bb-chat-input')!.getAttribute('data-state')).toBe('sources')
+    expect(container.querySelector('.bb-chat-input__context')).toBeNull()
+    const bar = screen.getByLabelText('Sources in use')
+    expect(bar).toHaveTextContent('Sources')
+    expect(bar).toHaveTextContent('Brand UI variables')
+    expect(bar).toHaveTextContent('+2')
+    fireEvent.click(screen.getByRole('button', { name: 'Manage sources' }))
+    expect(onManageSources).toHaveBeenCalledTimes(1)
+    // The field still works like Idle: hint, Send.
+    expect(screen.getByText('Answers cite your sources')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }))
+    expect(onSend).toHaveBeenCalledWith('Primary colour?')
+  })
+  it('defaults the Sources bar to the Figma chips and leaves out Manage sources without a handler', () => {
+    render(<ChatInput state="sources" />)
+    expect(screen.getByLabelText('Sources in use')).toHaveTextContent(/Brand UI variables.*Components.*Icons.*Type styles.*\+2/)
+    expect(screen.queryByRole('button', { name: 'Manage sources' })).toBeNull()
+  })
   it('wires the tool buttons', () => {
     const onAddSource = vi.fn()
     const onUseSelection = vi.fn()

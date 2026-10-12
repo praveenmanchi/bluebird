@@ -76,7 +76,8 @@ export function stop(): void {
 }
 
 export function showSources(): void { view.value = 'sources' }
-export function showChat(): void { if (turns.value.length) view.value = 'chat' }
+/** Close "Manage sources": back to the conversation, or to the welcome before the first question. */
+export function showChat(): void { view.value = 'chat' }
 
 export function toggleSource(id: string, selected: boolean): void {
   sources.value = sources.value.map((s) => (s.id === id ? { ...s, selected } : s))

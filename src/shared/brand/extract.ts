@@ -7,10 +7,13 @@ import type {
 } from './snapshot'
 import { parseVariantName, variableMeta } from './snapshot'
 import { rgbaToHex } from '../figma/color'
+import { inCoverage, placeComponents, resolveLayout, type PageLayout, type PageRef } from './componentPages'
 
 export interface ExtractManifest {
   fileKey: string
-  componentsPage: { id: string; name: string }
+  componentsPage: PageRef
+  /** Tier pages (Atoms, Molecules, Organisms, Icons). Used when the file has them, else componentsPage. */
+  componentPages?: PageRef[]
   collections: { primitives: string; semantics: string; brand: string }
   componentSets: { code: string; figma: string; id: string }[]
   iconSet: { id: string; name: string; variantProperty: string }
@@ -319,35 +322,45 @@ function coverageOf(index: VariableIndex, top: SceneNode): { bound: number; raw:
   return { bound, raw }
 }
 
-async function extractCoverage(index: VariableIndex, pageId: string): Promise<CoverageRow[]> {
-  const page = await figma.getNodeByIdAsync(pageId)
-  if (!page || page.type !== 'PAGE') throw new Error(`Page ${pageId} not found`)
-  await figma.setCurrentPageAsync(page)
-  const rows: CoverageRow[] = []
-  for (const section of page.children) {
-    if (section.type !== 'SECTION' || !/Atoms|Molecules|Organisms/.test(section.name)) continue
-    for (const top of section.children) {
-      if (top.type !== 'COMPONENT' && top.type !== 'COMPONENT_SET') continue
+async function extractCoverage(index: VariableIndex, layout: PageLayout): Promise<CoverageRow[]> {
+  const pages: PageNode[] = []
+  for (const ref of layout.pages) {
+    const page = await figma.getNodeByIdAsync(ref.id)
+    if (!page || page.type !== 'PAGE') throw new Error(`Page ${ref.id} (${ref.name}) not found`)
+    await page.loadAsync()
+    pages.push(page)
+  }
+  return placeComponents<SceneNode | PageNode>({ kind: layout.kind, pages }, layout.pages)
+    .filter((p) => inCoverage(layout.kind, p))
+    .map(({ node, tier, group }) => {
+      const top = node as ComponentNode | ComponentSetNode
       const { bound, raw } = coverageOf(index, top)
-      rows.push({
-        section: section.name.replace(/^\S+\s/, ''),
+      return {
+        section: tier ?? '',
+        ...(group && group !== tier ? { group } : {}),
         type: top.type,
         name: top.name.trim(),
         id: top.id,
         variants: top.type === 'COMPONENT_SET' ? top.children.length : 1,
         coverage: bound + raw ? Math.round((100 * bound) / (bound + raw)) : null,
-      })
-    }
-  }
-  return rows
+      }
+    })
+}
+
+/** Tier pages when the file has them, else the legacy Components page (see componentPages.ts). */
+function layoutOf(manifest: ExtractManifest): PageLayout {
+  const filePages = (figma.root.children ?? []).map((p) => ({ id: p.id, name: p.name }))
+  return resolveLayout(manifest, filePages)
 }
 
 export async function extractComponents(manifest: ExtractManifest): Promise<ComponentsSnapshot> {
   const index = await indexVariables()
-  const coverage = await extractCoverage(index, manifest.componentsPage.id)
+  const layout = layoutOf(manifest)
+  const coverage = await extractCoverage(index, layout)
   const sets: ComponentSetSnapshot[] = []
   for (const set of manifest.componentSets) sets.push(await extractSet(index, set.code, set.id))
-  return { fileKey: manifest.fileKey, page: manifest.componentsPage, pulledAt: today(), sets, coverage }
+  const page = layout.pages[0] ?? manifest.componentsPage
+  return { fileKey: manifest.fileKey, page, ...(layout.kind === 'tiered' ? { pages: layout.pages } : {}), pulledAt: today(), sets, coverage }
 }
 
 // --------------------------------------------------------------------- icons

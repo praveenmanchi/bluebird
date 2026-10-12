@@ -1,0 +1,68 @@
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/preact'
+import rawConfig from '@config'
+import { ConfigPage } from './ConfigPage'
+
+function serve() {
+  const calls: { method: string; body?: unknown }[] = []
+  vi.stubGlobal('fetch', vi.fn(async (_url: string, init?: RequestInit) => {
+    const body = init?.body ? JSON.parse(String(init.body)) as unknown : undefined
+    calls.push({ method: init?.method ?? 'GET', body })
+    return new Response(JSON.stringify({ ok: true, config: rawConfig, build: { status: 'idle' } }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+  }))
+  return calls
+}
+
+afterEach(() => { vi.unstubAllGlobals(); sessionStorage.clear() })
+
+describe('ConfigPage', () => {
+  it('lists the five brands and the selected brand’s tabs', async () => {
+    serve()
+    render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
+    const brands = await screen.findByRole('complementary', { name: 'Brands' })
+    expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
+      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'),
+    ])
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(7)
+  })
+
+  it('saves a hidden tab, a new order and a section set here as one patch for that brand', async () => {
+    const calls = serve()
+    render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
+    fireEvent.click(await screen.findByRole('switch', { name: 'Show Jira board' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Move Publish up' }))
+    const github = screen.getByRole('region', { name: 'GitHub Output Configuration' })
+    fireEvent.click(within(github).getByText('Set here'))
+    fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'ikea/tokens' } })
+    expect(within(github).getByLabelText('API key')).toBeDisabled()
+    expect(screen.getByText(/Unsaved changes: Ikea/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(calls.some((c) => c.method === 'PUT')).toBe(true))
+    const patch = calls.find((c) => c.method === 'PUT')!.body as Record<string, { tabs: { id: string; enabled: boolean }[]; integrations: { github: Record<string, unknown> } }>
+    expect(Object.keys(patch)).toEqual(['ikea'])
+    expect(patch.ikea!.tabs.find((t) => t.id === 'jira')?.enabled).toBe(false)
+    expect(patch.ikea!.tabs.map((t) => t.id).indexOf('publish')).toBe(5)
+    expect(patch.ikea!.integrations.github).toMatchObject({ repo: 'ikea/tokens' })
+    expect(patch.ikea!.integrations.github).not.toHaveProperty('apiKey')
+    expect(await screen.findByRole('heading', { name: /Rebuild the plugin to use it in Figma/ })).toBeInTheDocument()
+  })
+
+  it('blocks Save when a brand would have no tab left', async () => {
+    serve()
+    render(<ConfigPage brandId="disney" onBrand={() => undefined} onPreview={() => undefined} />)
+    for (const tab of await screen.findAllByRole('switch', { name: /^Show / })) fireEvent.click(tab)
+    expect(screen.getByText(/Disney: turn at least one tab on/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
+
+  it('blocks Save while a section set here has an invalid field', async () => {
+    serve()
+    render(<ConfigPage brandId="bridge" onBrand={() => undefined} onPreview={() => undefined} />)
+    const storybook = await screen.findByRole('region', { name: 'Storybook' })
+    fireEvent.click(within(storybook).getByText('Set here'))
+    fireEvent.input(within(storybook).getByLabelText('Base URL'), { target: { value: 'ftp://nope' } })
+    expect(screen.getByText(/Fix Bridge › Storybook before saving/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
+})

@@ -198,4 +198,23 @@ describe('SettingsIntegrations', () => {
     expect(within(ai).queryByRole('listbox')).toBeNull()
     expect(document.activeElement).toBe(trigger)
   })
+
+  describe('brand-managed sections', () => {
+    it('locks the managed fields, keeps keys editable and says who set them', async () => {
+      render(<SettingsIntegrations api={fakeApi({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, repo: 'ikea/tokens' } })} managed={{ github: { repo: 'ikea/tokens', baseUrl: '' } }} managedBy="Ikea" />)
+      const github = await section('GitHub Output Configuration')
+      expect(within(github).getByText('Set by Ikea')).toBeInTheDocument()
+      expect(within(github).getByLabelText('Repository (owner/repo)')).toBeDisabled()
+      expect(within(github).getByLabelText('API key')).not.toBeDisabled()
+      expect(within(github).getByRole('button', { name: 'Save Configuration' })).toBeInTheDocument()
+    })
+
+    it('drops Save when the brand set everything, and locks a managed header switch', async () => {
+      render(<SettingsIntegrations api={fakeApi()} managed={{ storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true }, jira: { enabled: false } }} managedBy="Ikea" />)
+      const storybook = await section('Storybook')
+      expect(within(storybook).queryByRole('button', { name: 'Save Configuration' })).toBeNull()
+      expect(within(await section('Jira Integration')).getByRole('switch', { name: 'Jira Integration' })).toBeDisabled()
+      expect(within(await section('Notifications')).queryByText(/Set by/)).toBeNull()
+    })
+  })
 })

@@ -8,6 +8,7 @@
 //                 and bindings are named from the ids that snapshot recorded.
 //
 // `auto` (the default) tries enterprise and drops to professional on a 403/404.
+import { resolveLayout, type PageLayout } from '../../src/shared/brand/componentPages'
 import type { ExtractManifest } from '../../src/shared/brand/extract'
 import type { ComponentsSnapshot, IconsSnapshot, TokenSnapshot } from '../../src/shared/brand/snapshot'
 import { describeSet, tablesOf, type DescribeContext } from './describe'
@@ -76,6 +77,14 @@ async function resolveTokens(manifest: RestManifest, options: RestPullOptions, f
   }
 }
 
+/** Tier pages when the file has them, else the legacy Components page. Only asks for the page list
+ *  (depth=1, cheap) when the manifest names tier pages at all. */
+async function resolveRestLayout(manifest: RestManifest, version: string | undefined): Promise<PageLayout> {
+  if (!manifest.componentPages?.length) return resolveLayout(manifest, [])
+  const file = await figmaGet<{ document: RestNode }>(withVersion(`/files/${manifest.fileKey}?depth=1`, version))
+  return resolveLayout(manifest, (file.document.children ?? []).map((p) => ({ id: p.id, name: p.name })))
+}
+
 function indexTree(root: RestNode, into: Map<string, RestNode>): void {
   into.set(root.id, root)
   for (const c of root.children ?? []) indexTree(c, into)
@@ -95,14 +104,20 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
     return `lib:${f.id}`
   }
 
-  // 1. The whole Components page: coverage, discovery, and most sets in one call.
-  const pageRes = await figmaGet<RestNodesResponse>(withVersion(`/files/${manifest.fileKey}/nodes?ids=${encodeURIComponent(manifest.componentsPage.id)}`, options.version))
-  const page = pageRes.nodes[manifest.componentsPage.id]?.document
-  if (!page) throw new Error(`Components page ${manifest.componentsPage.id} (${manifest.componentsPage.name}) not found`)
+  // 1. The component pages (legacy Components page, or the tier pages): coverage, discovery, and most sets in one call.
+  const layout = await resolveRestLayout(manifest, options.version)
+  const pageIds = layout.pages.map((p) => p.id)
+  const pageRes = await figmaGet<RestNodesResponse>(withVersion(`/files/${manifest.fileKey}/nodes?ids=${encodeURIComponent(pageIds.join(','))}`, options.version))
+  const pages = layout.pages.map((ref) => {
+    const doc = pageRes.nodes[ref.id]?.document
+    if (!doc) throw new Error(`Components page ${ref.id} (${ref.name}) not found`)
+    return doc
+  })
+  const pageSource = { kind: layout.kind, pages }
   const byId = new Map<string, RestNode>()
-  indexTree(page, byId)
+  for (const page of pages) indexTree(page, byId)
 
-  // 2. Whatever the manifest maps outside that page (screens, legacy sets) plus the icon set.
+  // 2. Whatever the manifest maps outside those pages (screens, legacy sets) plus the icon set.
   const elsewhere = [...manifest.componentSets.map((s) => s.id), manifest.iconSet.id].filter((id) => !byId.has(id))
   const responses: RestNodesResponse[] = [pageRes]
   if (elsewhere.length) {
@@ -118,7 +133,7 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   const ctx: DescribeContext = { nameOf, ...tables }
 
   // 3. Manifest vs file: follow sets that moved, report the rest.
-  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(page), [manifest.iconSet.id, ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
+  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(pageSource, layout.pages), [manifest.iconSet.id, ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
   const movedTo = new Map(reconciliation.moved.map((m) => [m.code, m.to]))
   if (reconciliation.missing.length) {
     throw new Error(`Manifest sets not found in the file: ${reconciliation.missing.map((m) => `${m.code} (${m.figma}, ${m.id})`).join('; ')}. Fix figma/manifest.json or remove them.`)
@@ -131,8 +146,8 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   })
   const version = pageRes.version ?? options.version
   const components: ComponentsSnapshot = {
-    fileKey: manifest.fileKey, page: manifest.componentsPage, pulledAt: source.tokens.pulledAt,
-    ...(version ? { version } : {}), sets, coverage: coverageRows(page),
+    fileKey: manifest.fileKey, page: layout.pages[0] ?? manifest.componentsPage, ...(layout.kind === 'tiered' ? { pages: layout.pages } : {}),
+    pulledAt: source.tokens.pulledAt, ...(version ? { version } : {}), sets, coverage: coverageRows(pageSource, layout.pages),
   }
   const icons = await restIcons(manifest.fileKey, manifest.iconSet, byId.get(manifest.iconSet.id), options.version)
   const tokens = source.tokensStale || !version ? source.tokens : { ...source.tokens, version }

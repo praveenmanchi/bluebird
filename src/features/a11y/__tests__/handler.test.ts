@@ -206,7 +206,7 @@ describe('a11y:scan token awareness', () => {
       currentPage: { selection: [], children: [frame] } as unknown as PageNode,
       variables: {
         getLocalVariableCollectionsAsync: vi.fn(async () => [
-          { id: 'c1', name: 'Brand', modes: BRAND_MODES, defaultModeId: 'm1', variableIds: Object.keys(variables) },
+          { id: 'c1', name: 'Brand UI', modes: BRAND_MODES, defaultModeId: 'm1', variableIds: Object.keys(variables) },
         ]),
         getVariableByIdAsync: vi.fn(async (id: string) => variables[id] ?? null),
         getVariableCollectionByIdAsync: vi.fn(async () => ({ id: 'c1', defaultModeId: 'm1' })),
@@ -239,6 +239,27 @@ describe('a11y:scan token awareness', () => {
     expect(issue?.fix?.tokenName).toBe('Brand/Text/Primary')
     expect(issue?.fix?.tokenId).toBe('v:ink')
     expect(issue?.fix?.ratio).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('names tokens in a product file that gets Brand UI from its library', async () => {
+    withPalette()
+    const local = figma.variables
+    Object.assign(figma, {
+      variables: {
+        ...local,
+        getLocalVariableCollectionsAsync: vi.fn(async () => []),
+        // Importing returns the variable the file already holds, so ids match the layers' bindings.
+        importVariableByKeyAsync: vi.fn(async (key: string) => local.getVariableByIdAsync(key)),
+        getVariableCollectionByIdAsync: vi.fn(async () => ({ id: 'c1', name: 'Brand UI', modes: BRAND_MODES, defaultModeId: 'm1' })),
+      },
+      teamLibrary: {
+        getAvailableLibraryVariableCollectionsAsync: vi.fn(async () => [{ key: 'brand-ui', name: 'Brand UI', libraryName: 'Plugin UI' }]),
+        getVariablesInLibraryCollectionAsync: vi.fn(async () => ['v:muted', 'v:ink', 'v:canvas'].map((key) => ({ key, name: key, resolvedType: 'COLOR' }))),
+      },
+    })
+    const issue = (await run()).issues[0]
+    expect(issue?.fgToken).toEqual({ id: 'v:muted', name: 'Brand/Text/Muted', mode: 'Bridge' })
+    expect(issue?.fix?.tokenName).toBe('Brand/Text/Primary')
   })
 
   it('still reports the finding when the file has no Brand collection', async () => {
@@ -547,7 +568,7 @@ describe('a11y:scan — hardening', () => {
     }
     page((frame) => [text('t', 'faint', faint, 12, frame)], {
       variables: {
-        getLocalVariableCollectionsAsync: vi.fn(async () => [{ id: 'c1', name: 'Brand', modes: [{ modeId: 'm1', name: 'Bridge' }], defaultModeId: 'm1', variableIds: Object.keys(variables) }]),
+        getLocalVariableCollectionsAsync: vi.fn(async () => [{ id: 'c1', name: 'Brand UI', modes: [{ modeId: 'm1', name: 'Bridge' }], defaultModeId: 'm1', variableIds: Object.keys(variables) }]),
         getVariableByIdAsync: vi.fn(async (id: string) => variables[id] ?? null),
         getVariableCollectionByIdAsync: vi.fn(async () => ({ id: 'c1', defaultModeId: 'm1' })),
       } as unknown as PluginAPI['variables'],
