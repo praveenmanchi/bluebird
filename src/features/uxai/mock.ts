@@ -12,7 +12,7 @@ export interface UxaiMockOptions {
   /** What the selection reads as; null = nothing selected. */
   selection?: SelectionContext | null
   onOpen?: (url: string) => void
-  /** What `uxai:ask` answers; omitted, Claude reads as not set up (no key). */
+  /** What `uxai:ask` answers; omitted, the model reads as not set up (no key). */
   ask?: (payload: unknown) => Promise<AskResult>
 }
 

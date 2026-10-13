@@ -52,17 +52,54 @@ export interface LibraryComponent {
 
 export interface LibraryCollection { name: string; modes: readonly string[]; variables: number; fileKey: string }
 
+/** A published text style with the values its style node carries. */
+export interface LibraryTextStyle {
+  kind: 'text'
+  key: string
+  nodeId: string
+  name: string
+  description: string
+  fontFamily: string
+  /** Figma's style name, e.g. "Semi Bold". */
+  fontStyle: string
+  fontWeight: number
+  fontSize: number
+  /** Line height in px, or null for Auto. */
+  lineHeight: number | null
+  /** Letter spacing in px (0 when unset). */
+  letterSpacing: number
+  textCase?: string
+  fileKey: string
+}
+
+/** A published colour (paint) style: its first solid fill as hex, when it has one. */
+export interface LibraryColorStyle {
+  kind: 'color'
+  key: string
+  nodeId: string
+  name: string
+  description: string
+  /** #RRGGBB(AA), or null for a gradient / image style. */
+  hex: string | null
+  fileKey: string
+}
+
+export type LibraryStyle = LibraryTextStyle | LibraryColorStyle
+
 export type LibraryRole = 'variables' | 'components'
 
 /** One Dual File slot after loading. A failed file keeps its slot with the reason. */
 export interface LibraryFile {
-  slot: 1 | 2
+  /** 1 and 2 are the designed Settings slots; 3… come from "Add another library file". */
+  slot: number
   fileKey: string
   /** The file's name in Figma, or its key when the name couldn't be read. */
   name: string
   roles: readonly LibraryRole[]
   variables: number
   components: number
+  /** Published text and colour styles read from the file (0 when the key can't list styles). */
+  styles?: number
   collections: readonly string[]
   /** Set when the file couldn't be read; the reason is a sentence for the designer. */
   error?: string
@@ -75,6 +112,8 @@ export interface LibraryIndex {
   variables: readonly LibraryVariable[]
   components: readonly LibraryComponent[]
   collections: readonly LibraryCollection[]
+  /** Published text and colour styles. Absent in indexes built before styles were read. */
+  styles?: readonly LibraryStyle[]
   loadedAt: number
 }
 

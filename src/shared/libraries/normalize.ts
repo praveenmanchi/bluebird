@@ -1,5 +1,5 @@
 // Raw Figma REST payloads → the library index. Pure: no fetch, no figma global.
-import type { LibraryCollection, LibraryComponent, LibraryVariable, ModeValue, VariableType } from './types'
+import type { LibraryCollection, LibraryComponent, LibraryStyle, LibraryVariable, ModeValue, VariableType } from './types'
 
 interface RestColor { r: number; g: number; b: number; a?: number }
 interface RestAlias { type: 'VARIABLE_ALIAS'; id: string }
@@ -121,4 +121,51 @@ export function toComponents(components: RestComponentsResponse, sets: RestCompo
     variants: 1, keys: [c.key], fileKey,
   }))
   return [...fromSets, ...plain].sort((a, b) => a.name.localeCompare(b.name))
+}
+
+export interface RestStyle { key: string; node_id: string; style_type: 'TEXT' | 'FILL' | 'EFFECT' | 'GRID' | string; name: string; description?: string }
+export interface RestStylesResponse { meta: { styles: RestStyle[] } }
+
+/** The slice of a TEXT or RECTANGLE node `/files/:key/nodes` returns that a style reads from. */
+export interface RestStyleNode {
+  document?: {
+    type?: string
+    style?: { fontFamily?: string; fontPostScriptName?: string | null; fontWeight?: number; fontSize?: number; lineHeightPx?: number; lineHeightUnit?: string; letterSpacing?: number; textCase?: string }
+    fills?: { type: string; visible?: boolean; opacity?: number; color?: RestColor }[]
+  }
+}
+export interface RestNodesResponse { nodes: Record<string, RestStyleNode | null> }
+
+/** "Inter-SemiBold" → "Semi Bold"; weight → name when there is no PostScript name. */
+export function fontStyleName(postScript: string | null | undefined, weight: number | undefined): string {
+  const suffix = postScript?.split('-')[1]
+  if (suffix) return suffix.replace(/([a-z])([A-Z])/g, '$1 $2')
+  const names: Record<number, string> = { 100: 'Thin', 200: 'Extra Light', 300: 'Light', 400: 'Regular', 500: 'Medium', 600: 'Semi Bold', 700: 'Bold', 800: 'Extra Bold', 900: 'Black' }
+  return names[weight ?? 400] ?? String(weight ?? '')
+}
+
+/** Published TEXT and FILL styles with the values read from their style nodes; other style types are left out. */
+export function toStyles(styles: RestStylesResponse, nodes: RestNodesResponse, fileKey: string): LibraryStyle[] {
+  const out: LibraryStyle[] = []
+  for (const s of styles.meta.styles) {
+    const node = nodes.nodes[s.node_id]?.document
+    if (s.style_type === 'TEXT') {
+      const st = node?.style ?? {}
+      out.push({
+        kind: 'text', key: s.key, nodeId: s.node_id, name: s.name, description: s.description ?? '', fileKey,
+        fontFamily: st.fontFamily ?? '', fontStyle: fontStyleName(st.fontPostScriptName, st.fontWeight), fontWeight: st.fontWeight ?? 400,
+        fontSize: st.fontSize ?? 0,
+        lineHeight: st.lineHeightUnit === 'INTRINSIC_%' || st.lineHeightPx === undefined ? null : Math.round(st.lineHeightPx * 100) / 100,
+        letterSpacing: Math.round((st.letterSpacing ?? 0) * 100) / 100,
+        ...(st.textCase && st.textCase !== 'ORIGINAL' ? { textCase: st.textCase } : {}),
+      })
+    } else if (s.style_type === 'FILL') {
+      const solid = (node?.fills ?? []).filter((f) => f.visible !== false).find((f) => f.type === 'SOLID' && f.color)
+      out.push({
+        kind: 'color', key: s.key, nodeId: s.node_id, name: s.name, description: s.description ?? '', fileKey,
+        hex: solid?.color ? colorHex({ ...solid.color, a: (solid.color.a ?? 1) * (solid.opacity ?? 1) }) : null,
+      })
+    }
+  }
+  return out.sort((a, b) => a.name.localeCompare(b.name))
 }

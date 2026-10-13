@@ -77,7 +77,7 @@ async function selection(): Promise<SelectionContext | null> {
 }
 
 export const handlers: HandlerMap = {
-  // Claude (uxai:ask) and Settings' AI Test Connection; the key is read here and never sent to the UI.
+  // The model (uxai:ask) and Settings' AI Test Connection; the key is read here and never sent to the UI.
   ...createAskHandlers({
     readSettings: async () => (await readIntegrations(clientStorageRead)).ai,
     fetch: (url, init) => fetch(url, init),

@@ -1,5 +1,7 @@
 import { AgentHeader, Button, FindingRow, ProgressBar, ThinkingStep, type FindingAction, type ThinkingStepStatus } from '@shared/ui'
-import { agentById, type AgentDef, type AgentFinding } from '../fixtures'
+import { agentById, type AgentDef } from '../agents'
+import { SAMPLE_FINDINGS } from '../fixtures'
+import type { AgentFinding } from '../messages'
 import { BackLink } from './parts'
 import './AgentsRunning.css'
 
@@ -28,11 +30,7 @@ const FIGMA_STEPS: readonly RunningStep[] = [
   { label: 'Checked contrast · 3 frames × 5 modes', status: 'done' },
   { label: 'Checking target size and spacing exceptions…', status: 'running' },
 ]
-const FIGMA_FINDINGS: readonly AgentFinding[] = [
-  { id: 'f1', severity: 'critical', title: 'Key text is 2.9:1 on the selected row — needs 4.5:1', meta: 'WCAG 1.4.3 · Ticket Row › Key · Ikea mode', fix: 'Fix: jira/text/key → text/primary (7.8:1)', fixable: true, nodeId: 'fixture:a1' },
-  { id: 'f2', severity: 'serious', title: 'Priority icon is 2.4:1 against the row — needs 3:1', meta: 'WCAG 1.4.11 · Ticket Row › Priority · Fiskars mode', fix: 'Fix: jira/priority/medium → feedback/warning-strong', fixable: true, nodeId: 'fixture:a3' },
-  { id: 'f3', severity: 'moderate', title: 'Copy-link icon is 16×16 with 4px spacing — needs 24px', meta: 'WCAG 2.5.8 · Figma Link Card › Copy link', fix: 'Fix: wrap in a 24px target (jira/size/avatar)', fixable: true, nodeId: 'fixture:a4' },
-]
+const FIGMA_FINDINGS: readonly AgentFinding[] = [SAMPLE_FINDINGS.accessibility[0]!, SAMPLE_FINDINGS.accessibility[2]!, SAMPLE_FINDINGS.accessibility[3]!]
 
 /** Figma "Agents body" on "AI Agents · Running" (40000298:6038): progress, reasoning steps, findings as they stream in. */
 export function AgentsRunning({
@@ -79,7 +77,7 @@ export function AgentsRunning({
               severity={f.severity}
               title={f.title}
               meta={f.meta}
-              fix={f.fix}
+              fix={f.fixLabel}
               onAction={(action) => onFindingAction?.(f, action)}
             />
           ))}

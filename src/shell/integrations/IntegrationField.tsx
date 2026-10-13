@@ -1,9 +1,10 @@
 import { Icon, Input, TextArea, Toggle } from '@shared/ui'
-import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors } from '@shared/integrations'
+import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors, type LibraryFileEntry } from '@shared/integrations'
+import { LibraryFilesList } from './LibraryFilesList'
 import { SelectInput } from './SelectInput'
 import type { ColumnSpec, FieldSpec } from './sections'
 
-export type FieldValues = Record<string, string | boolean>
+export type FieldValues = Record<string, string | boolean | readonly LibraryFileEntry[]>
 
 export interface FieldContext {
   values: FieldValues
@@ -11,10 +12,10 @@ export interface FieldContext {
   disabled: boolean
   /** Brand-managed keys: shown, not editable. */
   locked?: ReadonlySet<string>
-  onChange: (key: string, value: string | boolean) => void
+  onChange: (key: string, value: FieldValues[string]) => void
 }
 
-const str = (v: string | boolean | undefined) => typeof v === 'string' ? v : ''
+const str = (v: FieldValues[string] | undefined) => typeof v === 'string' ? v : ''
 
 /** One Figma instance of a settings section: Input Box, dropbox, Toggle, Text Area or an AI provider row. */
 export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldContext }) {
@@ -46,6 +47,18 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
       return <Toggle class="bb-integrations__switch" title={spec.title} description={spec.description} checked={values[spec.key] === true} disabled={disabled} onChange={(v) => onChange(spec.key, v)} />
     case 'textarea':
       return <TextArea label={spec.label} placeholder={spec.placeholder} helperText={spec.helper} maxLength={MAX_INSTRUCTIONS} value={str(values[spec.key])} disabled={disabled} onValueChange={(v) => onChange(spec.key, v)} />
+    case 'files': {
+      const rows = values[spec.key]
+      return (
+        <LibraryFilesList
+          label={spec.label}
+          files={Array.isArray(rows) ? rows : []}
+          errors={errors}
+          disabled={disabled}
+          onChange={(next) => onChange(spec.key, next)}
+        />
+      )
+    }
     case 'provider':
       return (
         <div class="bb-integrations__provider">

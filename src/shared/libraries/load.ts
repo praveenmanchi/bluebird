@@ -8,14 +8,14 @@ import {
 } from '@shared/integrations'
 import { createFigmaGet, LibraryError, type HttpFetch } from './rest'
 import {
-  toComponents, toVariables,
-  type RestComponentSetsResponse, type RestComponentsResponse, type RestVariablesResponse,
+  toComponents, toStyles, toVariables,
+  type RestComponentSetsResponse, type RestComponentsResponse, type RestNodesResponse, type RestStylesResponse, type RestVariablesResponse,
 } from './normalize'
-import type { LibraryFile, LibraryIndex, LibraryLoadResult, LibraryRole } from './types'
+import type { LibraryFile, LibraryIndex, LibraryLoadResult, LibraryRole, LibraryStyle } from './types'
 
 type DualFile = IntegrationValues<'dualFile'>
 
-export interface FileSpec { slot: 1 | 2; fileKey: string; token: string; roles: readonly LibraryRole[] }
+export interface FileSpec { slot: number; fileKey: string; token: string; roles: readonly LibraryRole[] }
 
 /** "Variables + Components" → both; an unknown value reads as both rather than dropping the file. */
 export function rolesOf(role: string): LibraryRole[] {
@@ -24,11 +24,15 @@ export function rolesOf(role: string): LibraryRole[] {
   return ['variables', 'components']
 }
 
-/** The files Settings describe. File 2 borrows File 1's token when its own is empty. */
+/** The files Settings describe. File 2 and every extra file borrow File 1's token when their own is empty. */
 export function filesFromSettings(s: DualFile): FileSpec[] {
   const specs: FileSpec[] = []
-  if (s.file1Id.trim()) specs.push({ slot: 1, fileKey: s.file1Id.trim(), token: s.file1Key.trim(), roles: rolesOf(s.file1Role) })
-  if (s.file2Id.trim()) specs.push({ slot: 2, fileKey: s.file2Id.trim(), token: (s.file2Key.trim() || s.file1Key.trim()), roles: rolesOf(s.file2Role) })
+  const shared = s.file1Key.trim()
+  if (s.file1Id.trim()) specs.push({ slot: 1, fileKey: s.file1Id.trim(), token: shared, roles: rolesOf(s.file1Role) })
+  if (s.file2Id.trim()) specs.push({ slot: 2, fileKey: s.file2Id.trim(), token: (s.file2Key.trim() || shared), roles: rolesOf(s.file2Role) })
+  ;(s.extraFiles ?? []).forEach((f, i) => {
+    if (f.id.trim()) specs.push({ slot: i + 3, fileKey: f.id.trim(), token: f.key.trim() || shared, roles: rolesOf(f.role) })
+  })
   return specs
 }
 
@@ -43,7 +47,34 @@ export function settingsProblem(s: DualFile): Extract<LibraryLoadResult, { statu
 
 interface FileRead { file: LibraryFile; index: Omit<LibraryIndex, 'files' | 'loadedAt'> }
 
-const EMPTY = { variables: [], components: [], collections: [] } as const
+const EMPTY = { variables: [], components: [], collections: [], styles: [] } as const
+
+/** `/nodes` takes a comma-separated id list; keep each request short of the URL limit. */
+const NODES_PER_REQUEST = 60
+
+/**
+ * Published text and colour styles: the list, then the style nodes the values live on. A key
+ * that can't list styles (scope, plan) just reads no styles; it never fails the file.
+ */
+export async function readStyles(get: ReturnType<typeof createFigmaGet>, path: string, fileKey: string): Promise<LibraryStyle[]> {
+  let listed: RestStylesResponse
+  try {
+    listed = await get<RestStylesResponse>(`${path}/styles`, 'styles')
+  } catch {
+    return []
+  }
+  const ids = listed.meta.styles.filter((s) => s.style_type === 'TEXT' || s.style_type === 'FILL').map((s) => s.node_id)
+  const nodes: RestNodesResponse = { nodes: {} }
+  for (let i = 0; i < ids.length; i += NODES_PER_REQUEST) {
+    try {
+      const chunk = await get<RestNodesResponse>(`${path}/nodes?ids=${encodeURIComponent(ids.slice(i, i + NODES_PER_REQUEST).join(','))}`, 'nodes')
+      Object.assign(nodes.nodes, chunk.nodes)
+    } catch {
+      // Names without values still answer "which styles exist".
+    }
+  }
+  return toStyles(listed, nodes, fileKey)
+}
 
 /** Reads one file for its roles. Errors become the file's `error`; nothing is thrown. */
 export async function readFile(spec: FileSpec, fetchImpl: HttpFetch): Promise<FileRead> {
@@ -54,7 +85,7 @@ export async function readFile(spec: FileSpec, fetchImpl: HttpFetch): Promise<Fi
   // The name is a nicety: a token without file_metadata:read still loads the library.
   const name = get<{ file?: { name?: string } }>(`${path}/meta`, 'meta').then((r) => r.file?.name ?? '', () => '')
   try {
-    const [vars, comps] = await Promise.all([
+    const [vars, comps, styles] = await Promise.all([
       spec.roles.includes('variables') ? get<RestVariablesResponse>(`${path}/variables/local`, 'variables').then((r) => toVariables(r, spec.fileKey)) : null,
       spec.roles.includes('components')
         ? Promise.all([
@@ -62,6 +93,8 @@ export async function readFile(spec: FileSpec, fetchImpl: HttpFetch): Promise<Fi
           get<RestComponentSetsResponse>(`${path}/component_sets`, 'components'),
         ]).then(([c, s]) => toComponents(c, s, spec.fileKey))
         : null,
+      // Styles come with every role: a Variables file often carries the type ramp as text styles too.
+      readStyles(get, path, spec.fileKey),
     ])
     const variables = vars?.variables ?? []
     const components = comps ?? []
@@ -70,10 +103,10 @@ export async function readFile(spec: FileSpec, fetchImpl: HttpFetch): Promise<Fi
       : vars !== null && variables.length === 0 ? 'No local variables in this file.' : undefined
     return {
       file: {
-        ...base, name: (await name) || spec.fileKey, variables: variables.length, components: components.length,
+        ...base, name: (await name) || spec.fileKey, variables: variables.length, components: components.length, styles: styles.length,
         collections: (vars?.collections ?? []).map((c) => c.name), ...(warning ? { warning } : {}),
       },
-      index: { variables, components, collections: vars?.collections ?? [] },
+      index: { variables, components, collections: vars?.collections ?? [], styles },
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : `${label} couldn’t be read.`
@@ -89,6 +122,7 @@ export async function loadLibraries(specs: readonly FileSpec[], fetchImpl: HttpF
     variables: reads.flatMap((r) => r.index.variables),
     components: reads.flatMap((r) => r.index.components),
     collections: reads.flatMap((r) => r.index.collections),
+    styles: reads.flatMap((r) => r.index.styles ?? []),
     loadedAt: now(),
   }
 }
@@ -100,6 +134,7 @@ export function describeFile(f: LibraryFile): string {
   const parts = [
     ...(f.roles.includes('variables') ? [`${count(f.variables, 'variable')}${f.collections.length ? ` in ${count(f.collections.length, 'collection')}` : ''}`] : []),
     ...(f.roles.includes('components') ? [count(f.components, 'published component')] : []),
+    ...(f.styles ? [count(f.styles, 'published style')] : []),
   ]
   return `File ${f.slot} “${f.name}”: ${parts.join(', ')}.${f.warning ? ` ${f.warning}` : ''}`
 }

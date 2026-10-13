@@ -4,9 +4,9 @@ import { libraryState, loadLibraryState } from '@shared/libraries'
 import { MSG, type AskResult, type SelectionContext } from '../messages'
 import { draft, panelMode, reset, sources, turns, variables, view } from '../state'
 import { applySwaps, discardSwaps, send, setPanelMode, showChat, showSources, stop, swapVariable, toggleSource, type Ground } from '../chat'
-import { groundedAnswer, librarySources, selectIndex, selectionFailedAnswer, withClaude, withoutClaude, type GroundedAnswer } from '../grounding'
+import { groundedAnswer, librarySources, selectIndex, selectionFailedAnswer, withModel, withoutModel, type GroundedAnswer } from '../grounding'
 import { buildMessages, libraryContext } from '../prompt'
-import { CLAUDE_TIMEOUT_MS } from '../claude'
+import { AI_TIMEOUT_MS, PROVIDER_LABEL } from '@shared/ai'
 import type { LibraryIndex } from '@shared/libraries'
 import { UxaiSources } from './UxaiSources'
 import { UxaiAnswer } from './UxaiAnswer'
@@ -20,8 +20,8 @@ import type { ChatScreenProps } from './types'
 const SELECTION_PROMPT = 'What variables are used in this?'
 
 const SELECTION_TIMEOUT_MS = 30_000
-/** The sandbox gives up on Claude at CLAUDE_TIMEOUT_MS; wait a little past it so its message arrives. */
-const ASK_TIMEOUT_MS = CLAUDE_TIMEOUT_MS + 15_000
+/** The sandbox gives up on the model at AI_TIMEOUT_MS; wait a little past it so its message arrives. */
+const ASK_TIMEOUT_MS = AI_TIMEOUT_MS + 15_000
 
 /**
  * UX AI tab: ask the design system questions, answered from the selected sources.
@@ -73,23 +73,23 @@ export function Tab() {
       }
       const index = selectIndex(lib.index, ticked)
       const answer = groundedAnswer(prompt, kind, index, selection)
-      // Nothing selected: there is nothing for Claude to look at either.
+      // Nothing selected: there is nothing for the model to look at either.
       if (kind === 'selection' && !answer.selection) return answer
-      return askClaude(prompt, kind, index, answer)
+      return askModel(prompt, kind, index, answer)
     }
     : undefined
 
-  /** Claude writes the reply from the matching library context; when it isn't set up or fails, the library answer stands. */
-  const askClaude = async (prompt: string, kind: Parameters<Ground>[1], index: LibraryIndex, answer: GroundedAnswer): Promise<GroundedAnswer> => {
+  /** The configured model writes the reply from the matching library context; when none is set up or it fails, the library answer stands. */
+  const askModel = async (prompt: string, kind: Parameters<Ground>[1], index: LibraryIndex, answer: GroundedAnswer): Promise<GroundedAnswer> => {
     const history = turns.value
       .filter((t) => t.status === 'done' && t.grounded?.text)
       .map((t) => ({ prompt: t.prompt, answer: t.grounded!.text }))
     const messages = buildMessages(history, prompt, libraryContext(prompt, kind, index, answer.selection))
     try {
       const result = await rpc.call<AskResult>(MSG.ask, { messages }, ASK_TIMEOUT_MS)
-      return result.status === 'answered' ? withClaude(answer, result.text, result.model) : answer
+      return result.status === 'answered' ? withModel(answer, result.text, PROVIDER_LABEL[result.provider], result.model) : answer
     } catch (error: unknown) {
-      return withoutClaude(answer, error instanceof Error ? error.message : 'no reply')
+      return withoutModel(answer, error instanceof Error ? error.message : 'no reply')
     }
   }
 

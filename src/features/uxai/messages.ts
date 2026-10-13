@@ -7,7 +7,7 @@ export const MSG = {
   focus: 'uxai:focus',
   selection: 'uxai:selection',
   open: 'uxai:open',
-  /** Ask Claude: the UI sends the conversation with its library context; the sandbox adds the key and model. */
+  /** Ask the model: the UI sends the conversation with its library context; the sandbox adds the provider, key and model. */
   ask: 'uxai:ask',
 } as const
 
@@ -22,9 +22,9 @@ export const askRequestSchema = z.object({
 })
 export type AskRequest = z.infer<typeof askRequestSchema>
 
-/** Claude's reply, or why Claude wasn't asked (the UI then shows the library answer as it is). */
+/** The model's reply, or why no model was asked (the UI then shows the library answer as it is). */
 export type AskResult =
-  | { status: 'answered'; text: string; model: string }
+  | { status: 'answered'; text: string; model: string; provider: 'claude' | 'openai' | 'gemini' }
   | { status: 'not-configured'; reason: 'disabled' | 'no-key' }
 
 export const focusRequestSchema = z.object({ nodeId: z.string().check(z.minLength(1)) })

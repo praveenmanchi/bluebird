@@ -87,3 +87,32 @@
 
 /* "Set by <brand>": the section's managed fields come from plugin.config.json. */
 .bb-integrations__managed { width: 100%; max-width: none; }
+
+/* Files 3…N of Dual File Mode ("Add another library file"); not in the Figma frame, which draws two slots.
+ * Each row reuses the Dual File row grid (narrow ID / contains column, wide key column). */
+.bb-integrations__files {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-fields);
+}
+.bb-integrations__files-row {
+  padding-top: var(--bb-settings-space-fields);
+  border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
+}
+@container (min-width: 560px) { /* allow-raw: same breakpoint as the Dual File rows above */
+  .bb-integrations__files-row .bb-integrations__row {
+    grid-template-columns: var(--bb-derived-settings-integrations-dual-file-r1-column-1-width) minmax(0, 1fr);
+  }
+}
+.bb-integrations__files-remove { align-self: flex-start; }
+.bb-integrations__files-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+.bb-integrations__files-hint {
+  flex: 1 1 200px; /* allow-raw: lets the hint wrap under the button when narrow */
+  font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
+  color: var(--bb-input-fg-helper);
+}

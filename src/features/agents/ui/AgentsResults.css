@@ -16,6 +16,13 @@
 /* Sections keep their content height; only the scroll region (if any) gives way. */
 .bb-agents-results > * { flex-shrink: 0; }
 .bb-agents-results__back { align-self: flex-start; }
+/* Back link and "Run again" share one row (not in Figma, which has no way out of the screen). */
+.bb-agents-results__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--bb-agents-space-tight);
+}
 .bb-agents-results__header.bb-agent-header {
   width: 100%;
   max-width: var(--bb-derived-agents-results-agent-header-width);

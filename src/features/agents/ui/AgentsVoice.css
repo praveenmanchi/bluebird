@@ -80,3 +80,18 @@
   width: 100%;
   max-width: var(--bb-derived-agents-voice-voice-bar-width);
 }
+
+/* Typed requests (not in Figma, which only draws the Voice Bar): the field and Send share a row above the bar,
+ * so a window without microphone access can still talk to the agent. */
+.bb-agents-voice__compose {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--bb-agents-space-tight);
+}
+.bb-agents-voice__input.bb-input { flex: 1 1 auto; min-width: 0; max-width: none; }
+.bb-agents-voice__turn {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: var(--bb-agents-space-tight);
+}

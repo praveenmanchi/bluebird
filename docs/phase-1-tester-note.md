@@ -45,10 +45,10 @@ Test the live features against a real file. Look at the preview features for lay
 | Accessibility | **Live** | Scans the selection or page. Contrast, target size, non-text contrast, text alternatives. Reads your brand palette from the Brand UI variables, local or via the enabled library. |
 | Design tokens | **Live** | Design System persona only. Audits variables and token usage in the open file. |
 | Publish | **Live extract, local release** | Extracts tokens and release notes from the file and stores the release in the file. Pushing to GitHub needs a personal access token in Settings. Try it only if you have a test repository. |
-| UXAI | **Live, needs a key** | Chat grounded in the configured library files. Needs a Claude API key in **Settings → AI Agent Assistance**. Without a key the tab explains what to add. |
+| UXAI | **Live, needs a key** | Chat grounded in the configured library files (variables, components, published text and colour styles). Needs a Claude, OpenAI or Gemini API key in **Settings → AI Agent Assistance**; pick the provider under **Answer with**. Without a key the tab answers from the libraries alone. |
 | Jira board | **Preview** | Shows sample tickets. The live connection needs a local proxy that testers do not have. |
 | MCP handoff | **Preview** | Select → Check → Generate → Ship flow on sample data. Selecting a frame and opening a link are real. |
-| UX AI agents | **Preview** | Six agents with sample results. Clicking a finding selects the layer it points at. |
+| UX AI agents | **Live** | Six agents review your selection, frame, section or page and write results back: token rebinds, text fixes, Dev Mode annotations and a report frame on the canvas. Spelling, UX writing and Content suggestions need a model key. |
 
 Which tabs you see depends on the persona you pick: **Product Designer** or **Design System**.
 
@@ -58,8 +58,10 @@ Which tabs you see depends on the persona you pick: **Product Designer** or **De
 2. Open a product file that uses your brand library. Run an Accessibility scan on one screen and on a whole page. Check that the colours in findings are named in tokens, not hex values.
 3. Open Settings. Fill in only what you have. Use **Test Connection** where it exists.
 4. Resize the window to the smallest size you would actually use. Note anything that breaks.
-5. Walk through the Jira, MCP and Agents previews as if the data were real. Tell us where the flow loses you.
-6. If you have a Claude key, ask UXAI two or three questions you would really ask a design-system colleague.
+5. Walk through the Jira and MCP previews as if the data were real. Tell us where the flow loses you.
+6. If you have a model key, ask UXAI two or three questions you would really ask a design-system colleague, including one about typography.
+7. Select a screen, open **UX AI agents**, run **Accessibility** in **Suggest fixes** mode, apply one fix, then run **Design system** and **Localization**. Try **Run all** on a whole page. Tell us about any finding you think is wrong: false positives matter more than misses in this round.
+8. Run **Spelling & grammar** on a frame with real copy and check the suggestions before applying them.
 
 ## How to report
 
@@ -74,12 +76,13 @@ Post in the testing channel or add to the shared sheet. Crashes and anything tha
 ## Known limits in this build
 
 - SSO is not connected. Access codes only.
-- Jira, MCP and Agents tabs run on sample data.
-- OpenAI and Gemini keys are accepted in Settings but not used. Only Claude answers.
+- Jira and MCP tabs run on sample data.
+- The agents' Voice view uses the browser's speech recognition where the host offers it; the Figma desktop app usually does not, so type your request instead.
+- Agent fixes that resize a layer or detach/swap components are offered but never auto-applied.
 - Publish writes to GitHub only when you configure a repository and token. Nothing is pushed otherwise.
 - Email notifications are stored but not sent. There is no mail service yet.
 - Re-run the plugin (**Cmd+Opt+P**) if it stops responding after a long session.
 
 ## Privacy
 
-Access codes are hashed. API keys and tokens stay in your Figma client storage on your machine and are never written into the plugin or the repository. UXAI sends your question plus the matching library context to Anthropic using your own key.
+Access codes are hashed. API keys and tokens stay in your Figma client storage on your machine and are never written into the plugin or the repository. UXAI sends your question plus the matching library context, and the agents send the text of the reviewed layers, to the provider you picked (Anthropic, OpenAI or Google) using your own key.

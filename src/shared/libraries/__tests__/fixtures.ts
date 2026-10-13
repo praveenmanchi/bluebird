@@ -1,5 +1,5 @@
 // REST payloads shaped like api.figma.com's, small enough to read.
-import type { RestComponentSetsResponse, RestComponentsResponse, RestVariablesResponse } from '../normalize'
+import type { RestComponentSetsResponse, RestComponentsResponse, RestNodesResponse, RestStylesResponse, RestVariablesResponse } from '../normalize'
 import type { HttpFetch } from '../rest'
 
 export const VARIABLES: RestVariablesResponse = {
@@ -39,6 +39,23 @@ export const COMPONENT_SETS: RestComponentSetsResponse = {
   meta: { component_sets: [{ key: 'kbtn', node_id: '10:1', name: 'Button', description: 'Primary call to action', containing_frame: frame('Components', 'Atoms') }] },
 }
 
+export const STYLES: RestStylesResponse = {
+  meta: {
+    styles: [
+      { key: 'kh1', node_id: '30:1', style_type: 'TEXT', name: 'Heading/H1', description: 'Page titles' },
+      { key: 'kaccent-style', node_id: '30:2', style_type: 'FILL', name: 'brand/accent' },
+      { key: 'kshadow', node_id: '30:3', style_type: 'EFFECT', name: 'Elevation/1' },
+    ],
+  },
+}
+
+export const STYLE_NODES: RestNodesResponse = {
+  nodes: {
+    '30:1': { document: { type: 'TEXT', style: { fontFamily: 'Inter', fontPostScriptName: 'Inter-SemiBold', fontWeight: 600, fontSize: 24, lineHeightPx: 32, lineHeightUnit: 'PIXELS', letterSpacing: -0.5 } } },
+    '30:2': { document: { type: 'RECTANGLE', fills: [{ type: 'SOLID', color: { r: 0, g: 0.4, b: 1, a: 1 } }] } },
+  },
+}
+
 export interface Call { url: string; token: string }
 
 /** A fake api.figma.com: routes by path suffix, records every call. `fail` maps a suffix to [status, body]. */
@@ -51,6 +68,8 @@ export function fakeFigma(fail: Record<string, [number, string]> = {}, names: Re
     if (failure) return reply(failure[1][0], failure[1][1])
     const key = /\/files\/([^/]+)\//.exec(url)?.[1] ?? ''
     if (url.endsWith('/meta')) return reply(200, { file: { name: names[key] ?? `Name of ${key}` } })
+    if (url.endsWith('/styles')) return reply(200, STYLES)
+    if (url.includes('/nodes?ids=')) return reply(200, STYLE_NODES)
     if (url.endsWith('/variables/local')) return reply(200, VARIABLES)
     if (url.endsWith('/component_sets')) return reply(200, COMPONENT_SETS)
     if (url.endsWith('/components')) return reply(200, COMPONENTS)

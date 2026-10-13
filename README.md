@@ -47,6 +47,49 @@ browser  ─►  ws://127.0.0.1:4001 relay  ─►  bridge page inside Figma  �
 
 Sandbox changes still need a plugin re-run in Figma (`Cmd+Opt+P`). UI changes hot-reload in the browser.
 
+## AI providers (Settings › AI Agent Assistance)
+
+UX AI and the UX AI agents call the model the user picks under **Answer with**: Claude
+(`api.anthropic.com`), OpenAI (`api.openai.com`) or Gemini
+(`generativelanguage.googleapis.com`), each with its own Default Model and API key. The key
+is read in the Figma sandbox and sent to that provider's host only; when the picked
+provider has no key the first provider that does answers, and the footer pill says so.
+`src/shared/ai` holds the three request shapes, the error mapping and the lenient JSON
+reader the agents use. Model ids come from the providers' docs as of 2026-10-13
+(`docs/research/ux-ai-agents-research.md`); **Test Connection** sends one tiny request.
+
+## UX AI agents (live)
+
+Six agents review the selection, the current frame, its section or the whole page inside
+Figma, stream findings while they work and write results back:
+
+| Agent | Reads | Needs a model | Writes back |
+|---|---|---|---|
+| Accessibility | text runs, strokes, interactive layers, images; Brand UI tokens in every ticked brand mode | no | rebind fills/strokes to the nearest passing token, Dev Mode annotations, report frame |
+| Design system | fills, strokes, auto-layout spacing, radii, `detachedInfo`, text styles | no | rebind raw values that equal a token, bind spacing/radius variables |
+| Content | placeholder copy, fake people, placeholder data and grey image boxes | for realistic replacements | replace text |
+| Spelling & grammar | every text layer, de-duplicated and batched | yes | replace text |
+| UX writing | every text layer with its role (button, error, heading…) | yes | replace text |
+| Localization | text boxes vs. German/French/Arabic expansion, directional icons, US formats | no | advice only |
+
+Setup picks the rule pack, brand modes, **Review / Suggest / Auto-fix** and the outputs
+(Dev Mode annotations, a report frame on the canvas, a Jira-ready list, a Markdown + JSON
+download). Results can be applied one by one or all safe ones at once; **Run all** runs the
+agents in sequence so fixes don't collide. The Voice view talks to the agent about its run
+through the configured model (speech recognition where the host offers it, typing
+otherwise) and acts on replies that end with `[apply-safe]`, `[annotate]`, `[report]` or
+`[show-findings]`. The rule packs are pure (`src/features/agents/rules`), the Figma reads
+and writes live in `src/features/agents/sandbox`.
+
+## Library files (Dual File Mode)
+
+Settings › Dual File Mode takes the two designed slots plus **Add another library file**
+for as many library files as the system spans (icons, typography, a second components
+library). Every file is read over the Figma REST API with its own key or File 1's; besides
+variables and components the loader now reads each file's published text and colour styles
+(`/styles` + `/nodes`), which UX AI uses for typography questions and for colours in files
+without variables.
+
 ## Jira tab (live Jira)
 
 Figma plugins call the web from a `null` origin, and Jira Cloud sends no CORS headers for

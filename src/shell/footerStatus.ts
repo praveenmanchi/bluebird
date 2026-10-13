@@ -3,6 +3,7 @@
 // MCP call nothing yet, and UX AI's Claude key is tested from Settings), Dual
 // File from the shared library state (@shared/libraries/status).
 import { signal } from '@preact/signals'
+import { describeProvider, isProviderConfig, PROVIDER_LABEL, providerId, selectProvider } from '@shared/ai'
 import type { IntegrationSettings, IntegrationValues } from '@shared/integrations'
 import type { FooterPill } from '@shared/ui'
 
@@ -18,20 +19,17 @@ export function gitPill(github: IntegrationValues<'github'> | undefined): Footer
   return { label: 'Git', status: 'good', title: `Commits to ${github.repo} (${github.branch})${host}. The key isn’t tested yet.` }
 }
 
-const PROVIDERS = [
-  { name: 'Claude', key: 'claudeKey', model: 'claudeModel' },
-  { name: 'OpenAI', key: 'openaiKey', model: 'openaiModel' },
-  { name: 'Gemini', key: 'geminiKey', model: 'geminiModel' },
-] as const
-
 export function uxaiPill(ai: IntegrationValues<'ai'> | undefined): FooterPill {
   if (!ai) return { label: 'UX AI', status: 'retry', title: 'Reading Settings…' }
-  if (!ai.enabled) return { label: 'UX AI · off', status: 'issue', title: 'AI Agent Assistance is switched off in Settings.' }
-  const ready = PROVIDERS.filter((p) => ai[p.key].trim())
-  if (!ready.length) return { label: 'UX AI', status: 'issue', title: 'Add a Claude, OpenAI or Gemini API key in Settings › AI Agent Assistance.' }
-  const claude = ready.some((p) => p.name === 'Claude')
-  if (!claude) return { label: 'UX AI', status: 'issue', title: `Only Claude is wired up so far: add a Claude API key in Settings › AI Agent Assistance. (${ready.map((p) => p.name).join(' and ')} not used yet.)` }
-  return { label: 'UX AI', status: 'good', title: `Answers with Claude (${ai.claudeModel}). Use Test Connection in Settings to check the key.` }
+  const config = selectProvider(ai)
+  if (!isProviderConfig(config)) {
+    if (config.reason === 'disabled') return { label: 'UX AI · off', status: 'issue', title: 'AI Agent Assistance is switched off in Settings.' }
+    return { label: 'UX AI', status: 'issue', title: 'Add a Claude, OpenAI or Gemini API key in Settings › AI Agent Assistance.' }
+  }
+  if (config.fallback) {
+    return { label: 'UX AI', status: 'issue', title: `Settings pick ${PROVIDER_LABEL[providerId(ai.provider)]} but it has no key, so ${describeProvider(config)} answers instead. Add the key or change “Answer with” in Settings.` }
+  }
+  return { label: 'UX AI', status: 'good', title: `Answers with ${describeProvider(config)}. Use Test Connection in Settings to check the key.` }
 }
 
 export function mcpPill(mcp: IntegrationValues<'mcp'> | undefined): FooterPill {

@@ -2,14 +2,16 @@
 // "Settings · Integrations" (40000408:8714). Copy, icons and order follow the
 // frame; an array in `blocks` is one row of side-by-side columns.
 import type { IconName, SectionHeaderLogo } from '@shared/ui'
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, type IntegrationId } from '@shared/integrations'
+import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, type IntegrationId } from '@shared/integrations'
 
 export interface TextFieldSpec { kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean }
 export interface SelectFieldSpec { kind: 'select'; key: string; label: string; icon: IconName; options: readonly string[] }
 export interface SwitchSpec { kind: 'switch'; key: string; title: string; description: string }
 export interface TextAreaSpec { kind: 'textarea'; key: string; label: string; placeholder: string; helper: string }
 export interface ProviderSpec { kind: 'provider'; provider: 'claude' | 'openai' | 'gemini'; model: SelectFieldSpec; apiKey: TextFieldSpec }
-export type FieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec
+/** Files 3…N of Dual File Mode: a growable list of ID · contains · key rows (not in the Figma frame, which draws two slots). */
+export interface FilesListSpec { kind: 'files'; key: 'extraFiles'; label: string }
+export type FieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec
 /** A column is one field or a stack of fields. */
 export type ColumnSpec = FieldSpec | readonly FieldSpec[]
 export type BlockSpec = FieldSpec | readonly ColumnSpec[]
@@ -107,13 +109,14 @@ export const SECTIONS: readonly SectionSpec[] = [
   },
   {
     id: 'dualFile', title: 'Dual File Mode', toggleKey: 'enabled', columns: 'narrow-wide',
-    description: 'Point UXAI at the published library files your designs use: one file for variables and one for components, or a single file that holds both. Read through the Figma REST API.',
-    blocks: [dualFileRow(1), dualFileRow(2)],
+    description: 'Point UXAI and the agents at the published library files your designs use: one file for variables and one for components, a single file that holds both, or as many library files as your system spans. Each is read through the Figma REST API with its own key (or File 1’s).',
+    blocks: [dualFileRow(1), dualFileRow(2), { kind: 'files', key: 'extraFiles', label: 'More library files' }],
   },
   {
     id: 'ai', title: 'AI Agent Assistance (UXAI)', toggleKey: 'enabled',
-    description: 'Configure the AI model and API keys for the UXAI assistant. Supports Claude (Anthropic), OpenAI, and Google Gemini.',
+    description: 'Configure the AI model and API keys for the UXAI assistant and the UX AI agents. Supports Claude (Anthropic), OpenAI, and Google Gemini: the provider you pick answers with its Default Model; the others are fallbacks when it has no key.',
     blocks: [
+      { kind: 'select', key: 'provider', label: 'Answer with', icon: 'ai-model', options: PROVIDER_OPTIONS },
       provider('claude', 'Claude', 'sk-ant-api03-...'),
       provider('openai', 'OpenAI', 'sk-proj-...'),
       provider('gemini', 'Gemini', 'AIzaSy...'),

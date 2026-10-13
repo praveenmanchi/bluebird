@@ -1,6 +1,7 @@
-import { ArtifactHeader, ColorSwatch, LinkButton, MetaBadge } from '@shared/ui'
-import { figmaUrl, type LibraryComponent, type LibraryVariable } from '@shared/libraries'
-import type { GroundedAnswer, Origin, SelectionComponent, SelectionVariable } from '../grounding'
+import { ArtifactHeader, BrandSwatch, ColorSwatch, ContextChip, LinkButton, MetaBadge } from '@shared/ui'
+import type { BrandId } from '@shared/brand'
+import { figmaUrl, type LibraryComponent, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
+import { typeSpec, type GroundedAnswer, type Origin, type SelectionComponent, type SelectionVariable } from '../grounding'
 import './LibraryAnswer.css'
 
 export interface LibraryAnswerProps {
@@ -11,6 +12,13 @@ export interface LibraryAnswerProps {
 
 /** Swatches shown per colour variable before the rest are summarised in the text. */
 const MAX_SWATCHES = 5
+/** Brand modes the generated CSS knows; a mode named after one tints its swatch caption in that brand. */
+const BRAND_IDS = new Set(['bridge', 'ikea', 'richemont', 'disney', 'fiskars'])
+const brandOf = (mode: string): BrandId | undefined => BRAND_IDS.has(mode.toLowerCase()) ? mode.toLowerCase() as BrandId : undefined
+/** The Color Artifact's "Used by" badges read the variable's scopes; Figma's enum names become words. */
+const scopeLabel = (scope: string) => scope.toLowerCase().replace(/_/g, ' ').replace('all ', 'all ')
+/** Text specimens render at their real size, capped so a 96px display style still fits the panel. */
+const MAX_SPECIMEN_PX = 40
 
 const fileList = (keys: readonly string[], files: Readonly<Record<string, string>>) => [...new Set(keys.map((k) => files[k] ?? k))].join(' · ')
 
@@ -96,11 +104,83 @@ function SelectionComponentItem({ item, files, onOpenUrl }: { item: SelectionCom
   )
 }
 
-/** What a grounded answer cites: matching variables, matching components, or the selection checked against the libraries. */
+/**
+ * The Color Artifact template (Figma 40000285:8157) filled from a library variable: one Brand
+ * Swatch per mode, the alias chain after "Resolves", the variable's scopes as "Used by".
+ */
+function ColorVariableArtifact({ variable, files, onOpenUrl }: { variable: LibraryVariable; files: Readonly<Record<string, string>>; onOpenUrl?: (url: string) => void }) {
+  const chain = [variable.name, ...[...new Set(variable.values.map((m) => m.aliasOf).filter((a): a is string => Boolean(a)))]]
+  return (
+    <article class="bb-uxai-color-artifact" aria-label={`${variable.name} in every mode`}>
+      <ArtifactHeader icon="colors" title={variable.name} subtitle={`Colour variable · ${variable.collection} · ${files[variable.fileKey] ?? variable.fileKey}`} actionLabel={OPEN_LIBRARY} onOpen={openFile(variable.fileKey, onOpenUrl)} class="bb-uxai-library__header" />
+      <div class="bb-uxai-color-artifact__brands">
+        {variable.values.map((m) => <BrandSwatch key={m.mode} brand={brandOf(m.mode)} label={m.mode} hex={m.value} color={m.value.startsWith('#') ? m.value : undefined} />)}
+      </div>
+      <div class="bb-uxai-color-artifact__row">
+        <span class="bb-uxai-library__meta">Resolves</span>
+        {chain.map((hop, i) => [
+          i > 0 && <span key={`arrow-${hop}`} class="bb-uxai-library__meta" aria-hidden="true">→</span>,
+          <ContextChip key={hop} type="citation">{hop}</ContextChip>,
+        ])}
+      </div>
+      {variable.scopes.length > 0 && (
+        <div class="bb-uxai-color-artifact__row">
+          <span class="bb-uxai-library__meta">Used by</span>
+          {variable.scopes.slice(0, 4).map((scope) => <MetaBadge key={scope} tone="accent">{scopeLabel(scope)}</MetaBadge>)}
+        </div>
+      )}
+    </article>
+  )
+}
+
+function TextStyleItem({ style }: { style: LibraryTextStyle }) {
+  const size = Math.min(style.fontSize || 12, MAX_SPECIMEN_PX)
+  const specimen = { fontFamily: style.fontFamily ? `"${style.fontFamily}", ui-sans-serif, system-ui, sans-serif` : undefined, fontSize: `${size}px`, fontWeight: style.fontWeight, lineHeight: 1.2, letterSpacing: style.letterSpacing ? `${style.letterSpacing}px` : undefined, textTransform: style.textCase === 'UPPER' ? 'uppercase' : style.textCase === 'LOWER' ? 'lowercase' : style.textCase === 'TITLE' ? 'capitalize' : undefined }
+  return (
+    <li class="bb-uxai-library__row bb-uxai-type__row">
+      <span class="bb-uxai-type__specimen" style={specimen} aria-hidden="true">{style.name.split('/').pop() || 'Aa'}</span>
+      <div class="bb-uxai-library__text">
+        <span class="bb-uxai-library__name">{style.name}</span>
+        <span class="bb-uxai-library__meta">{`${[style.fontFamily, typeSpec(style)].filter(Boolean).join(' · ')}${style.fontSize && style.fontSize > MAX_SPECIMEN_PX ? ' · shown smaller' : ''}`}</span>
+        {style.description && <span class="bb-uxai-library__meta">{style.description}</span>}
+      </div>
+    </li>
+  )
+}
+
+function ColorStyleItem({ style }: { style: Extract<LibraryStyle, { kind: 'color' }> }) {
+  return (
+    <li class="bb-uxai-library__row">
+      {style.hex ? <ColorSwatch size="small" color={style.hex} label={style.hex} /> : <span class="bb-uxai-library__amount" aria-hidden="true">?</span>}
+      <div class="bb-uxai-library__text">
+        <span class="bb-uxai-library__name">{style.name}</span>
+        <span class="bb-uxai-library__meta">{style.hex ?? 'Gradient or image style'}{style.description ? ` · ${style.description}` : ''}</span>
+      </div>
+    </li>
+  )
+}
+
+/** What a grounded answer cites: matching variables, matching components, styles, or the selection checked against the libraries. */
 export function LibraryAnswer({ answer, onOpenUrl }: LibraryAnswerProps) {
-  const { variables, components, selection, files } = answer
+  const { variables, components, styles, selection, files } = answer
+  const focus = variables?.items[0]
+  const texts = (styles?.items ?? []).filter((s): s is LibraryTextStyle => s.kind === 'text').sort((a, b) => b.fontSize - a.fontSize)
+  const colours = (styles?.items ?? []).filter((s): s is Extract<LibraryStyle, { kind: 'color' }> => s.kind === 'color')
   return (
     <div class="bb-uxai-library-answer">
+      {focus?.type === 'COLOR' && <ColorVariableArtifact variable={focus} files={files} onOpenUrl={onOpenUrl} />}
+      {texts.length > 0 && (
+        <section class="bb-uxai-library" aria-label="Matching text styles">
+          <ArtifactHeader icon="text" title={heading(texts.length, styles!.total, 'text style')} subtitle={`${[...new Set(texts.map((t) => t.fontFamily).filter(Boolean))].join(', ') || 'Published text styles'} · ${fileList(texts.map((t) => t.fileKey), files)}`} actionLabel={OPEN_LIBRARY} onOpen={openFile(texts[0]?.fileKey, onOpenUrl)} class="bb-uxai-library__header" />
+          <ul class="bb-uxai-library__rows">{texts.map((t) => <TextStyleItem key={t.key} style={t} />)}</ul>
+        </section>
+      )}
+      {colours.length > 0 && (
+        <section class="bb-uxai-library" aria-label="Matching colour styles">
+          <ArtifactHeader icon="colors" title={heading(colours.length, styles!.total, 'colour style')} subtitle={fileList(colours.map((c) => c.fileKey), files)} actionLabel={OPEN_LIBRARY} onOpen={openFile(colours[0]?.fileKey, onOpenUrl)} class="bb-uxai-library__header" />
+          <ul class="bb-uxai-library__rows">{colours.map((c) => <ColorStyleItem key={c.key} style={c} />)}</ul>
+        </section>
+      )}
       {variables && variables.items.length > 0 && (
         <section class="bb-uxai-library" aria-label="Matching variables">
           <ArtifactHeader icon="variables" title={heading(variables.items.length, variables.total, 'variable')} subtitle={fileList(variables.items.map((v) => v.fileKey), files)} actionLabel={OPEN_LIBRARY} onOpen={openFile(variables.items[0]?.fileKey, onOpenUrl)} class="bb-uxai-library__header" />

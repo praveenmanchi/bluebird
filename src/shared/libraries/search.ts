@@ -1,7 +1,7 @@
 // Keyword retrieval over the library index: which variables and components a
 // question is about. Deterministic and explainable (every hit says what matched),
 // so UXAI's answers can always cite where they came from.
-import type { LibraryComponent, LibraryIndex, LibraryVariable, VariableType } from './types'
+import type { LibraryComponent, LibraryIndex, LibraryStyle, LibraryVariable, VariableType } from './types'
 
 const STOPWORDS = new Set([
   'a', 'an', 'and', 'are', 'be', 'by', 'can', 'do', 'does', 'for', 'from', 'have', 'how', 'i', 'in', 'is', 'it', 'me',
@@ -35,6 +35,10 @@ const SYNONYMS: Record<string, readonly string[]> = {
 
 const COLOR_WORDS = /\b(colou?rs?|hex|fill|palette|swatch)\b/
 const NUMBER_WORDS = /\b(spacing|space|padding|gap|radius|corner|size|width|height|number)\b/
+const TYPE_WORDS = /\b(type|typography|font|fonts|text style|text styles|heading|headings|title|body|caption|label|line height|weight|typeface)\b/
+
+/** Whether a question is about typography (text styles) rather than colour or components. */
+export const isTypeQuestion = (query: string): boolean => TYPE_WORDS.test(query.toLowerCase())
 
 /** Lower-case terms with stopwords and type-only words removed, each expanded by its synonyms. */
 export function queryTerms(query: string): (readonly string[])[] {
@@ -91,4 +95,16 @@ export function searchComponents(index: Pick<LibraryIndex, 'components'>, query:
   const terms = queryTerms(query)
   if (!terms.length) return { items: index.components.slice(0, limit), total: index.components.length }
   return rank(index.components.map((item) => ({ item, score: score(item.name, `${item.location} ${item.description}`, terms), depth: -item.variants })), limit)
+}
+
+/** Styles a question is about, best first. Type words pick text styles, colour words colour styles; otherwise both. */
+export function searchStyles(index: Pick<LibraryIndex, 'styles'>, query: string, limit = 8): Hits<LibraryStyle> {
+  const all = index.styles ?? []
+  const q = query.toLowerCase()
+  const pool = isTypeQuestion(q) && !COLOR_WORDS.test(q) ? all.filter((s) => s.kind === 'text') : COLOR_WORDS.test(q) && !isTypeQuestion(q) ? all.filter((s) => s.kind === 'color') : all
+  const terms = queryTerms(query)
+  if (!terms.length) return { items: pool.slice(0, limit), total: pool.length }
+  const ranked = rank(pool.map((item) => ({ item, score: score(item.name, item.description, terms), depth: segments(item.name).length })), limit)
+  // "Which text styles do we have?" names no style: the whole ramp is the answer. A colour question that matches nothing stays unmatched.
+  return ranked.total || !isTypeQuestion(q) ? ranked : { items: pool.slice(0, limit), total: pool.length }
 }
