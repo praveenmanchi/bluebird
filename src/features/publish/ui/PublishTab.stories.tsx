@@ -3,13 +3,16 @@ import type { ComponentChildren } from 'preact'
 import { RpcProvider } from '@shared/ui'
 import { createRpcClient, createMockTransport } from '@shared/bridge'
 import { diffSnapshots } from '../diff'
-import { BASELINE, BASELINE_RELEASE, CURRENT, HISTORY, SAMPLE_REPO } from '../fixtures'
+import { BASELINE, BASELINE_RELEASE, CURRENT, HISTORY, NO_REPO, SAMPLE_REPO } from '../fixtures'
 import { createMockHandlers, EXTRACT_FAILED_MESSAGE, type PublishMockOptions } from '../mock'
 import type { ExtractResult, PipelineStepState, PublishResult } from '../messages'
 import {
   expanded, extractError, extractPhase, loadExtract, publishPhase, publishResult, reset, status, step, steps,
 } from '../state'
 import { PublishTab } from './Tab'
+
+/** One Teams webhook in Settings › Notifications, so "Post the changelog to Teams" is available. */
+const TEAMS = { webhooks: 1 }
 
 /** The L plugin window — the size the Figma "Publish flow v2 · 600" frames are drawn at. */
 const L = { width: '600px', height: '760px', display: 'flex', flexDirection: 'column' as const, overflow: 'auto' }
@@ -25,6 +28,7 @@ function sample(overrides: Partial<ExtractResult> = {}): ExtractResult {
     extractedAt: new Date(Date.now() - 2 * 60_000).toISOString(),
     counts: { variables: CURRENT.variables.length, components: CURRENT.components.length, modes: 5 },
     baseline: BASELINE_RELEASE,
+    baselineSource: 'file',
     changes: diffSnapshots(BASELINE, CURRENT),
     history: HISTORY,
     repo: SAMPLE_REPO,
@@ -56,7 +60,7 @@ export const Interactive: Story = { render: () => { reset(); return frame(<Publi
 
 export const ReviewExtract: Story = {
   name: '1 Review changes · Extract',
-  render: () => preloaded(() => { status.value = { repo: SAMPLE_REPO, baseline: BASELINE_RELEASE, history: HISTORY } }),
+  render: () => preloaded(() => { status.value = { repo: SAMPLE_REPO, baseline: BASELINE_RELEASE, history: HISTORY, notify: TEAMS } }),
 }
 export const ReviewChanges: Story = {
   name: '1 Review changes · Changes',
@@ -100,11 +104,11 @@ export const SavedInFile: Story = {
 
 export const NotConnected: Story = {
   name: 'Empty · Not connected',
-  render: () => preloaded(() => { status.value = { repo: { connected: false, repo: '', branch: 'main' }, baseline: BASELINE_RELEASE, history: HISTORY } }, { notConnected: true }),
+  render: () => preloaded(() => { status.value = { repo: NO_REPO, baseline: BASELINE_RELEASE, history: HISTORY, notify: TEAMS } }, { notConnected: true }),
 }
 export const FirstRelease: Story = {
   name: 'Empty · First release',
-  render: () => preloaded(() => { status.value = { repo: SAMPLE_REPO, baseline: null, history: [] } }, { scenario: 'many' }),
+  render: () => preloaded(() => { status.value = { repo: SAMPLE_REPO, baseline: null, history: [], notify: TEAMS } }, { scenario: 'many' }),
 }
 export const EmptyFile: Story = {
   name: 'Empty · Empty file',
@@ -118,7 +122,7 @@ export const NoChanges: Story = {
 export const ExtractFailed: Story = {
   name: 'Error · Extract failed',
   render: () => preloaded(() => {
-    status.value = { repo: SAMPLE_REPO, baseline: BASELINE_RELEASE, history: HISTORY }
+    status.value = { repo: SAMPLE_REPO, baseline: BASELINE_RELEASE, history: HISTORY, notify: TEAMS }
     extractPhase.value = 'failed'; extractError.value = EXTRACT_FAILED_MESSAGE
   }, { scenario: 'error' }),
 }

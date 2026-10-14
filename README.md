@@ -114,6 +114,47 @@ Attaching a Figma link needs the file's link, which Figma only gives private /
 organisation plugins (`figma.fileKey`). Shipping to a team needs a hosted proxy (and its
 domain in `manifest.json` → `allowedDomains`) or an Atlassian OAuth 2.0 (3LO) app.
 
+## Publish tab (GitHub releases)
+
+Review changes → Release notes → Final review → Publish. An extract reads the file's local
+variables and components, diffs them against the last release and publishes one commit
+(the token JSON, `releases/<version>.json`, `.bluebird/releases.json` and `CHANGELOG.md`) to
+the repository in Settings › **GitHub**: a pull request, or a fast-forward of the branch
+with an optional tag and a short watch of the GitHub Actions run.
+
+- **Source of truth.** The last release is stored with the Figma file *and* committed as
+  `.bluebird/releases.json`. With Settings › GitHub › **Enable diff comparison** on, an
+  extract reads the repository's copy and compares against whichever is newer, so a
+  duplicated file or lost plugin data recovers its baseline from GitHub. The Review step
+  says which copy it used and why.
+- **Commit contents.** Final review shows the four files with their sizes, each openable,
+  built by the same code the publish uses.
+- **Teams.** "Post the changelog to Teams" posts a MessageCard to the Power Automate /
+  Teams Incoming Webhook URLs in Settings › **Notifications** once the release lands; it
+  is disabled, with the reason, while none is set.
+- **Retries.** Dropped connections, 5xx and 429 answers are retried three times with
+  backoff before they reach the designer; a bad token or a protected branch fails at once.
+
+Settings › GitHub › **Test Connection** names the account, whether it can push, and which
+release the branch holds. The audit that shaped this is in
+[docs/research/tokens-studio-audit.md](docs/research/tokens-studio-audit.md).
+
+## MCP handoff tab
+
+Select → Check → Generate → Ship. The tab reads the **real selection** (name, path,
+variants, layer count, description) and follows it as you click around the canvas; a
+selection change mid-flow returns to Select and says so. **Check** walks the selected node
+once and scores it: detached instances and mostly-raw values fail (Generate stays locked),
+local components, absolute positioning, unstyled text, default layer names and a missing
+component description warn. **Copy prompt for Claude Code** carries the node (a Figma link
+when the plugin has `figma.fileKey`, private plugins only), the `get_design_context` call,
+your framework / styling / path options and the gaps the checks found as TODOs; **Copy MCP
+setup** gives the `claude mcp add` line for the remote (`mcp.figma.com/mcp`) or desktop
+(`127.0.0.1:3845/mcp`) Figma MCP server and the matching `mcp.json` block. The GitHub
+connection comes from Settings › **MCP + Code Sync**. Code generation and the Git push are
+still previews on sample data: the prompt is what hands the real work to the developer's
+agent.
+
 ## Layout
 
 ```

@@ -1,9 +1,9 @@
-// The tab's two round trips to the sandbox. UI components call these; they own
+// The tab's round trips to the sandbox. UI components call these; they own
 // the state transitions so the screens stay declarative.
 import type { RpcClient } from '@shared/bridge'
-import { MSG, type ExtractResult, type PublishProgress, type PublishRequest, type PublishResult, type StatusResult } from './messages'
+import { MSG, type CommitPreview, type ExtractResult, type PublishProgress, type PublishRequest, type PublishResult, type StatusResult } from './messages'
 import {
-  extractError, extractPhase, includedChanges, loadExtract, nextVersion, noteFor, options,
+  extractError, extractPhase, includedChanges, loadExtract, nextVersion, noteFor, options, preview, previewError, previewFile,
   publishError, publishPhase, publishResult, result, status, statusError, step, steps, title,
 } from './state'
 
@@ -34,6 +34,9 @@ export async function runExtract(rpc: RpcClient): Promise<void> {
   }
 }
 
+/** Teams is only asked for when Settings › Notifications holds a webhook to post to. */
+export const canPostToTeams = (): boolean => (status.value?.notify.webhooks ?? 0) > 0
+
 export function buildRequest(): PublishRequest | null {
   const extract = result.value
   if (!extract) return null
@@ -44,7 +47,22 @@ export function buildRequest(): PublishRequest | null {
     title: title.value.trim() || nextVersion.value,
     include: picked.map((c) => c.id),
     notes: picked.map((c) => ({ changeId: c.id, text: noteFor(c) })),
-    options: options.value,
+    options: { ...options.value, postToTeams: options.value.postToTeams && canPostToTeams() },
+  }
+}
+
+/** The Final review's "Commit contents": what the publish commit would carry, as it stands now. */
+export async function loadPreview(rpc: RpcClient): Promise<void> {
+  const request = buildRequest()
+  if (!request) return
+  previewError.value = null
+  try {
+    const next = await rpc.call<CommitPreview>(MSG.preview, request)
+    preview.value = next
+    if (!next.files.some((f) => f.path === previewFile.value)) previewFile.value = null
+  } catch (e) {
+    preview.value = null
+    previewError.value = message(e, 'Couldn’t build the commit preview.')
   }
 }
 

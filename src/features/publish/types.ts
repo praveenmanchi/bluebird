@@ -88,3 +88,15 @@ export interface ReleaseSummary {
   publishedAt: string
   changes: number
 }
+
+/**
+ * What a published file carries forward: the release history (newest first) and the
+ * snapshot the next diff compares against. Stored in the Figma file (document plugin
+ * data) and, like Tokens Studio keeps its remote data, committed to the repository as
+ * `.bluebird/releases.json`, so a copied file or a lost plugin-data entry can recover
+ * its baseline from GitHub.
+ */
+export interface ReleaseStore {
+  releases: readonly ReleaseSummary[]
+  baseline: Snapshot
+}

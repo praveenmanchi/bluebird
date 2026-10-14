@@ -3,18 +3,23 @@
 //
 // The last release lives WITH THE FILE (document plugin data), so every designer
 // who opens the tab diffs against the same release. Plugin data entries are capped
-// at 100 kB, so the JSON is split across numbered chunks.
+// at 100 kB, so the JSON is split across numbered chunks. Every release also commits
+// the same store to the repository (.bluebird/releases.json); with Settings › GitHub ›
+// "Enable diff comparison" on, an extract reads it back and compares against whichever
+// copy is newer — the way Tokens Studio treats the repository as the source of truth.
 import * as z from 'zod/mini'
 import type { HandlerContext, HandlerMap } from '@shared/bridge'
 import { normalizeIntegration, sectionSchemas, testMessage, type ConnectionTestResult, type IntegrationValues } from '@shared/integrations'
 import { configFromSettings, createGithubClient, isProblem, type GithubFetch } from '../github/client'
-import { publishToGithub } from '../github/release'
+import { CHANGELOG_PATH, STORE_PATH, configuredWebhooks, previewCommit, publishToGithub } from '../github/release'
 import { applyChanges, diffSnapshots } from '../diff'
 import {
   MSG, openRequestSchema, publishRequestSchema,
-  type ExtractResult, type PipelineStepState, type PublishResult, type RepoStatus, type StatusResult,
+  type BaselineSource, type CommitPreview, type ExtractResult, type PipelineStepState, type PublishRequest, type PublishResult, type RepoStatus, type StatusResult,
 } from '../messages'
-import type { Change, ReleaseSummary, Snapshot } from '../types'
+import type { Change, ReleaseStore, ReleaseSummary, Snapshot } from '../types'
+
+export type { ReleaseStore } from '../types'
 
 /** Key/value text storage on the document (figma.root plugin data in Figma). */
 export interface DocumentData {
@@ -25,8 +30,10 @@ export interface DocumentData {
 export interface PublishDeps {
   readSnapshot(): Promise<Snapshot>
   readGithub(): Promise<IntegrationValues<'github'>>
+  /** Settings › Notifications: the Teams / Power Automate webhooks "Post the changelog to Teams" uses. */
+  readNotifications(): Promise<IntegrationValues<'notifications'>>
   data: DocumentData
-  /** GitHub REST; the sandbox's fetch in Figma. */
+  /** GitHub REST (and the Teams webhooks); the sandbox's fetch in Figma. */
   fetch: GithubFetch
   sleep(ms: number): Promise<void>
   /** figma.openExternal in Figma. */
@@ -37,16 +44,10 @@ export interface PublishDeps {
 /** Settings › GitHub › Test Connection, answered here because Publish owns the GitHub connection. */
 export const GITHUB_TEST = testMessage('github')
 
-/** What the file stores: the release history (newest first) and the snapshot the next diff compares against. */
-export interface ReleaseStore {
-  releases: readonly ReleaseSummary[]
-  baseline: Snapshot
-}
-
 export const STORE_KEY = 'publish:release'
 /** Characters per chunk; 30k chars stays under 100 kB even if every char needs 3 bytes. */
 export const CHUNK_CHARS = 30_000
-const MAX_HISTORY = 20
+export const MAX_HISTORY = 20
 
 export function writeChunked(data: DocumentData, key: string, value: string): void {
   const count = Math.max(1, Math.ceil(value.length / CHUNK_CHARS))
@@ -74,9 +75,8 @@ function isSnapshot(x: unknown): x is Snapshot {
   return !!s && typeof s.takenAt === 'string' && Array.isArray(s.variables) && Array.isArray(s.components)
 }
 
-/** The stored release, or null when the file has never been published or the data does not parse. */
-export function readStore(data: DocumentData): ReleaseStore | null {
-  const raw = readChunked(data, STORE_KEY)
+/** A release store from its JSON (the file's plugin data or the repository's .bluebird/releases.json), or null when it does not parse. */
+export function parseStore(raw: string | null): ReleaseStore | null {
   if (!raw) return null
   try {
     const parsed = JSON.parse(raw) as { releases?: unknown; baseline?: unknown }
@@ -87,62 +87,124 @@ export function readStore(data: DocumentData): ReleaseStore | null {
   }
 }
 
+/** The stored release, or null when the file has never been published or the data does not parse. */
+export function readStore(data: DocumentData): ReleaseStore | null {
+  return parseStore(readChunked(data, STORE_KEY))
+}
+
+export function writeStore(data: DocumentData, store: ReleaseStore): void {
+  writeChunked(data, STORE_KEY, JSON.stringify(store))
+}
+
 const FIELD_LABELS: Record<string, string> = { repo: 'Repository', apiKey: 'Access token', baseUrl: 'Base URL', branch: 'Branch', tokenPath: 'Token path' }
 
 function repoStatus(github: IntegrationValues<'github'>): RepoStatus {
   const config = configFromSettings(github)
-  const repo = github.repo.trim(), branch = github.branch.trim() || 'main'
-  if (!isProblem(config)) return { connected: true, repo, branch }
+  const repo = github.repo.trim(), branch = github.branch.trim() || 'main', diffComparison = github.diffComparison
+  if (!isProblem(config)) return { connected: true, repo, branch, diffComparison }
   const fields = config.fields.map((f) => FIELD_LABELS[f] ?? f).join(' and ')
   const problem = config.reason === 'incomplete' ? `Add the ${fields.toLowerCase()} in Settings › GitHub` : `Fix the ${fields.toLowerCase()} in Settings › GitHub`
-  return { connected: false, repo, branch, problem }
+  return { connected: false, repo, branch, diffComparison, problem }
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
+const publishedAt = (store: ReleaseStore | null): number => Date.parse(store?.releases[0]?.publishedAt ?? '') || 0
+
+/**
+ * The baseline to diff against: the file's store, the repository's, or the newer of the two.
+ * The repository is only read when Settings › GitHub › "Enable diff comparison" is on and the
+ * connection is complete; a copy that cannot be read never blocks an extract.
+ */
+export async function resolveBaseline(
+  local: ReleaseStore | null,
+  github: IntegrationValues<'github'>,
+  readRemote: (path: string, branch: string) => Promise<string | null>,
+): Promise<{ store: ReleaseStore | null; source: BaselineSource; note?: string }> {
+  const config = configFromSettings(github)
+  if (!github.diffComparison || isProblem(config)) return { store: local, source: local ? 'file' : 'none' }
+  let remote: ReleaseStore | null = null
+  try {
+    const raw = await readRemote(STORE_PATH, config.branch)
+    if (raw === null) return { store: local, source: local ? 'file' : 'none', note: `${config.repo} has no ${STORE_PATH} on ${config.branch} yet; it is written by the first publish.` }
+    remote = parseStore(raw)
+    if (!remote) return { store: local, source: local ? 'file' : 'none', note: `${STORE_PATH} on ${config.branch} isn’t a Bluebird release store, so the release in this file was used.` }
+  } catch (e) {
+    const why = e instanceof Error ? e.message : 'it could not be read'
+    return { store: local, source: local ? 'file' : 'none', note: `Couldn’t read ${STORE_PATH} from ${config.repo}: ${why}` }
+  }
+  if (!local || publishedAt(remote) > publishedAt(local)) return { store: remote, source: 'github' }
+  if (publishedAt(remote) < publishedAt(local)) {
+    return { store: local, source: 'file', note: `${config.repo} is behind this file (${remote.releases[0]?.version ?? 'no release'} on ${config.branch}); compared with the release in this file.` }
+  }
+  return { store: local, source: 'file' }
+}
+
 export function createPublishHandlers(deps: PublishDeps): HandlerMap {
   /** The snapshot behind the last extract; a publish must name it so it never ships an unreviewed diff. */
-  let last: { id: string; snapshot: Snapshot; changes: readonly Change[] } | null = null
+  let last: { id: string; snapshot: Snapshot; changes: readonly Change[]; store: ReleaseStore | null } | null = null
+
+  const notifyStatus = async () => ({ webhooks: configuredWebhooks(await deps.readNotifications()).length })
 
   async function status(): Promise<StatusResult> {
     const store = readStore(deps.data)
-    return { repo: repoStatus(await deps.readGithub()), baseline: store?.releases[0] ?? null, history: store?.releases ?? [] }
+    const [github, notify] = await Promise.all([deps.readGithub(), notifyStatus()])
+    return { repo: repoStatus(github), baseline: store?.releases[0] ?? null, history: store?.releases ?? [], notify }
   }
 
   async function extract(): Promise<ExtractResult> {
     const [snapshot, github] = await Promise.all([deps.readSnapshot(), deps.readGithub()])
-    const store = readStore(deps.data)
+    const local = readStore(deps.data)
+    const config = configFromSettings(github)
+    const readRemote = (path: string, branch: string) => isProblem(config) ? Promise.resolve(null) : createGithubClient(config, deps.fetch, deps.sleep).readFile(path, branch)
+    const { store, source, note } = await resolveBaseline(local, github, readRemote)
+    // A newer repository copy becomes the file's baseline too, so Publish status and the next extract agree with it.
+    if (store && store !== local) writeStore(deps.data, store)
     const changes = diffSnapshots(store?.baseline ?? null, snapshot)
     const id = `x${deps.now().getTime().toString(36)}`
-    last = { id, snapshot, changes }
+    last = { id, snapshot, changes, store }
     const modes = new Set(snapshot.variables.flatMap((v) => Object.keys(v.values)))
     return {
       extractId: id,
       extractedAt: snapshot.takenAt,
       counts: { variables: snapshot.variables.length, components: snapshot.components.length, modes: modes.size },
       baseline: store?.releases[0] ?? null,
+      baselineSource: source,
+      ...(note ? { baselineNote: note } : {}),
       changes,
       history: store?.releases ?? [],
       repo: repoStatus(github),
     }
   }
 
-  async function publish(payload: unknown, ctx: HandlerContext): Promise<PublishResult> {
-    const req = publishRequestSchema.parse(payload)
+  /** What a request publishes, checked against the extract it names. */
+  function plan(req: PublishRequest) {
     if (!last || last.id !== req.extractId) throw new Error('This file changed since the last extract. Run the extract again before publishing.')
     const reviewed = last
     const include = new Set(req.include.filter((id) => reviewed.changes.some((c) => c.id === id)))
     if (include.size === 0) throw new Error('Pick at least one change to publish.')
-
-    const github = await deps.readGithub()
-    const config = configFromSettings(github)
-    const store = readStore(deps.data)
     const release: ReleaseSummary = { version: req.version, title: req.title.trim(), publishedAt: deps.now().toISOString(), changes: include.size }
-    const baseline = applyChanges(store?.baseline ?? null, reviewed.snapshot, include)
+    const baseline = applyChanges(reviewed.store?.baseline ?? null, reviewed.snapshot, include)
     const noteById = new Map(req.notes.map((n) => [n.changeId, n.text]))
     const entries = reviewed.changes.filter((c) => include.has(c.id)).map((change) => ({ change, text: noteById.get(change.id) ?? '' }))
+    const store: ReleaseStore = { releases: [release, ...(reviewed.store?.releases ?? [])].slice(0, MAX_HISTORY), baseline }
+    return { reviewed, include, release, baseline, entries, store }
+  }
+
+  async function preview(payload: unknown): Promise<CommitPreview> {
+    const req = publishRequestSchema.parse(payload)
+    const { release, baseline, entries, store } = plan(req)
+    const github = await deps.readGithub()
+    return previewCommit({ tokenPath: github.tokenPath.trim() || 'tokens.json', release, snapshot: baseline, entries, store, existingChangelog: null })
+  }
+
+  async function publish(payload: unknown, ctx: HandlerContext): Promise<PublishResult> {
+    const req = publishRequestSchema.parse(payload)
+    const { reviewed, include, release, baseline, entries, store } = plan(req)
+    const [github, notifications] = await Promise.all([deps.readGithub(), deps.readNotifications()])
+    const config = configFromSettings(github)
     const record = () => {
-      writeChunked(deps.data, STORE_KEY, JSON.stringify({ releases: [release, ...(store?.releases ?? [])].slice(0, MAX_HISTORY), baseline } satisfies ReleaseStore))
+      writeStore(deps.data, store)
       last = null // the diff it came from is now stale
     }
 
@@ -152,6 +214,7 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
       { id: 'commit', status: 'queued', detail: '', time: '—' },
       { id: 'build', status: 'queued', detail: '', time: '—' },
       { id: 'deploy', status: 'queued', detail: '', time: '—' },
+      ...(req.options.postToTeams ? [{ id: 'notify', status: 'queued', detail: '', time: '—' } satisfies PipelineStepState] : []),
     ]
 
     if (isProblem(config)) {
@@ -167,8 +230,9 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
 
     ctx.emit(MSG.progress, { steps })
     const { result, landed } = await publishToGithub({
-      client: createGithubClient(config, deps.fetch),
-      request: req, release, snapshot: baseline, entries, steps,
+      client: createGithubClient(config, deps.fetch, deps.sleep),
+      request: req, release, snapshot: baseline, entries, store, steps,
+      webhooks: configuredWebhooks(notifications),
       emit: (next) => ctx.emit(MSG.progress, { steps: next }),
       sleep: deps.sleep,
       now: deps.now,
@@ -183,14 +247,20 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
     if (!values.success) throw new Error('Those GitHub settings aren’t complete. Check the fields and try again.')
     const config = configFromSettings(normalizeIntegration(values.data, 'github'))
     if (isProblem(config)) throw new Error(`${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${config.fields.map((f) => FIELD_LABELS[f] ?? f).join(' and ').toLowerCase()} first.`)
-    const me = await createGithubClient(config, deps.fetch).whoAmI()
+    const client = createGithubClient(config, deps.fetch, deps.sleep)
+    const me = await client.whoAmI()
     if (!me.canPush) throw new Error(`Signed in as ${me.login}, but this token can’t push to ${config.repo}. Give it Contents and Pull requests write access.`)
-    return { message: `Connected as ${me.login} · can push to ${config.repo} (default branch ${me.defaultBranch}).` }
+    // Like Tokens Studio's startup sync, say what the repository already holds.
+    const [store, changelog] = await Promise.all([client.readFile(STORE_PATH).catch(() => null), client.readFile(CHANGELOG_PATH).catch(() => null)])
+    const released = parseStore(store)?.releases[0]
+    const holds = released ? ` ${config.branch} holds ${released.version}${values.data.diffComparison ? ', which extracts compare against' : ''}.` : changelog ? ` ${config.branch} has a changelog but no Bluebird release yet.` : ` ${config.branch} has no Bluebird release yet.`
+    return { message: `Connected as ${me.login} · can push to ${config.repo} (default branch ${me.defaultBranch}).${holds}` }
   }
 
   return {
     [MSG.status]: async () => status(),
     [MSG.extract]: async () => extract(),
+    [MSG.preview]: async (payload: unknown) => preview(payload),
     [MSG.publish]: async (payload: unknown, ctx: HandlerContext) => publish(payload, ctx),
     [GITHUB_TEST]: async (payload: unknown) => test(payload),
     [MSG.open]: async (payload: unknown) => {

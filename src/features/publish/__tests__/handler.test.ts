@@ -21,6 +21,7 @@ function setup(snapshot: Snapshot = CURRENT, repo = 'praveenmanchi/bridge-ds-sit
   const handlers = createPublishHandlers({
     readSnapshot: async () => current,
     readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo }),
+    readNotifications: async () => DEFAULT_INTEGRATIONS.notifications,
     data,
     fetch: async () => { throw new Error('no network in tests') },
     sleep: async () => undefined,
@@ -71,9 +72,10 @@ describe('chunked document data', () => {
 describe('publish handlers', () => {
   it('reports a first release when the file was never published', async () => {
     const t = setup()
-    expect(await t.status()).toEqual({ repo: { connected: false, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', problem: 'Add the access token in Settings › GitHub' }, baseline: null, history: [] })
+    expect(await t.status()).toEqual({ repo: { connected: false, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', diffComparison: true, problem: 'Add the access token in Settings › GitHub' }, baseline: null, history: [], notify: { webhooks: 0 } })
     const x = await t.extract()
     expect(x.baseline).toBeNull()
+    expect(x.baselineSource).toBe('none') // no token, so the repository is never asked
     expect(x.changes).toHaveLength(CURRENT.variables.length + CURRENT.components.length)
     expect(x.counts).toEqual({ variables: 8, components: 9, modes: 5 })
   })
@@ -119,7 +121,7 @@ describe('publish handlers', () => {
 
   it('reports the repository as not connected when Settings has none', async () => {
     const t = setup(CURRENT, '  ')
-    expect((await t.status()).repo).toEqual({ connected: false, repo: '', branch: 'main', problem: 'Add the repository and access token in Settings › GitHub' })
+    expect((await t.status()).repo).toEqual({ connected: false, repo: '', branch: 'main', diffComparison: true, problem: 'Add the repository and access token in Settings › GitHub' })
     const res = await t.publish(request(await t.extract()))
     expect(res.outcome).toBe('saved')
   })

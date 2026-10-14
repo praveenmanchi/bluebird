@@ -67,5 +67,7 @@ export const HISTORY: readonly ReleaseSummary[] = [
   { version: 'v2.3.2', title: 'Tooltip contrast fix (retry)', publishedAt: '2026-09-28T09:40:00.000Z', changes: 2 },
 ]
 
-export const SAMPLE_REPO = { connected: true, repo: 'praveenmanchi/bridge-ds-site', branch: 'main' } as const
+export const SAMPLE_REPO = { connected: true, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', diffComparison: true } as const
+/** Settings › GitHub with no repository: the release is only recorded in the file. */
+export const NO_REPO = { connected: false, repo: '', branch: 'main', diffComparison: true } as const
 export const SAMPLE_SITE = 'ds.bridge.design'

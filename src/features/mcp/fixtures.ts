@@ -1,28 +1,23 @@
 // Sample data copied from the Figma "MCP flow v2 · 600" screens (happy path
 // 40000496:6690, empty states 40000497:7749, error states 40000497:8630), so the
-// default render reads like the design. Everything here is fixture data: no MCP
-// server, Jira or GitHub is contacted yet.
-import type {
-  CheckItemStatus, ConnectionRowStatus, IssueTypeKind, MetaBadgeTone, Priority, ReadinessMeterTone,
-} from '@shared/ui'
+// default render reads like the design. In Figma the selection, the readiness
+// checks and the GitHub connection are real (sandbox/); the scenarios here feed
+// the mock, the stories and the Generate / Ship preview, which still run on
+// fixtures. Everything the tab hands to a developer — the prompt and the MCP
+// setup — is built from the real selection.
+import type { ConnectionRowStatus, IssueTypeKind, MetaBadgeTone, Priority, ReadinessMeterTone } from '@shared/ui'
+import type { CheckStats, GithubStatus, HandoffCheck, SelectionInfo } from './messages'
 
 export type HandoffScenarioId = 'ready' | 'not-ready' | 'no-issue'
 
 export interface HandoffConnection {
-  id: 'figma' | 'github'
+  id: 'figma'
   name: string
   detail: string
   actionLabel: string
   status: ConnectionRowStatus
   /** The alternative the action switches to (e.g. the local Figma MCP server). */
-  alternate?: { detail: string; actionLabel: string }
-}
-
-export interface HandoffSelection {
-  /** Figma node id of the selected frame ("Open in Figma" focuses it). */
-  nodeId: string
-  frame: string
-  path: string
+  alternate: { detail: string; actionLabel: string }
 }
 
 export interface HandoffIssue {
@@ -35,14 +30,6 @@ export interface HandoffIssue {
   points: string
   assignee: string
   assigneeName: string
-}
-
-export interface HandoffCheck {
-  id: string
-  status: CheckItemStatus
-  title: string
-  detail: string
-  actionLabel?: string
 }
 
 export interface GeneratedFile {
@@ -60,10 +47,11 @@ export type IncludeOption = 'codeConnect' | 'story' | 'test'
 
 export interface HandoffScenario {
   id: HandoffScenarioId
-  selection: HandoffSelection
+  selection: SelectionInfo
   issue: HandoffIssue | null
   readiness: { tone: ReadinessMeterTone; value: number }
   checks: readonly HandoffCheck[]
+  stats: CheckStats
   files: readonly GeneratedFile[]
   summary: string
   branch: string
@@ -72,13 +60,20 @@ export interface HandoffScenario {
 
 export const STEPS = [{ label: 'Select' }, { label: 'Check' }, { label: 'Generate' }, { label: 'Ship' }] as const
 
+/** The Figma MCP server endpoints Claude Code and Cursor connect to. */
+export const MCP_REMOTE_URL = 'https://mcp.figma.com/mcp'
+export const MCP_LOCAL_URL = 'http://127.0.0.1:3845/mcp'
+
 export const CONNECTIONS: readonly HandoffConnection[] = [
   {
     id: 'figma', name: 'Figma MCP server', detail: 'Remote · mcp.figma.com/mcp', actionLabel: 'Use local', status: 'good',
     alternate: { detail: 'Local · 127.0.0.1:3845/mcp', actionLabel: 'Use remote' },
   },
-  { id: 'github', name: 'GitHub', detail: 'praveenmanchi/bluebird · base main', actionLabel: 'Change', status: 'good' },
 ]
+
+/** Settings › MCP + Code Sync as the fixtures assume it. */
+export const SAMPLE_GITHUB: GithubStatus = { connected: true, repo: 'praveenmanchi/bluebird', branch: 'main' }
+export const NO_GITHUB: GithubStatus = { connected: false, repo: '', branch: 'main', problem: 'Add the repository and personal access token in Settings › MCP + Code Sync' }
 
 export const FRAMEWORKS = ['Preact + TypeScript', 'React + TypeScript', 'Web components'] as const
 export const STYLINGS = ['CSS variables (--bb-*)', 'CSS modules', 'Tailwind'] as const
@@ -157,24 +152,37 @@ export const BB_142: HandoffIssue = {
   status: 'IN PROGRESS', statusTone: 'accent', priority: 'high', points: '5', assignee: 'PM', assigneeName: 'Praveen Manchi',
 }
 
-const TICKET_ROW: HandoffSelection = { nodeId: '40000267:8004', frame: 'Ticket Row', path: 'Plugin UI › Components › Jira · 3 variants' }
+/** Figma "Ticket Row" component set: what mcp:selection answers in the mock. */
+export const TICKET_ROW: SelectionInfo = {
+  nodeId: '40000267:8004', frame: 'Ticket Row', path: 'Plugin UI › Components › Jira · 3 variants', type: 'COMPONENT_SET', variants: 3, layers: 42,
+  description: 'One issue in the Jira tab’s ticket list: type, key, status, priority, points, assignee and summary.',
+}
+
+export const FILE_NAME = 'Bluebird · Plugin UI'
 
 const READY_CHECKS: readonly HandoffCheck[] = [
   { id: 'components', status: 'pass', title: 'Components', detail: '14 of 14 instances come from the library' },
-  { id: 'code-connect', status: 'warning', title: 'Code Connect', detail: '2 components have no code mapping: Issue Type, Priority Icon', actionLabel: 'Map' },
-  { id: 'variables', status: 'warning', title: 'Variables', detail: '98% bound to Brand UI · 1 gap (6px) is off the spacing scale', actionLabel: 'Fix' },
+  { id: 'variables', status: 'warning', title: 'Variables', detail: '98% bound to variables · 1 unbound gap (6px)', actionLabel: 'Fix' },
   { id: 'auto-layout', status: 'pass', title: 'Auto layout', detail: 'Every frame uses auto layout' },
-  { id: 'jira', status: 'pass', title: 'Jira link', detail: 'BB-142 · In progress · assigned to you' },
+  { id: 'text', status: 'pass', title: 'Typography', detail: '7 text layers use text styles or typography variables' },
+  { id: 'naming', status: 'warning', title: 'Layer names', detail: '1 layer keeps Figma’s default name: Frame 412', actionLabel: 'Rename' },
+  { id: 'description', status: 'pass', title: 'Description', detail: 'The component description becomes the generated doc comment' },
 ]
+
+const READY_STATS: CheckStats = {
+  layers: 42, instances: 14, libraryInstances: 14, detached: 0, frames: 9, autoLayout: 9,
+  boundPaints: 31, rawPaints: 0, boundNumbers: 18, rawNumbers: 1, texts: 7, styledTexts: 7, defaultNames: 1,
+}
 
 const READY: HandoffScenario = {
   id: 'ready',
   selection: TICKET_ROW,
   issue: BB_142,
-  readiness: { tone: 'success', value: 92 },
+  readiness: { tone: 'success', value: 84 },
   checks: READY_CHECKS,
+  stats: READY_STATS,
   files: files('TSX · generated from Ticket Row'),
-  summary: `Reuses 5 existing components · 21 tokens as ${JIRA_VARS} · 0 hardcoded values · 3 files`,
+  summary: `Reuses 14 library components · 49 tokens as ${JIRA_VARS} · 1 hardcoded value · 3 files`,
   branch: 'feat/BB-142-ticket-row',
   commit: 'feat(jira): add Ticket Row (BB-142)',
 }
@@ -186,14 +194,16 @@ export const SCENARIOS: Record<HandoffScenarioId, HandoffScenario> = {
   'not-ready': {
     ...READY,
     id: 'not-ready',
-    readiness: { tone: 'danger', value: 58 },
+    readiness: { tone: 'danger', value: 42 },
     checks: [
       { id: 'components', status: 'fail', title: 'Components', detail: '2 detached instances: Button, Dropdown', actionLabel: 'Reattach' },
-      { id: 'code-connect', status: 'warning', title: 'Code Connect', detail: '2 components have no code mapping: Issue Type, Priority Icon', actionLabel: 'Map' },
-      { id: 'variables', status: 'fail', title: 'Variables', detail: '14 raw colours and 3 off-scale gaps are not bound to Brand UI', actionLabel: 'Fix all' },
+      { id: 'variables', status: 'fail', title: 'Variables', detail: 'Only 65% bound to variables · 14 raw colours (#0C8CE9, #FFFFFF, #242424) · 3 unbound gaps (6px, 10px, 14px)', actionLabel: 'Fix all' },
       { id: 'auto-layout', status: 'pass', title: 'Auto layout', detail: 'Every frame uses auto layout' },
-      { id: 'jira', status: 'pass', title: 'Jira link', detail: 'BB-142 · In progress · assigned to you' },
+      { id: 'text', status: 'pass', title: 'Typography', detail: '7 text layers use text styles or typography variables' },
+      { id: 'naming', status: 'pass', title: 'Layer names', detail: 'Every layer is named — names become class and prop names' },
+      { id: 'description', status: 'pass', title: 'Description', detail: 'The component description becomes the generated doc comment' },
     ],
+    stats: { ...READY_STATS, instances: 12, libraryInstances: 12, detached: 2, boundPaints: 17, rawPaints: 14, boundNumbers: 15, rawNumbers: 3, defaultNames: 0 },
     files: files('TSX · preview only'),
     summary: 'Preview contains 17 hardcoded values. They would ship as --bb-derived-* tokens until they are bound in Figma.',
   },
@@ -212,17 +222,16 @@ export interface ShipStepFixture { id: ShipStepId; title: string; detail: string
 export interface PullRequest { number: number; url: string; additions: number }
 
 export const PULL_REQUEST: PullRequest = { number: 63, url: 'https://github.com/praveenmanchi/bluebird/pull/63', additions: 118 }
-export const REPO = 'praveenmanchi/bluebird'
 export const REVIEWER = '@anita'
 /** Settings › Integrations placeholder site; the real one comes from the Jira integration later. */
 export const JIRA_SITE = 'https://yourteam.atlassian.net'
 export const issueUrl = (key: string): string => `${JIRA_SITE}/browse/${encodeURIComponent(key)}`
 
 /** One row per step that will run for this push, with Figma's sample timings. */
-export function shipSteps(o: { branch: string; commit: string; files: number; issueKey: string | null; openPr: boolean; linkPr: boolean; moveIssue: boolean }): readonly ShipStepFixture[] {
+export function shipSteps(o: { repo: string; branch: string; commit: string; files: number; issueKey: string | null; openPr: boolean; linkPr: boolean; moveIssue: boolean }): readonly ShipStepFixture[] {
   const steps: ShipStepFixture[] = [
     { id: 'commit', title: `Commit ${o.files} ${o.files === 1 ? 'file' : 'files'}`, detail: `${o.branch} · ${o.commit}`, time: '1s' },
-    { id: 'push', title: 'Push branch', detail: `${REPO} · origin/${o.branch}`, time: '2s' },
+    { id: 'push', title: 'Push branch', detail: `${o.repo} · origin/${o.branch}`, time: '2s' },
   ]
   if (o.openPr) steps.push({ id: 'openPr', title: 'Open pull request', detail: `base main · reviewer ${REVIEWER}`, time: '4s' })
   if (o.issueKey && o.linkPr && o.openPr) steps.push({ id: 'linkPr', title: `Link PR to ${o.issueKey}`, detail: 'Jira comment + development panel', time: '1s' })
@@ -238,18 +247,36 @@ export const GENERATION_LOG = `→ get_design_context  node 40000267:8004  (Tick
   request id 7f3c-91a2 · retry is safe`
 
 /** Figma "Git output" on "Push rejected". */
-export function rejectedLog(branch: string): string {
+export function rejectedLog(repo: string, branch: string): string {
   return `$ git push origin ${branch}
  ! [rejected]  ${branch} -> ${branch} (fetch first)
-error: failed to push some refs to github.com/${REPO}`
+error: failed to push some refs to github.com/${repo}`
 }
 
-/** A failing check blocks the push; warnings do not (Readiness Meter caption). */
-export function isBlocked(scenario: HandoffScenario): boolean {
-  return scenario.checks.some((c) => c.status === 'fail')
+/** The Figma URL of a node, when the plugin knows the file key (private plugins only). */
+export function nodeUrl(fileKey: string | null, nodeId: string): string | null {
+  return fileKey ? `https://www.figma.com/design/${encodeURIComponent(fileKey)}?node-id=${encodeURIComponent(nodeId.replace(':', '-'))}` : null
 }
 
-export interface PromptOptions {
+/** How Claude Code registers the Figma MCP server the Connections card points at. */
+export function mcpSetup(local: boolean): string {
+  const url = local ? MCP_LOCAL_URL : MCP_REMOTE_URL
+  return [
+    local
+      ? '# Figma desktop MCP server: Figma › Preferences › Enable local MCP server, then:'
+      : '# Figma remote MCP server (signs in with your Figma account on first use):',
+    `claude mcp add --transport http figma ${url}`,
+    '',
+    '# Cursor / other MCP clients: add to mcp.json',
+    JSON.stringify({ mcpServers: { figma: { type: 'http', url } } }, null, 2),
+  ].join('\n')
+}
+
+export interface PromptInput {
+  selection: SelectionInfo
+  fileName: string
+  fileKey: string | null
+  checks: readonly HandoffCheck[]
   framework: string
   styling: string
   path: string
@@ -259,13 +286,21 @@ export interface PromptOptions {
   commit: string
 }
 
-/** The prompt "Copy prompt for Claude Code" puts on the clipboard. */
-export function buildPrompt(s: HandoffScenario, o: PromptOptions): string {
+/** The prompt "Copy prompt for Claude Code" puts on the clipboard: the real selection, where to read it, and what the checks found. */
+export function buildPrompt(o: PromptInput): string {
+  const s = o.selection
+  const url = nodeUrl(o.fileKey, s.nodeId)
   const include = (Object.keys(o.include) as IncludeOption[]).filter((k) => o.include[k]).map((k) => INCLUDE_LABELS[k])
+  const gaps = o.checks.filter((c) => c.status !== 'pass').map((c) => `- ${c.title}: ${c.detail}`)
+  const kind = s.type === 'COMPONENT_SET' ? 'component set' : s.type === 'COMPONENT' ? 'component' : s.type === 'INSTANCE' ? 'instance' : 'frame'
   return [
-    `Implement the Figma frame "${s.selection.frame}" (${s.selection.path}, node ${s.selection.nodeId}) using the Figma MCP server.`,
+    `Implement the Figma ${kind} "${s.frame}" (${s.path}) using the Figma MCP server.`,
+    url ? `Read it with get_design_context on ${url} (node ${s.nodeId}).` : `Read it with get_design_context: node ${s.nodeId} in the file "${o.fileName}" (select it in Figma for the desktop server).`,
+    s.description ? `Description: ${s.description}` : '',
     `Framework: ${o.framework}. Styling: ${o.styling}. Write to ${o.path}.`,
     include.length ? `Include: ${include.join(', ')}.` : '',
+    'Reuse the existing design-system components and tokens; never hardcode a value that has a variable.',
+    gaps.length ? `Known gaps in the design (keep them visible as TODOs, do not paper over them):\n${gaps.join('\n')}` : 'The readiness checks passed: every value is bound and every instance comes from the library.',
     o.issue ? `Jira: ${o.issue.key} — ${o.issue.title}.` : 'No Jira issue is linked.',
     `Branch: ${o.branch}. Commit: ${o.commit}.`,
   ].filter(Boolean).join('\n')

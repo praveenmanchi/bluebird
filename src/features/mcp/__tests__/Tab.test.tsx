@@ -4,24 +4,35 @@ import { RpcProvider } from '@shared/ui'
 import { createMockTransport, createRpcClient, type HandlerMap } from '@shared/bridge'
 import { Tab } from '../ui/Tab'
 import { SHIP_STEP_MS, nextBranchName } from '../ui/McpHandoff'
-import { createMockHandlers } from '../mock'
+import { createMockHandlers, type McpMockOptions } from '../mock'
 import { MSG } from '../messages'
-import { PULL_REQUEST } from '../fixtures'
-import { generation, githubConnected, mcpConnected, rejectNextPush, reset, selectScenario, steps } from '../state'
+import { PULL_REQUEST, TICKET_ROW } from '../fixtures'
+import { generation, mcpConnected, rejectNextPush, reset, selectScenario, steps } from '../state'
 
-function renderTab(handlers: HandlerMap = createMockHandlers()) {
+const TICKET_PATH = 'Plugin UI › Components › Jira · 3 variants'
+
+/** Renders the tab and waits for the mock selection to arrive (the tab reads the canvas on mount). */
+async function renderTab(options: McpMockOptions | HandlerMap = {}, awaitSelection = true) {
+  const handlers = typeof (options as HandlerMap)[MSG.selection] === 'function' ? options as HandlerMap : createMockHandlers(options as McpMockOptions)
   const client = createRpcClient(createMockTransport(handlers, 0))
-  return render(<RpcProvider client={client}><Tab /></RpcProvider>)
+  const result = render(<RpcProvider client={client}><Tab /></RpcProvider>)
+  if (awaitSelection) await screen.findByText(TICKET_PATH)
+  return result
 }
 
 const button = (name: string | RegExp) => screen.getByRole('button', { name })
 const currentStep = () => document.querySelector('[aria-current="step"]')?.textContent ?? null
 const status = () => screen.getByRole('status')
 const next = (label: string) => fireEvent.click(button(label))
-/** Walk the happy path from Select to the Ship form. */
-function toShip() {
+/** Select → Check (waits for the checks) → Generate. */
+async function toGenerate() {
   next('Next: Check')
+  await screen.findByRole('list', { name: 'Handoff checks' })
   next('Next: Generate')
+}
+/** Walk the happy path from Select to the Ship form. */
+async function toShip() {
+  await toGenerate()
   next('Next: Ship')
 }
 /** Run the fake push to the end (or to the rejection). */
@@ -37,34 +48,36 @@ afterEach(() => {
 })
 
 describe('mcp Tab — happy path (Figma "MCP flow v2 · 600")', () => {
-  it('opens on Select with the selection, linked issue and connections', () => {
-    renderTab()
+  it('opens on Select with the selection read from Figma, the linked issue and the connections', async () => {
+    await renderTab()
     expect(currentStep()).toContain('Select')
-    expect(screen.getByText('Plugin UI › Components › Jira · 3 variants')).toBeInTheDocument()
+    expect(screen.getByText(TICKET_PATH)).toBeInTheDocument()
+    expect(screen.getByText(/component set · 42 layers · One issue in the Jira tab/)).toBeInTheDocument()
     expect(screen.getByText('Jira tab: ticket list and detail view in Brand UI')).toBeInTheDocument()
     expect(screen.getByText('Figma MCP server')).toBeInTheDocument()
+    expect(screen.getByText('praveenmanchi/bluebird · base main')).toBeInTheDocument()
     expect(status()).toHaveTextContent('Ticket Row · 3 variants · linked to BB-142')
   })
 
-  it('steps through Check and Generate with Back / Next', () => {
-    renderTab()
+  it('runs the checks on entering Check, then steps to Generate with Back / Next', async () => {
+    await renderTab()
     next('Next: Check')
     expect(currentStep()).toContain('Check')
-    expect(screen.getByText('92%')).toBeInTheDocument()
+    expect(await screen.findByText('84%')).toBeInTheDocument()
+    expect(screen.getByText('98% bound to variables · 1 unbound gap (6px)')).toBeInTheDocument()
+    expect(screen.getByText(/42 layers · 14 instances \(14 from the library\) · 49 of 50 values bound/)).toBeInTheDocument()
     expect(status()).toHaveTextContent('Ready to generate · 2 warnings won’t block the push')
     next('Back')
     expect(currentStep()).toContain('Select')
-    next('Next: Check')
-    next('Next: Generate')
+    await toGenerate()
     expect(currentStep()).toContain('Generate')
     expect(screen.getByText('TSX · generated from Ticket Row')).toBeInTheDocument()
-    expect(status()).toHaveTextContent('3 files · reuses 5 components · 0 hardcoded values')
+    expect(status()).toHaveTextContent('3 files · reuses 14 components · 1 hardcoded value')
   })
 
-  it('switches the generated file and drops the story when "Storybook story" is off', () => {
-    renderTab()
-    next('Next: Check')
-    next('Next: Generate')
+  it('switches the generated file and drops the story when "Storybook story" is off', async () => {
+    await renderTab()
+    await toGenerate()
     fireEvent.click(screen.getByRole('tab', { name: 'TicketRow.css' }))
     expect(screen.getByText('CSS · generated from Ticket Row')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('tab', { name: 'TicketRow.stories.tsx' }))
@@ -74,38 +87,38 @@ describe('mcp Tab — happy path (Figma "MCP flow v2 · 600")', () => {
     expect(status()).toHaveTextContent('2 files')
   })
 
-  it('picks a framework from the dropdown', () => {
-    renderTab()
-    next('Next: Check')
-    next('Next: Generate')
+  it('picks a framework from the dropdown', async () => {
+    await renderTab()
+    await toGenerate()
     fireEvent.click(button('Framework'))
     fireEvent.click(screen.getByText('React + TypeScript'))
     expect(button('Framework')).toHaveTextContent('React + TypeScript')
     expect(screen.queryByRole('listbox', { name: 'Framework' })).toBeNull()
   })
 
-  it('shows the branch, commit and files to push on Ship', () => {
-    renderTab()
-    toShip()
+  it('shows the branch, commit and files to push on Ship', async () => {
+    await renderTab()
+    await toShip()
     expect(currentStep()).toContain('Ship')
     expect(screen.getByLabelText('Branch')).toHaveValue('feat/BB-142-ticket-row')
     expect(screen.getByLabelText('Commit message')).toHaveValue('feat(jira): add Ticket Row (BB-142)')
     expect(screen.getByRole('checkbox', { name: 'Move BB-142 to In review' })).toBeChecked()
     expect(screen.getByText('src/shared/ui/TicketRow/TicketRow.tsx')).toBeInTheDocument()
+    expect(status()).toHaveTextContent('3 files → praveenmanchi/bluebird · base main')
     expect(button('Push and open PR')).toBeEnabled()
   })
 
-  it('needs a branch and commit message to push', () => {
-    renderTab()
-    toShip()
+  it('needs a branch and commit message to push', async () => {
+    await renderTab()
+    await toShip()
     fireEvent.input(screen.getByLabelText('Branch'), { target: { value: ' ' } })
     expect(button('Push and open PR')).toBeDisabled()
   })
 
-  it('pushes step by step, then shows the PR link and what else changed', () => {
+  it('pushes step by step, then shows the PR link and what else changed', async () => {
+    await renderTab()
+    await toShip()
     vi.useFakeTimers()
-    renderTab()
-    toShip()
     next('Push and open PR')
     expect(screen.getByText('Keep the plugin open')).toBeInTheDocument()
     expect(button('Opening PR…')).toBeDisabled()
@@ -117,12 +130,13 @@ describe('mcp Tab — happy path (Figma "MCP flow v2 · 600")', () => {
     expect(status()).toHaveTextContent('Shipped in 9 s')
     next('Done')
     expect(currentStep()).toContain('Select')
+    expect(screen.getByText(TICKET_PATH)).toBeInTheDocument() // the live selection survives "Done"
   })
 
-  it('skips the Jira rows when those options are off', () => {
+  it('skips the Jira rows when those options are off', async () => {
+    await renderTab()
+    await toShip()
     vi.useFakeTimers()
-    renderTab()
-    toShip()
     fireEvent.click(screen.getByRole('checkbox', { name: 'Move BB-142 to In review' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Add PR link to BB-142' }))
     next('Push and open PR')
@@ -132,10 +146,10 @@ describe('mcp Tab — happy path (Figma "MCP flow v2 · 600")', () => {
   })
 
   it('opens the pull request through the sandbox', async () => {
-    vi.useFakeTimers()
     const open = vi.fn(async () => undefined)
-    renderTab({ ...createMockHandlers(), [MSG.open]: open })
-    toShip()
+    await renderTab({ ...createMockHandlers(), [MSG.open]: open })
+    await toShip()
+    vi.useFakeTimers()
     next('Push and open PR')
     runPush()
     vi.useRealTimers()
@@ -146,64 +160,96 @@ describe('mcp Tab — happy path (Figma "MCP flow v2 · 600")', () => {
 
   it('asks Figma to reveal the selected frame', async () => {
     const focus = vi.fn(async () => undefined)
-    renderTab({ ...createMockHandlers(), [MSG.focus]: focus })
+    await renderTab({ ...createMockHandlers(), [MSG.focus]: focus })
     fireEvent.click(button('Open in Figma'))
     await waitFor(() => expect(focus).toHaveBeenCalled())
-    expect((focus.mock.calls[0] as unknown[])[0]).toEqual({ nodeId: '40000267:8004' })
+    expect((focus.mock.calls[0] as unknown[])[0]).toEqual({ nodeId: TICKET_ROW.nodeId })
   })
 
-  it('switches the Figma MCP server between remote and local', () => {
-    renderTab()
+  it('switches the Figma MCP server between remote and local, and copies the matching setup', async () => {
+    const writeText = vi.fn(async () => undefined)
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
+    await renderTab()
+    next('Copy MCP setup')
+    await waitFor(() => expect(status()).toHaveTextContent('registers the remote Figma MCP server'))
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('claude mcp add --transport http figma https://mcp.figma.com/mcp'))
     fireEvent.click(button('Use local'))
     expect(screen.getByText('Local · 127.0.0.1:3845/mcp')).toBeInTheDocument()
+    next('Copy MCP setup')
+    await waitFor(() => expect(status()).toHaveTextContent('registers the desktop Figma MCP server'))
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining('http://127.0.0.1:3845/mcp'))
     fireEvent.click(button('Use remote'))
     expect(screen.getByText('Remote · mcp.figma.com/mcp')).toBeInTheDocument()
   })
 
-  it('copies a Claude Code prompt that names the frame, options and branch', async () => {
+  it('copies a Claude Code prompt that names the frame, the node, the gaps the checks found, options and branch', async () => {
     const writeText = vi.fn(async () => undefined)
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
-    renderTab()
-    toShip()
+    await renderTab({ fileKey: 'AbC123' })
+    await toShip()
     next('Copy prompt for Claude Code')
     await waitFor(() => expect(status()).toHaveTextContent('Prompt copied'))
-    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Ticket Row'))
-    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Preact + TypeScript'))
-    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Branch: feat/BB-142-ticket-row'))
+    const prompt = String((writeText.mock.calls[0] as unknown[])[0])
+    expect(prompt).toContain('Implement the Figma component set "Ticket Row" (Plugin UI › Components › Jira · 3 variants)')
+    expect(prompt).toContain('get_design_context on https://www.figma.com/design/AbC123?node-id=40000267-8004 (node 40000267:8004)')
+    expect(prompt).toContain('Known gaps in the design')
+    expect(prompt).toContain('- Variables: 98% bound to variables · 1 unbound gap (6px)')
+    expect(prompt).toContain('Framework: Preact + TypeScript.')
+    expect(prompt).toContain('Branch: feat/BB-142-ticket-row')
+  })
+
+  it('names the file instead of a link when the plugin has no file key', async () => {
+    const writeText = vi.fn(async () => undefined)
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
+    await renderTab()
+    await toGenerate()
+    next('Copy prompt for Claude Code')
+    await waitFor(() => expect(status()).toHaveTextContent('Prompt copied'))
+    expect(String((writeText.mock.calls[0] as unknown[])[0])).toContain('node 40000267:8004 in the file "Bluebird · Plugin UI"')
   })
 
   it('says so when the clipboard is unavailable', async () => {
     vi.stubGlobal('navigator', { ...navigator, clipboard: undefined })
-    renderTab()
-    toShip()
+    await renderTab()
+    await toShip()
     next('Copy prompt for Claude Code')
     await waitFor(() => expect(status()).toHaveTextContent('Copying is blocked'))
   })
 })
 
 describe('mcp Tab — empty states', () => {
-  it('asks for the MCP server first, and connects to the remote one', () => {
+  it('asks for the MCP server first, and connects to the remote one', async () => {
     mcpConnected.value = false
-    renderTab()
-    expect(screen.getByText('Connect the Figma MCP server')).toBeInTheDocument()
+    await renderTab({}, false)
+    expect(await screen.findByText('Connect the Figma MCP server')).toBeInTheDocument()
     expect(button('Next: Check')).toBeDisabled()
     next('Use remote server')
+    expect(await screen.findByText(TICKET_PATH)).toBeInTheDocument()
     expect(button('Next: Check')).toBeEnabled()
   })
 
-  it('shows "Nothing selected" after Change selection and restores it', () => {
-    renderTab()
+  it('shows "Nothing selected" when the canvas has no selection, and reads it again on request', async () => {
+    const handlers = createMockHandlers({ nothingSelected: true })
+    await renderTab(handlers, false)
+    expect(await screen.findByText('Select a frame or component')).toBeInTheDocument()
+    expect(button('Next: Check')).toBeDisabled()
+    expect(status()).toHaveTextContent('Nothing selected on the canvas.')
+    handlers[MSG.selection] = createMockHandlers()[MSG.selection]! // the designer selects Ticket Row
+    next('Use current selection')
+    expect(await screen.findByText(TICKET_PATH)).toBeInTheDocument()
+    expect(button('Next: Check')).toBeEnabled()
+  })
+
+  it('shows "Nothing selected" after Change selection too', async () => {
+    await renderTab()
     next('Change selection')
     expect(screen.getByText('Select a frame or component')).toBeInTheDocument()
     expect(button('Next: Check')).toBeDisabled()
-    next('Use current selection')
-    expect(screen.getByText('Plugin UI › Components › Jira · 3 variants')).toBeInTheDocument()
-    expect(button('Next: Check')).toBeEnabled()
   })
 
-  it('needs a Jira issue before Check', () => {
+  it('needs a Jira issue before Check', async () => {
     selectScenario('no-issue')
-    renderTab()
+    await renderTab({ scenario: 'no-issue' })
     expect(screen.getByText('Link a Jira issue')).toBeInTheDocument()
     expect(button('Next: Check')).toBeDisabled()
     next('Link issue')
@@ -211,10 +257,10 @@ describe('mcp Tab — empty states', () => {
     expect(button('Next: Check')).toBeEnabled()
   })
 
-  it('locks the push without GitHub but still offers the prompt', () => {
-    githubConnected.value = false
-    renderTab()
-    toShip()
+  it('locks the push without GitHub (Settings › MCP + Code Sync) but still offers the prompt', async () => {
+    await renderTab({ githubConnected: false })
+    expect(await screen.findByText('Add the repository and personal access token in Settings › MCP + Code Sync')).toBeInTheDocument()
+    await toShip()
     expect(screen.getByText('Connect GitHub to push')).toBeInTheDocument()
     expect(button('Push and open PR')).toBeDisabled()
     expect(button('Copy prompt for Claude Code')).toBeEnabled()
@@ -223,20 +269,33 @@ describe('mcp Tab — empty states', () => {
 })
 
 describe('mcp Tab — error states', () => {
-  it('locks Generate while checks fail (Figma "Error · Not ready")', () => {
-    selectScenario('not-ready')
-    renderTab()
+  it('locks Generate while checks fail (Figma "Error · Not ready")', async () => {
+    await renderTab({ scenario: 'not-ready' })
     next('Next: Check')
-    expect(screen.getByText('58%')).toBeInTheDocument()
-    expect(screen.getByText('Push locked · 2 checks are failing')).toBeInTheDocument()
+    expect(await screen.findByText('42%')).toBeInTheDocument()
+    expect(screen.getByText('Generate locked · 2 checks are failing')).toBeInTheDocument()
     expect(status()).toHaveTextContent('2 checks must pass before you can generate')
     expect(button('Next: Generate')).toBeDisabled()
   })
 
-  it('offers Retry when generation fails', () => {
-    renderTab()
+  it('offers Try again when the checks cannot run', async () => {
+    const handlers = createMockHandlers()
+    const good = handlers[MSG.check]!
+    handlers[MSG.check] = async () => { throw new Error('That frame no longer exists. Select it again.') }
+    await renderTab(handlers)
     next('Next: Check')
-    next('Next: Generate')
+    expect(await screen.findByText('The checks could not run')).toBeInTheDocument()
+    expect(status()).toHaveTextContent('That frame no longer exists. Select it again.')
+    expect(button('Next: Generate')).toBeDisabled()
+    handlers[MSG.check] = good
+    next('Try again')
+    expect(await screen.findByText('84%')).toBeInTheDocument()
+    expect(button('Next: Generate')).toBeEnabled()
+  })
+
+  it('offers Retry when generation fails', async () => {
+    await renderTab()
+    await toGenerate()
     act(() => { generation.value = 'failed' })
     expect(screen.getByText('Code generation failed')).toBeInTheDocument()
     expect(button('Next: Ship')).toBeDisabled()
@@ -245,11 +304,11 @@ describe('mcp Tab — error states', () => {
     expect(screen.getByText('TSX · generated from Ticket Row')).toBeInTheDocument()
   })
 
-  it('shows the rejected push and ships to a new branch', () => {
-    vi.useFakeTimers()
+  it('shows the rejected push and ships to a new branch', async () => {
     rejectNextPush.value = true
-    renderTab()
-    toShip()
+    await renderTab()
+    await toShip()
+    vi.useFakeTimers()
     next('Push and open PR')
     runPush()
     expect(screen.getByText('Push rejected')).toBeInTheDocument()
@@ -261,11 +320,11 @@ describe('mcp Tab — error states', () => {
     expect(screen.getByText(/feat\/BB-142-ticket-row-2 → main/)).toBeInTheDocument()
   })
 
-  it('keeps rejecting a retry on the same branch', () => {
-    vi.useFakeTimers()
+  it('keeps rejecting a retry on the same branch', async () => {
     rejectNextPush.value = true
-    renderTab()
-    toShip()
+    await renderTab()
+    await toShip()
+    vi.useFakeTimers()
     next('Push and open PR')
     runPush()
     next('Retry push')

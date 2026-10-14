@@ -1,6 +1,6 @@
 import { Notice, PublishStep, SectionTitle, type PublishStepStatus } from '@shared/ui'
-import { REPO, type ShipStepFixture } from '../fixtures'
-import { linkedIssue, scenario, shipProgress, steps } from '../state'
+import type { ShipStepFixture } from '../fixtures'
+import { github, linkedIssue, selection, shipProgress, steps } from '../state'
 import { ActionBar } from './ActionBar'
 import { Card, IssueRow } from './cards'
 import './ShipPushing.css'
@@ -42,7 +42,7 @@ export function ShipPushing() {
           </Card>
         )}
       </div>
-      <ActionBar summary={`Shipping ${scenario.value.selection.frame} to ${REPO}…`} primary={{ label: 'Opening PR…', disabled: true, loading: true }} />
+      <ActionBar summary={`Shipping ${selection.value?.frame ?? 'the selection'} to ${github.value.repo}…`} primary={{ label: 'Opening PR…', disabled: true, loading: true }} />
     </>
   )
 }

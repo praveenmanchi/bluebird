@@ -11,6 +11,14 @@ export const PIPELINE_STEP_TITLE: Record<PipelineStepId, string> = {
   commit: 'Commit to repository',
   build: 'Build the site',
   deploy: 'Deploy',
+  notify: 'Notify Teams',
+}
+
+/** "812 B", "4.2 kB", "1.3 MB". */
+export function fileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 /** "just now", "4 min ago", "2 h ago", or the date. */
