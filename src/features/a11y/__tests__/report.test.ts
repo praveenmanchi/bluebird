@@ -31,6 +31,19 @@ describe('buildReport', () => {
     expect(report.tool).toBe('Bluebird')
   })
 
+  it('names the version the scan ran against and lists only its criteria as covered', () => {
+    expect(report.coverage.automated).toHaveLength(5)
+    const old = buildReport({ ...result, standard: 'wcag20', nonText: [], targets: [] }, meta)
+    expect(old.standard).toBe('WCAG 2.0')
+    expect(old.coverage.automated).toEqual(['1.4.3 Contrast (Minimum)', '1.4.6 Contrast (Enhanced)'])
+    expect(old.coverage.notCovered).toMatch(/70% of WCAG 2\.0/)
+    expect(reportToMarkdown(old)).toContain('- **Standard:** WCAG 2.0')
+    // Under 2.1 a 16px target misses the only bar there is, 2.5.5 at 44px.
+    const mid = buildReport({ ...result, standard: 'wcag21', targets: [{ ...result.targets[0]!, required: 44, standard: 'wcag21' }] }, meta)
+    expect(mid.findings.find((f) => f.criterion.startsWith('2.5'))).toMatchObject({ criterion: '2.5.5', level: 'AAA', required: '44 × 44 px' })
+    expect(mid.coverage.automated).not.toContain('2.5.8 Target Size (Minimum)')
+  })
+
   it('counts each criterion family separately and in total', () => {
     expect(report.summary).toMatchObject({ findings: 3, contrast: 1, nonText: 1, targetSize: 1 })
   })

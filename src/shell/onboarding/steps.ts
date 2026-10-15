@@ -25,7 +25,7 @@ const TAB_COPY: Readonly<Record<string, TabCopy>> = {
   a11y: {
     scene: 'a11y',
     title: 'Catch contrast issues before they ship',
-    body: 'Scan a selection, frame or page against WCAG 2.2. Every finding shows its ratio in all five brands and suggests the token that fixes it.',
+    body: 'Scan a selection, frame or page against WCAG 2.2, 2.1 or 2.0. Every finding shows its ratio in all five brands and suggests the token that fixes it.',
   },
   tokens: {
     scene: 'tokens',

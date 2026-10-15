@@ -1,6 +1,7 @@
 // WCAG 2.5.8 Target Size (Minimum, AA) and 2.5.5 Target Size (Enhanced, AAA), and the
 // platform minimums designers ship against: Apple's 44×44 pt and Material's 48×48 dp.
 // Pure rules: no Figma, no DOM. One Figma unit is read as one px / pt / dp (a 1× design).
+import { DEFAULT_STANDARD, includes, type StandardId } from './standards'
 
 /** 2.5.8, AA: 24×24 CSS pixels. */
 export const TARGET_MIN_AA = 24
@@ -31,12 +32,37 @@ export const PLATFORM_TARGETS: Readonly<Record<Platform, PlatformTargets>> = {
 
 export const PLATFORMS = Object.keys(PLATFORM_TARGETS) as Platform[]
 
+/** 2.5.8 Target Size (Minimum) arrived in WCAG 2.2; 2.5.5 (Enhanced) in 2.1. 2.0 has no target-size criterion. */
+export const TARGET_MINIMUM_SINCE: StandardId = 'wcag22'
+export const TARGET_ENHANCED_SINCE: StandardId = 'wcag21'
+
+/** Whether a standard checks targets at all on a platform: 2.0 only does so where the platform has its own bar. */
+export function checksTargets(platform: Platform, standard: StandardId = DEFAULT_STANDARD): boolean {
+  return platform !== 'web' || includes(standard, TARGET_ENHANCED_SINCE)
+}
+
+/**
+ * The bars a target is measured against. On the web under WCAG 2.1 there is only 2.5.5's
+ * 44 px, so anything under it fails outright; 2.2 adds the 24 px minimum beneath it.
+ * iOS and Android bring their own single bar whatever the standard.
+ */
+export function targetThresholds(platform: Platform = 'web', standard: StandardId = DEFAULT_STANDARD): { min: number; enhanced: number } {
+  const { min, enhanced } = PLATFORM_TARGETS[platform]
+  return platform === 'web' && !includes(standard, TARGET_MINIMUM_SINCE) ? { min: enhanced, enhanced } : { min, enhanced }
+}
+
+/** 2.5.8's spacing exception only exists where 2.5.8 does. */
+export function spacingExceptionApplies(platform: Platform, standard: StandardId = DEFAULT_STANDARD): boolean {
+  return PLATFORM_TARGETS[platform].spacingException && includes(standard, TARGET_MINIMUM_SINCE)
+}
+
 /**
  * The WCAG criterion a target finding fails: under 24 it fails the AA minimum (2.5.8) on any
  * platform; at 24 or more it only misses a larger bar (2.5.5 on the web, the platform minimum
- * on iOS / Android).
+ * on iOS / Android). Before 2.2 there is no minimum, so everything files under 2.5.5.
  */
-export function targetCriterion(size: { width: number; height: number }): '2.5.8' | '2.5.5' {
+export function targetCriterion(size: { width: number; height: number; standard?: StandardId }): '2.5.8' | '2.5.5' {
+  if (!includes(size.standard, TARGET_MINIMUM_SINCE)) return '2.5.5'
   return Math.min(size.width, size.height) < TARGET_MIN_AA ? '2.5.8' : '2.5.5'
 }
 
@@ -66,8 +92,8 @@ export type TargetLevel = 'fail' | 'aa' | 'aaa'
  * Rate a target against both thresholds. The smaller side decides: a 200×12
  * row is as hard to hit as a 12×12 one.
  */
-export function rateTarget(width: number, height: number, platform: Platform = 'web'): TargetLevel {
-  const { min, enhanced } = PLATFORM_TARGETS[platform]
+export function rateTarget(width: number, height: number, platform: Platform = 'web', standard: StandardId = DEFAULT_STANDARD): TargetLevel {
+  const { min, enhanced } = targetThresholds(platform, standard)
   const smallest = Math.min(width, height)
   if (smallest >= enhanced) return 'aaa'
   if (smallest >= min) return 'aa'
@@ -75,8 +101,8 @@ export function rateTarget(width: number, height: number, platform: Platform = '
 }
 
 /** The threshold a given rating is measured against, for the card's "Required" row. */
-export function requiredTarget(level: TargetLevel, platform: Platform = 'web'): number {
-  const { min, enhanced } = PLATFORM_TARGETS[platform]
+export function requiredTarget(level: TargetLevel, platform: Platform = 'web', standard: StandardId = DEFAULT_STANDARD): number {
+  const { min, enhanced } = targetThresholds(platform, standard)
   return level === 'fail' ? min : enhanced
 }
 

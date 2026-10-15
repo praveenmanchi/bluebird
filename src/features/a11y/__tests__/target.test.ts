@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TARGET_MIN_AA, TARGET_MIN_AAA, hasSpacingException, isControlName, rateTarget, requiredTarget } from '../target'
+import { TARGET_MIN_AA, TARGET_MIN_AAA, checksTargets, hasSpacingException, isControlName, rateTarget, requiredTarget, spacingExceptionApplies, targetCriterion, targetThresholds } from '../target'
 
 describe('target size (2.5.8 / 2.5.5)', () => {
   it('uses 24px for AA and 44px for AAA', () => {
@@ -21,6 +21,28 @@ describe('target size (2.5.8 / 2.5.5)', () => {
   it('reports the threshold the finding is measured against', () => {
     expect(requiredTarget('fail')).toBe(24)
     expect(requiredTarget('aa')).toBe(44)
+  })
+
+  it('has only the 44px bar under WCAG 2.1, and none at all on the web under 2.0', () => {
+    expect(targetThresholds('web', 'wcag21')).toEqual({ min: 44, enhanced: 44 })
+    expect(rateTarget(16, 16, 'web', 'wcag21')).toBe('fail')
+    expect(rateTarget(32, 32, 'web', 'wcag21')).toBe('fail')
+    expect(rateTarget(44, 44, 'web', 'wcag21')).toBe('aaa')
+    expect(requiredTarget('fail', 'web', 'wcag21')).toBe(44)
+    expect(checksTargets('web', 'wcag20')).toBe(false)
+    expect(checksTargets('web', 'wcag21')).toBe(true)
+    // iOS keeps Apple's bar whatever the version.
+    expect(checksTargets('ios', 'wcag20')).toBe(true)
+    expect(targetThresholds('ios', 'wcag20')).toEqual({ min: 44, enhanced: 44 })
+  })
+
+  it('files a finding under 2.5.8 only where 2.5.8 exists', () => {
+    expect(targetCriterion({ width: 16, height: 16 })).toBe('2.5.8')
+    expect(targetCriterion({ width: 16, height: 16, standard: 'wcag22' })).toBe('2.5.8')
+    expect(targetCriterion({ width: 16, height: 16, standard: 'wcag21' })).toBe('2.5.5')
+    expect(spacingExceptionApplies('web', 'wcag22')).toBe(true)
+    expect(spacingExceptionApplies('web', 'wcag21')).toBe(false)
+    expect(spacingExceptionApplies('ios', 'wcag22')).toBe(false)
   })
 
   it('recognises control names as a fallback signal', () => {

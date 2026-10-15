@@ -46,6 +46,38 @@ describe('a11y Tab', () => {
     expect(screen.getAllByText('44 × 44 pt (Apple HIG)')).toHaveLength(2)
   })
 
+  it('checks against the chosen WCAG version: 2.0 drops non-text and target-size rules', async () => {
+    renderTab(nothingSelected())
+    await screen.findByRole('heading', { name: 'Ready to check Main screens' })
+    fireEvent.click(screen.getByRole('button', { name: 'Standard' }))
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['WCAG 2.2', 'WCAG 2.1', 'WCAG 2.0'])
+    fireEvent.click(screen.getByRole('option', { name: 'WCAG 2.0' }))
+    expect(screen.getByRole('button', { name: 'Standard' })).toHaveTextContent('WCAG 2.0')
+    // Only the two contrast rules exist in 2.0.
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2)
+    expect(screen.queryByText(/Non-text contrast/)).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Scan' }))
+    await waitFor(() => expect(screen.getByRole('region', { name: 'Findings' })).toBeInTheDocument(), { timeout: 3000 })
+    // The fixture's border and two small targets are not findings under 2.0: 3 contrast only.
+    expect(screen.getByRole('tab', { name: 'All 3' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Non-text 0' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Target size 0' })).toBeInTheDocument()
+  })
+
+  it('under WCAG 2.1 a small target misses the 44px bar of 2.5.5, the only target rule there is', async () => {
+    renderTab(nothingSelected())
+    await screen.findByRole('heading', { name: 'Ready to check Main screens' })
+    fireEvent.click(screen.getByRole('button', { name: 'Standard' }))
+    fireEvent.click(screen.getByRole('option', { name: 'WCAG 2.1' }))
+    expect(screen.getAllByRole('checkbox')).toHaveLength(4)
+    expect(screen.queryByText(/2\.5\.8 Target size/)).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Scan' }))
+    await waitFor(() => expect(screen.getByRole('tab', { name: 'Target size 2' })).toBeInTheDocument(), { timeout: 3000 })
+    expect(screen.getAllByRole('heading', { name: 'Target Size (Enhanced)' })).toHaveLength(2)
+    expect(screen.getAllByText('44 × 44 px')).toHaveLength(2)
+    expect(screen.getAllByRole('link', { name: /Understanding SC 2\.5\.5/ })[0]).toHaveAttribute('href', 'https://www.w3.org/WAI/WCAG21/Understanding/target-size.html')
+  })
+
   it('tells you the whole page will be read when nothing is selected', async () => {
     renderTab(nothingSelected())
     expect(await screen.findByText(/Nothing is selected, so the scan reads the whole page/)).toBeInTheDocument()

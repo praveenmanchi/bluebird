@@ -8,14 +8,15 @@ import { brand } from '@shared/config'
 import { isBoldStyle, rateContrast, requiredRatio, roundRatio } from '../contrast'
 import { exemptionFor } from '../exempt'
 import { isDecorativeName, passesNonText } from '../nontext'
-import { isControlName, hasSpacingException, rateTarget, requiredTarget, PLATFORM_TARGETS, type Box, type Platform } from '../target'
+import { isControlName, hasSpacingException, rateTarget, requiredTarget, checksTargets, spacingExceptionApplies, type Box, type Platform } from '../target'
 import { nearestPassingToken, verdictsAcrossModes } from '../tokens'
 import { loadBrandPalette, modeColors, type BrandPalette } from './variables'
 import { buildInventory, type InventoryNode } from '../inventory'
 import { summarizeScope } from '../scope-summary'
-import { RULES_URL } from '../rules'
+import { ruleIn } from '../rules'
+import { DEFAULT_STANDARD, quickrefUrl, type StandardId } from '../standards'
 import {
-  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema,
+  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema, openRulesRequestSchema,
   type ContrastIssue, type ScanTarget, type ScanResult, type ScanProgress, type UnmeasurableText,
   type NonTextIssue, type TargetSizeIssue,
 } from '../messages'
@@ -28,7 +29,7 @@ type Finding =
   | { kind: 'issue'; entry: Omit<ContrastIssue, 'nodeIds' | 'occurrences'> }
 
 async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> {
-  const { scope, dedupeInstances = true, platform = 'web' } = scanRequestSchema.parse(payload)
+  const { scope, dedupeInstances = true, platform = 'web', standard = DEFAULT_STANDARD } = scanRequestSchema.parse(payload)
   const started = Date.now()
   const roots = scopeRoots(scope)
   const textNodes: TextNode[] = []
@@ -101,8 +102,9 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
   }
 
   const issues = [...grouped.values()].sort((a, b) => a.ratio - b.ratio)
-  const nonText = collectNonText(strokeNodes)
-  const targets = collectTargets(targetNodes, platform)
+  // A standard only gets the criteria it has: 1.4.11 arrived in 2.1, target size in 2.1 / 2.2.
+  const nonText = ruleIn('1.4.11', standard) ? collectNonText(strokeNodes) : []
+  const targets = checksTargets(platform, standard) ? collectTargets(targetNodes, platform, standard) : []
 
   // Inventory: which components and frames hold a finding.
   const flagged = new Set([...issues, ...nonText, ...targets].flatMap((f) => f.nodeIds))
@@ -118,6 +120,7 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
   return {
     scope,
     meta: { file: figma.root.name, page: figma.currentPage.name, brand: brand.label },
+    standard,
     scanned,
     textNodes: textNodes.length,
     issues,
@@ -198,7 +201,7 @@ function collectNonText(nodes: readonly SceneNode[]): NonTextIssue[] {
 }
 
 /** WCAG 2.5.8 / 2.5.5, or the platform's minimum on iOS / Android: a target's smaller side decides. */
-function collectTargets(candidates: readonly { node: SceneNode; evidence: 'reaction' | 'control' }[], platform: Platform): TargetSizeIssue[] {
+function collectTargets(candidates: readonly { node: SceneNode; evidence: 'reaction' | 'control' }[], platform: Platform, standard: StandardId): TargetSizeIssue[] {
   // The icon inside a button is not a second target; only the outermost
   // interactive node counts, or a 16px glyph in a 44px button gets flagged.
   const ids = new Set(candidates.map((c) => c.node.id))
@@ -217,10 +220,10 @@ function collectTargets(candidates: readonly { node: SceneNode; evidence: 'react
     const box = boxes.get(node.id)!
     const width = Math.round(box.width * 100) / 100
     const height = Math.round(box.height * 100) / 100
-    const level = rateTarget(width, height, platform)
+    const level = rateTarget(width, height, platform, standard)
     if (level === 'aaa') continue
-    // 2.5.8 forgives an undersized target with clear space around it (web only: Apple and Material ask for the hit area itself).
-    if (level === 'fail' && PLATFORM_TARGETS[platform].spacingException) {
+    // 2.5.8 forgives an undersized target with clear space around it (web only, 2.2 only: Apple and Material ask for the hit area itself, and 2.1 has no minimum to forgive).
+    if (level === 'fail' && spacingExceptionApplies(platform, standard)) {
       const others = [...boxes].filter(([id]) => id !== node.id).map(([, b]) => b)
       if (hasSpacingException(box, others)) continue
     }
@@ -233,7 +236,7 @@ function collectTargets(candidates: readonly { node: SceneNode; evidence: 'react
     } else {
       grouped.set(key, {
         nodeId: node.id, nodeIds: [node.id], occurrences: 1, name: node.name,
-        width, height, required: requiredTarget(level, platform), evidence, platform,
+        width, height, required: requiredTarget(level, platform, standard), evidence, platform, standard,
       })
     }
   }
@@ -486,7 +489,7 @@ async function target(payload: unknown): Promise<ScanTarget | null> {
 export const handlers: HandlerMap = {
   [MSG.scan]: scan,
   [MSG.target]: target,
-  [MSG.openRules]: () => { figma.openExternal(RULES_URL) },
+  [MSG.openRules]: (payload: unknown) => { figma.openExternal(quickrefUrl(openRulesRequestSchema.parse(payload ?? {}).standard)) },
   [MSG.focus]: focus,
   [MSG.selectAll]: selectAll,
   [MSG.applyFix]: applyFix,

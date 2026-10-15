@@ -2,6 +2,7 @@ import { WcagCard, useRpc } from '@shared/ui'
 import { annotationForTarget } from '../annotate'
 import { PLATFORM_TARGETS, requiredLabel, targetCriterion, unitOf } from '../target'
 import { MSG, type TargetSizeIssue } from '../messages'
+import { understandingUrl } from '../standards'
 import { useAnnotate } from './useAnnotate'
 
 const EVIDENCE: Record<TargetSizeIssue['evidence'], string> = {
@@ -48,12 +49,8 @@ export function TargetCard({ issue }: { issue: TargetSizeIssue }) {
       themes={['gestures']}
       // The scan measures the hit area but not the gap to the nearest target, so no neighbour is drawn.
       target={{ width: issue.width, height: issue.height, minimum: issue.required }}
-      link={{
-        label: `Understanding SC ${code} ↗`,
-        href: enhanced
-          ? 'https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html'
-          : 'https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html',
-      }}
+      // The finding carries the version it was measured against (2.1 files everything under 2.5.5).
+      link={{ label: `Understanding SC ${code} ↗`, href: understandingUrl(issue.standard, enhanced ? 'target-size-enhanced' : 'target-size-minimum') }}
       checks={['design']}
       annotation={annotation}
       onAnnotate={onAnnotate}

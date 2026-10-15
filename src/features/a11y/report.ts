@@ -6,6 +6,8 @@
 // what was skipped and why, so the report cannot be mistaken for full coverage.
 import { NON_TEXT_MIN } from './nontext'
 import type { ScanResult } from './messages'
+import { RULES, ruleIn } from './rules'
+import { standardLabel } from './standards'
 import { requiredLabel, targetCriterion, unitOf } from './target'
 
 export interface ReportMeta {
@@ -33,7 +35,8 @@ export interface ReportFinding {
 
 export interface Report {
   tool: 'Bluebird'
-  standard: 'WCAG 2.2'
+  /** "WCAG 2.2", "WCAG 2.1" or "WCAG 2.0": the version the scan checked against. */
+  standard: string
   meta: ReportMeta
   /** Exactly what this scan can and cannot see. */
   coverage: {
@@ -60,21 +63,26 @@ export interface Report {
   }
 }
 
-const AUTOMATED = [
-  '1.4.3 Contrast (Minimum)',
-  '1.4.6 Contrast (Enhanced)',
-  '1.4.11 Non-text Contrast',
-  '2.5.8 Target Size (Minimum)',
-  '2.5.5 Target Size (Enhanced)',
-] as const
+const CRITERION_TITLES = {
+  '1.4.3': 'Contrast (Minimum)',
+  '1.4.6': 'Contrast (Enhanced)',
+  '1.4.11': 'Non-text Contrast',
+  '2.5.8': 'Target Size (Minimum)',
+  '2.5.5': 'Target Size (Enhanced)',
+} as const
 
-const NOT_COVERED =
-  'Automated design-time checks only. Roughly 70% of WCAG 2.2 cannot be decided from a '
+/** The criteria the scan can decide, limited to those the chosen version has. */
+const automatedFor = (standard: ScanResult['standard']): readonly string[] =>
+  RULES.filter((r) => ruleIn(r.id, standard)).map((r) => `${r.id} ${CRITERION_TITLES[r.id]}`)
+
+const notCoveredFor = (label: string): string =>
+  `Automated design-time checks only. Roughly 70% of ${label} cannot be decided from a `
   + 'Figma tree — focus order, keyboard operation, alt text quality, reading order, timing and '
   + 'motion all need human review. A clean report is not a conformance claim.'
 
 export function buildReport(result: ScanResult, meta: ReportMeta): Report {
   const findings: ReportFinding[] = []
+  const label = standardLabel(result.standard)
 
   for (const issue of result.issues) {
     const large = issue.fontSize >= 24 || (issue.fontSize >= 18.66 && issue.isBold)
@@ -122,9 +130,9 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
 
   return {
     tool: 'Bluebird',
-    standard: 'WCAG 2.2',
+    standard: label,
     meta,
-    coverage: { automated: AUTOMATED, notCovered: NOT_COVERED },
+    coverage: { automated: automatedFor(result.standard), notCovered: notCoveredFor(label) },
     summary: {
       findings: findings.length,
       contrast: result.issues.length,

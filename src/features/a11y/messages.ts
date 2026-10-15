@@ -1,6 +1,7 @@
 // This tab's wire contract. Every type is prefixed with the tab id so it can
 // never collide with another tab's messages.
 import * as z from 'zod/mini'
+import { STANDARD_IDS, type StandardId } from './standards'
 
 export const MSG = {
   scan: 'a11y:scan',
@@ -11,7 +12,7 @@ export const MSG = {
   progress: 'a11y:progress',
   /** What a scan of the scope would read (Ready to scan's heading and counts). Read-only. */
   target: 'a11y:target',
-  /** Opens the WCAG 2.2 Quick Reference ("Check rules"); the URL is fixed in the sandbox. */
+  /** Opens the W3C Quick Reference for the chosen standard ("Check rules"); the sandbox owns the URL. */
   openRules: 'a11y:open-rules',
 } as const
 
@@ -41,10 +42,17 @@ export const targetRequestSchema = z.object({ scope: scanScopeSchema })
 
 export const platformSchema = z.enum(['web', 'ios', 'android'])
 
+export const standardSchema = z.enum(STANDARD_IDS)
+
+/** "Check rules": which version's Quick Reference to open. Default WCAG 2.2. */
+export const openRulesRequestSchema = z.object({ standard: z.optional(standardSchema) })
+
 export const scanRequestSchema = z.object({
   scope: scanScopeSchema,
   /** Which target-size minimum applies (WCAG on the web, Apple HIG on iOS, Material on Android). Default web. */
   platform: z.optional(platformSchema),
+  /** Which WCAG version's criteria to check (2.0 has no non-text or target-size rules; 2.1 no 24 px minimum). Default 2.2. */
+  standard: z.optional(standardSchema),
   /** Scan the first instance of each component and skip the rest. Default true. */
   dedupeInstances: z.optional(z.boolean()),
 })
@@ -128,6 +136,8 @@ export interface TargetSizeIssue {
   required: number
   /** The platform whose minimum applies; absent means web (scans before platforms existed). */
   platform?: 'web' | 'ios' | 'android'
+  /** The WCAG version it was measured against; absent means 2.2 (scans before standards existed). */
+  standard?: StandardId
   /** 'reaction' when Figma told us it is interactive; 'control' when the name did. */
   evidence: 'reaction' | 'control'
 }
@@ -178,6 +188,8 @@ export interface ScanInventory {
 export interface ScanResult {
   scope: ScanScope
   meta: ScanMeta
+  /** The WCAG version the scan checked against; absent means 2.2 (scans before standards existed). */
+  standard?: StandardId
   scanned: number
   textNodes: number
   /** Grouped findings: one entry per distinct colour pair at a given size. */

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
 import { Button, ScanSummary, SectionTitle, SegmentTab, useRpc } from '@shared/ui'
 import { MSG, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
-import { scope, scanning, visited, result, error, reset, level, platform, rules, target, type LevelFilter } from '../state'
-import { contrastRule, rulesFor, targetRule } from '../rules'
+import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, type LevelFilter } from '../state'
+import { contrastRule, rulesFor, targetRule, type RuleId } from '../rules'
+import { STANDARDS, standardLabel, type StandardId } from '../standards'
 import { PLATFORMS, PLATFORM_TARGETS, targetCriterion, type Platform } from '../target'
 import { ReadyPanel } from './ReadyPanel'
 import { FilterSelect } from './FilterSelect'
@@ -19,7 +20,8 @@ type FindingKind = 'all' | 'contrast' | 'nontext' | 'target'
 /** Web checks WCAG's 24 / 44 px; iOS and Android check their own 44 pt / 48 dp tap targets. */
 const PLATFORM_OPTIONS: readonly { value: Platform; label: string }[] = PLATFORMS.map((p) => ({ value: p, label: PLATFORM_TARGETS[p].label }))
 
-const STANDARDS = [{ value: 'wcag22', label: 'WCAG 2.2' }] as const
+/** WCAG 2.2, 2.1 and 2.0: each version checks only the criteria it has (2.0 has no non-text or target-size rules; 2.1 no 24 px minimum). */
+const STANDARD_OPTIONS: readonly { value: StandardId; label: string }[] = STANDARDS.map((s) => ({ value: s.id, label: s.label }))
 
 const LEVELS = [
   { value: 'all', label: 'Level: All' },
@@ -68,7 +70,7 @@ export function Tab() {
     error.value = null
     visited.value = 0
     try {
-      result.value = await rpc.call<ScanResult>(MSG.scan, { scope: scope.value, platform: platform.value }, 120_000)
+      result.value = await rpc.call<ScanResult>(MSG.scan, { scope: scope.value, platform: platform.value, standard: standard.value }, 120_000)
     } catch (e: unknown) {
       error.value = e instanceof Error ? e.message : 'Scan failed'
     } finally {
@@ -77,12 +79,17 @@ export function Tab() {
   }
 
   const r = result.value
+  // Only the rules the chosen version has are listed, and only a listed, ticked rule shows its findings.
+  const ruleList = rulesFor(platform.value, standard.value)
   const on = rules.value
-  const issues = r?.issues.filter((i) => on[contrastRule(i)] && (level.value === 'all' || criterionFor(i).rating === level.value)) ?? []
+  const listed = (id: RuleId) => on[id] && ruleList.some((rule) => rule.id === id)
+  const issues = r?.issues.filter((i) => listed(contrastRule(i)) && (level.value === 'all' || criterionFor(i).rating === level.value)) ?? []
   // 1.4.11 is AA only; a target finding is AA (2.5.8) or AAA (2.5.5) depending on the bar it missed.
-  const nonText = level.value === 'AAA' || !on['1.4.11'] ? [] : (r?.nonText ?? [])
-  const targets = (r?.targets ?? []).filter((t) => on[targetRule(t)] && (level.value === 'all' || (targetCriterion(t) === '2.5.5' ? 'AAA' : 'AA') === level.value))
+  const nonText = level.value === 'AAA' || !listed('1.4.11') ? [] : (r?.nonText ?? [])
+  const targets = (r?.targets ?? []).filter((t) => listed(targetRule(t)) && (level.value === 'all' || (targetCriterion(t) === '2.5.5' ? 'AAA' : 'AA') === level.value))
   const total = issues.length + nonText.length + targets.length
+  /** The version the results were measured against (the dropdown may have moved since). */
+  const scannedStandard = r?.standard
 
   /** The artifact an auditor reads: same data, two formats. */
   function exportReport(format: 'JSON' | 'Markdown') {
@@ -102,7 +109,7 @@ export function Tab() {
       <div class="bb-a11y__toolbar" role="toolbar" aria-label="Scan options">
         <div class="bb-a11y__filters">
           <FilterSelect label="Platform" value={platform.value} options={PLATFORM_OPTIONS} onChange={(v) => { platform.value = v }} disabled={scanning.value} />
-          <FilterSelect label="Standard" value="wcag22" options={STANDARDS} onChange={() => undefined} disabled={scanning.value} />
+          <FilterSelect label="Standard" value={standard.value} options={STANDARD_OPTIONS} onChange={(v) => { standard.value = v }} disabled={scanning.value} />
           <FilterSelect label="Level" value={level.value} options={LEVELS} onChange={(v) => { level.value = v }} />
         </div>
         <Button onClick={runScan} loading={scanning.value}>
@@ -117,9 +124,9 @@ export function Tab() {
           <ReadyPanel
             target={target.value}
             rules={rules.value}
-            ruleList={rulesFor(platform.value)}
+            ruleList={ruleList}
             onToggleRule={(id, enabled) => { rules.value = { ...rules.value, [id]: enabled } }}
-            onCheckRules={() => { void rpc.call(MSG.openRules).catch(() => undefined) }}
+            onCheckRules={() => { void rpc.call(MSG.openRules, { standard: standard.value }).catch(() => undefined) }}
           />
         )}
         {(r || scanning.value) && <ScanSummary {...(r ? summaryProps(r) : emptySummaryProps(scope.value))} />}
@@ -165,11 +172,11 @@ export function Tab() {
             </div>
             {total === 0 && (
               <p class="bb-a11y__empty">
-                Nothing to report in {r.scope === 'page' ? 'this page' : 'the selection'} against WCAG 2.2 · 1.4.3, 1.4.6, 1.4.11, 2.5.8.
+                Nothing to report in {r.scope === 'page' ? 'this page' : 'the selection'} against {standardLabel(scannedStandard)} · {ruleList.map((rule) => rule.id).join(', ')}.
               </p>
             )}
-            {(kind === 'all' || kind === 'contrast') && issues.map((issue) => <IssueCard key={issue.nodeId} issue={issue} />)}
-            {(kind === 'all' || kind === 'nontext') && nonText.map((issue) => <NonTextCard key={issue.nodeId} issue={issue} />)}
+            {(kind === 'all' || kind === 'contrast') && issues.map((issue) => <IssueCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
+            {(kind === 'all' || kind === 'nontext') && nonText.map((issue) => <NonTextCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
             {(kind === 'all' || kind === 'target') && targets.map((issue) => <TargetCard key={issue.nodeId} issue={issue} />)}
           </section>
         )}

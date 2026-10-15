@@ -26,11 +26,13 @@ Each brand has its own access code. Enter yours on the login screen and accept t
 
 | Brand | Access code |
 |---|---|
-| Bridge | _ask your design-system lead_ |
-| Ikea | _ask your design-system lead_ |
-| Richemont | _ask your design-system lead_ |
-| Disney | _ask your design-system lead_ |
-| Fiskars | _ask your design-system lead_ |
+| Bridge | `BRIDGE-2026` |
+| Ikea | _verify `IKEA-2026` against the config hash, then fill in_ |
+| Richemont | _verify `RICHEMONT-2026` against the config hash, then fill in_ |
+| Disney | _verify `DISNEY-2026` against the config hash, then fill in_ |
+| Fiskars | _verify `FISKARS-2026` against the config hash, then fill in_ |
+
+Bridge is confirmed: `npm run access-code -- BRIDGE-2026` prints the hash stored for that brand. The other four follow the same `<BRAND>-2026` pattern but are not yet confirmed here. Run the script for each and check the printed hash against `accessCodeHash` in `plugin.config.json` before handing them out.
 
 The **Sign in with SSO** buttons are visible but not connected yet. They show a message pointing you back to the access code. That is expected.
 

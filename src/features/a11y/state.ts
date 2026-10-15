@@ -2,6 +2,7 @@
 import { signal } from '@preact/signals'
 import type { ScanResult, ScanScope, ScanTarget } from './messages'
 import { ALL_RULES, type RuleSet } from './rules'
+import { DEFAULT_STANDARD, type StandardId } from './standards'
 import type { Platform } from './target'
 
 export type LevelFilter = 'all' | 'AA' | 'AAA'
@@ -10,6 +11,8 @@ export type LevelFilter = 'all' | 'AA' | 'AAA'
 export const scope = signal<ScanScope>('selection')
 /** Whose target-size minimum applies: WCAG (web), Apple HIG (iOS) or Material (Android). */
 export const platform = signal<Platform>('web')
+/** Which WCAG version the scan checks against (2.0 / 2.1 / 2.2). */
+export const standard = signal<StandardId>(DEFAULT_STANDARD)
 export const level = signal<LevelFilter>('all')
 export const scanning = signal(false)
 export const visited = signal(0)
@@ -28,6 +31,7 @@ export const annotations = signal<Record<string, 'queued' | 'placed'>>({})
 export function reset(): void {
   scope.value = 'selection'
   platform.value = 'web'
+  standard.value = DEFAULT_STANDARD
   level.value = 'all'
   scanning.value = false
   visited.value = 0

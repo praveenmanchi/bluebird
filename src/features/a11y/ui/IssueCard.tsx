@@ -1,6 +1,7 @@
 import { WcagCard, useRpc } from '@shared/ui'
 import { annotationForContrast } from '../annotate'
 import { MSG, type ContrastIssue } from '../messages'
+import { understandingUrl, type StandardId } from '../standards'
 import { useAnnotate } from './useAnnotate'
 
 /** WCAG criterion a contrast issue is reported against. `fail` breaks 1.4.3 (AA); everything else below AAA breaks 1.4.6. */
@@ -15,8 +16,8 @@ const DESCRIPTION: Record<string, string> = {
   '1.4.6': 'Text and images of text have a contrast ratio of at least 7:1 (4.5:1 for large text).',
 }
 
-/** One scan finding rendered as the Figma "WCAG Card" organism. */
-export function IssueCard({ issue }: { issue: ContrastIssue }) {
+/** One scan finding rendered as the Figma "WCAG Card" organism. `standard` picks which version's Understanding page the link opens. */
+export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?: StandardId }) {
   const rpc = useRpc()
   const c = criterionFor(issue)
   const { annotation, onAnnotate } = useAnnotate(
@@ -70,7 +71,7 @@ export function IssueCard({ issue }: { issue: ContrastIssue }) {
         ? `Rebind the text to ${issue.fix.tokenName}, the nearest token in the ${issue.fix.mode} palette that reaches ${issue.fix.ratio.toFixed(2)}:1.`
         : `Darken the text or lighten the fill until the ratio reaches ${c.needs}:1, or increase the type size so the large-text threshold applies.`}
       themes={['zoom']}
-      link={{ label: `Understanding SC ${c.code} ↗`, href: `https://www.w3.org/WAI/WCAG22/Understanding/${c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced'}.html` }}
+      link={{ label: `Understanding SC ${c.code} ↗`, href: understandingUrl(standard, c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced') }}
       sampleText={issue.text || 'Aa'}
       ratio={{ value: `${issue.ratio.toFixed(2)}:1`, requirement: `needs ${c.needs}:1` }}
       checks={['design']}

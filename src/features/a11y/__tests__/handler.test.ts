@@ -411,6 +411,40 @@ describe('a11y:scan — 1.4.11 and 2.5.8', () => {
     }])
     expect((await run()).targets[0]?.required).toBe(44)
   })
+
+  const runAgainst = (standard: string) =>
+    (handlers[MSG.scan] as unknown as (p: unknown, c: { emit: () => void }) => Promise<ScanResult>)(
+      { scope: 'page', standard }, { emit: vi.fn() },
+    )
+
+  it('checks only the criteria the chosen version has, and says which version it used', async () => {
+    page((frame) => [
+      bordered('b1', 'Input border', 0.9, frame),
+      {
+        id: 'x', name: 'Close', type: 'FRAME', visible: true, opacity: 1, fills: [], parent: frame,
+        reactions: [{ action: { type: 'NODE' } }], absoluteBoundingBox: { x: 0, y: 0, width: 16, height: 16 }, children: [],
+      },
+    ])
+    // 2.2: the border fails 1.4.11 and the lone 16px target is forgiven by 2.5.8's spacing exception.
+    const latest = await runAgainst('wcag22')
+    expect(latest.standard).toBe('wcag22')
+    expect(latest.nonText).toHaveLength(1)
+    expect(latest.targets).toHaveLength(0)
+    // 2.1: 1.4.11 exists but there is no 24px minimum, so the target misses 2.5.5's 44px with no exception to save it.
+    const mid = await runAgainst('wcag21')
+    expect(mid.nonText).toHaveLength(1)
+    expect(mid.targets[0]).toMatchObject({ width: 16, height: 16, required: 44, standard: 'wcag21' })
+    // 2.0: neither criterion exists.
+    const old = await runAgainst('wcag20')
+    expect(old.standard).toBe('wcag20')
+    expect(old.nonText).toHaveLength(0)
+    expect(old.targets).toHaveLength(0)
+  })
+
+  it('rejects a version it does not know', async () => {
+    page(() => [])
+    await expect(runAgainst('wcag30')).rejects.toThrow()
+  })
 })
 
 /** Accuracy hardening before the 100-designer rollout. Each test is a class of
@@ -575,5 +609,17 @@ describe('a11y:scan — hardening', () => {
     })
     // Surface/Ink is the closer colour and passes, but it is not for text.
     expect((await run()).issues[0]?.fix?.tokenName).toBe('Brand/Text/Primary')
+  })
+})
+
+describe('a11y:open-rules', () => {
+  it('opens the Quick Reference for the chosen version, defaulting to 2.2', () => {
+    const openExternal = vi.fn()
+    installFigmaMock({ openExternal } as unknown as Partial<PluginAPI>)
+    const open = handlers[MSG.openRules] as unknown as (p: unknown, c: unknown) => void
+    open({ standard: 'wcag21' }, { emit: vi.fn() })
+    expect(openExternal).toHaveBeenCalledWith('https://www.w3.org/WAI/WCAG21/quickref/')
+    open(undefined, { emit: vi.fn() })
+    expect(openExternal).toHaveBeenLastCalledWith('https://www.w3.org/WAI/WCAG22/quickref/')
   })
 })
