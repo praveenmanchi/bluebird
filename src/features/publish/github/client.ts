@@ -73,26 +73,48 @@ function sentence(kind: GithubErrorKind, repo: string, apiMessage: string): stri
 export interface CommitFile { path: string; content: string }
 export interface WorkflowRun { status: string; conclusion: string | null; html_url: string; name: string; run_number: number }
 
-export function createGithubClient(config: GithubConfig, fetch: GithubFetch) {
+/**
+ * Transient failures are retried before they reach the designer (Tokens Studio's
+ * storage providers do the same around every GitHub call): a dropped connection,
+ * a 5xx from GitHub, or a 429 / secondary rate limit. Everything else fails at once.
+ */
+export const RETRY_ATTEMPTS = 3
+export const RETRY_BASE_MS = 400
+const isTransient = (status: number): boolean => status >= 500 || status === 429
+
+const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+export function createGithubClient(config: GithubConfig, fetch: GithubFetch, sleep: (ms: number) => Promise<void> = defaultSleep) {
   const repoPath = `/repos/${config.repo.split('/').map(encodeURIComponent).join('/')}`
+  const host = config.api.replace(/^https?:\/\//, '').split('/')[0]
+
+  async function send(method: string, path: string, body: unknown, accept: string): Promise<{ status: number; text(): Promise<string> }> {
+    let attempt = 0
+    for (;;) {
+      attempt += 1
+      let res: { status: number; text(): Promise<string> } | null = null
+      try {
+        res = await fetch(`${config.api}${path}`, {
+          method,
+          headers: {
+            Accept: accept,
+            Authorization: `Bearer ${config.token}`,
+            'X-GitHub-Api-Version': '2022-11-28',
+            ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+          },
+          ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+        })
+      } catch {
+        if (attempt >= RETRY_ATTEMPTS) throw new GithubError(`Couldn’t reach ${host}. Check your connection; GitHub Enterprise hosts also need adding to the plugin’s network access.`, 'network', 0)
+      }
+      if (res && !isTransient(res.status)) return res
+      if (res && attempt >= RETRY_ATTEMPTS) return res
+      await sleep(RETRY_BASE_MS * 2 ** (attempt - 1))
+    }
+  }
 
   async function call<T>(method: string, path: string, body?: unknown, accept = 'application/vnd.github+json'): Promise<T> {
-    let res: { status: number; text(): Promise<string> }
-    try {
-      res = await fetch(`${config.api}${path}`, {
-        method,
-        headers: {
-          Accept: accept,
-          Authorization: `Bearer ${config.token}`,
-          'X-GitHub-Api-Version': '2022-11-28',
-          ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
-        },
-        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      })
-    } catch {
-      const host = config.api.replace(/^https?:\/\//, '').split('/')[0]
-      throw new GithubError(`Couldn’t reach ${host}. Check your connection; GitHub Enterprise hosts also need adding to the plugin’s network access.`, 'network', 0)
-    }
+    const res = await send(method, path, body, accept)
     const text = await res.text()
     if (res.status >= 200 && res.status < 300) {
       if (accept.includes('raw')) return text as T
@@ -101,13 +123,18 @@ export function createGithubClient(config: GithubConfig, fetch: GithubFetch) {
     let apiMessage = ''
     try { apiMessage = String((JSON.parse(text) as { message?: unknown }).message ?? '') } catch { apiMessage = '' }
     const kind = kindOf(res.status, text)
-    throw new GithubError(sentence(kind, config.repo, apiMessage), kind, res.status, apiMessage)
+    const message = isTransient(res.status)
+      ? `GitHub answered ${res.status}${apiMessage ? ` (${apiMessage})` : ''} ${RETRY_ATTEMPTS} times in a row. Try again in a minute.`
+      : sentence(kind, config.repo, apiMessage)
+    throw new GithubError(message, kind, res.status, apiMessage)
   }
 
   const branchRef = (branch: string) => `/git/ref/heads/${branch.split('/').map(encodeURIComponent).join('/')}`
 
   return {
     config,
+    /** The sandbox's fetch, for the Teams post that rides along with a release. */
+    fetch,
     /** Settings › Test Connection: who the token is and whether it can push. */
     async whoAmI(): Promise<{ login: string; canPush: boolean; defaultBranch: string }> {
       const [user, repo] = await Promise.all([

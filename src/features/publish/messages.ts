@@ -6,6 +6,8 @@ import type { Change, ReleaseSummary } from './types'
 export const MSG = {
   status: 'publish:status',
   extract: 'publish:extract',
+  /** The files the publish commit would carry, for the Final review (Tokens Studio's push dialog shows its JSON before pushing). */
+  preview: 'publish:preview',
   publish: 'publish:publish',
   progress: 'publish:progress',
   /** Open a GitHub link (pull request, commit, run) in the browser. */
@@ -20,8 +22,16 @@ export interface RepoStatus {
   connected: boolean
   repo: string
   branch: string
+  /** Settings › GitHub › "Enable diff comparison": extracts also read the repository's release store. */
+  diffComparison: boolean
   /** Why it isn't connected, e.g. "Add an access token in Settings › GitHub". */
   problem?: string
+}
+
+/** Settings › Notifications as the Publish options need it: is there anywhere to post the changelog? */
+export interface NotifyStatus {
+  /** How many Teams / Power Automate webhooks are set (0 disables "Post the changelog to Teams"). */
+  webhooks: number
 }
 
 /** Cheap pre-extract read: where the release goes and what was published last. */
@@ -30,7 +40,16 @@ export interface StatusResult {
   /** The latest release of this file; null when it was never published. */
   baseline: ReleaseSummary | null
   history: readonly ReleaseSummary[]
+  notify: NotifyStatus
 }
+
+/**
+ * Where the baseline the diff compares against came from.
+ * - `file`: the release stored in this Figma file.
+ * - `github`: `.bluebird/releases.json` on the branch in Settings › GitHub was newer (or the file had none) — Settings › GitHub › "Enable diff comparison".
+ * - `none`: first release.
+ */
+export type BaselineSource = 'file' | 'github' | 'none'
 
 export interface ExtractResult {
   /** Identifies the snapshot this diff came from; publish must send it back. */
@@ -39,6 +58,9 @@ export interface ExtractResult {
   counts: { variables: number; components: number; modes: number }
   /** The release this diff compares against; null for a first release. */
   baseline: ReleaseSummary | null
+  baselineSource: BaselineSource
+  /** Why GitHub's copy of the releases was not used when diff comparison is on (unreadable, missing, older). */
+  baselineNote?: string
   changes: readonly Change[]
   history: readonly ReleaseSummary[]
   repo: RepoStatus
@@ -55,7 +77,28 @@ export const publishRequestSchema = z.object({
 })
 export type PublishRequest = z.infer<typeof publishRequestSchema>
 
-export type PipelineStepId = 'extract' | 'components' | 'commit' | 'build' | 'deploy'
+/** One file of the publish commit, as the Final review previews it. */
+export interface CommitPreviewFile {
+  path: string
+  /** UTF-8 size of the whole file. */
+  bytes: number
+  /** CodeSnippet language caption: JSON, Markdown. */
+  language: string
+  /** The file's text, cut at PREVIEW_CHARS. */
+  content: string
+  truncated: boolean
+}
+
+export interface CommitPreview {
+  /** The commit message. */
+  message: string
+  files: readonly CommitPreviewFile[]
+}
+
+/** Characters of each file the preview carries; tokens.json for a large library runs to hundreds of kB. */
+export const PREVIEW_CHARS = 12_000
+
+export type PipelineStepId = 'extract' | 'components' | 'commit' | 'build' | 'deploy' | 'notify'
 export type PipelineStepStatus = 'done' | 'running' | 'queued' | 'failed'
 
 export interface PipelineStepState {

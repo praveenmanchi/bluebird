@@ -92,3 +92,38 @@
   color: var(--bb-uxai-text-meta);
 }
 .bb-uxai-library__open { flex: none; }
+
+/* The Color Artifact template filled from a library variable: the same panel tokens as
+ * ColorArtifact.css (uxai/surface/panel, radius/panel), one Brand Swatch per mode. */
+.bb-uxai-color-artifact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-uxai-space-tight);
+  box-sizing: border-box;
+  padding: var(--bb-uxai-space-row-x);
+  border-radius: var(--bb-uxai-radius-panel);
+  background: var(--bb-uxai-surface-panel);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-surface-panel-border);
+  font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-uxai-color-artifact > .bb-uxai-library__header { width: auto; }
+.bb-uxai-color-artifact__brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-uxai-space-inline);
+}
+.bb-uxai-color-artifact__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-uxai-space-hair);
+}
+
+/* Type ramp rows: the specimen is set in the style's own family, weight and (capped) size. */
+.bb-uxai-type__row { align-items: baseline; }
+.bb-uxai-type__specimen {
+  flex: none;
+  min-width: var(--bb-uxai-size-swatch-lg);
+  color: var(--bb-uxai-text-title);
+  white-space: nowrap;
+}

@@ -1,20 +1,21 @@
-// What UX AI sends Claude: a system prompt that keeps it to the Dual File
+// What UX AI sends the model: a system prompt that keeps it to the Dual File
 // libraries, and a compact text context built from the same search the
 // artifacts come from (with more hits than the artifacts show). Pure.
-import { searchComponents, searchVariables, type LibraryIndex, type LibraryVariable } from '@shared/libraries'
+import { searchComponents, searchStyles, searchVariables, type LibraryIndex, type LibraryStyle, type LibraryVariable } from '@shared/libraries'
 import type { AnswerKind } from './fixtures'
 import type { SelectionReport } from './grounding'
 
 /** How much of the library goes into one question, and how much conversation comes along. */
 export const CONTEXT_VARIABLES = 25
 export const CONTEXT_COMPONENTS = 15
+export const CONTEXT_STYLES = 12
 export const HISTORY_TURNS = 4
 export const MAX_CONTEXT_CHARS = 14_000
 
 export function systemPrompt(instructions: string): string {
   return [
     'You are UX AI, an assistant inside a Figma plugin for a multi-brand design system.',
-    'Answer only from the library context in the user message: variables (with their value in each brand mode), published components, and what the designer has selected. If the context doesn’t answer the question, say what is missing instead of guessing.',
+    'Answer only from the library context in the user message: variables (with their value in each brand mode), published components, published text and colour styles, and what the designer has selected. If the context doesn’t answer the question, say what is missing instead of guessing.',
     'Use variable and component names exactly as written. Mention brand modes when values differ between them.',
     'Reply in plain text (no Markdown, no lists unless asked), in at most about 120 words. The plugin shows the matching variables and components under your reply, so don’t repeat every value.',
     ...(instructions ? [`The design-system team’s instructions:\n${instructions}`] : []),
@@ -23,6 +24,10 @@ export function systemPrompt(instructions: string): string {
 
 const variableLine = (v: LibraryVariable) =>
   `- ${v.name} [${v.type}, ${v.collection}] ${v.values.map((m) => `${m.mode} ${m.value}${m.aliasOf ? ` (→ ${m.aliasOf})` : ''}`).join(' · ')}${v.description ? ` — ${v.description}` : ''}`
+
+const styleLine = (s: LibraryStyle) => s.kind === 'text'
+  ? `- text style ${s.name}: ${s.fontFamily} ${s.fontStyle} ${s.fontSize}${s.lineHeight ? `/${s.lineHeight}` : ''}${s.letterSpacing ? ` ls ${s.letterSpacing}` : ''}${s.description ? ` — ${s.description}` : ''}`
+  : `- colour style ${s.name}: ${s.hex ?? 'not a solid colour'}${s.description ? ` — ${s.description}` : ''}`
 
 function selectionLines(report: SelectionReport, files: Record<string, string>): string[] {
   const from = (match?: { fileKey: string }, origin?: string) => match ? `from ${files[match.fileKey] ?? match.fileKey}` : origin === 'local' ? 'local to this file' : 'from a library that isn’t connected'
@@ -38,6 +43,7 @@ export function libraryContext(prompt: string, kind: AnswerKind, index: LibraryI
   const files = Object.fromEntries(index.files.map((f) => [f.fileKey, f.name]))
   const vars = searchVariables(index, prompt, CONTEXT_VARIABLES)
   const comps = searchComponents(index, prompt, CONTEXT_COMPONENTS)
+  const styles = searchStyles(index, prompt, CONTEXT_STYLES)
   const lines = [
     'Library files:',
     ...index.files.map((f) => `- File ${f.slot} “${f.name}” (${f.roles.join(' + ')})${f.error ? `: could not be read — ${f.error}` : `: ${f.variables} variables${f.collections.length ? ` in ${f.collections.join(', ')}` : ''}, ${f.components} published components`}`),
@@ -48,6 +54,7 @@ export function libraryContext(prompt: string, kind: AnswerKind, index: LibraryI
     '',
     `Components matching the question (${comps.items.length} of ${comps.total}):`,
     ...(comps.items.length ? comps.items.map((c) => `- ${c.name} (${c.kind === 'set' ? `set, ${c.variants} variants` : 'component'}) — ${c.location}${c.description ? ` — ${c.description}` : ''} [${files[c.fileKey] ?? c.fileKey}]`) : ['- none']),
+    ...(styles.total ? ['', `Published styles matching the question (${styles.items.length} of ${styles.total}):`, ...styles.items.map(styleLine)] : []),
     ...(kind === 'selection' && selection ? ['', ...selectionLines(selection, files)] : []),
   ]
   const text = lines.join('\n')

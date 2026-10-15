@@ -1,41 +1,41 @@
-// UX AI's Claude handlers, built from injected dependencies so the same code runs
+// UX AI's model handlers, built from injected dependencies so the same code runs
 // in Figma (handler.ts wires figma.clientStorage + Figma's fetch), the dev harness
-// and tests. Owns the Claude connection: Settings › AI Agent Assistance in, text out.
+// and tests. Owns the connection: Settings › AI Agent Assistance in, text out,
+// through whichever provider (Claude, OpenAI, Gemini) Settings pick.
 import * as z from 'zod/mini'
 import type { HandlerMap } from '@shared/bridge'
+import { AiError, complete, describeProvider, isProviderConfig, PROVIDER_LABEL, providerId, selectProvider, type AiFetch } from '@shared/ai'
 import { normalizeIntegration, sectionSchemas, testMessage, type ConnectionTestResult, type IntegrationValues } from '@shared/integrations'
-import { askClaude, claudeConfig, ClaudeError, isClaudeConfig, type ClaudeFetch } from '../claude'
 import { MSG, askRequestSchema, type AskResult } from '../messages'
 import { systemPrompt } from '../prompt'
 
+/** Answers are a few sentences; the artifacts carry the detail. */
+export const MAX_TOKENS = 1024
+
 export interface AskDeps {
   readSettings: () => Promise<IntegrationValues<'ai'>>
-  fetch: ClaudeFetch
+  fetch: AiFetch
 }
 
 export function createAskHandlers(deps: AskDeps): HandlerMap {
   async function ask(payload: unknown): Promise<AskResult> {
     const { messages } = askRequestSchema.parse(payload)
-    const config = claudeConfig(await deps.readSettings())
-    if (!isClaudeConfig(config)) return { status: 'not-configured', reason: config.reason }
-    const text = await askClaude(config, systemPrompt(config.instructions), messages, deps.fetch)
-    return { status: 'answered', text, model: config.model }
+    const config = selectProvider(await deps.readSettings())
+    if (!isProviderConfig(config)) return { status: 'not-configured', reason: config.reason }
+    const text = await complete(config, { system: systemPrompt(config.instructions), messages, maxTokens: MAX_TOKENS }, deps.fetch)
+    return { status: 'answered', text, model: config.model, provider: config.provider }
   }
 
-  /** Settings › Test Connection for AI Agent Assistance: the form's unsaved Claude key and model, one tiny request. */
+  /** Settings › Test Connection for AI Agent Assistance: the form's unsaved key and model for the picked provider, one tiny request. */
   async function test(payload: unknown): Promise<ConnectionTestResult> {
     const parsed = z.safeParse(sectionSchemas.ai, payload)
-    if (!parsed.success) throw new ClaudeError('Those AI settings are incomplete or too long.', 0)
+    if (!parsed.success) throw new AiError('Those AI settings are incomplete or too long.', 0, 'claude')
     const values = normalizeIntegration<'ai'>(parsed.data, 'ai')
-    const config = claudeConfig({ ...values, enabled: true })
-    if (!isClaudeConfig(config)) {
-      const others = [values.openaiKey && 'OpenAI', values.geminiKey && 'Gemini'].filter(Boolean)
-      throw new ClaudeError(others.length
-        ? `Only Claude is wired up so far; add a Claude API key to test. (${others.join(' and ')} ${others.length === 1 ? 'isn’t' : 'aren’t'} used yet.)`
-        : 'Add a Claude API key to test the connection.', 0)
-    }
-    await askClaude(config, 'Reply with the single word OK.', [{ role: 'user', content: 'Connection test.' }], deps.fetch, 5)
-    return { message: `Claude answered with ${config.model}.${values.openaiKey || values.geminiKey ? ' OpenAI and Gemini keys aren’t used yet.' : ''}` }
+    const config = selectProvider({ ...values, enabled: true })
+    if (!isProviderConfig(config)) throw new AiError('Add an API key for the provider under “Answer with” to test the connection.', 0, providerId(values.provider))
+    await complete(config, { system: 'Reply with the single word OK.', messages: [{ role: 'user', content: 'Connection test.' }], maxTokens: 16 }, deps.fetch)
+    const wanted = PROVIDER_LABEL[providerId(values.provider)]
+    return { message: `${describeProvider(config)} answered.${config.fallback ? ` “Answer with” names ${wanted}, which has no key, so ${PROVIDER_LABEL[config.provider]} is used instead.` : ''}` }
   }
 
   return {

@@ -40,9 +40,10 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
   const saving = status.kind === 'saving'
   const testing = status.kind === 'testing'
 
-  const onChange = (key: string, value: string | boolean) => {
+  const onChange = (key: string, value: FieldValues[string]) => {
     setValues((v) => ({ ...v, [key]: value }))
-    if (errors[key]) setErrors(({ [key]: _cleared, ...rest }) => rest)
+    // A list field (extraFiles) carries its rows' errors as extraFiles.<i>.<field>; clear those with it.
+    if (Object.keys(errors).some((k) => k === key || k.startsWith(`${key}.`))) setErrors((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key && !k.startsWith(`${key}.`))))
     if (status.kind !== 'idle' && status.kind !== 'saving' && status.kind !== 'testing') setStatus({ kind: 'idle' })
   }
 

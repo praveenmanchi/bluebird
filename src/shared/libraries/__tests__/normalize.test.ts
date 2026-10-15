@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { colorHex, toComponents, toVariables } from '../normalize'
-import { COMPONENT_SETS, COMPONENTS, VARIABLES } from './fixtures'
+import { colorHex, fontStyleName, toComponents, toStyles, toVariables } from '../normalize'
+import { COMPONENT_SETS, COMPONENTS, STYLE_NODES, STYLES, VARIABLES } from './fixtures'
 
 describe('toVariables', () => {
   const { variables, collections } = toVariables(VARIABLES, 'F1')
@@ -52,5 +52,17 @@ describe('toComponents', () => {
       { key: 'kbtn', nodeId: '10:1', name: 'Button', kind: 'set', description: 'Primary call to action', location: 'Components › Atoms', variants: 2, keys: ['kbtn', 'kbtn-primary', 'kbtn-secondary'], fileKey: 'F2' },
       { key: 'kdivider', nodeId: '20:1', name: 'Divider', kind: 'component', description: 'Hairline separator', location: 'Components › Atoms', variants: 1, keys: ['kdivider'], fileKey: 'F2' },
     ])
+  })
+})
+
+describe('toStyles', () => {
+  it('keeps text and fill styles with their node values, drops effects and grids, and names font styles', () => {
+    const styles = toStyles(STYLES, STYLE_NODES, 'F')
+    expect(styles.map((s) => s.name)).toEqual(['brand/accent', 'Heading/H1'])
+    expect(styles[1]).toEqual({ kind: 'text', key: 'kh1', nodeId: '30:1', name: 'Heading/H1', description: 'Page titles', fontFamily: 'Inter', fontStyle: 'Semi Bold', fontWeight: 600, fontSize: 24, lineHeight: 32, letterSpacing: -0.5, fileKey: 'F' })
+    expect(styles[0]).toEqual({ kind: 'color', key: 'kaccent-style', nodeId: '30:2', name: 'brand/accent', description: '', hex: '#0066FF', fileKey: 'F' })
+    expect(toStyles(STYLES, { nodes: {} }, 'F')[1]).toMatchObject({ kind: 'text', fontFamily: '', fontSize: 0, lineHeight: null })
+    expect(fontStyleName(undefined, 700)).toBe('Bold')
+    expect(fontStyleName('Noto Sans-ExtraBoldItalic', 800)).toBe('Extra Bold Italic')
   })
 })

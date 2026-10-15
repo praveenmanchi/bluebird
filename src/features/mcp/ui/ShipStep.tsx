@@ -1,8 +1,8 @@
 import { Checkbox, CodeSnippet, ConnectionRow, Input, PublishEmptyState, SectionTitle } from '@shared/ui'
 import { requestSettings } from '@shared/navigation'
-import { REPO, rejectedLog } from '../fixtures'
+import { rejectedLog } from '../fixtures'
 import {
-  afterPush, branch, canPush, commit, files, githubConnected, goTo, linkedIssue, path, scenario, shipPhase, shipProgress, steps,
+  afterPush, branch, canPush, commit, files, github, githubConnected, goTo, linkedIssue, path, selection, shipPhase, shipProgress, steps,
   type AfterPushOption,
 } from '../state'
 import { ActionBar } from './ActionBar'
@@ -63,6 +63,8 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
   const phase = shipPhase.value
   const at = shipProgress.value
   const issue = linkedIssue.value
+  const repo = github.value
+  const frame = selection.value?.frame ?? 'Selection'
   const copy = { label: 'Copy prompt for Claude Code', onClick: onCopyPrompt }
   const back = { label: 'Back', onClick: () => goTo(2) }
 
@@ -73,7 +75,7 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
       <>
         <div class="bb-mcp-handoff__panels">
           <Card label="Push result">
-            <SectionTitle title={`${scenario.value.selection.frame} · not shipped`} showCount={false} showAction={false} />
+            <SectionTitle title={`${frame} · not shipped`} showCount={false} showAction={false} />
             <PublishEmptyState
               state="failed"
               icon="git-merg"
@@ -82,7 +84,7 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
               actions={[{ label: 'Copy prompt', variant: 'secondary', onClick: onCopyPrompt }, { label: 'Push to new branch', variant: 'primary', onClick: onPushNewBranch }]}
             />
             <SectionTitle title="Git output" showCount={false} showAction={false} />
-            <CodeSnippet language="Log" code={rejectedLog(branch.value)} />
+            <CodeSnippet language="Log" code={rejectedLog(repo.repo, branch.value)} />
           </Card>
           <ShipStepsCard steps={steps.value} status={(i) => i < at ? 'done' : i === at ? 'failed' : 'queued'} />
         </div>
@@ -100,7 +102,7 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
             <PublishEmptyState
               state="not-connected"
               title="Connect GitHub to push"
-              body="Add a GitHub token in Settings › Integrations to push branches and open pull requests. You can still copy the prompt and ship from Claude Code."
+              body={`${repo.problem ?? 'Add the repository and a personal access token in Settings › MCP + Code Sync'} to push branches and open pull requests. You can still copy the prompt and ship from Claude Code.`}
               actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]}
             />
           </Card>
@@ -108,7 +110,7 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
         <FilesCard />
       </div>
       <ActionBar
-        summary={githubConnected.value ? `${files.value.length} files → ${REPO}` : 'GitHub isn’t connected.'}
+        summary={githubConnected.value ? `${files.value.length} files → ${repo.repo} · base ${repo.branch}` : 'GitHub isn’t connected.'}
         secondary={[copy, back]}
         primary={{ label: 'Push and open PR', disabled: !canPush.value, onClick: onPush }}
       />

@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'preact/hooks'
 import { Stepper } from '@shared/ui'
-import { STEPS, buildPrompt } from '../fixtures'
+import { STEPS, buildPrompt, mcpSetup } from '../fixtures'
 import {
-  branch, commit, framework, include, linkedIssue, notice, path, rejectNextPush, scenario, shipPhase, shipProgress, step, steps, styling,
+  branch, checks, commit, fileKey, fileName, framework, include, linkedIssue, localMcp, notice, path, rejectNextPush, selection, shipPhase,
+  shipProgress, step, steps, styling,
 } from '../state'
 import { CheckStep } from './CheckStep'
 import { GenerateStep } from './GenerateStep'
@@ -22,6 +23,10 @@ export interface McpHandoffProps {
   onOpenNode?: (nodeId: string) => void
   /** Open a pull request or Jira issue in the browser. */
   onOpenUrl?: (url: string) => void
+  /** Run the readiness checks over a node (entering Check, and Retry). Absent in stories: the fixture checks stay. */
+  onCheck?: (nodeId: string) => void
+  /** "Use current selection": read the canvas again. Absent in stories: the fixture selection returns. */
+  onUseSelection?: () => void
 }
 
 /** "Push to new branch": the next free name after the rejected one (feat/x → feat/x-2 → feat/x-3). */
@@ -30,12 +35,24 @@ export function nextBranchName(name: string): string {
   return m ? `${m[1]}-${Number(m[2]) + 1}` : `${name}-2`
 }
 
+/** The Claude Code prompt for the current selection, options and checks. */
+export function currentPrompt(): string | null {
+  const s = selection.value
+  if (!s) return null
+  return buildPrompt({
+    selection: s, fileName: fileName.value, fileKey: fileKey.value, checks: checks.value,
+    framework: framework.value, styling: styling.value, path: path.value, include: include.value,
+    issue: linkedIssue.value, branch: branch.value, commit: commit.value,
+  })
+}
+
 /**
  * Figma "MCP flow v2 · 600": a Stepper (Select → Check → Generate → Ship) over one
- * scrolling column of cards and a sticky action bar. UI only: generation, Git and
- * Jira run on fixtures; Push walks the Ship steps on a timer.
+ * scrolling column of cards and a sticky action bar. Select and Check read the
+ * canvas; generation and the Git push run on fixtures, and Push walks the Ship
+ * steps on a timer.
  */
-export function McpHandoff({ onOpenNode, onOpenUrl }: McpHandoffProps) {
+export function McpHandoff({ onOpenNode, onOpenUrl, onCheck, onUseSelection }: McpHandoffProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const stop = () => { if (timer.current) clearTimeout(timer.current); timer.current = null }
   useEffect(() => stop, [])
@@ -44,12 +61,22 @@ export function McpHandoff({ onOpenNode, onOpenUrl }: McpHandoffProps) {
     notice.value = (await copyText(text)) ? done : 'Copying is blocked in this window. Select the text and copy it by hand.'
   }
 
-  const copyPrompt = () => copy(buildPrompt(scenario.value, {
-    framework: framework.value, styling: styling.value, path: path.value, include: include.value,
-    issue: linkedIssue.value, branch: branch.value, commit: commit.value,
-  }), 'Prompt copied — paste it into Claude Code.')
+  const copyPrompt = () => {
+    const prompt = currentPrompt()
+    if (!prompt) { notice.value = 'Select a frame first — the prompt describes it.'; return }
+    void copy(prompt, 'Prompt copied — paste it into Claude Code.')
+  }
+  const copySetup = () => copy(mcpSetup(localMcp.value), `MCP setup copied — registers the ${localMcp.value ? 'desktop' : 'remote'} Figma MCP server in Claude Code.`)
   const copyNodeId = (nodeId: string) => copy(nodeId, `Copied the node id ${nodeId}.`)
   const copyLink = (url: string) => copy(url, 'Pull request link copied.')
+
+  function startCheck() {
+    const s = selection.value
+    if (!s) return
+    step.value = 1
+    notice.value = null
+    onCheck?.(s.nodeId)
+  }
 
   function advance() {
     timer.current = setTimeout(() => {
@@ -83,8 +110,8 @@ export function McpHandoff({ onOpenNode, onOpenUrl }: McpHandoffProps) {
   const phase = shipPhase.value
   const screen = phase === 'pushed'
     ? <ShippedStep onOpenUrl={(url) => onOpenUrl?.(url)} onCopyLink={copyLink} onCopyPrompt={copyPrompt} />
-    : step.value === 0 ? <SelectStep onOpenNode={onOpenNode} onCopyLink={copyNodeId} />
-      : step.value === 1 ? <CheckStep onOpenNode={onOpenNode} onCopyLink={copyNodeId} />
+    : step.value === 0 ? <SelectStep onOpenNode={onOpenNode} onCopyLink={copyNodeId} onCheck={startCheck} onCopySetup={copySetup} onUseSelection={onUseSelection} />
+      : step.value === 1 ? <CheckStep onOpenNode={onOpenNode} onCopyLink={copyNodeId} onRetry={startCheck} />
         : step.value === 2 ? <GenerateStep onCopyPrompt={copyPrompt} />
           : <ShipStep onCopyPrompt={copyPrompt} onPush={push} onPushNewBranch={pushNewBranch} />
 

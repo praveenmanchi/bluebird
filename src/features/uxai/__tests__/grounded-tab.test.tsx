@@ -57,7 +57,12 @@ describe('uxai Tab with Dual File libraries', () => {
     expect(screen.getByText('Searched Brand UI (4 variables, 1 collection)')).toBeInTheDocument()
     const panel = screen.getByRole('region', { name: 'Matching variables' })
     expect(within(panel).getByText('Brand UI · Bridge #0C8CE9 (blue/500) · Ikea #161616')).toBeInTheDocument()
-    expect(screen.queryByText('Resolves')).toBeNull()
+    // The Color Artifact template, filled from the top variable: one Brand Swatch per mode and the alias chain.
+    const artifact = screen.getByRole('article', { name: 'surface/accent in every mode' })
+    expect(within(artifact).getByText('Bridge')).toBeInTheDocument()
+    expect(within(artifact).getByText('#161616')).toBeInTheDocument()
+    expect(within(artifact).getByText('blue/500')).toBeInTheDocument()
+    expect(within(artifact).getByText('Resolves')).toBeInTheDocument()
   })
 
   it('opens a matching component in its library file', async () => {
@@ -94,23 +99,23 @@ describe('uxai Tab with Dual File libraries', () => {
   })
 
   it('has Claude write the answer from the matching library context, keeping the artifacts', async () => {
-    const ask = vi.fn(async () => ({ status: 'answered' as const, text: 'Use surface/accent for primary actions.', model: 'claude-opus-4-5' }))
+    const ask = vi.fn(async () => ({ status: 'answered' as const, text: 'Use surface/accent for primary actions.', model: 'claude-opus-5-5', provider: 'claude' as const }))
     await renderTab({ libraries: READY, ask })
     ask_('What is our primary colour?')
     await finish()
     expect(screen.getByText('Use surface/accent for primary actions.')).toBeInTheDocument()
-    expect(screen.getByText('Answered by Claude · claude-opus-4-5')).toBeInTheDocument()
-    expect(screen.getByText('Asked Claude (claude-opus-4-5) with what matched')).toBeInTheDocument()
+    expect(screen.getByText('Answered by Claude · claude-opus-5-5')).toBeInTheDocument()
+    expect(screen.getByText('Asked Claude (claude-opus-5-5) with what matched')).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Matching variables' })).toBeInTheDocument()
     const { messages } = (ask.mock.calls[0] as unknown as [{ messages: { content: string }[] }])[0]
     expect(messages.at(-1)!.content).toMatch(/surface\/accent \[COLOR, Brand UI\][\s\S]*Question: What is our primary colour\?$/)
   })
 
-  it('keeps the library answer and says why when Claude fails', async () => {
+  it('keeps the library answer and says why when the model fails', async () => {
     await renderTab({ libraries: READY, ask: async () => { throw new Error('Anthropic rejected the Claude API key.') } })
     ask_('What is our primary colour?')
     await finish()
-    expect(screen.getByText(/surface\/accent \(Brand UI\) is #0C8CE9.*\(Claude couldn’t answer: Anthropic rejected the Claude API key\.\)/)).toBeInTheDocument()
+    expect(screen.getByText(/surface\/accent \(Brand UI\) is #0C8CE9.*\(The model couldn’t answer: Anthropic rejected the Claude API key\.\)/)).toBeInTheDocument()
   })
 
   it('keeps unticked files unticked across a refresh', async () => {

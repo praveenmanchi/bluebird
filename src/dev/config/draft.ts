@@ -6,7 +6,8 @@ import {
   type FieldErrors, type IntegrationId, type IntegrationValues,
 } from '@shared/integrations'
 
-export type FieldValues = Record<string, string | boolean>
+export type { FieldValues } from '@shell/integrations/IntegrationField'
+import type { FieldValues } from '@shell/integrations/IntegrationField'
 
 export interface BrandDraft {
   /** null: no override, each persona keeps its own order with every enabled tab. */

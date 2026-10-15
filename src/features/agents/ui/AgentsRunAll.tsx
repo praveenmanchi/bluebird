@@ -1,5 +1,5 @@
 import { BotAvatar, Button, LinkButton, MetaBadge, ProgressBar, VoiceBar, type MetaBadgeTone } from '@shared/ui'
-import { RUN_ALL_COPY, agentById, type AgentDef, type AgentId } from '../fixtures'
+import { RUN_ALL_COPY, agentById, type AgentDef, type AgentId } from '../agents'
 import type { PipelineState } from '../run'
 import { BackLink } from './parts'
 import './AgentsRunAll.css'
@@ -37,11 +37,11 @@ const BOT_STATE = { done: 'default', running: 'working', queued: 'sleeping', ski
 // The Figma "AI Agents · Run all" screen, verbatim.
 const FIGMA_ROWS: readonly PipelineRow[] = [
   { agent: agentById('accessibility'), state: 'done', text: '14 issues · 6 fixable with tokens' },
-  { agent: agentById('spelling'), state: 'done', text: '3 typos · all fixable' },
-  { agent: agentById('writing'), state: 'done', text: '9 suggestions · 2 button labels, 7 error messages' },
-  { agent: agentById('content'), state: 'running', text: 'Replacing placeholder names · 5 of 9 layers' },
-  { agent: agentById('design-system'), state: 'queued', text: 'Waits for Content to finish' },
-  { agent: agentById('localization'), state: 'skipped', text: 'Not available yet' },
+  { agent: agentById('design-system'), state: 'done', text: '3 raw values · 2 rebindable' },
+  { agent: agentById('content'), state: 'done', text: '3 placeholders · 2 replaced' },
+  { agent: agentById('localization'), state: 'running', text: 'Estimating expansion · 5 of 9 texts' },
+  { agent: agentById('spelling'), state: 'queued', text: 'Waits for Localization to finish' },
+  { agent: agentById('writing'), state: 'queued', text: 'Waits for Spelling & grammar to finish' },
 ]
 
 /** Figma "Agents body" on "AI Agents · Run all" (40000299:18411): every ready agent, one after another, merged. */

@@ -1,7 +1,7 @@
 // Answers grounded in the Dual File libraries: the question picks variables and
 // components out of the index (search), and the selection is checked against it
 // (which bindings and instances come from which library file). Pure; no RPC.
-import { queryTerms, searchComponents, searchVariables, type LibraryComponent, type LibraryIndex, type LibraryVariable } from '@shared/libraries'
+import { queryTerms, searchComponents, searchStyles, searchVariables, type LibraryComponent, type LibraryIndex, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
 import type { MetaBadgeTone } from '@shared/ui'
 import type { AnswerKind, CannedAnswer, Source, Suggestion } from './fixtures'
 import type { SelectionContext } from './messages'
@@ -34,6 +34,8 @@ export interface SelectionReport {
 export interface GroundedAnswer extends CannedAnswer {
   variables?: { items: readonly LibraryVariable[]; total: number }
   components?: { items: readonly LibraryComponent[]; total: number }
+  /** Published text / colour styles the question is about (the type scale, a colour style). */
+  styles?: { items: readonly LibraryStyle[]; total: number }
   selection?: SelectionReport
   /** fileKey → file name, for citations. */
   files: Readonly<Record<string, string>>
@@ -51,14 +53,14 @@ export function failedAnswer(message: string): GroundedAnswer {
   return { ...PENDING_ANSWER, text: `I couldn’t read your libraries: ${message}`, thoughtFor: 'Stopped early' }
 }
 
-/** Claude's reply in place of the library summary; the artifacts and steps stay, plus the Claude step. */
-export function withClaude(answer: GroundedAnswer, text: string, model: string): GroundedAnswer {
-  return { ...answer, text, steps: [...answer.steps, `Asked Claude (${model}) with what matched`], thoughtFor: `Answered by Claude · ${model}` }
+/** The model's reply in place of the library summary; the artifacts and steps stay, plus the model step. */
+export function withModel(answer: GroundedAnswer, text: string, provider: string, model: string): GroundedAnswer {
+  return { ...answer, text, steps: [...answer.steps, `Asked ${provider} (${model}) with what matched`], thoughtFor: `Answered by ${provider} · ${model}` }
 }
 
-/** Claude failed: keep the library answer and say why Claude's is missing. */
-export function withoutClaude(answer: GroundedAnswer, reason: string): GroundedAnswer {
-  return { ...answer, text: `${answer.text} (Claude couldn’t answer: ${reason})` }
+/** The model failed: keep the library answer and say why the model's is missing. */
+export function withoutModel(answer: GroundedAnswer, reason: string): GroundedAnswer {
+  return { ...answer, text: `${answer.text} (The model couldn’t answer: ${reason})` }
 }
 
 /** The selection couldn't be read from Figma (the libraries are fine). */
@@ -131,6 +133,60 @@ function componentAnswer(prompt: string, index: LibraryIndex, hits: ReturnType<t
     thoughtFor: 'Read from the Components file',
     followUps: [],
     components: hits,
+    files: names,
+  }
+}
+
+const GENERIC_TYPE_WORDS = new Set(['type', 'types', 'typography', 'font', 'fonts', 'text', 'style', 'styles', 'scale', 'ramp', 'have', 'exist'])
+
+/** "24/32 Semi Bold" — the spec line a type ramp row shows. */
+export function typeSpec(t: LibraryTextStyle): string {
+  const size = t.fontSize ? `${t.fontSize}${t.lineHeight ? `/${t.lineHeight}` : ''}` : ''
+  return [size, t.fontStyle || (t.fontWeight ? String(t.fontWeight) : ''), t.letterSpacing ? `${t.letterSpacing > 0 ? '+' : ''}${t.letterSpacing}` : '', t.textCase ? t.textCase.toLowerCase() : ''].filter(Boolean).join(' · ')
+}
+
+function typeAnswer(prompt: string, index: LibraryIndex, hits: ReturnType<typeof searchStyles>): GroundedAnswer {
+  const names = fileNames(index)
+  const texts = hits.items.filter((s): s is LibraryTextStyle => s.kind === 'text')
+  const families = [...new Set(texts.map((t) => t.fontFamily).filter(Boolean))]
+  const sizes = texts.map((t) => t.fontSize).filter((n) => n > 0)
+  const files = [...new Set(texts.map((t) => names[t.fileKey] ?? t.fileKey))]
+  const top = texts[0]
+  // "type", "styles", "font" name no style; only the specific words decide whether this is a lookup or the ramp.
+  const terms = queryTerms(prompt).map((g) => g[0] ?? '').filter((t) => t && !GENERIC_TYPE_WORDS.has(t)).join(' ')
+  const text = top && hits.total === 1
+    ? `${top.name} (${names[top.fileKey]}) is ${top.fontFamily} ${top.fontStyle}, ${typeSpec(top)}.${top.description ? ` ${top.description}.` : ''}`
+    : `${plural(hits.total, 'text style')} in ${list(files)}${families.length ? `, set in ${list(families)}` : ''}${sizes.length ? `, from ${Math.min(...sizes)} to ${Math.max(...sizes)} px` : ''}.${terms ? ` Showing the ones matching “${terms}”.` : ' The ramp is below, largest first.'}`
+  return {
+    text,
+    searching: 'Searching your text styles…',
+    hint: `Reading ${list(files)}…`,
+    steps: [
+      `Read ${plural(index.styles?.filter((s) => s.kind === 'text').length ?? 0, 'published text style')} from ${list(files)}`,
+      `Matched ${plural(hits.total, 'style')}${terms ? ` for “${terms}”` : ''}`,
+    ],
+    thoughtFor: 'Read from the published text styles',
+    followUps: [
+      { label: 'Which colour styles do we have?', icon: 'colors' },
+      { label: 'Check my selection against the libraries', icon: 'component-select' },
+    ],
+    styles: hits,
+    files: names,
+  }
+}
+
+function colorStyleAnswer(prompt: string, index: LibraryIndex, hits: ReturnType<typeof searchStyles>): GroundedAnswer {
+  const names = fileNames(index)
+  const top = hits.items[0]!
+  const files = [...new Set(hits.items.map((s) => names[s.fileKey] ?? s.fileKey))]
+  return {
+    text: `${top.name} (${names[top.fileKey] ?? top.fileKey}) is a colour style${top.kind === 'color' && top.hex ? ` resolving to ${top.hex}` : ''}.${top.description ? ` ${top.description}.` : ''}${hits.total > 1 ? ` ${plural(hits.total - 1, 'other colour style')} also match.` : ''} These are styles, not variables, so they carry one value for every brand mode.`,
+    searching: 'Searching your colour styles…',
+    hint: `Reading ${list(files)}…`,
+    steps: [`Read ${plural(index.styles?.filter((s) => s.kind === 'color').length ?? 0, 'published colour style')}`, `Matched ${plural(hits.total, 'style')}`],
+    thoughtFor: 'Read from the published colour styles',
+    followUps: [],
+    styles: hits,
     files: names,
   }
 }
@@ -216,9 +272,20 @@ export function groundedAnswer(prompt: string, kind: AnswerKind, index: LibraryI
   if (kind === 'selection') return selectionAnswer(selection ?? null, index)
   const vars = searchVariables(index, prompt)
   const comps = searchComponents(index, prompt)
+  // Typography lives in published text styles first; font/* variables are the fallback.
+  if (kind === 'type') {
+    const styles = searchStyles(index, prompt)
+    if (styles.items.some((s) => s.kind === 'text')) return typeAnswer(prompt, index, { ...styles, items: styles.items.filter((s) => s.kind === 'text') })
+  }
   const componentsFirst = kind === 'component' || kind === 'icons'
   if (componentsFirst ? comps.total : !vars.total && comps.total) return componentAnswer(prompt, index, comps)
   if (vars.total) return variableAnswer(prompt, index, vars)
+  // A file without variables (no Enterprise plan) still publishes colour styles.
+  if (kind === 'color') {
+    const styles = searchStyles(index, prompt)
+    const colours = styles.items.filter((s) => s.kind === 'color')
+    if (colours.length) return colorStyleAnswer(prompt, index, { items: colours, total: colours.length })
+  }
   return nothingFound(prompt, index)
 }
 
@@ -230,6 +297,7 @@ export function librarySources(index: LibraryIndex): Source[] {
     const counts = [
       ...(f.roles.includes('variables') ? [`${plural(f.variables, 'variable')}${f.collections.length ? ` · ${plural(f.collections.length, 'collection')}` : ''}`] : []),
       ...(f.roles.includes('components') ? [plural(f.components, 'component')] : []),
+      ...(f.styles ? [plural(f.styles, 'style')] : []),
     ]
     const tone: MetaBadgeTone = f.error ? 'danger' : f.warning ? 'warning' : 'success'
     return {

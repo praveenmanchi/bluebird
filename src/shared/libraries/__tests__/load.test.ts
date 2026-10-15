@@ -12,6 +12,14 @@ describe('Dual File settings → files', () => {
     expect(rolesOf('Variables + Components')).toEqual(['variables', 'components'])
   })
 
+  it('adds extra files as slots 3…N, borrowing File 1’s token when theirs is empty', () => {
+    expect(filesFromSettings(df({ file1Id: 'A', file1Key: 't1', extraFiles: [{ id: 'C', key: '', role: 'Variables + Components' }, { id: '', key: '', role: 'Components' }, { id: 'D', key: 't4', role: 'Components' }] }))).toEqual([
+      { slot: 1, fileKey: 'A', token: 't1', roles: ['variables'] },
+      { slot: 3, fileKey: 'C', token: 't1', roles: ['variables', 'components'] },
+      { slot: 5, fileKey: 'D', token: 't4', roles: ['components'] },
+    ])
+  })
+
   it('lets File 2 borrow File 1’s token and skips empty slots', () => {
     expect(filesFromSettings(df({ file1Id: 'A', file1Key: 't1', file2Id: 'B' }))).toEqual([
       { slot: 1, fileKey: 'A', token: 't1', roles: ['variables'] },
@@ -35,13 +43,16 @@ describe('loadLibraries', () => {
     const figma = fakeFigma({}, { V: 'Brand UI', C: 'Components' })
     const index = await loadLibraries(filesFromSettings(df({ file1Id: 'V', file1Key: 'tv', file2Id: 'C', file2Key: 'tc' })), figma.fetch, () => 42)
     expect(index.files).toEqual([
-      { slot: 1, fileKey: 'V', name: 'Brand UI', roles: ['variables'], variables: 5, components: 0, collections: ['Primitives', 'Brand UI'] },
-      { slot: 2, fileKey: 'C', name: 'Components', roles: ['components'], variables: 0, components: 2, collections: [] },
+      { slot: 1, fileKey: 'V', name: 'Brand UI', roles: ['variables'], variables: 5, components: 0, styles: 2, collections: ['Primitives', 'Brand UI'] },
+      { slot: 2, fileKey: 'C', name: 'Components', roles: ['components'], variables: 0, components: 2, styles: 2, collections: [] },
     ])
     expect(index.variables).toHaveLength(5)
     expect(index.components.map((c) => c.name)).toEqual(['Button', 'Divider'])
     expect(index.loadedAt).toBe(42)
-    expect(figma.calls.filter((c) => c.url.includes('/files/V/')).map((c) => c.url.split('/V')[1])).toEqual(['/meta', '/variables/local'])
+    expect(figma.calls.filter((c) => c.url.includes('/files/V/')).map((c) => c.url.split('/V')[1])).toEqual(['/meta', '/variables/local', '/styles', '/nodes?ids=30%3A1%2C30%3A2'])
+    expect(index.styles?.map((s) => `${s.kind}:${s.name}`)).toEqual(['color:brand/accent', 'text:Heading/H1', 'color:brand/accent', 'text:Heading/H1'])
+    expect(index.styles?.[1]).toMatchObject({ kind: 'text', fontFamily: 'Inter', fontStyle: 'Semi Bold', fontWeight: 600, fontSize: 24, lineHeight: 32, letterSpacing: -0.5, fileKey: 'V' })
+    expect(index.styles?.[0]).toMatchObject({ kind: 'color', hex: '#0066FF', fileKey: 'V' })
     expect(figma.calls.every((c) => c.url.startsWith('https://api.figma.com/v1/files/'))).toBe(true)
     expect(new Set(figma.calls.filter((c) => c.url.includes('/C/')).map((c) => c.token))).toEqual(new Set(['tc']))
   })
@@ -73,6 +84,14 @@ describe('loadLibraries', () => {
     expect(index.files[0]!.warning).toContain('Publish the library')
   })
 
+  it('reads no styles, and still loads, when the key can’t list them', async () => {
+    const figma = fakeFigma({ '/styles': [403, JSON.stringify({ err: 'Invalid scope' })] })
+    const index = await loadLibraries(filesFromSettings(df({ file1Id: 'V', file1Key: 't' })), figma.fetch)
+    expect(index.files[0]).toMatchObject({ variables: 5, styles: 0 })
+    expect(index.files[0]!.error).toBeUndefined()
+    expect(index.styles).toEqual([])
+  })
+
   it('falls back to the key when the name can’t be read', async () => {
     const figma = fakeFigma({ '/meta': [403, JSON.stringify({ err: 'Invalid scope' })] })
     const index = await loadLibraries(filesFromSettings(df({ file1Id: 'V', file1Key: 't' })), figma.fetch)
@@ -84,7 +103,7 @@ describe('testDualFile', () => {
   it('summarises each file', async () => {
     const figma = fakeFigma({}, { V: 'Brand UI', C: 'Library' })
     const { message } = await testDualFile(df({ enabled: false, file1Id: 'https://www.figma.com/design/V/x', file1Key: ' t ', file2Id: 'C' }), figma.fetch)
-    expect(message).toBe('File 1 “Brand UI”: 5 variables in 2 collections. File 2 “Library”: 2 published components.')
+    expect(message).toBe('File 1 “Brand UI”: 5 variables in 2 collections, 2 published styles. File 2 “Library”: 2 published components, 2 published styles.')
   })
 
   it('rejects incomplete values without calling Figma, and a failing file with its reason', async () => {

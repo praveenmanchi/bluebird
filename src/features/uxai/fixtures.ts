@@ -216,8 +216,13 @@ export const MOCK_SELECTION: SelectionContext = {
 export const SAMPLE_LIBRARY: LibraryIndex = {
   loadedAt: 0,
   files: [
-    { slot: 1, fileKey: 'VARS1', name: 'Brand UI', roles: ['variables'], variables: 4, components: 0, collections: ['Brand UI'] },
+    { slot: 1, fileKey: 'VARS1', name: 'Brand UI', roles: ['variables'], variables: 4, components: 0, styles: 3, collections: ['Brand UI'] },
     { slot: 2, fileKey: 'COMP2', name: 'Components', roles: ['components'], variables: 0, components: 3, collections: [] },
+  ],
+  styles: [
+    { kind: 'text', key: 'ks-title', nodeId: '50:1', name: 'Title/Semantics', description: 'Section titles', fontFamily: 'Noto Sans', fontStyle: 'Semi Bold', fontWeight: 600, fontSize: 16, lineHeight: 22.4, letterSpacing: 0, fileKey: 'VARS1' },
+    { kind: 'text', key: 'ks-body', nodeId: '50:2', name: 'Body/Regular', description: '', fontFamily: 'Noto Sans', fontStyle: 'Regular', fontWeight: 400, fontSize: 11, lineHeight: 15.4, letterSpacing: 0, fileKey: 'VARS1' },
+    { kind: 'color', key: 'ks-accent', nodeId: '50:3', name: 'Legacy/Accent', description: 'Pre-variables accent', hex: '#0C8CE9', fileKey: 'VARS1' },
   ],
   collections: [{ name: 'Brand UI', modes: ['Bridge', 'Ikea'], variables: 4, fileKey: 'VARS1' }],
   variables: [

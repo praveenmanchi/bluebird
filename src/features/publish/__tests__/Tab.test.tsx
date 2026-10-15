@@ -95,6 +95,40 @@ describe('Publish tab', () => {
     expect(screen.getByRole('button', { name: 'Start the next release' })).toBeInTheDocument()
   })
 
+  it('previews the commit contents on Final review and offers Teams only with a webhook', async () => {
+    await extracted()
+    click('Next: Release notes'); click('Next: Final review')
+    expect(await find('Commit contents')).toBeInTheDocument()
+    const tabs = await screen.findAllByRole('tab', { name: /tokens\.json|releases\/v4\.0\.0\.json|\.bluebird\/releases\.json|CHANGELOG\.md/ })
+    expect(tabs).toHaveLength(4)
+    expect(screen.getByRole('tabpanel', { name: 'tokens.json' })).toHaveTextContent('"version": "v4.0.0"')
+    fireEvent.click(screen.getByRole('tab', { name: /CHANGELOG\.md/ }))
+    expect(screen.getByRole('tabpanel', { name: 'CHANGELOG.md' })).toHaveTextContent('## v4.0.0 — Button, Date picker and 10 more')
+    expect(screen.getByText('Added above the existing entries of the repository’s CHANGELOG.md.')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Post the changelog to Teams' })).toBeChecked()
+    expect(screen.getByText('1 webhook in Settings › Notifications')).toBeInTheDocument()
+    cleanup()
+    await extracted({ webhooks: 0 })
+    click('Next: Release notes'); click('Next: Final review')
+    const teams = await screen.findByRole('checkbox', { name: 'Post the changelog to Teams' })
+    expect(teams).toBeDisabled()
+    expect(teams).not.toBeChecked()
+    expect(screen.getByText(/No webhook — add one in Settings › Notifications/)).toBeInTheDocument()
+  })
+
+  it('names the GitHub baseline when diff comparison supplied it', async () => {
+    const handlers = createMockHandlers({ stepDelayMs: 0 })
+    const extract = handlers['publish:extract'] as () => Promise<Record<string, unknown>>
+    const client = createRpcClient(createMockTransport({
+      ...handlers,
+      'publish:extract': async () => ({ ...(await extract()), baselineSource: 'github', baselineNote: 'Loaded from bridge-ds-site because this file had no release.' }),
+    }, 0))
+    render(<RpcProvider client={client}><Tab /></RpcProvider>)
+    fireEvent.click(await screen.findByRole('button', { name: 'Run extract' }))
+    expect(await find(/compared with v3.0.0 from bridge-ds-site on GitHub/)).toBeInTheDocument()
+    expect(screen.getByText('Loaded from bridge-ds-site because this file had no release.')).toBeInTheDocument()
+  })
+
   it('lets the designer pick another version and edit a note', async () => {
     await extracted()
     click('Next: Release notes')

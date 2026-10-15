@@ -68,6 +68,13 @@
   gap: var(--bb-mcp-space-tight) var(--bb-mcp-space-panel);
 }
 
+/* Reading the selection / running the checks: a Spinner beside its caption. */
+.bb-mcp-handoff__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-mcp-space-inline);
+}
+
 .bb-mcp-handoff__caption,
 .bb-mcp-handoff__summary {
   margin: 0;

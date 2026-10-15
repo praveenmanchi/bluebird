@@ -24,17 +24,31 @@ export const MAX_TEXT = 2048
 export const MAX_INSTRUCTIONS = 8000
 const text = () => z.string().check(z.maxLength(MAX_TEXT))
 
+/**
+ * Model ids as the providers list them on 2026-10-13 (docs/research/ux-ai-agents-research.md).
+ * Dateless Anthropic ids are pinned releases; Gemini 2.5 is deprecated (shutdown listed for
+ * 2026-10-16) and kept only for keys that still have it.
+ */
 export const MODEL_OPTIONS = {
-  claude: ['claude-opus-4-5', 'claude-sonnet-4-5', 'claude-haiku-4-5', 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'],
-  openai: ['gpt-4o', 'gpt-4.1', 'o3'],
-  gemini: ['gemini-1.5-pro', 'gemini-2.5-pro', 'gemini-2.5-flash'],
+  claude: ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5', 'claude-opus-4-8', 'claude-opus-4-6', 'claude-sonnet-4-6', 'claude-haiku-4-5'],
+  openai: ['gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4o'],
+  gemini: ['gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-pro', 'gemini-2.5-flash'],
 } as const
+
+/** Which provider answers UX AI and runs the agents. Shown as typed in the Settings select; `@shared/ai` maps it to an id. */
+export const PROVIDER_OPTIONS = ['Claude', 'OpenAI', 'Gemini'] as const
 
 export const OUTPUT_FORMATS = ['style-dictionary', 'tokens-studio', 'raw-json'] as const
 
 /** What a Dual File slot holds: one library file can carry variables, components, or both. */
 export const FILE_ROLES = ['Variables', 'Components', 'Variables + Components'] as const
 export type FileRole = (typeof FILE_ROLES)[number]
+
+/** A library file beyond the two Figma-designed slots (Settings "Add another library file"). */
+export const libraryFileEntrySchema = z.object({ id: text(), key: text(), role: text() })
+export type LibraryFileEntry = z.infer<typeof libraryFileEntrySchema>
+/** Two designed slots plus these; every file is one REST read per role, so keep the list sane. */
+export const MAX_EXTRA_FILES = 8
 
 export const sectionSchemas = {
   github: z.object({ apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean() }),
@@ -45,9 +59,13 @@ export const sectionSchemas = {
     enabled: z.boolean(),
     file1Id: text(), file1Key: text(), file1Role: text(),
     file2Id: text(), file2Key: text(), file2Role: text(),
+    /** Files 3…N. Absent in settings stored before it existed. */
+    extraFiles: z._default(z.array(libraryFileEntrySchema).check(z.maxLength(MAX_EXTRA_FILES)), []),
   }),
   ai: z.object({
     enabled: z.boolean(),
+    /** One of PROVIDER_OPTIONS: the provider whose model and key answer. Absent in stored settings from before it existed → Claude. */
+    provider: z._default(text(), 'Claude'),
     claudeModel: text(), claudeKey: text(),
     openaiModel: text(), openaiKey: text(),
     geminiModel: text(), geminiKey: text(),
@@ -74,7 +92,8 @@ export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof Int
   notifications: ['designSystemWebhook', 'devTeamWebhook'],
   storybook: [],
   zeroheight: ['apiKey'],
-  dualFile: ['file1Key', 'file2Key'],
+  // extraFiles carry each file's key, so the whole list stays with the person.
+  dualFile: ['file1Key', 'file2Key', 'extraFiles'],
   ai: ['claudeKey', 'openaiKey', 'geminiKey'],
   mcp: ['token'],
   jira: ['apiKey'],
@@ -104,8 +123,8 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   notifications: { designSystemWebhook: '', devTeamWebhook: '', emails: '' },
   storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true },
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
-  dualFile: { enabled: true, file1Id: '', file1Key: '', file1Role: 'Variables', file2Id: '', file2Key: '', file2Role: 'Components' },
-  ai: { enabled: true, claudeModel: 'claude-opus-4-5', claudeKey: '', openaiModel: 'gpt-4o', openaiKey: '', geminiModel: 'gemini-1.5-pro', geminiKey: '', managedAgents: true, instructions: '' },
+  dualFile: { enabled: true, file1Id: '', file1Key: '', file1Role: 'Variables', file2Id: '', file2Key: '', file2Role: 'Components', extraFiles: [] },
+  ai: { enabled: true, provider: 'Claude', claudeModel: 'claude-opus-5-5', claudeKey: '', openaiModel: 'gpt-5.5', openaiKey: '', geminiModel: 'gemini-3.5-flash', geminiKey: '', managedAgents: true, instructions: '' },
   mcp: { enabled: true, repo: '', baseBranch: 'main', token: '', filePath: 'src/tokens/design-tokens.json', outputFormat: '', branchTemplate: '', enterpriseUrl: '' },
   jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '' },
 }
@@ -127,6 +146,11 @@ const FILE_ID_FIELDS = new Set(['file1Id', 'file2Id'])
 /** Trims every text value (pasted keys and URLs often carry spaces); Dual File IDs also accept the whole file URL. */
 export function normalizeIntegration<K extends IntegrationId>(values: IntegrationValues<K>, section?: K): IntegrationValues<K> {
   return Object.fromEntries(Object.entries(values).map(([k, v]) => {
+    if (section === 'dualFile' && k === 'extraFiles' && Array.isArray(v)) {
+      // Empty rows (added, never filled) are dropped on save.
+      const rows = (v as LibraryFileEntry[]).map((f) => ({ id: figmaFileKey(f.id ?? ''), key: (f.key ?? '').trim(), role: (f.role ?? '').trim() }))
+      return [k, rows.filter((f) => f.id || f.key)]
+    }
     if (typeof v !== 'string') return [k, v]
     return [k, section === 'dualFile' && FILE_ID_FIELDS.has(k) ? figmaFileKey(v) : v.trim()]
   })) as IntegrationValues<K>

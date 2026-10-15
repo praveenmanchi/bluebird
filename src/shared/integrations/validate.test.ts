@@ -57,9 +57,17 @@ describe('validateIntegration', () => {
     expect(validateIntegration('dualFile', { ...df, file1Role: 'Icons' }).file1Role).toContain('Variables + Components')
     expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'figd_ab c' }).file1Key).toContain('Paste it again')
     expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'figd_“x”' }).file1Key).toBeDefined()
+    const extra = (rows: { id: string; key: string; role: string }[]) => validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'k', extraFiles: rows })
+    expect(extra([{ id: 'CCC', key: '', role: 'Components' }])).toEqual({})
+    expect(extra([{ id: 'https://x', key: 't', role: 'Components' }])['extraFiles.0.id']).toContain('figma.com/design')
+    expect(extra([{ id: '', key: 't', role: 'Components' }])['extraFiles.0.id']).toContain('File 3')
+    expect(extra([{ id: 'AAA', key: '', role: 'Components' }])['extraFiles.0.id']).toContain('already listed')
+    expect(extra([{ id: 'CCC', key: '', role: 'Icons' }])['extraFiles.0.role']).toContain('Variables + Components')
+    expect(validateIntegration('dualFile', { ...df, extraFiles: [{ id: 'CCC', key: '', role: 'Components' }] })['extraFiles.0.key']).toContain('File 3')
   })
 
   it('only accepts the offered models', () => {
     expect(validateIntegration('ai', { ...DEFAULT_INTEGRATIONS.ai, openaiModel: 'gpt-2' }).openaiModel).toContain('gpt-4o')
+    expect(validateIntegration('ai', { ...DEFAULT_INTEGRATIONS.ai, provider: 'Mistral' }).provider).toContain('Claude, OpenAI, Gemini')
   })
 })

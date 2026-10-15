@@ -134,6 +134,24 @@ describe('SettingsIntegrations', () => {
       expect(api.save).toHaveBeenCalledWith('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'JPZ7koqomjcjczGQuhIMVH', file1Key: 'figd_test', file1Role: 'Variables + Components' })
     })
 
+    it('adds, fills, validates and removes extra library files', async () => {
+      const api = fakeApi()
+      render(<SettingsIntegrations api={api} />)
+      const dual = await section('Dual File Mode')
+      fireEvent.click(within(dual).getByRole('button', { name: 'Add another library file' }))
+      fireEvent.input(within(dual).getByLabelText('File 3 ID'), { target: { value: 'https://www.figma.com/design/ICONS3/Icons' } })
+      fireEvent.click(within(dual).getByRole('button', { name: 'Save Configuration' }))
+      expect(await within(dual).findByText('Check the highlighted fields')).toBeInTheDocument()
+      expect(within(dual).getByLabelText('File 3 API Key')).toHaveAccessibleDescription(expect.stringContaining('File 3'))
+      fireEvent.input(within(dual).getByLabelText('File 1 ID'), { target: { value: 'VARS1' } })
+      fireEvent.input(within(dual).getByLabelText('File 1 API Key'), { target: { value: 'figd_test' } })
+      fireEvent.click(within(dual).getByRole('button', { name: 'Add another library file' }))
+      fireEvent.click(within(dual).getByRole('button', { name: 'Remove File 4' }))
+      fireEvent.click(within(dual).getByRole('button', { name: 'Save Configuration' }))
+      await within(dual).findByText('Saved')
+      expect(api.save).toHaveBeenCalledWith('dualFile', expect.objectContaining({ file1Id: 'VARS1', extraFiles: [{ id: 'ICONS3', key: '', role: 'Components' }] }))
+    })
+
     it('asks for the key a file needs before saving', async () => {
       const api = fakeApi()
       render(<SettingsIntegrations api={api} />)
@@ -191,9 +209,9 @@ describe('SettingsIntegrations', () => {
     const trigger = within(ai).getAllByRole('button', { name: /Default Model/ })[0]!
     fireEvent.click(trigger)
     const listbox = within(ai).getByRole('listbox', { name: 'Default Model' })
-    expect(document.activeElement).toBe(within(listbox).getByRole('option', { name: /claude-opus-4-5/ }))
+    expect(document.activeElement).toBe(within(listbox).getByRole('option', { name: /claude-opus-5-5/ }))
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowDown' })
-    expect(document.activeElement).toBe(within(listbox).getByRole('option', { name: /claude-sonnet-4-5/ }))
+    expect(document.activeElement).toBe(within(listbox).getByRole('option', { name: /claude-sonnet-5-5/ }))
     fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
     expect(within(ai).queryByRole('listbox')).toBeNull()
     expect(document.activeElement).toBe(trigger)

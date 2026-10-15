@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite'
 import { figma } from './ShipStep.figma'
 import { ScreenFixture } from './ScreenFixture'
-import { githubConnected, rejectNextPush, shipPhase, shipProgress } from '../state'
+import { NO_GITHUB } from '../fixtures'
+import { github, rejectNextPush, shipPhase, shipProgress } from '../state'
 
 const meta = { title: 'Screens/MCP handoff/4 Ship', parameters: { figma: { setId: figma.setId, name: figma.name } } } satisfies Meta
 export default meta
@@ -14,7 +15,7 @@ export const Ship: Story = {
 }
 
 /** Figma "MCP v2 · Empty · GitHub not connected" (40000497:8416). */
-export const GithubNotConnected: Story = { render: () => <ScreenFixture at={3} setup={() => { githubConnected.value = false }} /> }
+export const GithubNotConnected: Story = { render: () => <ScreenFixture at={3} setup={() => { github.value = NO_GITHUB }} /> }
 
 /** Figma "MCP v2 · Error · Push rejected" (40000497:9109). */
 export const PushRejected: Story = {

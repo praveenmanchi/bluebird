@@ -2,7 +2,7 @@
 import { computed, signal } from '@preact/signals'
 import { draftNote, draftTitle } from './notes'
 import { bumpVersion, suggestBump } from './semver'
-import type { ExtractResult, PipelineStepState, PublishResult, StatusResult } from './messages'
+import type { CommitPreview, ExtractResult, PipelineStepState, PublishResult, StatusResult } from './messages'
 import type { Bump, Change } from './types'
 
 export type ExtractPhase = 'idle' | 'extracting' | 'done' | 'failed'
@@ -34,6 +34,12 @@ export const editedNotes = signal<Readonly<Record<string, string>>>({})
 export const editing = signal<string | null>(null)
 export const options = signal<PublishOptions>({ openPr: true, postToTeams: true, tag: true })
 
+/** The Final review's "Commit contents": null until publish:preview answers; `previewError` when it could not. */
+export const preview = signal<CommitPreview | null>(null)
+export const previewError = signal<string | null>(null)
+/** The previewed file's path; the first file when null. */
+export const previewFile = signal<string | null>(null)
+
 export const publishPhase = signal<PublishPhase>('idle')
 export const steps = signal<readonly PipelineStepState[]>([])
 export const publishResult = signal<PublishResult | null>(null)
@@ -54,7 +60,7 @@ export function noteFor(change: Change): string {
 /** Load a fresh extract: everything included, notes and version back to their drafts. */
 export function loadExtract(next: ExtractResult): void {
   result.value = next
-  status.value = { repo: next.repo, baseline: next.baseline, history: next.history }
+  status.value = { repo: next.repo, baseline: next.baseline, history: next.history, notify: status.value?.notify ?? { webhooks: 0 } }
   extractPhase.value = 'done'
   extractError.value = null
   included.value = new Set(next.changes.map((c) => c.id))
@@ -66,6 +72,9 @@ export function loadExtract(next: ExtractResult): void {
   editedNotes.value = {}
   editing.value = null
   step.value = 0
+  preview.value = null
+  previewError.value = null
+  previewFile.value = null
   publishPhase.value = 'idle'
   steps.value = []
   publishResult.value = null
@@ -103,6 +112,9 @@ export function reset(): void {
   editedNotes.value = {}
   editing.value = null
   options.value = { openPr: true, postToTeams: true, tag: true }
+  preview.value = null
+  previewError.value = null
+  previewFile.value = null
   publishPhase.value = 'idle'
   steps.value = []
   publishResult.value = null

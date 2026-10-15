@@ -14,8 +14,9 @@ describe('footer status pills', () => {
   it('UX AI is good once a provider has a key, says what to add otherwise, and is off when switched off', () => {
     const ai = DEFAULT_INTEGRATIONS.ai
     expect(uxaiPill(ai)).toEqual({ label: 'UX AI', status: 'issue', title: expect.stringContaining('Add a Claude, OpenAI or Gemini API key') })
-    expect(uxaiPill({ ...ai, claudeKey: 'sk-ant-test' })).toEqual({ label: 'UX AI', status: 'good', title: 'Answers with Claude (claude-opus-4-5). Use Test Connection in Settings to check the key.' })
-    expect(uxaiPill({ ...ai, openaiKey: 'sk-proj-test' })).toMatchObject({ status: 'issue', title: expect.stringContaining('Only Claude is wired up') })
+    expect(uxaiPill({ ...ai, claudeKey: 'sk-ant-test' })).toEqual({ label: 'UX AI', status: 'good', title: 'Answers with Claude (claude-opus-5-5). Use Test Connection in Settings to check the key.' })
+    expect(uxaiPill({ ...ai, provider: 'OpenAI', openaiKey: 'sk-proj-test' })).toMatchObject({ status: 'good', title: expect.stringContaining('Answers with OpenAI (gpt-5.5)') })
+    expect(uxaiPill({ ...ai, openaiKey: 'sk-proj-test' })).toMatchObject({ status: 'issue', title: expect.stringContaining('Settings pick Claude but it has no key, so OpenAI (gpt-5.5) answers instead') })
     expect(uxaiPill({ ...ai, enabled: false, claudeKey: 'sk-ant-test' })).toMatchObject({ label: 'UX AI · off', status: 'issue' })
     expect(uxaiPill(undefined).status).toBe('retry')
   })

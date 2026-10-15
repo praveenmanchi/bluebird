@@ -51,11 +51,18 @@ function StartState({ onExtract, onRetryStatus }: ReviewStepProps) {
     const body = `${s.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Bluebird commits the tokens, release notes and changelog there and opens a pull request; your CI builds the site.`
     return <PublishEmptyState state="not-connected" body={body} actions={actions} />
   }
-  if (!s.baseline) return <PublishEmptyState state="first-release" actions={[{ label: 'Run first extract', variant: 'primary', onClick: onExtract }]} />
+  // With diff comparison on, the repository's copy of the releases counts too (Settings › GitHub).
+  const remote = s.repo.diffComparison ? ` A newer release on ${s.repo.branch} of ${s.repo.repo.split('/').pop()} is used instead.` : ''
+  if (!s.baseline) {
+    const body = s.repo.diffComparison
+      ? `This file has no release yet. Everything in it is listed, unless ${s.repo.repo.split('/').pop()} already holds a Bluebird release on ${s.repo.branch} — then only what changed since.`
+      : undefined
+    return <PublishEmptyState state="first-release" body={body} actions={[{ label: 'Run first extract', variant: 'primary', onClick: onExtract }]} />
+  }
   return (
     <PublishEmptyState
       state="ready-to-extract"
-      body={`Compares the variables, styles and components in this file with ${s.baseline.version}, the last published release. Nothing is committed until you publish.`}
+      body={`Compares the variables, styles and components in this file with ${s.baseline.version}, the last published release.${remote} Nothing is committed until you publish.`}
       actions={[{ label: 'Run extract', variant: 'primary', onClick: onExtract }]}
     />
   )
@@ -102,10 +109,11 @@ function ChangeList({ onExtract }: Pick<ReviewStepProps, 'onExtract'>) {
     <>
       <div class="bb-publish__extract">
         <span>
-          Extracted {relativeTime(r.extractedAt)} · {r.baseline ? `compared with ${r.baseline.version}` : 'first release'} · {plural(vars, 'variable')}, {plural(comps, 'component')} changed
+          Extracted {relativeTime(r.extractedAt)} · {r.baseline ? `compared with ${r.baseline.version}${r.baselineSource === 'github' ? ` from ${r.repo.repo.split('/').pop()} on GitHub` : ''}` : 'first release'} · {plural(vars, 'variable')}, {plural(comps, 'component')} changed
         </span>
         <Button variant="secondary" onClick={onExtract}>Re-run extract</Button>
       </div>
+      {r.baselineNote && <p class="bb-publish__hint">{r.baselineNote}</p>}
       <SectionTitle
         title={r.baseline ? `Changes since ${r.baseline.version}` : 'Everything in this file'}
         showCount

@@ -1,29 +1,25 @@
-// Fake agent runs: timers that move the tab-local signals the way a real run
-// would stream progress. Pure helpers first (unit tested), then the actions.
-import { AGENTS, PIPELINE_ORDER, VOICE_COPY, agentById, isRunnable, type AgentDef, type AgentFinding, type AgentId } from './fixtures'
+// Tab actions: real runs over the bridge, streamed progress, fixes written back,
+// annotations, the report frame, the agent conversation. Pure helpers first
+// (unit tested), then the actions, which take the RpcClient the Tab holds.
+import type { RpcClient } from '@shared/bridge'
+import { AGENTS, PIPELINE_ORDER, agentById, isRunnable, type AgentDef } from './agents'
 import {
-  agentId, cards, chat, filter, findingStatus, run, runAll, runAllApplied, view, voice, voiceReturn,
+  MSG, type AgentFinding, type AgentId, type AnnotateResult, type ApplyResult, type ChatResult, type ReportResult, type RunProgress, type RunRequest, type RunResult, type ScopeInfo,
+} from './messages'
+import {
+  agentId, brands, chat, filter, findingStatus, mode, notice, outputs, results, rules, run, runAll, runAllApplied, scope, scopeInfo, transcript, view, voice, voiceReturn,
   type FindingFilter, type FindingStatus, type View,
 } from './state'
 
-export const TICK_MS = 150
-/** Single run: percentage points per tick (≈3.75 s for a whole run). */
-export const RUN_STEP = 4
-/** Run all: percentage points per tick for the agent currently running. */
-export const RUN_ALL_STEP = 10
-/** How long the agent's spoken reply plays before the bar goes idle. */
+/** A run reads the document and may wait on the model several times. */
+export const RUN_TIMEOUT_MS = 5 * 60_000
+export const WRITE_TIMEOUT_MS = 60_000
+export const CHAT_TIMEOUT_MS = 90_000
+/** How long the spoken reply "plays" before the bar goes idle (no TTS in the plugin). */
 export const SPEAK_MS = 2500
 
-/** Progress thresholds at which each of the four Running steps is done. */
-export const STEP_DONE_AT: readonly number[] = [15, 30, 55, 100]
-
-/** Findings revealed at this progress: the k-th of N lands at (k+1)/(N+1). 14 findings at 64% → 9. */
-export function revealedCount(total: number, progress: number): number {
-  return Math.min(total, Math.floor((progress * (total + 1)) / 100))
-}
-
 export function openFindings(findings: readonly AgentFinding[], status: Readonly<Record<string, FindingStatus>>): AgentFinding[] {
-  return findings.filter((f) => status[f.id] === undefined)
+  return findings.filter((f) => status[f.id] === undefined || status[f.id] === 'failed')
 }
 
 export function matchesFilter(finding: AgentFinding, by: FindingFilter): boolean {
@@ -55,18 +51,70 @@ export function overallProgress(progress: Partial<Record<AgentId, number>>): num
   return Math.round(sum / runnable.length)
 }
 
+/** The Dev Mode annotation for a finding: rule, title, fix. */
+export const annotationLabel = (f: AgentFinding): string => `${f.meta.split(' · ')[0]} — ${f.title}.${f.fixLabel ? ` ${f.fixLabel}.` : ''}`
+
+/** "14 issues · 6 fixable with tokens" for a finished run. */
+export function runSummary(result: RunResult): string {
+  const n = result.findings.length
+  if (!n) return 'No issues found'
+  const fixable = result.findings.filter((f) => f.fixable).length
+  return `${n} ${n === 1 ? 'issue' : 'issues'}${fixable ? ` · ${fixable} fixable` : ''}`
+}
+
+/** What the agent conversation knows about the latest run. */
+export function chatContext(agent: AgentDef, result: RunResult | undefined, status: Readonly<Record<string, FindingStatus>>): string {
+  if (!result) return `Agent: ${agent.title}. No run yet in this session. Scope options: selection, current frame, section, whole page.`
+  const open = openFindings(result.findings, status)
+  const lines = [
+    `Agent: ${agent.title}. Scope: ${result.scope.name} (${result.scope.frames} frames, ${result.scope.layers} layers). Score: ${result.score}/100.`,
+    `${open.length} open findings (${open.filter((f) => f.fixable).length} safe to apply), ${result.findings.length - open.length} already applied or ignored.`,
+    ...open.slice(0, 25).map((f) => `- [${f.severity}] ${f.title} (${f.meta})${f.fixLabel ? ` ${f.fixLabel}` : ''}`),
+    ...(open.length > 25 ? [`… and ${open.length - 25} more`] : []),
+  ]
+  return lines.join('\n')
+}
+
+export const markdownReport = (agent: AgentDef, result: RunResult, findings: readonly AgentFinding[]): string => [
+  `# ${agent.title} · ${result.scope.name}`,
+  '',
+  `${result.scope.frames} frames · ${result.scope.layers} layers · score ${result.score}/100 · ${new Date().toISOString().slice(0, 10)}`,
+  '',
+  ...findings.map((f) => `- **${f.severity.toUpperCase()}** ${f.title}  \n  ${f.meta}${f.fixLabel ? `  \n  ${f.fixLabel}` : ''}`),
+].join('\n')
+
 // ---- actions ---------------------------------------------------------------
 
-let runTimer: ReturnType<typeof setInterval> | undefined
-let runAllTimer: ReturnType<typeof setInterval> | undefined
+let seq = 0
+const nextRunId = () => `run-${Date.now().toString(36)}-${(seq += 1).toString(36)}`
 let speakTimer: ReturnType<typeof setTimeout> | undefined
+let unsubscribe: (() => void) | undefined
+let stopRunAllFlag = false
 
-function setCard(id: AgentId, next: { state: 'ready' | 'running' | 'idle'; status?: string; meta?: string }): void {
-  cards.value = { ...cards.value, [id]: next }
+const say = (tone: 'info' | 'error', text: string) => { notice.value = { tone, text } }
+
+function rulesFor(agent: AgentDef): string[] {
+  const on = agent.rules.filter((r) => rules.value[`${agent.id}:${r.id}`] ?? r.enabled).map((r) => r.id)
+  return on.length === agent.rules.length ? [] : on
+}
+
+export async function refreshScope(rpc: RpcClient): Promise<ScopeInfo | null> {
+  try {
+    const info = await rpc.call<ScopeInfo>(MSG.scope, { scope: scope.value }, WRITE_TIMEOUT_MS)
+    scopeInfo.value = info
+    return info
+  } catch {
+    scopeInfo.value = null
+    return null
+  }
+}
+
+export function setScope(rpc: RpcClient, next: RunRequest['scope']): void {
+  scope.value = next
+  void refreshScope(rpc)
 }
 
 export function openSetup(id: AgentId): void {
-  if (!isRunnable(agentById(id))) return
   agentId.value = id
   view.value = 'setup'
 }
@@ -74,142 +122,256 @@ export function openSetup(id: AgentId): void {
 export function openResults(id: AgentId): void {
   agentId.value = id
   filter.value = 'all'
+  notice.value = null
   view.value = 'results'
 }
 
-export function backToGallery(): void {
-  stopRun()
+export function backToGallery(rpc: RpcClient): void {
+  void stopRun(rpc)
   view.value = 'gallery'
 }
 
-export function startRun(id: AgentId = agentId.value): void {
+/** One agent over the current scope, streamed. Resolves with the result (also stored in `results`). */
+export async function runOne(rpc: RpcClient, id: AgentId, { navigate = true }: { navigate?: boolean } = {}): Promise<RunResult | null> {
   const agent = agentById(id)
-  if (!isRunnable(agent)) return
-  stopRun()
-  agentId.value = id
+  const runId = nextRunId()
   // A new run re-opens every finding of this agent.
-  findingStatus.value = Object.fromEntries(Object.entries(findingStatus.value).filter(([fid]) => !agent.findings.some((f) => f.id === fid)))
-  run.value = { agent: id, progress: 0 }
-  setCard(id, { state: 'running', status: 'Running 0%' })
-  view.value = 'running'
-  runTimer = setInterval(() => {
+  findingStatus.value = Object.fromEntries(Object.entries(findingStatus.value).filter(([fid]) => !fid.startsWith(`${id}:`)))
+  run.value = { runId, agent: id, percent: 0, label: 'Reading the scope…', steps: [], findings: [] }
+  if (navigate) { agentId.value = id; view.value = 'running' }
+  unsubscribe?.()
+  unsubscribe = rpc.on<RunProgress>(MSG.progress, (p) => {
     const current = run.value
-    if (!current) return
-    const progress = Math.min(100, current.progress + RUN_STEP)
-    run.value = { ...current, progress }
-    setCard(id, { state: 'running', status: `Running ${progress}%` })
-    if (progress >= 100) finishRun(agent)
-  }, TICK_MS)
+    if (!current || p.runId !== runId) return
+    run.value = { ...current, percent: p.percent, label: p.label, steps: p.steps, findings: [...current.findings, ...p.findings] }
+  })
+  const request: RunRequest = {
+    runId, agent: id, scope: scope.value, rules: rulesFor(agent),
+    brandModes: id === 'accessibility' ? Object.entries(brands.value).filter(([, on]) => on).map(([b]) => b) : [],
+    mode: mode.value,
+  }
+  try {
+    const result = await rpc.call<RunResult>(MSG.run, request, RUN_TIMEOUT_MS)
+    if (run.value?.runId !== runId) return null // stopped meanwhile
+    results.value = { ...results.value, [id]: result }
+    run.value = null
+    if (navigate && view.value === 'running') { filter.value = 'all'; notice.value = null; view.value = 'results' }
+    void afterRun(rpc, agent, result)
+    return result
+  } catch (error: unknown) {
+    if (run.value?.runId === runId) {
+      run.value = null
+      say('error', error instanceof Error ? error.message : 'The run failed.')
+      if (navigate && view.value === 'running') view.value = 'setup'
+    }
+    return null
+  } finally {
+    if (run.value === null) { unsubscribe?.(); unsubscribe = undefined }
+  }
 }
 
-function finishRun(agent: AgentDef): void {
-  clearInterval(runTimer)
-  runTimer = undefined
-  run.value = null
-  setCard(agent.id, { state: 'ready', meta: `Last run just now · ${agent.findings.length} issues` })
-  filter.value = 'all'
-  if (view.value === 'running') view.value = 'results'
+/** The outputs ticked in Setup, once a run lands: auto-fix, annotations, report frame. */
+async function afterRun(rpc: RpcClient, agent: AgentDef, result: RunResult): Promise<void> {
+  if (!result.findings.length) return
+  const messages: string[] = []
+  if (mode.value === 'autofix') {
+    const safe = result.findings.filter((f) => f.fixable)
+    if (safe.length) {
+      const applied = await applyFindings(rpc, safe)
+      if (applied) messages.push(`${applied} safe ${applied === 1 ? 'fix' : 'fixes'} applied`)
+    }
+  }
+  if (outputs.value.annotations) {
+    try {
+      const { annotated } = await rpc.call<AnnotateResult>(MSG.annotate, { findings: result.findings.map((f) => ({ nodeIds: f.nodeIds, label: annotationLabel(f) })) }, WRITE_TIMEOUT_MS)
+      messages.push(`Dev Mode annotations on ${annotated} ${annotated === 1 ? 'layer' : 'layers'}`)
+    } catch { /* fixtures and layers that refuse annotations */ }
+  }
+  if (outputs.value.report) {
+    const written = await writeReport(rpc, agent, result, result.findings, false)
+    if (written) messages.push(`Report frame “${written.name}” on the canvas`)
+  }
+  if (messages.length) say('info', messages.join(' · '))
 }
 
-/** Stop pressed: abandon the run and go back to Setup. */
-export function stopRun(): void {
-  if (runTimer !== undefined) clearInterval(runTimer)
-  runTimer = undefined
-  const current = run.value
-  if (!current) return
-  run.value = null
-  setCard(current.agent, { state: 'ready' })
-  if (view.value === 'running') view.value = 'setup'
+export async function writeReport(rpc: RpcClient, agent: AgentDef, result: RunResult, findings: readonly AgentFinding[], announce = true): Promise<ReportResult | null> {
+  try {
+    const written = await rpc.call<ReportResult>(MSG.report, {
+      title: `${agent.title} · ${result.scope.name}`,
+      summary: `${result.scope.frames} frames · ${result.scope.layers} layers · score ${result.score}/100 · ${runSummary(result)}${result.brandModes.length ? ` · ${result.brandModes.join(', ')}` : ''}`,
+      rows: findings.map((f) => ({ severity: f.severity, title: f.title, meta: f.meta, fix: f.fixLabel, nodeId: f.nodeId })),
+    }, WRITE_TIMEOUT_MS)
+    if (announce) say('info', `Report frame “${written.name}” added to the canvas and selected.`)
+    return written
+  } catch (error: unknown) {
+    if (announce) say('error', error instanceof Error ? error.message : 'Couldn’t draw the report.')
+    return null
+  }
 }
 
-/** Stop on a gallery card that was already running when the tab opened (Content, in the design). */
-export function stopCard(id: AgentId): void {
-  if (run.value?.agent === id) { stopRun(); return }
-  setCard(id, { state: 'ready', meta: 'Stopped · no results kept' })
+/** Apply fixes in Figma; applied findings leave the list, failed ones stay with the reason. Returns how many applied. */
+export async function applyFindings(rpc: RpcClient, findings: readonly AgentFinding[]): Promise<number> {
+  const withFix = findings.filter((f) => f.fix && f.fix.kind !== 'manual')
+  if (!withFix.length) return 0
+  try {
+    const result = await rpc.call<ApplyResult>(MSG.apply, { fixes: withFix.map((f) => ({ id: f.id, nodeIds: f.nodeIds, fix: f.fix })) }, WRITE_TIMEOUT_MS)
+    const next = { ...findingStatus.value }
+    for (const id of result.applied) next[id] = 'applied'
+    for (const { id } of result.failed) next[id] = 'failed'
+    findingStatus.value = next
+    if (result.failed.length) say('error', `${result.failed.length} ${result.failed.length === 1 ? 'fix' : 'fixes'} couldn’t be applied: ${result.failed[0]!.reason}`)
+    return result.applied.length
+  } catch (error: unknown) {
+    say('error', error instanceof Error ? error.message : 'Couldn’t apply the fixes.')
+    return 0
+  }
+}
+
+export async function applySafeFixes(rpc: RpcClient, findings: readonly AgentFinding[]): Promise<number> {
+  const safe = openFindings(findings, findingStatus.value).filter((f) => f.fixable)
+  const applied = await applyFindings(rpc, safe)
+  if (applied) say('info', `${applied} safe ${applied === 1 ? 'fix' : 'fixes'} applied in Figma.`)
+  return applied
 }
 
 export function setFindingStatus(id: string, status: FindingStatus): void {
   findingStatus.value = { ...findingStatus.value, [id]: status }
 }
 
-export function applySafeFixes(findings: readonly AgentFinding[]): void {
-  const next = { ...findingStatus.value }
-  for (const f of openFindings(findings, findingStatus.value)) if (f.fixable) next[f.id] = 'applied'
-  findingStatus.value = next
+/** Stop pressed: tell the sandbox, abandon the run and go back to Setup. */
+export async function stopRun(rpc: RpcClient): Promise<void> {
+  const current = run.value
+  if (!current) return
+  run.value = null
+  unsubscribe?.()
+  unsubscribe = undefined
+  if (view.value === 'running') view.value = 'setup'
+  try { await rpc.call(MSG.stop, { runId: current.runId }, 5000) } catch { /* the run may already be over */ }
 }
 
-export function startRunAll(): void {
-  stopRunAll()
+export async function startRunAll(rpc: RpcClient): Promise<void> {
+  stopRunAllFlag = false
   runAll.value = {}
   runAllApplied.value = false
   view.value = 'run-all'
-  runAllTimer = setInterval(() => {
-    const progress = runAll.value ?? {}
-    const current = PIPELINE_ORDER.map(agentById).filter(isRunnable).find((a) => (progress[a.id] ?? 0) < 100)
-    if (!current) { clearInterval(runAllTimer); runAllTimer = undefined; return }
-    runAll.value = { ...progress, [current.id]: Math.min(100, (progress[current.id] ?? 0) + RUN_ALL_STEP) }
-  }, TICK_MS)
-}
-
-export function stopRunAll(): void {
-  if (runAllTimer !== undefined) clearInterval(runAllTimer)
-  runAllTimer = undefined
+  for (const id of PIPELINE_ORDER) {
+    if (stopRunAllFlag) return
+    if (!isRunnable(agentById(id))) continue
+    const off = rpc.on<RunProgress>(MSG.progress, (p) => { if (run.value?.runId === p.runId) runAll.value = { ...(runAll.value ?? {}), [id]: Math.min(99, p.percent) } })
+    const result = await runOne(rpc, id, { navigate: false })
+    off()
+    if (stopRunAllFlag) return
+    runAll.value = { ...(runAll.value ?? {}), [id]: result ? 100 : 100 }
+  }
 }
 
 /** "Stop all": halt the pipeline and go back to the gallery. */
-export function stopAllAndLeave(): void {
-  stopRunAll()
+export function stopAllAndLeave(rpc: RpcClient): void {
+  stopRunAllFlag = true
+  void stopRun(rpc)
   runAll.value = null
   view.value = 'gallery'
 }
 
-/** Mic pressed. Idle anywhere → Voice view, listening; listening → speaking; speaking → interrupt. */
-export function toggleMic(): void {
+// ---- voice -----------------------------------------------------------------
+
+type Recognition = { start(): void; stop(): void; abort(): void; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null; onend: (() => void) | null; onerror: (() => void) | null; lang: string; interimResults: boolean; continuous: boolean }
+let recognition: Recognition | null = null
+
+/** The browser's speech recognition, when the host has one (Figma desktop may not). */
+export function speechRecognition(): Recognition | null {
+  const w = globalThis as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition }
+  const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition
+  if (!Ctor) return null
+  try { return new Ctor() } catch { return null }
+}
+
+/** Mic pressed. Idle anywhere → Voice view and listen; listening → send what was heard; speaking → interrupt. */
+export function toggleMic(rpc: RpcClient): void {
   if (view.value !== 'voice') {
     voiceReturn.value = view.value
     view.value = 'voice'
-    voice.value = 'listening'
-    return
+    voice.value = 'idle'
+    transcript.value = ''
   }
   if (voice.value === 'listening') {
-    chat.value = [...chat.value, { role: 'user', text: VOICE_COPY.listening }]
-    voice.value = 'speaking'
-    clearTimeout(speakTimer)
-    speakTimer = setTimeout(() => {
-      speakTimer = undefined
-      chat.value = [...chat.value, { role: 'assistant', text: VOICE_COPY.speaking.replace(/[“”]/g, '') }]
-      voice.value = 'idle'
-    }, SPEAK_MS)
-    return
-  }
-  if (voice.value === 'speaking') {
-    clearTimeout(speakTimer)
-    speakTimer = undefined
+    recognition?.stop()
+    recognition = null
+    const heard = transcript.value.trim()
     voice.value = 'idle'
+    if (heard) void sendMessage(rpc, heard)
     return
   }
+  if (voice.value === 'speaking') { clearTimeout(speakTimer); speakTimer = undefined; voice.value = 'idle'; return }
+  if (voice.value === 'thinking') return
+  recognition = speechRecognition()
+  if (!recognition) { say('info', 'No microphone access in this window: type your request below instead.'); return }
   voice.value = 'listening'
+  transcript.value = ''
+  recognition.lang = 'en-GB'
+  recognition.interimResults = true
+  recognition.continuous = true
+  recognition.onresult = (e) => { transcript.value = Array.from(e.results, (r) => r[0]?.transcript ?? '').join(' ') }
+  recognition.onerror = () => { voice.value = 'idle'; recognition = null }
+  recognition.onend = () => { if (voice.value === 'listening') toggleMic(rpc) }
+  try { recognition.start() } catch { voice.value = 'idle'; recognition = null }
 }
 
-export function sendQuickReply(text: string): void {
-  chat.value = [...chat.value, { role: 'user', text }]
+/** Phrases the agent ends its reply with when it offers to act; the plugin then does it. */
+const ACTIONS: Record<string, (rpc: RpcClient) => void | Promise<unknown>> = {
+  '[apply-safe]': (rpc) => { const r = results.value[agentId.value]; return r ? applySafeFixes(rpc, r.findings) : undefined },
+  '[annotate]': (rpc) => { const r = results.value[agentId.value]; return r ? rpc.call(MSG.annotate, { findings: r.findings.map((f) => ({ nodeIds: f.nodeIds, label: annotationLabel(f) })) }, WRITE_TIMEOUT_MS).catch(() => undefined) : undefined },
+  '[report]': (rpc) => { const r = results.value[agentId.value]; return r ? writeReport(rpc, agentById(agentId.value), r, openFindings(r.findings, findingStatus.value), false) : undefined },
+  '[show-findings]': () => { if (results.value[agentId.value]) openResults(agentId.value) },
+}
+
+/** A typed or spoken request to the current agent, answered by the configured model with the run as context. */
+export async function sendMessage(rpc: RpcClient, text: string): Promise<void> {
+  const prompt = text.trim()
+  if (!prompt || voice.value === 'thinking') return
+  const agent = agentById(agentId.value)
+  chat.value = [...chat.value, { role: 'user', text: prompt }]
+  transcript.value = ''
+  voice.value = 'thinking'
+  const history = chat.value.slice(-8).map((t) => ({ role: t.role, content: t.text }))
+  try {
+    const reply = await rpc.call<ChatResult>(MSG.chat, { agent: agent.id, messages: history, context: chatContext(agent, results.value[agent.id], findingStatus.value) }, CHAT_TIMEOUT_MS)
+    if (reply.status !== 'answered') {
+      chat.value = [...chat.value, { role: 'assistant', text: reply.reason === 'disabled' ? 'AI Agent Assistance is switched off in Settings, so I can’t chat. Turn it on and add a key.' : 'Add a Claude, OpenAI or Gemini key in Settings › AI Agent Assistance and I can talk you through the run.' }]
+      voice.value = 'idle'
+      return
+    }
+    const action = Object.keys(ACTIONS).find((k) => reply.text.includes(k))
+    const spoken = reply.text.replace(/\s*\[[a-z-]+\]\s*$/i, '').trim()
+    chat.value = [...chat.value, { role: 'assistant', text: spoken, steps: action ? [`Doing it: ${action.slice(1, -1).replace('-', ' ')}`] : undefined }]
+    voice.value = 'speaking'
+    clearTimeout(speakTimer)
+    speakTimer = setTimeout(() => { speakTimer = undefined; if (voice.value === 'speaking') voice.value = 'idle' }, SPEAK_MS)
+    if (action) await ACTIONS[action]!(rpc)
+  } catch (error: unknown) {
+    chat.value = [...chat.value, { role: 'assistant', text: `I couldn’t answer: ${error instanceof Error ? error.message : 'no reply'}` }]
+    voice.value = 'idle'
+  }
 }
 
 export function leaveVoice(): void {
   clearTimeout(speakTimer)
   speakTimer = undefined
+  recognition?.abort()
+  recognition = null
   voice.value = 'idle'
   const back: View = voiceReturn.value === 'voice' ? 'gallery' : voiceReturn.value
   // A run that finished while the user was talking lands on its results.
   view.value = back === 'running' && !run.value ? 'results' : back
 }
 
-/** Clear every timer (tab unmount / tests). */
+/** Clear every timer and subscription (tab unmount / tests). */
 export function stopAll(): void {
-  if (runTimer !== undefined) clearInterval(runTimer)
-  if (runAllTimer !== undefined) clearInterval(runAllTimer)
   clearTimeout(speakTimer)
-  runTimer = undefined
-  runAllTimer = undefined
   speakTimer = undefined
+  unsubscribe?.()
+  unsubscribe = undefined
+  recognition?.abort()
+  recognition = null
+  stopRunAllFlag = true
 }

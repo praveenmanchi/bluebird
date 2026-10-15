@@ -2,37 +2,66 @@ import { describe, it, expect } from 'vitest'
 import { DEFAULT_INTEGRATIONS, testMessage } from '@shared/integrations'
 import type { HandlerContext } from '@shared/bridge'
 import { BASELINE, CURRENT } from '../fixtures'
-import { MSG, type ExtractResult, type PublishRequest, type PublishResult, type StatusResult } from '../messages'
+import { MSG, type CommitPreview, type ExtractResult, type PublishRequest, type PublishResult, type StatusResult } from '../messages'
 import { createPublishHandlers, type DocumentData } from '../sandbox/publish-handlers'
-import { configFromSettings, type GithubFetch } from '../github/client'
-import { prependChangelog, tokensFilePath } from '../github/release'
+import { RETRY_ATTEMPTS, configFromSettings, type GithubFetch } from '../github/client'
+import { STORE_PATH, allowedWebhook, prependChangelog, tokensFilePath, utf8Bytes } from '../github/release'
 import type { Snapshot } from '../types'
 
 const TOKEN = 'ghp_test_secret'
 const REPO = 'acme/ds-site'
+const WEBHOOK = 'https://acme.webhook.office.com/webhookb2/abc'
 
 interface Run { status: string; conclusion: string | null; html_url: string; name: string; run_number: number }
 
-/** In-memory GitHub: just the endpoints a release touches. */
-function fakeGithub(opts: { protectedBranch?: boolean; changelog?: string | null; runs?: Run[][]; status?: number; canPush?: boolean } = {}) {
+interface FakeOptions {
+  protectedBranch?: boolean
+  changelog?: string | null
+  runs?: Run[][]
+  /** Every GitHub call answers this status (401 for a bad token). */
+  status?: number
+  /** Statuses the first calls answer before GitHub behaves (502 then fine, say). */
+  transient?: number[]
+  canPush?: boolean
+  /** Files on main before any publish (path → content). */
+  mainFiles?: Record<string, string>
+  /** What the Teams webhook answers. */
+  webhookStatus?: number
+}
+
+/** In-memory GitHub: just the endpoints a release touches, plus the Teams webhook. */
+function fakeGithub(opts: FakeOptions = {}) {
   const heads: Record<string, string> = { main: 'base0' }
   const tags = new Set<string>()
   const calls: Array<{ method: string; path: string; headers: Record<string, string>; body?: unknown }> = []
+  const webhookCalls: Array<{ url: string; body: Record<string, unknown> }> = []
+  /** Files on main (a fast-forward lands the commit's tree here; a pull request does not). */
+  const mainFiles: Record<string, string> = { ...(opts.mainFiles ?? {}) }
   let trees: Array<{ path: string; content: string }> = []
   let commitMessage = ''
   let runCall = 0
   let commits = 0
+  const transient = [...(opts.transient ?? [])]
   const reply = (status: number, body: unknown) => ({ status, text: async () => (typeof body === 'string' ? body : JSON.stringify(body)) })
   const fetch: GithubFetch = async (url, init) => {
+    if (!url.startsWith('https://api.github.com')) {
+      webhookCalls.push({ url, body: JSON.parse(init.body ?? '{}') as Record<string, unknown> })
+      return reply(opts.webhookStatus ?? 200, '1')
+    }
     const path = url.replace('https://api.github.com', '')
     const body = init.body ? JSON.parse(init.body) as Record<string, unknown> : undefined
     calls.push({ method: init.method, path, headers: init.headers, body })
+    if (transient.length) return reply(transient.shift()!, { message: 'Server Error' })
     if (opts.status) return reply(opts.status, { message: 'Bad credentials' })
     const r = `/repos/${REPO}`
     if (init.method === 'GET' && path === '/user') return reply(200, { login: 'designer' })
     if (init.method === 'GET' && path === r) return reply(200, { permissions: { push: opts.canPush ?? true }, default_branch: 'main' })
     if (init.method === 'GET' && path === `${r}/git/ref/heads/main`) return reply(200, { object: { sha: heads.main } })
-    if (init.method === 'GET' && path.startsWith(`${r}/contents/CHANGELOG.md`)) return opts.changelog ? reply(200, opts.changelog) : reply(404, { message: 'Not Found' })
+    if (init.method === 'GET' && path.startsWith(`${r}/contents/`)) {
+      const file = decodeURIComponent(path.slice(`${r}/contents/`.length).split('?')[0]!)
+      if (file === 'CHANGELOG.md' && opts.changelog) return reply(200, opts.changelog)
+      return file in mainFiles ? reply(200, mainFiles[file]!) : reply(404, { message: 'Not Found' })
+    }
     if (init.method === 'GET' && path.startsWith(`${r}/git/commits/`)) return reply(200, { tree: { sha: 'tree0' } })
     if (init.method === 'POST' && path === `${r}/git/trees`) { trees = (body!.tree as typeof trees); return reply(201, { sha: 'tree1' }) }
     if (init.method === 'POST' && path === `${r}/git/commits`) {
@@ -42,7 +71,9 @@ function fakeGithub(opts: { protectedBranch?: boolean; changelog?: string | null
     }
     if (init.method === 'PATCH' && path === `${r}/git/refs/heads/main`) {
       if (opts.protectedBranch) return reply(422, { message: 'Protected branch update failed for refs/heads/main.' })
-      heads.main = String(body!.sha); return reply(200, {})
+      heads.main = String(body!.sha)
+      for (const f of trees) mainFiles[f.path] = f.content
+      return reply(200, {})
     }
     if (init.method === 'POST' && path === `${r}/git/refs`) {
       const ref = String(body!.ref)
@@ -58,32 +89,46 @@ function fakeGithub(opts: { protectedBranch?: boolean; changelog?: string | null
     }
     return reply(404, { message: `Unhandled ${init.method} ${path}` })
   }
-  return { fetch, opts, heads, tags, calls, files: () => trees, message: () => commitMessage }
+  return { fetch, opts, heads, tags, calls, webhookCalls, mainFiles, files: () => trees, message: () => commitMessage }
 }
 
-function setup(github = fakeGithub(), snapshot: Snapshot = CURRENT, baseline?: Snapshot) {
+interface SetupOptions {
+  /** Settings › GitHub › "Enable diff comparison" (on by default, as in Settings). */
+  diffComparison?: boolean
+  /** Settings › Notifications webhooks. */
+  webhooks?: string[]
+  /** Reuse another setup's document data: a second designer opening the same file. */
+  data?: DocumentData
+}
+
+function setup(github = fakeGithub(), snapshot: Snapshot = CURRENT, baseline?: Snapshot, options: SetupOptions = {}) {
   const raw = new Map<string, string>()
-  const data: DocumentData = { get: (k) => raw.get(k) ?? '', set: (k, v) => { if (v) raw.set(k, v); else raw.delete(k) } }
+  const data: DocumentData = options.data ?? { get: (k) => raw.get(k) ?? '', set: (k, v) => { if (v) raw.set(k, v); else raw.delete(k) } }
   let current = baseline ?? snapshot
   let clock = Date.parse('2026-10-11T16:05:00.000Z')
   const events: unknown[] = []
   const opened: string[] = []
+  const slept: number[] = []
   const ctx = { emit: (_t: string, p: unknown) => events.push(p) } as HandlerContext
+  const [designSystemWebhook = '', devTeamWebhook = ''] = options.webhooks ?? []
   const handlers = createPublishHandlers({
     readSnapshot: async () => current,
-    readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: TOKEN }),
+    readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: TOKEN, diffComparison: options.diffComparison ?? true }),
+    readNotifications: async () => ({ ...DEFAULT_INTEGRATIONS.notifications, designSystemWebhook, devTeamWebhook }),
     data,
     fetch: github.fetch,
-    sleep: async (ms) => { clock += ms },
+    sleep: async (ms) => { clock += ms; slept.push(ms) },
     openExternal: (url) => opened.push(url),
     now: () => new Date(clock),
   })
   const call = (type: string, payload?: unknown) => (handlers[type] as (p: unknown, c: HandlerContext) => Promise<unknown>)(payload, ctx)
   return {
-    github, data, events, opened,
+    github, data, events, opened, slept,
     setSnapshot: (s: Snapshot) => { current = s },
+    advance: (ms: number) => { clock += ms },
     status: () => call(MSG.status) as Promise<StatusResult>,
     extract: () => call(MSG.extract) as Promise<ExtractResult>,
+    preview: (r: PublishRequest) => call(MSG.preview, r) as Promise<CommitPreview>,
     publish: (r: PublishRequest) => call(MSG.publish, r) as Promise<PublishResult>,
     test: (v: unknown) => call(testMessage('github'), v) as Promise<{ message: string }>,
     open: (url: string) => call(MSG.open, { url }),
@@ -117,7 +162,7 @@ describe('configFromSettings', () => {
 
 describe('publishing to GitHub', () => {
   it('reports the repository as connected once a token is set', async () => {
-    expect((await setup().status()).repo).toEqual({ connected: true, repo: REPO, branch: 'main' })
+    expect((await setup().status()).repo).toEqual({ connected: true, repo: REPO, branch: 'main', diffComparison: true })
   })
 
   it('opens a pull request with one commit carrying tokens, the release record and the changelog', async () => {
@@ -130,7 +175,10 @@ describe('publishing to GitHub', () => {
     expect(t.github.heads['release/v4.0.0']).toBe('c0ffee1234567')
     expect(t.github.heads.main).not.toBe('c0ffee1234567') // main untouched until the PR merges
     const files = Object.fromEntries(t.github.files().map((f) => [f.path, f.content]))
-    expect(Object.keys(files).sort()).toEqual(['CHANGELOG.md', 'releases/v4.0.0.json', 'tokens.json'])
+    expect(Object.keys(files).sort()).toEqual([STORE_PATH, 'CHANGELOG.md', 'releases/v4.0.0.json', 'tokens.json'])
+    const store = JSON.parse(files[STORE_PATH]!) as { releases: Array<{ version: string }>; baseline: { variables: unknown[] } }
+    expect(store.releases.map((r) => r.version)).toEqual(['v4.0.0', 'v3.0.0'])
+    expect(store.baseline.variables).toHaveLength(CURRENT.variables.length)
     const tokens = JSON.parse(files['tokens.json']!) as { version: string; collections: Record<string, Record<string, { values: Record<string, string> }>>; components: Array<{ name: string }> }
     expect(tokens.version).toBe('v4.0.0')
     expect(tokens.collections['Brand UI']!['button/bg/primary']!.values.Bridge).toBe('#0560A3')
@@ -217,10 +265,149 @@ describe('publishing to GitHub', () => {
   })
 })
 
+describe('retrying transient GitHub failures', () => {
+  it('retries a 5xx with backoff and then succeeds', async () => {
+    // The extract's one read of .bluebird/releases.json meets 502 then 503, then GitHub answers.
+    const t = setup(fakeGithub({ transient: [502, 503] }), CURRENT, BASELINE)
+    expect((await t.extract()).baselineNote).toContain(`has no ${STORE_PATH} on main yet`)
+    expect(t.slept).toEqual([400, 800])
+  })
+
+  it('gives up after the last attempt with a readable message', async () => {
+    const t = setup(fakeGithub({ transient: Array<number>(RETRY_ATTEMPTS).fill(502) }), CURRENT, undefined, { diffComparison: false })
+    await expect(t.publish(request(await t.extract()))).rejects.toThrow(`GitHub answered 502 (Server Error) ${RETRY_ATTEMPTS} times in a row`)
+    expect((await t.status()).baseline).toBeNull()
+  })
+
+  it('does not retry a 4xx', async () => {
+    const t = setup(fakeGithub({ status: 401 }))
+    await expect(t.extract().then((x) => t.publish(request(x)))).rejects.toThrow('GitHub didn’t accept the access token')
+    expect(t.github.calls.filter((c) => c.path === `/repos/${REPO}/git/ref/heads/main`)).toHaveLength(1)
+  })
+})
+
+describe('the repository as baseline (Settings › GitHub › diff comparison)', () => {
+  /** v3.0.0 pushed to main by one designer; `fresh` is another copy of the file with no release in it. */
+  async function published() {
+    const github = fakeGithub()
+    const first = setup(github, CURRENT, BASELINE)
+    await first.publish({ ...request(await first.extract(), { openPr: false, tag: false }), version: 'v3.0.0' })
+    expect(github.mainFiles[STORE_PATH]).toBeDefined()
+    return github
+  }
+
+  it('recovers the baseline from .bluebird/releases.json when the file has none', async () => {
+    const fresh = setup(await published(), CURRENT)
+    const x = await fresh.extract()
+    expect(x.baselineSource).toBe('github')
+    expect(x.baseline?.version).toBe('v3.0.0')
+    expect(x.changes).toHaveLength(12) // not "everything in this file"
+    expect((await fresh.status()).baseline?.version).toBe('v3.0.0') // and the file now carries it too
+  })
+
+  it('lists everything as new when diff comparison is off', async () => {
+    const fresh = setup(await published(), CURRENT, undefined, { diffComparison: false })
+    const before = fresh.github.calls.length
+    const x = await fresh.extract()
+    expect(x.baselineSource).toBe('none')
+    expect(x.baseline).toBeNull()
+    expect(fresh.github.calls.slice(before)).toEqual([])
+  })
+
+  it('keeps the file’s release when it is newer than the repository’s and says so', async () => {
+    const github = await published()
+    const t = setup(github, CURRENT)
+    await t.extract()
+    t.advance(60_000) // a minute later
+    await t.publish({ ...request(await t.extract(), { openPr: true, tag: false }), version: 'v3.1.0' }) // a PR: main still holds v3.0.0
+    const x = await t.extract()
+    expect(x.baselineSource).toBe('file')
+    expect(x.baseline?.version).toBe('v3.1.0')
+    expect(x.baselineNote).toContain('is behind this file (v3.0.0 on main)')
+  })
+
+  it('says when the repository has no store yet and when it cannot be read', async () => {
+    const empty = setup(fakeGithub(), CURRENT, BASELINE)
+    expect((await empty.extract()).baselineNote).toContain(`has no ${STORE_PATH} on main yet`)
+    const broken = setup(fakeGithub({ mainFiles: { [STORE_PATH]: '{"releases": "nope"}' } }), CURRENT, BASELINE)
+    expect((await broken.extract()).baselineNote).toContain('isn’t a Bluebird release store')
+    const down = setup(fakeGithub({ transient: Array<number>(RETRY_ATTEMPTS).fill(500) }), CURRENT, BASELINE)
+    const x = await down.extract()
+    expect(x.baselineSource).toBe('none')
+    expect(x.baselineNote).toMatch(/^Couldn’t read \.bluebird\/releases\.json from acme\/ds-site: GitHub answered 500/)
+  })
+})
+
+describe('commit preview', () => {
+  it('lists the four files with sizes and the commit message', async () => {
+    const t = await atV3()
+    const x = await t.extract()
+    const before = t.github.calls.length
+    const p = await t.preview(request(x))
+    expect(p.message).toMatch(/^release: v4.0.0 — Date picker and a darker primary/)
+    expect(p.files.map((f) => [f.path, f.language])).toEqual([['tokens.json', 'JSON'], ['releases/v4.0.0.json', 'JSON'], [STORE_PATH, 'JSON'], ['CHANGELOG.md', 'Markdown']])
+    for (const f of p.files) expect(f.bytes).toBe(utf8Bytes(f.content))
+    expect(p.files[3]!.content).toContain('## v4.0.0 — Date picker and a darker primary')
+    expect(p.files.every((f) => !f.truncated)).toBe(true)
+    expect(t.github.calls.slice(before)).toEqual([]) // built locally: nothing asked of GitHub, nothing written
+  })
+
+  it('needs the current extract', async () => {
+    const t = await atV3()
+    await expect(t.preview(request({ ...(await t.extract()), extractId: 'stale' }))).rejects.toThrow('Run the extract again')
+    expect(utf8Bytes('é€😀')).toBe(2 + 3 + 4)
+  })
+})
+
+describe('posting the changelog to Teams', () => {
+  it('posts a MessageCard to every webhook after the release lands', async () => {
+    const github = fakeGithub({ runs: [[]] })
+    const t = setup(github, CURRENT, BASELINE, { webhooks: [WEBHOOK, 'https://prod-07.westus.logic.azure.com/workflows/x/triggers/manual/paths/invoke'] })
+    await t.publish({ ...request(await t.extract(), { openPr: false, tag: false }), version: 'v3.0.0' })
+    t.setSnapshot(CURRENT)
+    expect((await t.status()).notify).toEqual({ webhooks: 2 })
+    const res = await t.publish(request(await t.extract(), { openPr: false, postToTeams: true }))
+    expect(res.outcome).toBe('pushed')
+    expect(res.message).toContain('The changelog was posted to Teams.')
+    expect(res.steps.find((s) => s.id === 'notify')).toMatchObject({ status: 'done', detail: 'Changelog posted to 2 Teams channels' })
+    const posts = github.webhookCalls.filter((w) => w.body.title === 'v4.0.0 — Date picker and a darker primary')
+    expect(posts).toHaveLength(2)
+    expect(posts[0]!.body['@type']).toBe('MessageCard')
+    expect(String(posts[0]!.body.text)).toContain('### Breaking')
+    expect(posts[0]!.body.potentialAction).toEqual([expect.objectContaining({ targets: [{ os: 'default', uri: `https://github.com/${REPO}/commit/c0ffee1234567` }] })])
+  })
+
+  it('reports a failed post without touching the release, and skips the step without a webhook', async () => {
+    const failing = setup(fakeGithub({ webhookStatus: 403 }), CURRENT, BASELINE, { webhooks: [WEBHOOK] })
+    const res = await failing.publish(request(await failing.extract(), { postToTeams: true }))
+    expect(res.outcome).toBe('pr-opened')
+    expect(res.steps.find((s) => s.id === 'notify')).toMatchObject({ status: 'failed', detail: 'acme.webhook.office.com: HTTP 403' })
+    expect(res.message).toContain('The Teams post failed (acme.webhook.office.com: HTTP 403)')
+    expect((await failing.status()).baseline?.version).toBe('v4.0.0')
+
+    const none = setup(fakeGithub(), CURRENT, BASELINE)
+    const quiet = await none.publish(request(await none.extract(), { postToTeams: true }))
+    expect(quiet.steps.find((s) => s.id === 'notify')).toMatchObject({ status: 'queued', detail: 'Not posted — add a webhook in Settings › Notifications' })
+    expect(none.github.webhookCalls).toHaveLength(0)
+    const off = setup(fakeGithub(), CURRENT, BASELINE, { webhooks: [WEBHOOK] })
+    expect((await off.publish(request(await off.extract(), { postToTeams: false }))).steps.some((s) => s.id === 'notify')).toBe(false)
+  })
+
+  it('only posts to Teams and Power Automate hosts', () => {
+    expect(allowedWebhook(WEBHOOK)).toBe(true)
+    expect(allowedWebhook('https://prod-07.westus.logic.azure.com/workflows/x')).toBe(true)
+    expect(allowedWebhook('https://evil.example.com/webhook.office.com/')).toBe(false)
+    expect(allowedWebhook('http://acme.webhook.office.com/x')).toBe(false)
+  })
+})
+
 describe('Settings › GitHub › Test Connection', () => {
   const form = { ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: TOKEN }
-  it('names the account and confirms it can push', async () => {
-    expect((await setup().test(form)).message).toBe(`Connected as designer · can push to ${REPO} (default branch main).`)
+  it('names the account, confirms it can push and says what the branch holds', async () => {
+    expect((await setup().test(form)).message).toBe(`Connected as designer · can push to ${REPO} (default branch main). main has no Bluebird release yet.`)
+    const t = await atV3()
+    expect((await t.test(form)).message).toContain('main holds v3.0.0, which extracts compare against.')
+    expect((await t.test({ ...form, diffComparison: false })).message).toContain('main holds v3.0.0.')
   })
   it('fails when the token can’t push, is rejected, or a field is missing', async () => {
     await expect(setup(fakeGithub({ canPush: false })).test(form)).rejects.toThrow('can’t push to acme/ds-site')

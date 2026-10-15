@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, type IntegrationId, type IntegrationValues } from './schema'
+import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -56,7 +56,7 @@ const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, 
   storybook: { baseUrl: url, indexUrl: url, storyPathTemplate: storyTemplate },
   zeroheight: { publicBaseUrl: url },
   dualFile: { file1Id: fileId, file2Id: fileId, file1Key: token, file2Key: token, file1Role: oneOf(FILE_ROLES), file2Role: oneOf(FILE_ROLES) },
-  ai: { claudeModel: oneOf(MODEL_OPTIONS.claude), openaiModel: oneOf(MODEL_OPTIONS.openai), geminiModel: oneOf(MODEL_OPTIONS.gemini) },
+  ai: { provider: oneOf(PROVIDER_OPTIONS), claudeModel: oneOf(MODEL_OPTIONS.claude), openaiModel: oneOf(MODEL_OPTIONS.openai), geminiModel: oneOf(MODEL_OPTIONS.gemini) },
   mcp: { repo, outputFormat, branchTemplate: noSpaces, enterpriseUrl: url },
   jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: localProxy },
 }
@@ -74,6 +74,19 @@ function dualFileErrors(v: IntegrationValues<'dualFile'>): FieldErrors {
   if (has(v.file2Id) && !has(v.file2Key) && !has(v.file1Key)) errors.file2Key = 'Add an API key that can open File 2'
   if (has(v.file2Key) && !has(v.file2Id)) errors.file2Id = 'Add File 2’s ID, or clear its API key'
   if (has(v.file1Id) && v.file1Id.trim() === v.file2Id.trim()) errors.file2Id = 'File 2 is File 1. Set File 1 to “Variables + Components” and leave File 2 empty'
+  // Files 3…N: same rules per row, keyed extraFiles.<i>.<field>; a row may borrow File 1's key like File 2 does.
+  const seen = new Set([v.file1Id.trim(), v.file2Id.trim()].filter(Boolean))
+  ;(v.extraFiles ?? []).forEach((f, i) => {
+    const n = i + 3
+    const at = (field: string) => `extraFiles.${i}.${field}`
+    if (has(f.id) && !FILE_ID.test(f.id.trim())) errors[at('id')] = fileId(f.id)!
+    if (has(f.id) && !has(f.key) && !has(v.file1Key)) errors[at('key')] = `Add an API key that can open File ${n}`
+    if (has(f.key) && !has(f.id)) errors[at('id')] = `Add File ${n}’s ID, or clear its API key`
+    if (has(f.key) && !/^[\x21-\x7E]+$/.test(f.key.trim())) errors[at('key')] = token(f.key)!
+    if (has(f.role) && !(FILE_ROLES as readonly string[]).includes(f.role)) errors[at('role')] = oneOf(FILE_ROLES)(f.role)!
+    if (has(f.id) && seen.has(f.id.trim())) errors[at('id')] = `File ${n} is already listed above. Give one slot both roles instead`
+    if (has(f.id)) seen.add(f.id.trim())
+  })
   return errors
 }
 

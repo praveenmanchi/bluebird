@@ -9,6 +9,7 @@ import { readSnapshot } from './snapshot'
 export const handlers: HandlerMap = createPublishHandlers({
   readSnapshot,
   readGithub: async () => (await readIntegrations(clientStorageRead)).github,
+  readNotifications: async () => (await readIntegrations(clientStorageRead)).notifications,
   data: {
     get: (key) => figma.root.getPluginData(key),
     set: (key, value) => figma.root.setPluginData(key, value),

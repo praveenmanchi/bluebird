@@ -1,76 +1,87 @@
-import { useEffect } from 'preact/hooks'
+import { useEffect, useMemo } from 'preact/hooks'
+import { signal } from '@preact/signals'
 import { useRpc, type FindingAction } from '@shared/ui'
-import { AGENTS, PIPELINE_ORDER, RUN_ALL_COPY, SCOPES, SCOPE_SIZE, agentById, isRunnable, type AgentDef, type AgentFinding } from '../fixtures'
-import { MSG } from '../messages'
+import { AGENTS, PIPELINE_ORDER, RUN_ALL_COPY, SCOPES, agentById, isRunnable, type AgentDef } from '../agents'
+import { INTEGRATIONS_MSG, type IntegrationSettings } from '@shared/integrations'
+import { isProviderConfig, selectProvider, PROVIDER_LABEL } from '@shared/ai'
+import { MSG, type AgentFinding } from '../messages'
 import {
-  STEP_DONE_AT, applySafeFixes, backToGallery, leaveVoice, openFindings, openResults, openSetup, overallProgress,
-  pipelineState, revealedCount, sendQuickReply, setFindingStatus, startRun, startRunAll, stopAll, stopAllAndLeave,
-  stopCard, stopRun, toggleMic,
+  applyFindings, applySafeFixes, backToGallery, leaveVoice, markdownReport, openFindings, openResults, openSetup, overallProgress,
+  pipelineState, refreshScope, runOne, runSummary, sendMessage, setFindingStatus, setScope, speechRecognition, startRunAll, stopAll, stopAllAndLeave, stopRun,
+  toggleMic, writeReport, type PipelineState,
 } from '../run'
 import {
-  agentId, brands, cards, chat, filter, findingStatus, mode, outputs, reset, rules, run, runAll, runAllApplied, scope,
-  view, voice,
+  agentId, brands, chat, filter, findingStatus, mode, notice, outputs, reset, results, rules, run, runAll, runAllApplied, scope, scopeInfo, transcript, view, voice,
 } from '../state'
-import { AgentsGallery } from './AgentsGallery'
+import { AgentsGallery, scopeMetaFor, type CardStatus, type RecentRun } from './AgentsGallery'
 import { AgentsResults } from './AgentsResults'
 import { AgentsRunAll, type PipelineRow } from './AgentsRunAll'
-import { AgentsRunning, type RunningStep } from './AgentsRunning'
+import { AgentsRunning } from './AgentsRunning'
 import { AgentsSetup } from './AgentsSetup'
 import { AgentsVoice } from './AgentsVoice'
+import { downloadText, safeFilename } from './download'
 
-const brandCount = () => Object.values(brands.value).filter(Boolean).length
+/** Whether Settings hold a usable model key (read once per mount). */
+const modelReady = signal(false)
 
 /** Rule id → enabled for one agent, read from the tab-wide map. */
 function rulesOf(agent: AgentDef): Record<string, boolean> {
   return Object.fromEntries(agent.rules.map((r) => [r.id, rules.value[`${agent.id}:${r.id}`] ?? r.enabled]))
 }
 
-function runningSteps(agent: AgentDef, progress: number): RunningStep[] {
-  const on = Object.values(rulesOf(agent)).filter(Boolean).length
-  const labels = [`Loaded rule pack · ${agent.rulePack} (${on} of ${agent.rules.length} rules on)`, ...agent.steps]
-  return labels
-    .map((label, i) => ({ label, i }))
-    .filter(({ i }) => i === 0 || progress >= (STEP_DONE_AT[i - 1] ?? 100))
-    .map(({ label, i }) => ({ label, status: progress >= (STEP_DONE_AT[i] ?? 100) ? 'done' : 'running' }))
-}
-
-function progressLabel(progress: number): string {
-  const size = SCOPE_SIZE[scope.value]
-  const frames = Math.round((size.frames * progress) / 100)
-  const layers = Math.round((size.layers * progress) / 100)
-  return `Checking ${frames} of ${size.frames} frames · ${layers} of ${size.layers} layers · ${brandCount()} brand modes`
-}
-
-function pipelineRows(progress: Partial<Record<string, number>>): PipelineRow[] {
-  const ordered = PIPELINE_ORDER.map(agentById)
-  return ordered.map((agent) => {
-    const state = pipelineState(agent, progress)
-    const p = progress[agent.id] ?? 0
-    const { running } = agent.pipeline
-    const before = ordered.slice(0, ordered.indexOf(agent)).filter(isRunnable).at(-1)
-    const text = state === 'done' ? agent.pipeline.done
-      : state === 'running' ? `${running.label} · ${Math.round((running.total * p) / 100)} of ${running.total} ${running.unit}`
-        : state === 'queued' ? `Waits for ${before?.name ?? 'the scope'} to finish`
-          : 'Not available yet'
-    return { agent, state, text }
-  })
+/** "just now" / "4 min ago". */
+const ago = (then: number, now = Date.now()): string => {
+  const minutes = Math.floor((now - then) / 60_000)
+  return minutes < 1 ? 'just now' : minutes < 60 ? `${minutes} min ago` : `${Math.floor(minutes / 60)} h ago`
 }
 
 /**
- * AI Agents tab ("UX AI agents"): a gallery of expert agents, each with a setup,
- * a live run, results and a voice conversation, plus "run all". UI only for now:
- * runs are fake timer progressions over fixtures (see ../run.ts).
+ * AI Agents tab ("UX AI agents"): a gallery of expert agents, each with a setup, a live
+ * run over the open document, results that can be applied, annotated and drawn on the
+ * canvas, and a conversation with the agent about its run, plus "run all".
  */
 export function Tab() {
   const rpc = useRpc()
-  useEffect(() => () => { stopAll(); reset() }, [])
+  const canListen = useMemo(() => speechRecognition() !== null, [])
+
+  useEffect(() => {
+    void refreshScope(rpc)
+    // The scope follows the selection while the gallery or setup is open.
+    const off = rpc.on<{ count: number }>('shell:selection', () => { if (!run.value) void refreshScope(rpc) })
+    return () => { off(); stopAll(); reset() }
+  }, [rpc])
+
+  // Whether a model is configured, for the Setup note on the agents that need one.
+  useEffect(() => {
+    rpc.call<IntegrationSettings>(INTEGRATIONS_MSG.get).then((s) => { modelReady.value = isProviderConfig(selectProvider(s.ai)) }, () => undefined)
+  }, [rpc])
 
   const agent = agentById(agentId.value)
+  const result = results.value[agent.id]
   const onFinding = (finding: AgentFinding, action: FindingAction) => {
-    if (action === 'locate') { void rpc.call(MSG.focus, { nodeId: finding.nodeId }).catch(() => undefined); return }
-    setFindingStatus(finding.id, action === 'apply' ? 'applied' : 'ignored')
+    if (action === 'locate') { void rpc.call(MSG.focus, { nodeId: finding.nodeId }).catch(() => { notice.value = { tone: 'error', text: 'That layer no longer exists.' } }); return }
+    if (action === 'ignore') { setFindingStatus(finding.id, 'ignored'); return }
+    if (!finding.fix || finding.fix.kind === 'manual') { notice.value = { tone: 'info', text: finding.fix?.note ?? 'This one needs a designer: there is no automatic fix.' }; return }
+    void applyFindings(rpc, [finding])
   }
-  const open = openFindings(agent.findings, findingStatus.value)
+  const open = result ? openFindings(result.findings, findingStatus.value) : []
+
+  const exportReport = () => {
+    if (!result) return
+    void writeReport(rpc, agent, result, open)
+    if (outputs.value.summary) {
+      downloadText(safeFilename([agent.title, result.scope.name], 'md'), markdownReport(agent, result, open), 'text/markdown')
+      downloadText(safeFilename([agent.title, result.scope.name], 'json'), JSON.stringify({ agent: agent.id, scope: result.scope, score: result.score, findings: open }, null, 2), 'application/json')
+    }
+  }
+  const copyForJira = () => {
+    if (!result) return
+    const manual = open.filter((f) => !f.fixable)
+    const text = manual.map((f) => `* [${f.severity}] ${f.title} — ${f.meta}${f.fixLabel ? ` — ${f.fixLabel}` : ''}`).join('\n')
+    const clipboard = (globalThis as { navigator?: { clipboard?: { writeText(t: string): Promise<void> } } }).navigator?.clipboard
+    if (clipboard) clipboard.writeText(text).then(() => { notice.value = { tone: 'info', text: `${manual.length} ${manual.length === 1 ? 'issue' : 'issues'} copied as a Jira-ready list. Paste into a ticket, or into the Jira tab’s comment box.` } }, () => { notice.value = { tone: 'error', text: 'Couldn’t reach the clipboard.' } })
+    else notice.value = { tone: 'error', text: 'Couldn’t reach the clipboard.' }
+  }
 
   switch (view.value) {
     case 'setup':
@@ -78,93 +89,147 @@ export function Tab() {
         <AgentsSetup
           agent={agent}
           scope={scope.value}
+          scopeInfo={scopeInfo.value}
+          modelReady={modelReady.value}
           rules={rulesOf(agent)}
           mode={mode.value}
           brands={brands.value}
           outputs={outputs.value}
-          onScope={(s) => { scope.value = s }}
+          onScope={(s) => setScope(rpc, s)}
           onToggleRule={(id, on) => { rules.value = { ...rules.value, [`${agent.id}:${id}`]: on } }}
           onMode={(m) => { mode.value = m }}
           onBrand={(b, on) => { brands.value = { ...brands.value, [b]: on } }}
           onOutput={(id, on) => { outputs.value = { ...outputs.value, [id]: on } }}
-          onRun={() => startRun(agent.id)}
-          onMic={toggleMic}
-          onBack={backToGallery}
+          onRun={() => { void runOne(rpc, agent.id) }}
+          onMic={() => toggleMic(rpc)}
+          onBack={() => backToGallery(rpc)}
         />
       )
     case 'running': {
-      const progress = run.value?.agent === agent.id ? run.value.progress : 100
-      const revealed = agent.findings.slice(0, revealedCount(agent.findings.length, progress))
+      const live = run.value?.agent === agent.id ? run.value : null
+      const steps = live ? live.steps : (result?.steps ?? [])
+      const findings = live ? live.findings : (result?.findings ?? [])
       return (
         <AgentsRunning
           agent={agent}
-          percent={progress}
-          progressLabel={progressLabel(progress)}
-          steps={runningSteps(agent, progress)}
-          findings={openFindings(revealed, findingStatus.value)}
-          foundCount={revealed.length}
-          onStop={stopRun}
+          percent={live ? live.percent : 100}
+          progressLabel={live ? live.label : 'Done'}
+          steps={steps}
+          findings={openFindings(findings, findingStatus.value)}
+          foundCount={findings.length}
+          onStop={() => { void stopRun(rpc) }}
           onFindingAction={onFinding}
-          onBack={backToGallery}
+          onBack={() => backToGallery(rpc)}
         />
       )
     }
     case 'results': {
-      const resolved = agent.findings.length - open.length
-      const score = agent.findings.length ? Math.round(agent.score + ((100 - agent.score) * resolved) / agent.findings.length) : 100
-      const frames = SCOPE_SIZE[scope.value].frames
+      if (!result) { view.value = 'setup'; return null }
+      const resolved = result.findings.length - open.length
+      const score = result.findings.length ? Math.round(result.score + ((100 - result.score) * resolved) / result.findings.length) : result.score
       const fixable = open.filter((f) => f.fixable).length
+      const modes = result.brandModes.length
+      const modelNote = result.model && 'model' in result.model ? `Reviewed by ${PROVIDER_LABEL[result.model.provider]} · ${result.model.model}` : result.model && 'skipped' in result.model ? `Model skipped: ${result.model.skipped}` : undefined
       return (
         <AgentsResults
           agent={agent}
           findings={open}
           filter={filter.value}
           score={score}
-          caption={`${open.length} issues in ${frames} frames across ${brandCount()} brand modes · ${fixable} can be fixed with tokens`}
+          caption={`${open.length} ${open.length === 1 ? 'issue' : 'issues'} in ${result.scope.frames} ${result.scope.frames === 1 ? 'frame' : 'frames'}${modes ? ` across ${modes} brand ${modes === 1 ? 'mode' : 'modes'}` : ''} · ${fixable} can be fixed with tokens or text${result.scope.truncated ? ' · large scope: first layers only' : ''}`}
+          status={findingStatus.value}
+          notice={notice.value}
+          modelNote={modelNote}
           onFilter={(f) => { filter.value = f }}
           onFindingAction={onFinding}
-          onApplySafe={() => applySafeFixes(agent.findings)}
-          onBack={backToGallery}
+          onApplySafe={() => { void applySafeFixes(rpc, result.findings) }}
+          onExport={exportReport}
+          onAnnotate={() => { void rpc.call(MSG.annotate, { findings: open.map((f) => ({ nodeIds: f.nodeIds, label: `${f.meta.split(' · ')[0]} — ${f.title}.${f.fixLabel ? ` ${f.fixLabel}.` : ''}` })) }, 60_000).then((r) => { notice.value = { tone: 'info', text: `Dev Mode annotations written on ${(r as { annotated: number }).annotated} layers.` } }, (e: unknown) => { notice.value = { tone: 'error', text: e instanceof Error ? e.message : 'Couldn’t annotate.' } }) }}
+          onCreateJira={copyForJira}
+          onRerun={() => { void runOne(rpc, agent.id) }}
+          onBack={() => backToGallery(rpc)}
         />
       )
     }
     case 'voice':
-      return <AgentsVoice agent={agent} phase={voice.value} turns={chat.value} onMic={toggleMic} onQuickReply={sendQuickReply} onBack={leaveVoice} />
+      return (
+        <AgentsVoice
+          agent={agent}
+          phase={voice.value}
+          turns={chat.value}
+          transcript={transcript.value}
+          canListen={canListen}
+          onMic={() => toggleMic(rpc)}
+          onQuickReply={(text) => { void sendMessage(rpc, text) }}
+          onSend={(text) => { void sendMessage(rpc, text) }}
+          onBack={leaveVoice}
+        />
+      )
     case 'run-all': {
       const progress = runAll.value ?? {}
       const runnable = AGENTS.filter(isRunnable)
       const doneAgents = runnable.filter((a) => (progress[a.id] ?? 0) >= 100)
-      const size = SCOPE_SIZE[scope.value]
+      const info = scopeInfo.value
+      const allFindings = doneAgents.flatMap((a) => results.value[a.id]?.findings ?? [])
+      const openAll = openFindings(allFindings, findingStatus.value)
+      const appliedAll = allFindings.filter((f) => findingStatus.value[f.id] === 'applied').length
+      const rows: PipelineRow[] = PIPELINE_ORDER.map(agentById).map((a, i, ordered) => {
+        const state: PipelineState = pipelineState(a, progress)
+        const r = results.value[a.id]
+        const before = ordered[i - 1]
+        const live = run.value?.agent === a.id ? run.value : null
+        const text = state === 'done' && r ? runSummary(r)
+          : state === 'running' ? (live?.label ?? 'Starting…')
+            : state === 'queued' ? `Waits for ${before?.name ?? 'the scope'} to finish`
+              : 'Not available'
+        return { agent: a, state, text }
+      })
       return (
         <AgentsRunAll
-          rows={pipelineRows(progress)}
-          subtitle={RUN_ALL_COPY.subtitle(SCOPES.find((s) => s.id === scope.value)?.label ?? 'Selection', size.name, size.frames)}
+          rows={rows}
+          subtitle={RUN_ALL_COPY.subtitle(SCOPES.find((s) => s.id === scope.value)?.label ?? 'Selection', info?.name ?? '', info?.frames ?? 0)}
           done={doneAgents.length}
           total={runnable.length}
-          findings={doneAgents.reduce((n, a) => n + a.pipeline.findings, 0)}
-          fixable={doneAgents.reduce((n, a) => n + a.pipeline.fixable, 0)}
+          findings={allFindings.length}
+          fixable={runAllApplied.value ? appliedAll : openAll.filter((f) => f.fixable).length}
           percent={overallProgress(progress)}
           applied={runAllApplied.value}
-          onStopAll={stopAllAndLeave}
+          onStopAll={() => stopAllAndLeave(rpc)}
           onOpen={openResults}
-          onApply={() => { runnable.forEach((a) => applySafeFixes(a.findings)); runAllApplied.value = true }}
-          onMic={toggleMic}
-          onBack={stopAllAndLeave}
+          onOpenMerged={() => { openResults(doneAgents[0]?.id ?? 'accessibility') }}
+          onApply={() => { void applyFindings(rpc, openAll.filter((f) => f.fixable)).then(() => { runAllApplied.value = true }) }}
+          onMic={() => toggleMic(rpc)}
+          onBack={() => stopAllAndLeave(rpc)}
         />
       )
     }
-    default:
+    default: {
+      const cards = AGENTS.map((a): { agent: AgentDef; status: CardStatus } => {
+        const live = run.value?.agent === a.id ? run.value : null
+        const r = results.value[a.id]
+        if (live) return { agent: a, status: { state: 'running', status: `Running ${Math.round(live.percent)}%`, meta: live.label } }
+        if (r) return { agent: a, status: { state: 'ready', meta: `Last run ${ago(Date.now() - r.durationMs)} · ${runSummary(r)}` } }
+        return { agent: a, status: a.needsModel && !modelReady.value ? { state: 'idle', meta: 'Needs a model key in Settings' } : { state: 'idle', meta: 'Not run on this file yet' } }
+      })
+      const recent: RecentRun[] = PIPELINE_ORDER.map(agentById).flatMap((a) => {
+        const r = results.value[a.id]
+        return r ? [{ id: r.runId, agent: a.id, bot: a.bot, text: `${a.name} · ${r.scope.name} (${r.scope.frames} ${r.scope.frames === 1 ? 'frame' : 'frames'}) · ${runSummary(r)}` }] : []
+      })
       return (
         <AgentsGallery
-          agents={AGENTS.map((a) => ({ agent: a, status: cards.value[a.id] }))}
+          agents={cards}
           scope={scope.value}
-          onScope={(s) => { scope.value = s }}
+          scopeInfo={scopeInfo.value}
+          scopeMeta={scopeMetaFor(scopeInfo.value)}
+          recentRuns={recent}
+          onScope={(s) => setScope(rpc, s)}
           onOpen={openSetup}
-          onStop={stopCard}
-          onRunAll={startRunAll}
+          onStop={() => { void stopRun(rpc) }}
+          onRunAll={() => { void startRunAll(rpc) }}
           onOpenReport={openResults}
-          onMic={toggleMic}
+          onMic={() => toggleMic(rpc)}
         />
       )
+    }
   }
 }

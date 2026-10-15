@@ -47,6 +47,49 @@ browser  ─►  ws://127.0.0.1:4001 relay  ─►  bridge page inside Figma  �
 
 Sandbox changes still need a plugin re-run in Figma (`Cmd+Opt+P`). UI changes hot-reload in the browser.
 
+## AI providers (Settings › AI Agent Assistance)
+
+UX AI and the UX AI agents call the model the user picks under **Answer with**: Claude
+(`api.anthropic.com`), OpenAI (`api.openai.com`) or Gemini
+(`generativelanguage.googleapis.com`), each with its own Default Model and API key. The key
+is read in the Figma sandbox and sent to that provider's host only; when the picked
+provider has no key the first provider that does answers, and the footer pill says so.
+`src/shared/ai` holds the three request shapes, the error mapping and the lenient JSON
+reader the agents use. Model ids come from the providers' docs as of 2026-10-13
+(`docs/research/ux-ai-agents-research.md`); **Test Connection** sends one tiny request.
+
+## UX AI agents (live)
+
+Six agents review the selection, the current frame, its section or the whole page inside
+Figma, stream findings while they work and write results back:
+
+| Agent | Reads | Needs a model | Writes back |
+|---|---|---|---|
+| Accessibility | text runs, strokes, interactive layers, images; Brand UI tokens in every ticked brand mode | no | rebind fills/strokes to the nearest passing token, Dev Mode annotations, report frame |
+| Design system | fills, strokes, auto-layout spacing, radii, `detachedInfo`, text styles | no | rebind raw values that equal a token, bind spacing/radius variables |
+| Content | placeholder copy, fake people, placeholder data and grey image boxes | for realistic replacements | replace text |
+| Spelling & grammar | every text layer, de-duplicated and batched | yes | replace text |
+| UX writing | every text layer with its role (button, error, heading…) | yes | replace text |
+| Localization | text boxes vs. German/French/Arabic expansion, directional icons, US formats | no | advice only |
+
+Setup picks the rule pack, brand modes, **Review / Suggest / Auto-fix** and the outputs
+(Dev Mode annotations, a report frame on the canvas, a Jira-ready list, a Markdown + JSON
+download). Results can be applied one by one or all safe ones at once; **Run all** runs the
+agents in sequence so fixes don't collide. The Voice view talks to the agent about its run
+through the configured model (speech recognition where the host offers it, typing
+otherwise) and acts on replies that end with `[apply-safe]`, `[annotate]`, `[report]` or
+`[show-findings]`. The rule packs are pure (`src/features/agents/rules`), the Figma reads
+and writes live in `src/features/agents/sandbox`.
+
+## Library files (Dual File Mode)
+
+Settings › Dual File Mode takes the two designed slots plus **Add another library file**
+for as many library files as the system spans (icons, typography, a second components
+library). Every file is read over the Figma REST API with its own key or File 1's; besides
+variables and components the loader now reads each file's published text and colour styles
+(`/styles` + `/nodes`), which UX AI uses for typography questions and for colours in files
+without variables.
+
 ## Jira tab (live Jira)
 
 Figma plugins call the web from a `null` origin, and Jira Cloud sends no CORS headers for
@@ -70,6 +113,47 @@ mock Settings hold a complete Jira connection, the dev harness calls real Jira t
 Attaching a Figma link needs the file's link, which Figma only gives private /
 organisation plugins (`figma.fileKey`). Shipping to a team needs a hosted proxy (and its
 domain in `manifest.json` → `allowedDomains`) or an Atlassian OAuth 2.0 (3LO) app.
+
+## Publish tab (GitHub releases)
+
+Review changes → Release notes → Final review → Publish. An extract reads the file's local
+variables and components, diffs them against the last release and publishes one commit
+(the token JSON, `releases/<version>.json`, `.bluebird/releases.json` and `CHANGELOG.md`) to
+the repository in Settings › **GitHub**: a pull request, or a fast-forward of the branch
+with an optional tag and a short watch of the GitHub Actions run.
+
+- **Source of truth.** The last release is stored with the Figma file *and* committed as
+  `.bluebird/releases.json`. With Settings › GitHub › **Enable diff comparison** on, an
+  extract reads the repository's copy and compares against whichever is newer, so a
+  duplicated file or lost plugin data recovers its baseline from GitHub. The Review step
+  says which copy it used and why.
+- **Commit contents.** Final review shows the four files with their sizes, each openable,
+  built by the same code the publish uses.
+- **Teams.** "Post the changelog to Teams" posts a MessageCard to the Power Automate /
+  Teams Incoming Webhook URLs in Settings › **Notifications** once the release lands; it
+  is disabled, with the reason, while none is set.
+- **Retries.** Dropped connections, 5xx and 429 answers are retried three times with
+  backoff before they reach the designer; a bad token or a protected branch fails at once.
+
+Settings › GitHub › **Test Connection** names the account, whether it can push, and which
+release the branch holds. The audit that shaped this is in
+[docs/research/tokens-studio-audit.md](docs/research/tokens-studio-audit.md).
+
+## MCP handoff tab
+
+Select → Check → Generate → Ship. The tab reads the **real selection** (name, path,
+variants, layer count, description) and follows it as you click around the canvas; a
+selection change mid-flow returns to Select and says so. **Check** walks the selected node
+once and scores it: detached instances and mostly-raw values fail (Generate stays locked),
+local components, absolute positioning, unstyled text, default layer names and a missing
+component description warn. **Copy prompt for Claude Code** carries the node (a Figma link
+when the plugin has `figma.fileKey`, private plugins only), the `get_design_context` call,
+your framework / styling / path options and the gaps the checks found as TODOs; **Copy MCP
+setup** gives the `claude mcp add` line for the remote (`mcp.figma.com/mcp`) or desktop
+(`127.0.0.1:3845/mcp`) Figma MCP server and the matching `mcp.json` block. The GitHub
+connection comes from Settings › **MCP + Code Sync**. Code generation and the Git push are
+still previews on sample data: the prompt is what hands the real work to the developer's
+agent.
 
 ## Layout
 

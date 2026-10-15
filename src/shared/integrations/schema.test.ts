@@ -17,7 +17,12 @@ describe('Dual File settings', () => {
 
   it('migrates the old Variables / Components fields into File 1 and File 2', () => {
     const merged = mergeIntegrations({ dualFile: { enabled: false, variablesFileId: 'V1', variablesApiKey: 'kv', componentsFileId: 'C1', componentsApiKey: 'kc' } })
-    expect(merged.dualFile).toEqual({ enabled: false, file1Id: 'V1', file1Key: 'kv', file1Role: 'Variables', file2Id: 'C1', file2Key: 'kc', file2Role: 'Components' })
+    expect(merged.dualFile).toEqual({ enabled: false, file1Id: 'V1', file1Key: 'kv', file1Role: 'Variables', file2Id: 'C1', file2Key: 'kc', file2Role: 'Components', extraFiles: [] })
+  })
+
+  it('normalises extra files like the two slots and drops empty rows', () => {
+    const df = normalizeIntegration({ ...DEFAULT_INTEGRATIONS.dualFile, extraFiles: [{ id: ' https://figma.com/design/K3/x ', key: ' t3 ', role: 'Components' }, { id: '', key: '', role: 'Variables' }] }, 'dualFile')
+    expect(df.extraFiles).toEqual([{ id: 'K3', key: 't3', role: 'Components' }])
   })
 
   it('keeps the new shape as stored', () => {
