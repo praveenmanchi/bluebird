@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks'
-import { Button, ScanSummary, SectionTitle, SegmentTab, useRpc } from '@shared/ui'
+import { Button, ScanSummary, SectionTitle, SegmentedControl, useRpc, type IconName } from '@shared/ui'
 import { MSG, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
 import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, type LevelFilter } from '../state'
 import { contrastRule, rulesFor, targetRule, type RuleId } from '../rules'
@@ -16,6 +16,13 @@ import { summaryProps, emptySummaryProps } from './summaryProps'
 import './a11y.css'
 
 type FindingKind = 'all' | 'contrast' | 'nontext' | 'target'
+/** The criteria filter items, with the UI Icons glyph each Figma "Criteria filter" item shows. */
+const KINDS: readonly (readonly [FindingKind, string, IconName])[] = [
+  ['all', 'All', 'ui-general-show-as-list'],
+  ['contrast', 'Contrast', 'ui-color-contrast'],
+  ['nontext', 'Non-text', 'ui-toolbar-shapes'],
+  ['target', 'Target size', 'ui-toolbar-measure'],
+]
 
 /** Web checks WCAG's 24 / 44 px; iOS and Android check their own 44 pt / 48 dp tap targets. */
 const PLATFORM_OPTIONS: readonly { value: Platform; label: string }[] = PLATFORMS.map((p) => ({ value: p, label: PLATFORM_TARGETS[p].label }))
@@ -88,6 +95,7 @@ export function Tab() {
   const nonText = level.value === 'AAA' || !listed('1.4.11') ? [] : (r?.nonText ?? [])
   const targets = (r?.targets ?? []).filter((t) => listed(targetRule(t)) && (level.value === 'all' || (targetCriterion(t) === '2.5.5' ? 'AAA' : 'AA') === level.value))
   const total = issues.length + nonText.length + targets.length
+  const counts: Record<FindingKind, number> = { all: total, contrast: issues.length, nontext: nonText.length, target: targets.length }
   /** The version the results were measured against (the dropdown may have moved since). */
   const scannedStandard = r?.standard
 
@@ -165,11 +173,13 @@ export function Tab() {
         {r && (
           <section class="bb-a11y__findings" aria-label="Findings">
             <SectionTitle title="Findings" count={String(total)} showAction={false} />
-            <div class="bb-a11y__kinds" role="tablist" aria-label="Filter findings">
-              {([['all', 'All', total], ['contrast', 'Contrast', issues.length], ['nontext', 'Non-text', nonText.length], ['target', 'Target size', targets.length]] as const).map(([k, label, n]) => (
-                <SegmentTab key={k} selected={kind === k} onClick={() => setKind(k)}>{label} {n}</SegmentTab>
-              ))}
-            </div>
+            <SegmentedControl
+              class="bb-a11y__kinds"
+              aria-label="Filter findings"
+              options={KINDS.map(([k, label, icon]) => ({ value: k, label: `${label} ${counts[k]}`, icon }))}
+              value={kind}
+              onChange={setKind}
+            />
             {total === 0 && (
               <p class="bb-a11y__empty">
                 Nothing to report in {r.scope === 'page' ? 'this page' : 'the selection'} against {standardLabel(scannedStandard)} · {ruleList.map((rule) => rule.id).join(', ')}.

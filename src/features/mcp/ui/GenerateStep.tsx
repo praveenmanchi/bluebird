@@ -1,4 +1,4 @@
-import { Checkbox, CodeSnippet, PublishEmptyState, SectionTitle, SegmentTab } from '@shared/ui'
+import { Checkbox, CodeSnippet, PublishEmptyState, SectionTitle, SegmentedControl, type IconName } from '@shared/ui'
 import { FRAMEWORKS, GENERATION_LOG, INCLUDE_LABELS, PATHS, STYLINGS, type IncludeOption } from '../fixtures'
 import { activeFile, checkResult, files, framework, generation, goTo, include, path, selection, styling } from '../state'
 import { ActionBar } from './ActionBar'
@@ -44,19 +44,26 @@ export function generationSummary(): string {
   return `${filesPart} · reuses ${st.libraryInstances} ${st.libraryInstances === 1 ? 'component' : 'components'} · ${raw} hardcoded ${raw === 1 ? 'value' : 'values'}`
 }
 
+/** The UI Icons glyph the Figma "Files" sub menu gives each generated file. */
+function fileIcon(name: string): IconName {
+  if (name.endsWith('.stories.tsx')) return 'ui-toolbar-component'
+  if (name.endsWith('.css')) return 'ui-style-fill'
+  return 'ui-toolbar-dev-brackets'
+}
+
 function Generated() {
   const list = files.value
   const shown = list.find((f) => f.name === activeFile.value) ?? list[0]!
   const raw = (checkResult.value?.stats.rawPaints ?? 0) + (checkResult.value?.stats.rawNumbers ?? 0)
   return (
     <>
-      <div class="bb-mcp-handoff__files" role="tablist" aria-label="Generated files">
-        {list.map((f) => (
-          <SegmentTab key={f.name} icon="text" selected={f.name === shown.name} onClick={() => { activeFile.value = f.name }}>
-            {f.name}
-          </SegmentTab>
-        ))}
-      </div>
+      <SegmentedControl
+        class="bb-mcp-handoff__files"
+        aria-label="Generated files"
+        options={list.map((f) => ({ value: f.name, icon: fileIcon(f.name) }))}
+        value={shown.name}
+        onChange={(name) => { activeFile.value = name }}
+      />
       <CodeSnippet role="tabpanel" aria-label={shown.name} language={shown.caption} code={shown.code} />
       <p class="bb-mcp-handoff__caption">
         {raw > 0 ? `${raw} hardcoded ${raw === 1 ? 'value ships' : 'values ship'} as --bb-derived-* tokens until ${raw === 1 ? 'it is' : 'they are'} bound in Figma. ` : ''}

@@ -65,11 +65,7 @@
   justify-content: space-between;
   gap: var(--bb-uxai-space-inline);
 }
-.bb-uxai-variables__modes {
-  display: flex;
-  align-items: center;
-  gap: var(--bb-uxai-space-tight);
-}
+.bb-uxai-variables__modes { flex: none; }
 .bb-uxai-variables__apply {
   display: flex;
   flex-wrap: wrap;

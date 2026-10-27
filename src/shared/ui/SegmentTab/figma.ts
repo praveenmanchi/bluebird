@@ -2,7 +2,7 @@
 export const figma = {
   setId: '308:51054',
   name: 'Tab selecters',
-  props: { 'Property 1': 'selected', 'Select Text': 'children', 'Tab Icons (fixed instance)': 'icon' },
+  props: { State: 'selected | state="hover" | disabled', Label: 'children', 'Show icon': 'icon (presence)', Icon: 'icon' },
   figmaGaps: {},
-  notes: 'Default text (#b3b3b3) and the Selected fill (#1a5ee5) / stroke (#323232) are raw in Figma and read through --bb-derived-segment-tab-*; bind them to input/fg/helper, surface/accent-strong and button/primary/border/disabled in Figma to close the gap. The glyph reads tab/icon/default in both variants, independent of the label colour; only the code-only disabled state dims it with the label. Default nests the Tab Icons instance in Container (24x24, chip-filter/gap, 2 inset; code sizes it with chip-filter/icon-size); Selected sets it beside Container at an unbound 18x18 with no spacing or inset, so a selected segment is narrower than a default one. The generator emits no derived size for instances inside a component, so code sizes the Selected glyph with Semantics size/icon/md (18) until Figma binds an icon size there.',
+  notes: 'All four states share one row: the Icon instance (24, chip-filter/icon/size) then the Label, with space/4 · space/8 insets and radius/4. The glyph keeps the UI Icons colour (icon/glyph/default) in every state; Disabled dims it with a raw 0.4 layer opacity (--bb-derived-segment-tab-icon-opacity). With Show icon off the label has no glyph beside it, so code evens the inset to space/8 on both sides — in Figma the compact Accessibility S filters override paddingLeft to space/8 the same way.',
 } as const

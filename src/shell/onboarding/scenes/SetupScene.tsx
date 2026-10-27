@@ -21,11 +21,14 @@ export function SetupScene({ still }: SceneProps) {
       <div class="bb-ob-scene">
         <span {...reveal(300, 'up', 'bb-ob-label')}>AI provider</span>
         <div {...reveal(300, 'up', 'bb-ob-row bb-ob-row--start')}>
-          <div ref={provider}>
-            <Swap enter={300} at={1300} kind="fade" before={<SegmentTab icon="ai-claude">Claude</SegmentTab>} after={<SegmentTab icon="ai-claude" selected>Claude</SegmentTab>} />
+          {/* Figma "Tab sub menu" (Level=3); the Selected Claude item fades in over item 1. */}
+          <div class="bb-segmented-control bb-ob-providers">
+            <div ref={provider}>
+              <Swap enter={300} at={1300} kind="fade" before={<SegmentTab icon="ai-claude">Claude</SegmentTab>} after={<SegmentTab icon="ai-claude" selected>Claude</SegmentTab>} />
+            </div>
+            <SegmentTab icon="ai-openai">OpenAI</SegmentTab>
+            <SegmentTab icon="ai-gemini">Gemini</SegmentTab>
           </div>
-          <SegmentTab icon="ai-openai">OpenAI</SegmentTab>
-          <SegmentTab icon="ai-gemini">Gemini</SegmentTab>
         </div>
         <span {...reveal(500, 'up', 'bb-ob-label')}>API key</span>
         <div ref={field} {...reveal(500, 'up', 'bb-ob-field')}>

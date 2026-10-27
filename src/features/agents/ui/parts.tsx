@@ -1,42 +1,30 @@
 // Small tab-local compositions shared by several Agents screens. Layout and
 // tokens stay in each screen's CSS (the class is passed in), so every screen's
 // stylesheet still reads what its own Figma frame binds.
-import { LinkButton, SegmentTab, type IconName } from '@shared/ui'
+import { LinkButton, SegmentedControl, type IconName } from '@shared/ui'
 
 export interface SelecterRowProps<T extends string> {
-  options: readonly { id: T; label: string }[]
+  options: readonly { id: T; label: string; icon?: IconName }[]
   value: T
   onChange: (value: T) => void
   /** Accessible name of the tablist. */
   label: string
-  /** The "Tab Icons" glyph each Figma "Tab selecters" instance shows. */
-  icon?: IconName
   class?: string
 }
 
 /**
- * A row of loose Figma "Tab selecters" instances (scope, mode, severity filters).
- * Not the Group Tab selecters track: the screens place the segments straight in an
- * auto-layout row, so this is SegmentTab in a tablist with arrow-key movement.
+ * The scope, mode and severity rows: a Figma "Tab sub menu" (SegmentedControl) whose
+ * items carry the UI Icons glyph each screen sets on them.
  */
-export function SelecterRow<T extends string>({ options, value, onChange, label, icon = 'text', class: cls }: SelecterRowProps<T>) {
-  const onKeyDown = (e: KeyboardEvent) => {
-    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
-    if (!step || options.length === 0) return
-    e.preventDefault()
-    const index = options.findIndex((o) => o.id === value)
-    const next = options[(index + step + options.length) % options.length]!
-    onChange(next.id)
-    ;(e.currentTarget as HTMLElement).querySelector<HTMLElement>(`[data-option="${CSS.escape(next.id)}"]`)?.focus()
-  }
+export function SelecterRow<T extends string>({ options, value, onChange, label, class: cls }: SelecterRowProps<T>) {
   return (
-    <div role="tablist" aria-label={label} class={cls} onKeyDown={onKeyDown}>
-      {options.map((o) => (
-        <SegmentTab key={o.id} data-option={o.id} icon={icon} selected={o.id === value} onClick={() => { if (o.id !== value) onChange(o.id) }}>
-          {o.label}
-        </SegmentTab>
-      ))}
-    </div>
+    <SegmentedControl<T>
+      aria-label={label}
+      class={cls}
+      options={options.map((o) => ({ value: o.id, label: o.label, icon: o.icon }))}
+      value={value}
+      onChange={onChange}
+    />
   )
 }
 

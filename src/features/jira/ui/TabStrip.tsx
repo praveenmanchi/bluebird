@@ -1,34 +1,28 @@
 import type { JSX } from 'preact'
-import { SegmentTab } from '@shared/ui'
+import { SegmentedControl, type IconName } from '@shared/ui'
 
 export interface TabStripProps<T extends string> extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'value'> {
   options: readonly T[]
   value: T
   onChange: (value: T) => void
+  /** UI Icons glyph per option, as set on the Figma items. */
+  icons?: Partial<Record<T, IconName>>
 }
 
 /**
- * Figma "Activity tabs": a plain auto-layout row (gap
- * jira/space/tight) of "Tab selecters" instances, each with the fixed `text`
- * glyph — not the "Group Tab selecters" track, so SegmentTab is composed
- * directly. Arrow keys move the selection.
+ * Figma "Activity tabs": a "Tab sub menu" (Level=3) — SegmentedControl with the jira
+ * board's class for placement. Arrow keys move the selection.
  */
-export function TabStrip<T extends string>({ options, value, onChange, class: cls, ...rest }: TabStripProps<T>) {
-  const onKeyDown = (e: KeyboardEvent) => {
-    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
-    if (!step) return
-    e.preventDefault()
-    const next = options[(options.indexOf(value) + step + options.length) % options.length]!
-    onChange(next)
-    ;(e.currentTarget as HTMLElement).querySelector<HTMLElement>(`[data-option="${CSS.escape(next)}"]`)?.focus()
-  }
+export function TabStrip<T extends string>({ options, value, onChange, icons, class: cls, 'aria-controls': controls, ...rest }: TabStripProps<T>) {
   return (
-    <div {...rest} role="tablist" aria-orientation="horizontal" class={`bb-jira-board__tabs ${cls ?? ''}`} onKeyDown={onKeyDown}>
-      {options.map((option) => (
-        <SegmentTab key={option} data-option={option} icon="text" selected={option === value} onClick={() => { if (option !== value) onChange(option) }}>
-          {option}
-        </SegmentTab>
-      ))}
-    </div>
+    <SegmentedControl<T>
+      {...rest}
+      class={`bb-jira-board__tabs ${cls ?? ''}`}
+      options={options}
+      icons={icons}
+      controls={typeof controls === 'string' ? controls : undefined}
+      value={value}
+      onChange={onChange}
+    />
   )
 }

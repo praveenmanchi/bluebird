@@ -1,28 +1,36 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite'
 import { useState } from 'preact/hooks'
-import { SegmentedControl } from './SegmentedControl'
+import { SegmentedControl, type SegmentOption } from './SegmentedControl'
 import { figma } from './figma'
 import { BrandGrid } from '../../../../.storybook/helpers'
 
-const FOUR = ['Multi Inspect', 'Label', 'Label 2', 'Label 3']
-const THREE = ['Multi Inspect', 'Label', 'Label 2']
-const TWO = ['Label', 'Label 2']
-// Every segment in both Figma variants carries the Tab Icons "text" glyph (master 287:46071).
-const textIcons = (options: readonly string[]) => Object.fromEntries(options.map((o) => [o, 'text' as const]))
+// The sample items on the Figma set: Item 1 is Selected, each with its own UI Icons glyph.
+const SAMPLE: readonly SegmentOption[] = [
+  { value: 'Label', icon: 'ui-variable-text' },
+  { value: 'JSON', icon: 'ui-toolbar-dev-brackets' },
+  { value: 'XML', icon: 'ui-text-code-block' },
+  { value: 'YAML', icon: 'ui-text-codesnippet' },
+  { value: 'CSS', icon: 'ui-style-fill' },
+  { value: 'Markdown', icon: 'ui-text-h1' },
+]
+const level = (n: number) => SAMPLE.slice(0, n)
 
 const meta = {
   title: 'Molecules/SegmentedControl',
   component: SegmentedControl,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { options: FOUR, value: FOUR[0] },
+  args: { options: level(4), value: 'Label' },
 } satisfies Meta<typeof SegmentedControl>
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const FourLevel: Story = { args: { icons: textIcons(FOUR) }, parameters: { figma: { variant: 'Property 1=4 level' } } }
-export const ThreeLevel: Story = { args: { options: THREE, value: THREE[0], icons: textIcons(THREE) }, parameters: { figma: { variant: 'Property 1=3 level' } } }
-export const TwoLevel: Story = { args: { options: TWO, value: TWO[0], icons: textIcons(TWO) }, parameters: { figma: { variant: 'Property 1=2 level' } } }
-export const WithIcons: Story = { args: { options: ['JSON', 'CSS', 'Tokens'], value: 'JSON', icons: { JSON: 'text', CSS: 'colors', Tokens: 'variables' } } }
+export const Level2: Story = { args: { options: level(2) }, parameters: { figma: { variant: 'Level=2' } } }
+export const Level3: Story = { args: { options: level(3) }, parameters: { figma: { variant: 'Level=3' } } }
+export const Level4: Story = { parameters: { figma: { variant: 'Level=4' } } }
+export const Level5: Story = { args: { options: level(5) }, parameters: { figma: { variant: 'Level=5' } } }
+export const Level6: Story = { args: { options: level(6) }, parameters: { figma: { variant: 'Level=6' } } }
+/** Accessibility S: the compact filter without glyphs. */
+export const TextOnly: Story = { args: { options: ['All 23', 'Contrast 14', 'Non-text 5', 'Target size 4'], value: 'All 23' } }
 export const Disabled: Story = { args: { disabled: true } }
 
 export const Interactive: Story = {
@@ -36,7 +44,7 @@ export const AcrossBrands: Story = {
   render: (args) => (
     <BrandGrid width="400px">
       <SegmentedControl {...args} />
-      <SegmentedControl {...args} options={TWO} value={TWO[0]} />
+      <SegmentedControl {...args} options={level(2)} />
     </BrandGrid>
   ),
 }

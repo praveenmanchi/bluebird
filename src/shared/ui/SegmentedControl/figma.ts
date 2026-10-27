@@ -1,10 +1,13 @@
-/** Figma ↔ code contract for SegmentedControl ("Group Tab selecters" 308:51205). */
+/** Figma ↔ code contract for SegmentedControl ("Tab sub menu" 40002378:50041). */
 export const figma = {
-  setId: '308:51205',
-  name: 'Group Tab selecters',
-  props: { 'Property 1': 'options.length (4 level = 4 options, 2 level = 2 options)', 'Tab selecters › Select Text': 'options[]', 'Tab selecters › Property 1=Selected': 'value' },
+  setId: '40002378:50041',
+  name: 'Tab sub menu',
+  props: { Level: 'options.length (2–6)', 'Item n › Label / Icon / State=Selected': 'options[] ({ value, label, icon }) + value' },
   figmaGaps: {
-    'tab/icon/default': 'read by the composed SegmentTab (.bb-segment-tab__icon); the Selected segment keeps it, only unselected glyphs are overridden here',
+    'surface/accent-strong': 'the Selected item fill, read by the composed SegmentTab',
+    'dimension/radius/4': 'the item corner, read by the composed SegmentTab',
+    'dimension/space/8': 'the item right inset, read by the composed SegmentTab',
+    'chip-filter/icon/size': 'the item glyph size, read by the composed SegmentTab',
   },
-  notes: 'Track fill (#383838), stroke (#ffffff33) and the 4 level item spacing (4) are raw in Figma → derived tokens; bind to color/neutral/400, a new border variable and a spacing variable to close the gap. The spacing applies to data-level="4" only: 2 level has no itemSpacing. Unselected segments’ glyphs read icon/glyph/muted, mirroring Figma’s instance override. Other segment visuals come from SegmentTab.',
+  notes: 'Replaces the older "Group Tab selecters" (308:51205), which is no longer used on any page. Items are exposed nested instances, so each screen sets Label, Icon and which item is Selected from the instance; code takes the same as options. The selected item is not always the first.',
 } as const

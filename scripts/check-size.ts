@@ -66,7 +66,9 @@ import { resolve } from 'node:path'
 // 2026-10-27 (UI Icons replace the Variables placeholder): user raised the budget to 1210 KB. Six `ui-*` glyphs
 // (variable color/value, sidebar libraries, toolbar component, general add/check) added ~5.5 KB; UI icon
 // paths are already rounded to one decimal and minified. Same levers as above.
-const BUDGET_KB = 1210
+// 2026-10-27 (Tab sub menu on every tab-selection row): user raised the budget to 1220 KB. ~20 `ui-*`
+// glyphs for the per-item icons (scope, severity, file type, activity, mode) added ~14 KB: 1214.4 KB.
+const BUDGET_KB = 1220
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

@@ -1,19 +1,21 @@
-/* SegmentTab — Figma "Tab selecters" set (308:51054): Default / Selected.
- * Bound tokens: chip-filter/font/*, chip-filter/gap, tab/fg/default (Selected
- * text), tab/icon/default (glyph, both variants). The box height, radius,
- * padding, the Default text colour and the Selected fill/stroke are raw in
- * Figma → --bb-derived-segment-tab-*. */
+/* SegmentTab — Figma "Tab selecters" set (308:51054): State = Default / Hover / Selected /
+ * Disabled. Every state is the same row: the Icon instance (chip-filter/icon/size) then the
+ * Label, hugging at 24 high with dimension/space/4 · dimension/space/8 side insets and a
+ * dimension/radius/4 corner. Fills: Hover dropdown/item/bg-hover, Selected
+ * surface/accent-strong. Label: input/fg/helper, tab/fg/default on Hover, tab/fg/active when
+ * Selected, icon/glyph/muted when Disabled. The glyph keeps its own UI Icons colour
+ * (icon/glyph/default); only Disabled dims it, by layer opacity (raw → derived). */
 .bb-segment-tab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  height: var(--bb-derived-segment-tab-root-height);
-  padding: var(--bb-derived-segment-tab-root-padding-top) var(--bb-derived-segment-tab-root-padding-right) var(--bb-derived-segment-tab-root-padding-bottom) var(--bb-derived-segment-tab-root-padding-left);
-  border: var(--bb-derived-segment-tab-root-stroke-width) solid var(--bb-surface-transparent);
-  border-radius: var(--bb-derived-segment-tab-root-radius);
+  min-height: var(--bb-chip-filter-icon-size); /* Figma minHeight: text-only items keep the 24 row */
+  padding: 0 var(--bb-dimension-space-8) 0 var(--bb-dimension-space-4);
+  border: none;
+  border-radius: var(--bb-dimension-radius-4);
   background: var(--bb-surface-transparent);
-  color: var(--bb-derived-segment-tab-json-color);
+  color: var(--bb-input-fg-helper);
   font-family: var(--bb-chip-filter-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-chip-filter-font-size);
   font-weight: var(--bb-chip-filter-font-weight);
@@ -22,8 +24,10 @@
   cursor: pointer;
   outline: none;
   appearance: none;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
+  transition: background-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
+/* Show icon = false: no glyph to carry the left inset, so the label sits on space/8 both sides. */
+.bb-segment-tab--text-only { padding-left: var(--bb-dimension-space-8); }
 .bb-segment-tab:focus-visible {
   outline: var(--bb-border-width-default) solid var(--bb-border-focus);
   outline-offset: var(--bb-space-inset-xs);
@@ -32,33 +36,23 @@
   display: inline-flex;
   align-items: center;
 }
-/* Only Default nests the glyph in Container with chip-filter/gap and the inset. Selected sets
- * the Tab Icons instance beside Container with neither, so a selected segment is narrower. */
-.bb-segment-tab:not([data-selected]) .bb-segment-tab__container {
-  gap: var(--bb-chip-filter-gap);
-  padding-inline: var(--bb-derived-segment-tab-container-padding-left) var(--bb-derived-segment-tab-container-padding-right);
-}
 .bb-segment-tab__icon {
   display: inline-flex;
   flex: none;
   width: var(--bb-chip-filter-icon-size);
   height: var(--bb-chip-filter-icon-size);
-  color: var(--bb-tab-icon-default); /* override on the Tab Icons glyph, Default and Selected alike */
-}
-/* Figma draws the Selected glyph at an unbound 18 (Default: 24) and the generator emits no
- * size for instances inside a component, so Semantics size/icon/md stands in (figma.ts notes). */
-.bb-segment-tab[data-selected] .bb-segment-tab__icon {
-  width: var(--bb-size-icon-md);
-  height: var(--bb-size-icon-md);
+  color: var(--bb-icon-glyph-default);
 }
 .bb-segment-tab__icon > .bb-icon { width: 100%; height: 100%; }
 .bb-segment-tab__label { display: inline-block; }
 
-.bb-segment-tab:not(:disabled):not([data-selected]):is(:hover, [data-state="hover"]) { color: var(--bb-tab-fg-default); }
-.bb-segment-tab[data-selected] {
-  background: var(--bb-derived-segment-tab-root-fill);
-  border-color: var(--bb-derived-segment-tab-root-stroke);
+.bb-segment-tab:not(:disabled):not([data-selected]):is(:hover, [data-state="hover"]) {
+  background: var(--bb-dropdown-item-bg-hover);
   color: var(--bb-tab-fg-default);
 }
+.bb-segment-tab[data-selected] {
+  background: var(--bb-surface-accent-strong);
+  color: var(--bb-tab-fg-active);
+}
 .bb-segment-tab:disabled { cursor: not-allowed; color: var(--bb-icon-glyph-muted); }
-.bb-segment-tab:disabled .bb-segment-tab__icon { color: inherit; }
+.bb-segment-tab:disabled .bb-segment-tab__icon { opacity: var(--bb-derived-segment-tab-icon-opacity); }

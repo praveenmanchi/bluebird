@@ -55,8 +55,7 @@
   flex-wrap: wrap;
   gap: var(--bb-agents-space-tight) var(--bb-agents-space-section);
 }
-.bb-agents-gallery__options,
-.bb-agents-gallery__tabs {
+.bb-agents-gallery__options {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

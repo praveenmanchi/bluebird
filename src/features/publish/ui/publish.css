@@ -72,7 +72,6 @@
 /* Actions: HORIZONTAL, gap publish/space/inline, no fill or stroke — sits under the panels. */
 .bb-publish__actions { flex: none; }
 
-.bb-publish__filters,
 .bb-publish__counts,
 .bb-publish__buttons {
   display: flex;
@@ -144,3 +143,6 @@
   .bb-publish__actions { flex-wrap: wrap; }
   .bb-publish__summary { flex-basis: 100%; }
 }
+
+/* Filters: a Tab sub menu (Level=3) that hugs its items. */
+.bb-publish__filters { align-self: flex-start; }

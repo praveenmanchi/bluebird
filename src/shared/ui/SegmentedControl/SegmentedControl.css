@@ -1,19 +1,23 @@
-/* SegmentedControl — Figma "Group Tab selecters" set (308:51205): "4 level" /
- * "2 level" (segment count). Bound tokens: chip-filter/radius, icon/glyph/muted
- * (the override on unselected segments' glyphs). The dark track fill, its
- * translucent stroke, inset and the 4 level item spacing are raw in Figma →
- * --bb-derived-segmented-control-*. Segments are SegmentTab. */
+/* SegmentedControl — Figma "Tab sub menu" (40002378:50041): Level 2–6 (item count). The
+ * track hugs its items: dropdown/menu/bg fill, dimension/space/4 inset, dimension/space/2
+ * between items, dimension/radius/8 corners (concentric with the items' radius/4 + inset), and
+ * a one-pixel dropdown/border/default inside stroke that Figma keeps out of the layout — an inset
+ * shadow here, so the track stays 32 high. The width is bound to border-width/default per side,
+ * which the extractor reads as raw → derived. Items are SegmentTab. One row only — a narrow parent scrolls it sideways instead of
+ * wrapping (Figma's compact S screens drop the icons to fit). */
 .bb-segmented-control {
   display: inline-flex;
-  align-items: stretch;
+  align-items: center;
   box-sizing: border-box;
-  padding: var(--bb-derived-segmented-control-root-padding-top) var(--bb-derived-segmented-control-root-padding-right) var(--bb-derived-segmented-control-root-padding-bottom) var(--bb-derived-segmented-control-root-padding-left);
-  border: var(--bb-derived-segmented-control-root-stroke-width) solid var(--bb-derived-segmented-control-root-stroke);
-  border-radius: var(--bb-chip-filter-radius);
-  background: var(--bb-derived-segmented-control-root-fill);
+  max-width: 100%;
+  padding: var(--bb-dimension-space-4);
+  gap: var(--bb-dimension-space-2);
+  border-radius: var(--bb-dimension-radius-8);
+  background: var(--bb-dropdown-menu-bg);
+  box-shadow: inset 0 0 0 var(--bb-derived-segmented-control-root-stroke-width) var(--bb-dropdown-border-default);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-/* Only the 4 level variant sets itemSpacing; 2 level segments sit flush. */
-.bb-segmented-control[data-level="4"] { gap: var(--bb-derived-segmented-control-root-gap); }
-.bb-segmented-control__segment { height: auto; align-self: stretch; }
-.bb-segmented-control__segment:not([data-selected]) .bb-segment-tab__icon { color: var(--bb-icon-glyph-muted); }
+.bb-segmented-control::-webkit-scrollbar { display: none; }
+.bb-segmented-control__segment { flex: none; }
 .bb-segmented-control[data-disabled] { cursor: not-allowed; }

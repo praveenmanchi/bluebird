@@ -90,8 +90,14 @@
 }
 
 /* Figma L "Results": Findings title + filter tabs above the stacked WCAG cards. */
-.bb-a11y__findings { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); }
-.bb-a11y__kinds { display: flex; flex-wrap: wrap; gap: var(--bb-space-inline-xs); }
+.bb-a11y__findings { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); container: a11y-findings / inline-size; }
+.bb-a11y__kinds { align-self: flex-start; }
+/* Accessibility S: the Figma Criteria filter turns Show icon off on every item (inset space/8)
+ * so the four items fit 310 wide. */
+@container a11y-findings (max-width: 360px) { /* allow-raw: container conditions cannot read custom properties */
+  .bb-a11y__kinds .bb-segment-tab__icon { display: none; }
+  .bb-a11y__kinds .bb-segment-tab { padding-left: var(--bb-dimension-space-8); }
+}
 .bb-a11y__empty { margin: 0; color: var(--bb-text-secondary); font-size: var(--bb-font-size-body); }
 .bb-a11y__summary { flex-wrap: wrap; }
 .bb-a11y__summary:empty { display: none; }

@@ -10078,181 +10078,152 @@
       "name": "Tab selecters",
       "description": "",
       "props": {
-        "Select Text": {
+        "Label": {
           "type": "TEXT",
           "default": "Label"
         },
-        "Property 1": {
+        "Show icon": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Icon": {
+          "type": "INSTANCE_SWAP",
+          "default": "40002351:19434"
+        },
+        "State": {
           "type": "VARIANT",
           "options": [
             "Default",
-            "Selected"
+            "Selected",
+            "Hover",
+            "Disabled"
           ],
-          "default": "Selected"
+          "default": "Default"
         }
       },
       "variants": [
         {
           "id": "308:51053",
           "key": "bd5103cc80c54ef81d1cf44e66aa70461696829c",
-          "name": "Property 1=Default",
+          "name": "State=Default",
           "props": {
-            "Property 1": "Default"
+            "State": "Default"
           },
           "nodes": [
             {
               "id": "308:51053",
-              "p": "Property 1=Default",
+              "p": "State=Default",
               "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  78,
-                  26
-                ]
-              }
-            },
-            {
-              "id": "308:51039",
-              "p": "Property 1=Default/Container",
-              "t": "FRAME",
               "b": {
-                "itemSpacing": "chip-filter/gap"
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
               },
               "r": {
-                "layout": "HORIZONTAL MIN CENTER HUG HUG",
-                "paddingLeft": 2,
-                "paddingRight": 2,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
             },
             {
-              "id": "308:51060",
-              "p": "Property 1=Default/Container/Tab Icons",
+              "id": "40002384:61109",
+              "p": "State=Default/Icon",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
               "r": {
                 "size": [
                   24,
                   24
                 ]
               },
-              "i": "Tab Icon=text <Tab Icons>",
-              "mc": "287:46071",
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
               "cp": {
-                "Tab Icon": "text"
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
               }
             },
             {
-              "id": "I308:51060;287:46076",
-              "p": "Property 1=Default/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "tab/icon/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
               "id": "308:51043",
-              "p": "Property 1=Default/Container/JSON",
+              "p": "State=Default/Label",
               "t": "TEXT",
               "b": {
+                "fill": "input/fg/helper",
                 "fontSize": "chip-filter/font/size",
                 "fontFamily": "chip-filter/font/family",
                 "fontWeight": "chip-filter/font/weight",
                 "lineHeight": "chip-filter/line-height"
               },
               "r": {
-                "fill": "#b3b3b3",
-                "text": "JSON"
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
               }
             }
           ]
         },
         {
-          "id": "308:51052",
-          "key": "cf23359bd06a356ba7c49a2ad00df5517290554a",
-          "name": "Property 1=Selected",
+          "id": "40002384:61113",
+          "key": "a9d4444d54466bf22902d45ac3e4b286de17741c",
+          "name": "State=Hover",
           "props": {
-            "Property 1": "Selected"
+            "State": "Hover"
           },
           "nodes": [
             {
-              "id": "308:51052",
-              "p": "Property 1=Selected",
+              "id": "40002384:61113",
+              "p": "State=Hover",
               "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "fill": "#1a5ee5",
-                "stroke": "#323232",
-                "strokeWeight": 1,
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  63,
-                  26
-                ]
-              }
-            },
-            {
-              "id": "308:51093",
-              "p": "Property 1=Selected/Tab Icons",
-              "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "size": [
-                  18,
-                  18
-                ]
-              },
-              "i": "Tab Icon=text <Tab Icons>",
-              "mc": "287:46071",
-              "cp": {
-                "Tab Icon": "text"
-              }
-            },
-            {
-              "id": "I308:51093;287:46076",
-              "p": "Property 1=Selected/Tab Icons/Vector",
-              "t": "VECTOR",
               "b": {
-                "fill": "tab/icon/default"
+                "fill": "dropdown/item/bg-hover",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
               },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "308:51094",
-              "p": "Property 1=Selected/Container",
-              "t": "FRAME",
-              "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  29,
-                  11
+                  65,
+                  24
                 ]
               }
             },
             {
-              "id": "308:51095",
-              "p": "Property 1=Selected/Container/Label",
+              "id": "40002384:61114",
+              "p": "State=Hover/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "40002384:61115",
+              "p": "State=Hover/Label",
               "t": "TEXT",
               "b": {
                 "fill": "tab/fg/default",
@@ -10265,7 +10236,147 @@
                 "text": "Label"
               },
               "pr": {
-                "characters": "Select Text"
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "308:51052",
+          "key": "cf23359bd06a356ba7c49a2ad00df5517290554a",
+          "name": "State=Selected",
+          "props": {
+            "State": "Selected"
+          },
+          "nodes": [
+            {
+              "id": "308:51052",
+              "p": "State=Selected",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:61111",
+              "p": "State=Selected/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "308:51095",
+              "p": "State=Selected/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "tab/fg/active",
+                "fontSize": "chip-filter/font/size",
+                "fontFamily": "chip-filter/font/family",
+                "fontWeight": "chip-filter/font/weight",
+                "lineHeight": "chip-filter/line-height"
+              },
+              "r": {
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002384:61117",
+          "key": "c66337798ef3b2c1c0f30f38e647f5187a2c5f7c",
+          "name": "State=Disabled",
+          "props": {
+            "State": "Disabled"
+          },
+          "nodes": [
+            {
+              "id": "40002384:61117",
+              "p": "State=Disabled",
+              "t": "COMPONENT",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:61118",
+              "p": "State=Disabled/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "r": {
+                "size": [
+                  24,
+                  24
+                ],
+                "opacity": 0.4
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "40002384:61119",
+              "p": "State=Disabled/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "icon/glyph/muted",
+                "fontSize": "chip-filter/font/size",
+                "fontFamily": "chip-filter/font/family",
+                "fontWeight": "chip-filter/font/weight",
+                "lineHeight": "chip-filter/line-height"
+              },
+              "r": {
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
               }
             }
           ]
@@ -10275,487 +10386,1022 @@
     },
     {
       "code": "SegmentedControl",
-      "id": "308:51205",
-      "key": "74481f57b94901484f1f221979c2f9a5156267b1",
-      "name": "Group Tab selecters",
+      "id": "40002378:50041",
+      "key": "b40fea2f01ba6001bba961b8bdea60948b65ed80",
+      "name": "Tab sub menu",
       "description": "",
       "props": {
-        "Property 1": {
+        "Level": {
           "type": "VARIANT",
           "options": [
-            "4 level",
-            "2 level",
-            "3 level"
+            "4",
+            "3",
+            "2",
+            "5",
+            "6"
           ],
-          "default": "4 level"
+          "default": "2"
         }
       },
       "variants": [
         {
-          "id": "308:51117",
-          "key": "48cd27a04af9dc0584348aefd038836d494afa86",
-          "name": "Property 1=4 level",
+          "id": "40002378:50063",
+          "key": "c474da75f234e7544c33e4ccbee30a31fdedf381",
+          "name": "Level=2",
           "props": {
-            "Property 1": "4 level"
+            "Level": "2"
           },
           "nodes": [
             {
-              "id": "308:51117",
-              "p": "Property 1=4 level",
+              "id": "40002378:50063",
+              "p": "Level=2",
               "t": "COMPONENT",
               "b": {
-                "radius": "chip-filter/radius"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
               },
               "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "itemSpacing": 4,
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  401,
-                  30
+                  138,
+                  32
                 ]
               }
             },
             {
-              "id": "308:51063",
-              "p": "Property 1=4 level/Tab selecters",
+              "id": "40002384:62149",
+              "p": "Level=2/Item 1",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  103,
-                  26
+                  65,
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
+              "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
-                "Select Text": "Multi Inspect",
-                "Property 1": "Selected"
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
               }
             },
             {
-              "id": "I308:51063;308:51093;287:46173",
-              "p": "Property 1=4 level/Tab selecters/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "tab/icon/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "308:51070",
-              "p": "Property 1=4 level/Tab selecters",
+              "id": "I40002384:62149;40002384:61111",
+              "p": "Level=2/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  86,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I308:51070;308:51060;287:46189",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
               "b": {
-                "fill": "icon/glyph/muted"
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
               },
               "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "I308:51070;308:51043",
-              "p": "Property 1=4 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
+                "boundVariables",
+                "height",
+                "name",
+                "width"
               ],
               "r": {
-                "text": "Debug"
-              }
-            },
-            {
-              "id": "308:51195",
-              "p": "Property 1=4 level/Tab selecters",
-              "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
                 "size": [
-                  118,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I308:51195;308:51060;308:51240",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "I308:51195;308:51043",
-              "p": "Property 1=4 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
-              ],
-              "r": {
-                "text": "Visualization"
-              }
-            },
-            {
-              "id": "308:51185",
-              "p": "Property 1=4 level/Tab selecters",
-              "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  78,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I308:51185;308:51060;308:51249",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
-              "o": [
-                "fills"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "308:51206",
-          "key": "dbb6c8a21db1e3740637b37f3de104b5ad5bbd08",
-          "name": "Property 1=2 level",
-          "props": {
-            "Property 1": "2 level"
-          },
-          "nodes": [
-            {
-              "id": "308:51206",
-              "p": "Property 1=2 level",
-              "t": "COMPONENT",
-              "b": {
-                "radius": "chip-filter/radius"
-              },
-              "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
-                "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
-                "size": [
-                  153,
-                  30
+                  24,
+                  24
                 ]
               }
             },
             {
-              "id": "308:51207",
-              "p": "Property 1=2 level/Tab selecters",
+              "id": "40002384:62157",
+              "p": "Level=2/Item 2",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
                   63,
-                  26
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
-              "mc": "308:51052",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Selected"
-              }
-            },
-            {
-              "id": "308:51208",
-              "p": "Property 1=2 level/Tab selecters",
-              "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  86,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
+              "i": "State=Default <Tab selecters>",
               "mc": "308:51053",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
               }
             },
             {
-              "id": "I308:51208;308:51060;287:46076",
-              "p": "Property 1=2 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
+              "id": "I40002384:62157;40002384:61109",
+              "p": "Level=2/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "40002378:50042",
+          "key": "11be0aa439d1208d55849c518b48f46aad4d7587",
+          "name": "Level=3",
+          "props": {
+            "Level": "3"
+          },
+          "nodes": [
+            {
+              "id": "40002378:50042",
+              "p": "Level=3",
+              "t": "COMPONENT",
               "b": {
-                "fill": "icon/glyph/muted"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  199,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002384:62163",
+              "p": "Level=3/Item 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Selected <Tab selecters>",
+              "mc": "308:51052",
+              "cp": {
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
+              }
+            },
+            {
+              "id": "I40002384:62163;40002384:61111",
+              "p": "Level=3/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
               },
               "o": [
-                "fills"
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62171",
+              "p": "Level=3/Item 2",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  63,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62171;40002384:61109",
+              "p": "Level=3/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
               ]
             },
             {
-              "id": "I308:51208;308:51043",
-              "p": "Property 1=2 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
+              "id": "40002384:62177",
+              "p": "Level=3/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62177;40002384:61109",
+              "p": "Level=3/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
               "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
+                "boundVariables",
+                "height",
+                "name",
+                "width"
               ],
               "r": {
-                "text": "Debug"
+                "size": [
+                  24,
+                  24
+                ]
               }
             }
           ]
         },
         {
-          "id": "40000368:9080",
-          "key": "e8e97875d7540c6eed2058b18516cae03c7175b2",
-          "name": "Property 1=3 level",
+          "id": "40002378:50040",
+          "key": "4c6ec1b6af0bcb86acf426312f8654c84b634856",
+          "name": "Level=4",
           "props": {
-            "Property 1": "3 level"
+            "Level": "4"
           },
           "nodes": [
             {
-              "id": "40000368:9080",
-              "p": "Property 1=3 level",
+              "id": "40002378:50040",
+              "p": "Level=4",
               "t": "COMPONENT",
               "b": {
-                "radius": "chip-filter/radius"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
               },
               "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "itemSpacing": 4,
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  279,
-                  30
+                  266,
+                  32
                 ]
               }
             },
             {
-              "id": "40000368:9081",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "40002384:62183",
+              "p": "Level=4/Item 1",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  103,
-                  26
+                  65,
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
+              "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
-                "Select Text": "Multi Inspect",
-                "Property 1": "Selected"
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
               }
             },
             {
-              "id": "I40000368:9081;308:51093;287:46173",
-              "p": "Property 1=3 level/Tab selecters/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "tab/icon/default"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "40000368:9082",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "I40002384:62183;40002384:61111",
+              "p": "Level=4/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  86,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I40000368:9082;308:51060;287:46189",
-              "p": "Property 1=3 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
               "b": {
-                "fill": "icon/glyph/muted"
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
               },
               "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "I40000368:9082;308:51043",
-              "p": "Property 1=3 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
+                "boundVariables",
+                "height",
+                "name",
+                "width"
               ],
               "r": {
-                "text": "Debug"
+                "size": [
+                  24,
+                  24
+                ]
               }
             },
             {
-              "id": "40000368:9084",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "40002384:62191",
+              "p": "Level=4/Item 2",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  78,
-                  26
+                  63,
+                  24
                 ]
               },
-              "i": "Property 1=Default <Tab selecters>",
+              "i": "State=Default <Tab selecters>",
               "mc": "308:51053",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
               }
             },
             {
-              "id": "I40000368:9084;308:51060;308:51249",
-              "p": "Property 1=3 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
+              "id": "I40002384:62191;40002384:61109",
+              "p": "Level=4/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62197",
+              "p": "Level=4/Item 3",
+              "t": "INSTANCE",
               "b": {
-                "fill": "icon/glyph/muted"
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62197;40002384:61109",
+              "p": "Level=4/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
               },
               "o": [
-                "fills"
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62203",
+              "p": "Level=4/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62203;40002384:61109",
+              "p": "Level=4/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002384:62139",
+          "key": "21ddeaab2569f34791abcf57a34770e0e9be4f0b",
+          "name": "Level=5",
+          "props": {
+            "Level": "5"
+          },
+          "nodes": [
+            {
+              "id": "40002384:62139",
+              "p": "Level=5",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  324,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002384:62223",
+              "p": "Level=5/Item 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Selected <Tab selecters>",
+              "mc": "308:51052",
+              "cp": {
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
+              }
+            },
+            {
+              "id": "I40002384:62223;40002384:61111",
+              "p": "Level=5/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62231",
+              "p": "Level=5/Item 2",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  63,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62231;40002384:61109",
+              "p": "Level=5/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62237",
+              "p": "Level=5/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62237;40002384:61109",
+              "p": "Level=5/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62243",
+              "p": "Level=5/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62243;40002384:61109",
+              "p": "Level=5/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62251",
+              "p": "Level=5/Item 5",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  56,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:19255",
+                "Show icon": true,
+                "Label": "CSS",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62251;40002384:61109",
+              "p": "Level=5/Item 5/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "40002384:62144",
+          "key": "5379bd9d48e31c82f54b60002a3e8d32d1d61505",
+          "name": "Level=6",
+          "props": {
+            "Level": "6"
+          },
+          "nodes": [
+            {
+              "id": "40002384:62144",
+              "p": "Level=6",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  419,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002384:62268",
+              "p": "Level=6/Item 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Selected <Tab selecters>",
+              "mc": "308:51052",
+              "cp": {
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
+              }
+            },
+            {
+              "id": "I40002384:62268;40002384:61111",
+              "p": "Level=6/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62276",
+              "p": "Level=6/Item 2",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  63,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62276;40002384:61109",
+              "p": "Level=6/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62282",
+              "p": "Level=6/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62282;40002384:61109",
+              "p": "Level=6/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62288",
+              "p": "Level=6/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  65,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62288;40002384:61109",
+              "p": "Level=6/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "chip-filter/icon/size",
+                "height": "chip-filter/icon/size"
+              },
+              "o": [
+                "boundVariables",
+                "height",
+                "name",
+                "width"
+              ],
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:62296",
+              "p": "Level=6/Item 5",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  56,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:19255",
+                "Show icon": true,
+                "Label": "CSS",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62296;40002384:61109",
+              "p": "Level=6/Item 5/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62301",
+              "p": "Level=6/Item 6",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  93,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20061",
+                "Show icon": true,
+                "Label": "Markdown",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62301;40002384:61109",
+              "p": "Level=6/Item 6/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
               ]
             }
           ]
@@ -81009,8 +81655,8 @@
       "type": "COMPONENT_SET",
       "name": "Tab selecters",
       "id": "308:51054",
-      "variants": 2,
-      "coverage": 26
+      "variants": 4,
+      "coverage": 93
     },
     {
       "section": "Molecules",
@@ -81019,7 +81665,16 @@
       "name": "Group Tab selecters",
       "id": "308:51205",
       "variants": 3,
-      "coverage": 25
+      "coverage": 73
+    },
+    {
+      "section": "Molecules",
+      "group": "Shared",
+      "type": "COMPONENT_SET",
+      "name": "Tab sub menu",
+      "id": "40002378:50041",
+      "variants": 5,
+      "coverage": 96
     },
     {
       "section": "Molecules",
