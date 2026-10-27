@@ -115,7 +115,7 @@
     "agents": {
       "enabled": true,
       "label": "UX AI agents",
-      "icon": "uxai"
+      "icon": "ai-model"
     },
     "publish": {
       "enabled": true,

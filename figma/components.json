@@ -4270,14 +4270,14 @@
       "code": "SizeStep",
       "id": "133:1618",
       "key": "8210da896bff68b749ba4cbf331e9ca8c8a78f64",
-      "name": "Frame 1430102613",
+      "name": "Screen size",
       "description": "",
       "props": {
-        "Property 1": {
+        "State": {
           "type": "VARIANT",
           "options": [
             "Default",
-            "Variant2"
+            "active"
           ],
           "default": "Default"
         }
@@ -4286,14 +4286,14 @@
         {
           "id": "133:1614",
           "key": "b3a85676ede01f94361521bc9ba9ac6956f2fe63",
-          "name": "Property 1=Default",
+          "name": "State=Default",
           "props": {
-            "Property 1": "Default"
+            "State": "Default"
           },
           "nodes": [
             {
               "id": "133:1614",
-              "p": "Property 1=Default",
+              "p": "State=Default",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -4312,11 +4312,12 @@
             },
             {
               "id": "133:1609",
-              "p": "Property 1=Default/L",
+              "p": "State=Default/L",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/fg"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "L",
                 "fontSize": 11,
                 "font": "Inter",
@@ -4328,18 +4329,19 @@
         {
           "id": "133:1619",
           "key": "c54038e8bf999a3e84bbf653800126b681d47f01",
-          "name": "Property 1=Variant2",
+          "name": "State=active",
           "props": {
-            "Property 1": "Variant2"
+            "State": "active"
           },
           "nodes": [
             {
               "id": "133:1619",
-              "p": "Property 1=Variant2",
+              "p": "State=active",
               "t": "COMPONENT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/bg-active"
+              },
               "r": {
-                "fill": "#777373",
                 "radius": 2,
                 "layout": "VERTICAL CENTER CENTER FIXED HUG",
                 "itemSpacing": 10,
@@ -4355,11 +4357,12 @@
             },
             {
               "id": "133:1620",
-              "p": "Property 1=Variant2/L",
+              "p": "State=active/L",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/fg-active"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "L",
                 "fontSize": 11,
                 "font": "Inter",
@@ -7581,10 +7584,10 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
+              "i": "State=Default <Screen size>",
               "mc": "133:1614",
               "cp": {
-                "Property 1": "Default"
+                "State": "Default"
               }
             },
             {
@@ -7592,7 +7595,7 @@
               "p": "size expander/Frame 1430102614/L",
               "t": "TEXT",
               "b": {
-                "fill": "status-pill/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -7604,7 +7607,9 @@
               "id": "133:1623",
               "p": "size expander/Frame 1430102615",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/bg-active"
+              },
               "r": {
                 "radius": 2,
                 "layout": "VERTICAL CENTER CENTER FIXED HUG",
@@ -7618,24 +7623,21 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
-              "mc": "133:1614",
+              "i": "State=active <Screen size>",
+              "mc": "133:1619",
               "cp": {
-                "Property 1": "Default"
+                "State": "active"
               }
             },
             {
-              "id": "I133:1623;133:1609",
+              "id": "I133:1623;133:1620",
               "p": "size expander/Frame 1430102615/L",
               "t": "TEXT",
-              "b": {
-                "fill": "status-pill/fg/default"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
                 "characterStyleOverrides",
                 "characters",
-                "fills",
                 "lineIndentations",
                 "lineTypes",
                 "styleOverrideTable",
@@ -7663,10 +7665,10 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
+              "i": "State=Default <Screen size>",
               "mc": "133:1614",
               "cp": {
-                "Property 1": "Default"
+                "State": "Default"
               }
             },
             {
@@ -7674,7 +7676,7 @@
               "p": "size expander/Frame 1430102616/L",
               "t": "TEXT",
               "b": {
-                "fill": "status-pill/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -10250,13 +10252,14 @@
               "t": "COMPONENT",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  62,
                   24
                 ]
               }
@@ -10266,13 +10269,13 @@
               "p": "State=Default/Icon",
               "t": "INSTANCE",
               "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
               },
               "r": {
                 "size": [
-                  24,
-                  24
+                  18,
+                  18
                 ]
               },
               "i": "Icon=text <UI Icons / Variable>",
@@ -10320,13 +10323,14 @@
               "b": {
                 "fill": "dropdown/item/bg-hover",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  62,
                   24
                 ]
               }
@@ -10336,13 +10340,13 @@
               "p": "State=Hover/Icon",
               "t": "INSTANCE",
               "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
               },
               "r": {
                 "size": [
-                  24,
-                  24
+                  18,
+                  18
                 ]
               },
               "i": "Icon=text <UI Icons / Variable>",
@@ -10390,13 +10394,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  62,
                   24
                 ]
               }
@@ -10406,13 +10411,13 @@
               "p": "State=Selected/Icon",
               "t": "INSTANCE",
               "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
               },
               "r": {
                 "size": [
-                  24,
-                  24
+                  18,
+                  18
                 ]
               },
               "i": "Icon=text <UI Icons / Variable>",
@@ -10426,11 +10431,22 @@
               }
             },
             {
+              "id": "I40002384:61111;40002351:19435",
+              "p": "State=Selected/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
               "id": "308:51095",
               "p": "State=Selected/Label",
               "t": "TEXT",
               "b": {
-                "fill": "tab/fg/active",
+                "fill": "text/on-accent",
                 "fontSize": "chip-filter/font/size",
                 "fontFamily": "chip-filter/font/family",
                 "fontWeight": "chip-filter/font/weight",
@@ -10459,13 +10475,14 @@
               "t": "COMPONENT",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  62,
                   24
                 ]
               }
@@ -10475,13 +10492,13 @@
               "p": "State=Disabled/Icon",
               "t": "INSTANCE",
               "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
               },
               "r": {
                 "size": [
-                  24,
-                  24
+                  18,
+                  18
                 ],
                 "opacity": 0.4
               },
@@ -10564,7 +10581,7 @@
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  138,
+                  144,
                   32
                 ]
               }
@@ -10576,13 +10593,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -10599,22 +10617,22 @@
               "id": "I40002384:62149;40002384:61111",
               "p": "Level=2/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62149;40002384:61111;40002351:19435",
+              "p": "Level=2/Item 1/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
             },
             {
               "id": "40002384:62157",
@@ -10622,13 +10640,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
+                  66,
                   24
                 ]
               },
@@ -10679,7 +10698,7 @@
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  199,
+                  208,
                   32
                 ]
               }
@@ -10691,13 +10710,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -10714,22 +10734,22 @@
               "id": "I40002384:62163;40002384:61111",
               "p": "Level=3/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62163;40002384:61111;40002351:19435",
+              "p": "Level=3/Item 1/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
             },
             {
               "id": "40002384:62171",
@@ -10737,13 +10757,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
+                  66,
                   24
                 ]
               },
@@ -10772,13 +10793,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -10795,22 +10817,11 @@
               "id": "I40002384:62177;40002384:61109",
               "p": "Level=3/Item 3/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             }
           ]
         },
@@ -10840,7 +10851,7 @@
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  266,
+                  278,
                   32
                 ]
               }
@@ -10852,13 +10863,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -10875,22 +10887,22 @@
               "id": "I40002384:62183;40002384:61111",
               "p": "Level=4/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62183;40002384:61111;40002351:19435",
+              "p": "Level=4/Item 1/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
             },
             {
               "id": "40002384:62191",
@@ -10898,13 +10910,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
+                  66,
                   24
                 ]
               },
@@ -10933,13 +10946,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -10956,22 +10970,11 @@
               "id": "I40002384:62197;40002384:61109",
               "p": "Level=4/Item 3/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             },
             {
               "id": "40002384:62203",
@@ -10979,13 +10982,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -11002,22 +11006,11 @@
               "id": "I40002384:62203;40002384:61109",
               "p": "Level=4/Item 4/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             }
           ]
         },
@@ -11047,7 +11040,7 @@
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  324,
+                  339,
                   32
                 ]
               }
@@ -11059,13 +11052,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -11082,22 +11076,22 @@
               "id": "I40002384:62223;40002384:61111",
               "p": "Level=5/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62223;40002384:61111;40002351:19435",
+              "p": "Level=5/Item 1/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
             },
             {
               "id": "40002384:62231",
@@ -11105,13 +11099,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
+                  66,
                   24
                 ]
               },
@@ -11140,13 +11135,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -11163,22 +11159,11 @@
               "id": "I40002384:62237;40002384:61109",
               "p": "Level=5/Item 3/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             },
             {
               "id": "40002384:62243",
@@ -11186,13 +11171,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -11209,22 +11195,11 @@
               "id": "I40002384:62243;40002384:61109",
               "p": "Level=5/Item 4/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             },
             {
               "id": "40002384:62251",
@@ -11232,13 +11207,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  56,
+                  59,
                   24
                 ]
               },
@@ -11289,7 +11265,7 @@
                 "strokeWeight": 1,
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  419,
+                  437,
                   32
                 ]
               }
@@ -11301,13 +11277,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -11324,22 +11301,22 @@
               "id": "I40002384:62268;40002384:61111",
               "p": "Level=6/Item 1/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62268;40002384:61111;40002351:19435",
+              "p": "Level=6/Item 1/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
             },
             {
               "id": "40002384:62276",
@@ -11347,13 +11324,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
+                  66,
                   24
                 ]
               },
@@ -11382,13 +11360,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -11405,22 +11384,11 @@
               "id": "I40002384:62282;40002384:61109",
               "p": "Level=6/Item 3/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             },
             {
               "id": "40002384:62288",
@@ -11428,13 +11396,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  65,
+                  68,
                   24
                 ]
               },
@@ -11451,22 +11420,11 @@
               "id": "I40002384:62288;40002384:61109",
               "p": "Level=6/Item 4/Icon",
               "t": "INSTANCE",
-              "b": {
-                "width": "chip-filter/icon/size",
-                "height": "chip-filter/icon/size"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "height",
-                "name",
-                "width"
-              ],
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              }
+                "name"
+              ]
             },
             {
               "id": "40002384:62296",
@@ -11474,13 +11432,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  56,
+                  59,
                   24
                 ]
               },
@@ -11509,13 +11468,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  93,
+                  96,
                   24
                 ]
               },
@@ -13120,26 +13080,21 @@
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614",
               "t": "INSTANCE",
               "b": {
-                "fill": "app-header/bg/default",
                 "radius": "footer/segment/radius"
               },
               "o": [
                 "boundVariables",
                 "cornerRadius",
-                "fills",
                 "name"
               ]
             },
             {
-              "id": "I133:1629;133:1621;133:1620",
+              "id": "I133:1629;133:1621;133:1609",
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614/L",
               "t": "TEXT",
-              "b": {
-                "fill": "footer/fg/default"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "fills",
                 "textAlignHorizontal"
               ]
             },
@@ -13153,18 +13108,6 @@
               "o": [
                 "boundVariables",
                 "cornerRadius"
-              ]
-            },
-            {
-              "id": "I133:1629;133:1623;133:1609",
-              "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102615/L",
-              "t": "TEXT",
-              "b": {
-                "fill": "footer/fg/default"
-              },
-              "o": [
-                "boundVariables",
-                "fills"
               ]
             },
             {
@@ -13184,7 +13127,7 @@
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102616/L",
               "t": "TEXT",
               "b": {
-                "fill": "footer/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -23274,7 +23217,7 @@
                 "itemSpacing": 16,
                 "size": [
                   654,
-                  106
+                  94
                 ]
               }
             },
@@ -23288,7 +23231,7 @@
                 "itemSpacing": 9,
                 "size": [
                   654,
-                  62
+                  50
                 ]
               }
             },
@@ -23296,13 +23239,13 @@
               "id": "264:10358",
               "p": "Frame 1430102664/Frame 1430102662/Frame 1430102661/Frame 1430102660/Design System",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/primary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#f5f5f5",
                 "text": "Design System",
                 "fontSize": 16,
-                "font": "Inter",
-                "style": "Medium",
                 "lineHeightPx": 16.799999237060547
               }
             },
@@ -23310,13 +23253,13 @@
               "id": "264:10360",
               "p": "Frame 1430102664/Frame 1430102662/Frame 1430102661/Frame 1430102660/Choose your role to customize the toolset. Design ",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/secondary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow. Switching teams will replay the onboarding tour for your new role.",
                 "fontSize": 10,
-                "font": "Inter",
-                "style": "Regular",
                 "lineHeightPx": 12
               }
             },
@@ -23512,13 +23455,13 @@
               "id": "264:10439",
               "p": "Frame 1430102664/Frame 1430102663/Choose your role to customize the toolset. Design ",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/secondary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow. ",
                 "fontSize": 11,
-                "font": "Inter",
-                "style": "Regular",
                 "lineHeightPx": 17.600000381469727
               }
             },
@@ -69156,6 +69099,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69164,10 +69108,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69179,10 +69124,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69191,7 +69136,6 @@
               "p": "Tone=Neutral/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69228,8 +69172,21 @@
               }
             },
             {
+              "id": "40002409:18166",
+              "p": "Tone=Neutral/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8969",
-              "p": "Tone=Neutral/Row/Value group",
+              "p": "Tone=Neutral/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69244,7 +69201,7 @@
             },
             {
               "id": "40000447:8594",
-              "p": "Tone=Neutral/Row/Value group/Value",
+              "p": "Tone=Neutral/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/title",
@@ -69262,7 +69219,7 @@
             },
             {
               "id": "40000447:8593",
-              "p": "Tone=Neutral/Row/Value group/Label",
+              "p": "Tone=Neutral/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69280,7 +69237,7 @@
             },
             {
               "id": "40000447:8595",
-              "p": "Tone=Neutral/Caption",
+              "p": "Tone=Neutral/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69312,6 +69269,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69320,10 +69278,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69335,10 +69294,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69347,7 +69306,6 @@
               "p": "Tone=Success/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69384,8 +69342,21 @@
               }
             },
             {
+              "id": "40002409:18167",
+              "p": "Tone=Success/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8979",
-              "p": "Tone=Success/Row/Value group",
+              "p": "Tone=Success/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69400,7 +69371,7 @@
             },
             {
               "id": "40000447:8598",
-              "p": "Tone=Success/Row/Value group/Value",
+              "p": "Tone=Success/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/success",
@@ -69418,7 +69389,7 @@
             },
             {
               "id": "40000447:8597",
-              "p": "Tone=Success/Row/Value group/Label",
+              "p": "Tone=Success/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69436,7 +69407,7 @@
             },
             {
               "id": "40000447:8599",
-              "p": "Tone=Success/Caption",
+              "p": "Tone=Success/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69468,6 +69439,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69476,10 +69448,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69491,10 +69464,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69503,7 +69476,6 @@
               "p": "Tone=Warning/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69540,8 +69512,21 @@
               }
             },
             {
+              "id": "40002409:18168",
+              "p": "Tone=Warning/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8989",
-              "p": "Tone=Warning/Row/Value group",
+              "p": "Tone=Warning/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69556,7 +69541,7 @@
             },
             {
               "id": "40000447:8602",
-              "p": "Tone=Warning/Row/Value group/Value",
+              "p": "Tone=Warning/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/warning",
@@ -69574,7 +69559,7 @@
             },
             {
               "id": "40000447:8601",
-              "p": "Tone=Warning/Row/Value group/Label",
+              "p": "Tone=Warning/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69592,7 +69577,7 @@
             },
             {
               "id": "40000447:8603",
-              "p": "Tone=Warning/Caption",
+              "p": "Tone=Warning/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69624,6 +69609,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69632,10 +69618,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69647,10 +69634,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69659,7 +69646,6 @@
               "p": "Tone=Danger/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69696,8 +69682,21 @@
               }
             },
             {
+              "id": "40002409:18169",
+              "p": "Tone=Danger/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8999",
-              "p": "Tone=Danger/Row/Value group",
+              "p": "Tone=Danger/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69712,7 +69711,7 @@
             },
             {
               "id": "40000447:8606",
-              "p": "Tone=Danger/Row/Value group/Value",
+              "p": "Tone=Danger/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/danger",
@@ -69730,7 +69729,7 @@
             },
             {
               "id": "40000447:8605",
-              "p": "Tone=Danger/Row/Value group/Label",
+              "p": "Tone=Danger/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69748,7 +69747,7 @@
             },
             {
               "id": "40000447:8607",
-              "p": "Tone=Danger/Caption",
+              "p": "Tone=Danger/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69780,6 +69779,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69788,10 +69788,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69803,10 +69804,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69815,7 +69816,6 @@
               "p": "Tone=Empty/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69852,8 +69852,21 @@
               }
             },
             {
+              "id": "40002409:18170",
+              "p": "Tone=Empty/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:9009",
-              "p": "Tone=Empty/Row/Value group",
+              "p": "Tone=Empty/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69868,7 +69881,7 @@
             },
             {
               "id": "40000447:8610",
-              "p": "Tone=Empty/Row/Value group/Value",
+              "p": "Tone=Empty/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69886,7 +69899,7 @@
             },
             {
               "id": "40000447:8609",
-              "p": "Tone=Empty/Row/Value group/Label",
+              "p": "Tone=Empty/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69904,7 +69917,7 @@
             },
             {
               "id": "40000447:8611",
-              "p": "Tone=Empty/Caption",
+              "p": "Tone=Empty/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -71454,6 +71467,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71462,10 +71476,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -71485,6 +71500,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71493,10 +71509,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Success <KPI Tile>",
@@ -71525,6 +71542,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71533,10 +71551,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Danger <KPI Tile>",
@@ -71565,6 +71584,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71573,10 +71593,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Warning <KPI Tile>",
@@ -72120,7 +72141,7 @@
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   568,
-                  574
+                  568
                 ]
               }
             },
@@ -72187,7 +72208,7 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "size": [
                   542,
-                  58
+                  52
                 ]
               }
             },
@@ -72197,6 +72218,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72205,10 +72227,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -72228,6 +72251,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72236,10 +72260,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Success <KPI Tile>",
@@ -72268,6 +72293,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72276,10 +72302,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Danger <KPI Tile>",
@@ -72308,6 +72335,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72316,10 +72344,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Warning <KPI Tile>",
@@ -72998,6 +73027,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73006,10 +73036,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -73029,6 +73060,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73037,10 +73069,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73069,6 +73102,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73077,10 +73111,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73109,6 +73144,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73117,10 +73153,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73535,7 +73572,7 @@
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   568,
-                  394
+                  388
                 ]
               }
             },
@@ -73662,7 +73699,7 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "size": [
                   542,
-                  58
+                  52
                 ]
               }
             },
@@ -73672,6 +73709,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73680,10 +73718,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -73703,6 +73742,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73711,10 +73751,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73743,6 +73784,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73751,10 +73793,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73783,6 +73826,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73791,10 +73835,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -81478,10 +81523,10 @@
     {
       "section": "Atoms",
       "type": "COMPONENT_SET",
-      "name": "Frame 1430102613",
+      "name": "Screen size",
       "id": "133:1618",
       "variants": 2,
-      "coverage": 0
+      "coverage": 16
     },
     {
       "section": "Atoms",
@@ -81790,7 +81835,7 @@
       "name": "Tab selecters",
       "id": "308:51054",
       "variants": 4,
-      "coverage": 93
+      "coverage": 94
     },
     {
       "section": "Molecules",
@@ -81808,7 +81853,7 @@
       "name": "Tab sub menu",
       "id": "40002378:50041",
       "variants": 5,
-      "coverage": 96
+      "coverage": 97
     },
     {
       "section": "Molecules",
@@ -81853,7 +81898,7 @@
       "name": "size expander",
       "id": "133:1628",
       "variants": 1,
-      "coverage": 23
+      "coverage": 25
     },
     {
       "section": "Molecules",
@@ -82456,7 +82501,7 @@
       "name": "Frame 1430102664",
       "id": "264:10472",
       "variants": 1,
-      "coverage": 47
+      "coverage": 51
     },
     {
       "section": "Organisms",

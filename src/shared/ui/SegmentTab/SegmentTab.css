@@ -1,10 +1,12 @@
 /* SegmentTab — Figma "Tab selecters" set (308:51054): State = Default / Hover / Selected /
- * Disabled. Every state is the same row: the Icon instance (chip-filter/icon/size) then the
- * Label, hugging at 24 high with dimension/space/4 · dimension/space/8 side insets and a
- * dimension/radius/4 corner. Fills: Hover dropdown/item/bg-hover, Selected
- * surface/accent-strong. Label: input/fg/helper, tab/fg/default on Hover, tab/fg/active when
- * Selected, icon/glyph/muted when Disabled. The glyph keeps its own UI Icons colour
- * (icon/glyph/default); only Disabled dims it, by layer opacity (raw → derived). */
+ * Disabled. Every state is the same row: the Icon instance (dimension/size/icon-18) then the
+ * Label, dimension/space/3 apart, at least chip-filter/icon/size (24) high with
+ * dimension/space/4 · dimension/space/8 side insets and a dimension/radius/4 corner.
+ * Fills: Hover dropdown/item/bg-hover, Selected surface/accent-strong. Label: input/fg/helper,
+ * tab/fg/default on Hover, text/on-accent when Selected, icon/glyph/muted when Disabled. The
+ * glyph keeps its UI Icons colour (icon/glyph/default) except on Selected, where it switches to
+ * icon/glyph/on-accent so it stays legible on the accent fill for every brand; Disabled dims it
+ * by layer opacity (raw → derived). */
 .bb-segment-tab {
   display: inline-flex;
   align-items: center;
@@ -35,12 +37,13 @@
 .bb-segment-tab__container {
   display: inline-flex;
   align-items: center;
+  gap: var(--bb-dimension-space-3);
 }
 .bb-segment-tab__icon {
   display: inline-flex;
   flex: none;
-  width: var(--bb-chip-filter-icon-size);
-  height: var(--bb-chip-filter-icon-size);
+  width: var(--bb-dimension-size-icon-18);
+  height: var(--bb-dimension-size-icon-18);
   color: var(--bb-icon-glyph-default);
 }
 .bb-segment-tab__icon > .bb-icon { width: 100%; height: 100%; }
@@ -52,7 +55,8 @@
 }
 .bb-segment-tab[data-selected] {
   background: var(--bb-surface-accent-strong);
-  color: var(--bb-tab-fg-active);
+  color: var(--bb-text-on-accent);
 }
+.bb-segment-tab[data-selected] .bb-segment-tab__icon { color: var(--bb-icon-glyph-on-accent); }
 .bb-segment-tab:disabled { cursor: not-allowed; color: var(--bb-icon-glyph-muted); }
 .bb-segment-tab:disabled .bb-segment-tab__icon { opacity: var(--bb-derived-segment-tab-icon-opacity); }

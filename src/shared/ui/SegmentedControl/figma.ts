@@ -7,7 +7,9 @@ export const figma = {
     'surface/accent-strong': 'the Selected item fill, read by the composed SegmentTab',
     'dimension/radius/4': 'the item corner, read by the composed SegmentTab',
     'dimension/space/8': 'the item right inset, read by the composed SegmentTab',
-    'chip-filter/icon/size': 'the item glyph size, read by the composed SegmentTab',
+    'chip-filter/icon/size': 'the item min height, read by the composed SegmentTab',
+    'dimension/space/3': 'the icon-to-label gap, read by the composed SegmentTab',
+    'icon/glyph/on-accent': 'the Selected item glyph, read by the composed SegmentTab',
   },
   notes: 'Replaces the older "Group Tab selecters" (308:51205), which is no longer used on any page. Items are exposed nested instances, so each screen sets Label, Icon and which item is Selected from the instance; code takes the same as options. The selected item is not always the first.',
 } as const

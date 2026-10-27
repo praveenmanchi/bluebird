@@ -9,7 +9,7 @@ describe('SizeStep', () => {
     expect(root.textContent).toBe('L')
     expect(root.hasAttribute('data-selected')).toBe(false)
   })
-  it('maps Variant2 to data-selected and aria-current', () => {
+  it('maps State=active to data-selected and aria-current', () => {
     render(<SizeStep label="M" selected />)
     const root = screen.getByText('M').closest('.bb-size-step') as HTMLElement
     expect(root.dataset.selected).toBe('true')

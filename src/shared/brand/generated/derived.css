@@ -818,6 +818,7 @@
   --bb-derived-jira-board-work-log-width: 99px;
   --bb-derived-jira-empty-state-action-stroke-width: 1px;
   --bb-derived-jira-empty-state-root-width: 360px;
+  --bb-derived-kpi-tile-root-stroke-width: 1px;
   --bb-derived-kpi-tile-root-width: 130px;
   --bb-derived-level-row-name-width: 150px;
   --bb-derived-level-row-root-width: 542px;
@@ -972,16 +973,10 @@
   --bb-derived-page-filter-vector-width: 9.6px;
   --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-font-size: 10px;
   --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-line-height: 12px;
-  --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color: #ffffff;
-  --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family: "Inter";
-  --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight: 400;
   --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-font-size: 11px;
   --bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-line-height: 17.6px;
   --bb-derived-persona-card-delivery-boy-fill: #849bd6;
-  --bb-derived-persona-card-design-system-color: #f5f5f5;
-  --bb-derived-persona-card-design-system-font-family: "Inter";
   --bb-derived-persona-card-design-system-font-size: 16px;
-  --bb-derived-persona-card-design-system-font-weight: 500;
   --bb-derived-persona-card-design-system-line-height: 16.8px;
   --bb-derived-persona-card-frame-1430102659-gap: 10px;
   --bb-derived-persona-card-frame-1430102660-gap: 9px;
@@ -1083,6 +1078,10 @@
   --bb-derived-scan-summary-breakdown-width: 542px;
   --bb-derived-scan-summary-by-brand-mode-width: 542px;
   --bb-derived-scan-summary-by-component-level-width: 542px;
+  --bb-derived-scan-summary-kpi-components-stroke-width: 1px;
+  --bb-derived-scan-summary-kpi-failing-stroke-width: 1px;
+  --bb-derived-scan-summary-kpi-frames-stroke-width: 1px;
+  --bb-derived-scan-summary-kpi-passing-stroke-width: 1px;
   --bb-derived-scan-summary-kpis-width: 542px;
   --bb-derived-scan-summary-root-stroke-width: 1px;
   --bb-derived-scan-summary-root-width: 568px;
@@ -1394,11 +1393,9 @@
   --bb-derived-size-expander-root-padding-right: 6px;
   --bb-derived-size-expander-root-padding-top: 3px;
   --bb-derived-size-expander-root-radius: 4px;
-  --bb-derived-size-step-l-color: #ffffff;
   --bb-derived-size-step-l-font-family: "Inter";
   --bb-derived-size-step-l-font-size: 11px;
   --bb-derived-size-step-l-font-weight: 400;
-  --bb-derived-size-step-root-fill: #777373;
   --bb-derived-size-step-root-gap: 10px;
   --bb-derived-size-step-root-padding-bottom: 2px;
   --bb-derived-size-step-root-padding-left: 2px;

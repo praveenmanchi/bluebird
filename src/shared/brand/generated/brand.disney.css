@@ -142,7 +142,7 @@
   --bb-footer-border-top: #b4b5b9;
   --bb-footer-fg-default: #f5f6fb;
   --bb-footer-segment-bg: #002d72;
-  --bb-footer-segment-bg-active: #b4b5b9;
+  --bb-footer-segment-bg-active: #0055c6;
   --bb-footer-segment-radius: 100px;
   --bb-footer-padding-x: 8px;
   --bb-footer-padding-y: 4px;
@@ -987,4 +987,5 @@
   --bb-docs-page-text-eyebrow: #0077da;
   --bb-docs-overlay-scrim: #040714;
   --bb-docs-dialog-surface: #040714;
+  --bb-footer-segment-fg-active: #f5f6fb;
 }

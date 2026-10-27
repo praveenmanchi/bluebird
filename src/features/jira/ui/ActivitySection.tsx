@@ -6,7 +6,7 @@ import type { ActivityEntry, Ticket } from '../types'
 import { TabStrip } from './TabStrip'
 
 const ACTIVITY_TABS: readonly ActivityTab[] = ['Comments', 'History', 'Work log']
-const ACTIVITY_ICONS: Record<ActivityTab, IconName> = { Comments: 'ui-comment-message', History: 'ui-toolbar-version-history', 'Work log': 'ui-prototype-time' }
+const ACTIVITY_ICONS: Record<ActivityTab, IconName> = { Comments: 'ui-toolbar-comment', History: 'ui-toolbar-version-history', 'Work log': 'ui-prototype-time' }
 
 const EMPTY: Record<ActivityTab, string> = {
   Comments: 'No comments yet.',
