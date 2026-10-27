@@ -7,7 +7,7 @@ const meta = {
   title: 'Organisms/TeamBanner',
   component: TeamBanner,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { org: 'HCL', team: 'Design System', version: '1.3.3', showProduct: true },
+  args: { org: 'HCL', team: 'Design System', version: '1.3.3', updated: '28 Oct 2026', showProduct: true },
 } satisfies Meta<typeof TeamBanner>
 export default meta
 type Story = StoryObj<typeof meta>

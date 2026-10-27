@@ -4,7 +4,8 @@ export const figma = {
   name: 'team Banner',
   props: {
     'Built with Care by the HCL Design System Team (text)': 'org + team (bold run "HCL Design System Team")',
-    'Version 1.3.3 (text)': 'version',
+    'Version 1.3.3 (text)': 'version (defaults to build-info.json, bumped by every `npm run build`)',
+    'Release › Updated (text, "Updated 28 Oct 2026")': 'updated (defaults to the last build date; false hides it)',
     'brand logos (instance, Brand bound to the brand variable)': 'BrandLogo — follows [data-brand]',
     'Frame 1430102695 (Line 62 + Frame 1430102687)': 'showProduct',
     'Design Studio (text)': 'product',
@@ -18,6 +19,7 @@ export const figma = {
     '--bb-derived-team-banner-vector-height': 'The version-pill glyph\'s vector (204:7263, 9.4 × 7.5) inside its 10 × 10 "Frame"; the Icon draws the `version` glyph from its own viewBox at the Frame size (frame-width/height).',
   },
   notes: [
+    '2026-10-28: the version pill sits in a right-aligned "Release" stack (2 gap) with an "Updated <date>" line under it, Noto Sans Light 10/12 on font/family-ui at 0.72 opacity (Museo Sans is not installed for the Figma plugin API). The Figma copy is sample text; code reads build-info.json, which scripts/bump-build.ts stamps on every build (patch + 1, ISO date).',
     'The set has no component properties; every text is a plain layer, so the code props mirror the layers.',
     '2026-10-11 redesign (accepted by figma:pull --rest): the Fabric logo, "Line 60" and the "SVG" team-mark frame are gone. The top-left is now the app Banner\'s lockup — a "brand logos" instance (Brand=bridge, its Brand property bound to the brand variable) → BrandLogo, then "Line 62" and the "Design Studio" / "Connecting Gap between design workflow" texts. The `showFabric` prop became `showProduct`.',
     'The brand logos instance (162.7 × 48 for Bridge) has no derived size token (instance sizes are not emitted); BrandLogo.css sizes each brand from the brand logos set.',

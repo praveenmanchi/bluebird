@@ -23024,8 +23024,22 @@
               }
             },
             {
+              "id": "40002413:6353",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MAX HUG HUG",
+                "itemSpacing": 2,
+                "size": [
+                  98,
+                  26
+                ]
+              }
+            },
+            {
               "id": "204:7261",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -23039,7 +23053,7 @@
             },
             {
               "id": "204:7262",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Frame",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Frame",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -23051,7 +23065,7 @@
             },
             {
               "id": "204:7263",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Frame/Vector",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Frame/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -23064,7 +23078,7 @@
             },
             {
               "id": "204:7264",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Version 1.3.3",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Version 1.3.3",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -23073,6 +23087,21 @@
                 "fontSize": 10,
                 "font": "Museo Sans",
                 "style": "300"
+              }
+            },
+            {
+              "id": "40002413:6559",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Updated",
+              "t": "TEXT",
+              "b": {
+                "fontFamily": "font/family-ui"
+              },
+              "r": {
+                "fill": "#ffffff",
+                "text": "Updated 28 Oct 2026",
+                "fontSize": 10,
+                "lineHeightPx": 12,
+                "opacity": 0.72
               }
             },
             {
@@ -82492,7 +82521,7 @@
       "name": "team Banner",
       "id": "204:7270",
       "variants": 1,
-      "coverage": 8
+      "coverage": 11
     },
     {
       "section": "Organisms",

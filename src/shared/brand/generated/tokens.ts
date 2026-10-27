@@ -1987,6 +1987,7 @@ export const TOKEN_NAMES = [
   "--bb-derived-team-banner-line-62-height",
   "--bb-derived-team-banner-line-62-stroke-width",
   "--bb-derived-team-banner-line-62-width",
+  "--bb-derived-team-banner-release-gap",
   "--bb-derived-team-banner-root-fill",
   "--bb-derived-team-banner-root-padding-bottom",
   "--bb-derived-team-banner-root-padding-left",
@@ -1999,6 +2000,10 @@ export const TOKEN_NAMES = [
   "--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-size",
   "--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-weight",
   "--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-opacity",
+  "--bb-derived-team-banner-updated-color",
+  "--bb-derived-team-banner-updated-font-size",
+  "--bb-derived-team-banner-updated-line-height",
+  "--bb-derived-team-banner-updated-opacity",
   "--bb-derived-team-banner-vector-fill",
   "--bb-derived-team-banner-vector-height",
   "--bb-derived-team-banner-vector-width",
@@ -4115,6 +4120,7 @@ export const COMPONENT_TOKENS = {
   ],
   TeamBanner: [
     "--bb-banner-powered-by",
+    "--bb-font-family-ui",
   ],
   PersonaCard: [
     "--bb-button-primary-radius",

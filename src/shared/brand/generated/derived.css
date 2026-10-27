@@ -1518,6 +1518,7 @@
   --bb-derived-team-banner-line-62-height: 0px;
   --bb-derived-team-banner-line-62-stroke-width: 1px;
   --bb-derived-team-banner-line-62-width: 30px;
+  --bb-derived-team-banner-release-gap: 2px;
   --bb-derived-team-banner-root-fill: #0048b7;
   --bb-derived-team-banner-root-padding-bottom: 12px;
   --bb-derived-team-banner-root-padding-left: 12px;
@@ -1530,6 +1531,10 @@
   --bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-size: 16px;
   --bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-weight: 400;
   --bb-derived-team-banner-together-every-step-forward-to-innovate-scale-opacity: 0.2;
+  --bb-derived-team-banner-updated-color: #ffffff;
+  --bb-derived-team-banner-updated-font-size: 10px;
+  --bb-derived-team-banner-updated-line-height: 12px;
+  --bb-derived-team-banner-updated-opacity: 0.72;
   --bb-derived-team-banner-vector-fill: #ffffff;
   --bb-derived-team-banner-vector-height: 7.5px;
   --bb-derived-team-banner-vector-width: 9.4px;
