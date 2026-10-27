@@ -1,5 +1,5 @@
 import { ArtifactHeader, BrandSwatch, ColorSwatch, ContextChip, LinkButton, MetaBadge } from '@shared/ui'
-import type { BrandId } from '@shared/brand'
+import { BRANDS, type BrandId } from '@shared/brand'
 import { figmaUrl, type LibraryComponent, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
 import { typeSpec, type GroundedAnswer, type Origin, type SelectionComponent, type SelectionVariable } from '../grounding'
 import './LibraryAnswer.css'
@@ -13,7 +13,7 @@ export interface LibraryAnswerProps {
 /** Swatches shown per colour variable before the rest are summarised in the text. */
 const MAX_SWATCHES = 5
 /** Brand modes the generated CSS knows; a mode named after one tints its swatch caption in that brand. */
-const BRAND_IDS = new Set(['bridge', 'ikea', 'richemont', 'disney', 'fiskars'])
+const BRAND_IDS = new Set<string>(BRANDS)
 const brandOf = (mode: string): BrandId | undefined => BRAND_IDS.has(mode.toLowerCase()) ? mode.toLowerCase() as BrandId : undefined
 /** The Color Artifact's "Used by" badges read the variable's scopes; Figma's enum names become words. */
 const scopeLabel = (scope: string) => scope.toLowerCase().replace(/_/g, ' ').replace('all ', 'all ')

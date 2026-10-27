@@ -3756,9 +3756,10 @@
               "id": "40000061:9819",
               "p": "Banner/Frame 1430102690/Frame 1430102691/Frame 1430102694/Powered By",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "Banner/Text"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Powered By",
                 "fontSize": 4,
                 "font": "Michroma",
@@ -3814,7 +3815,9 @@
             "fiskars",
             "bridge",
             "ikea",
-            "HCL"
+            "HCL",
+            "akzonobel",
+            "adecco"
           ],
           "default": "ikea"
         }
@@ -4124,6 +4127,137 @@
                 "size": [
                   97.2,
                   17.5
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002394:43169",
+          "key": "4ae757d777d1510e35cfe211e46d3121a814cc47",
+          "name": "Brand=akzonobel",
+          "props": {
+            "Brand": "akzonobel"
+          },
+          "nodes": [
+            {
+              "id": "40002394:43169",
+              "p": "Brand=akzonobel",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 3,
+                "paddingRight": 3,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  165.6,
+                  29.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43172",
+              "p": "Brand=akzonobel/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  159.6,
+                  23.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43173",
+              "p": "Brand=akzonobel/Frame/Group",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  159.5,
+                  23.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43174",
+              "p": "Brand=akzonobel/Frame/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#005596",
+                "size": [
+                  159.5,
+                  23.3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002394:43179",
+          "key": "dc5e3fd1b442bf44eaa037444248d05ee4e1c39a",
+          "name": "Brand=adecco",
+          "props": {
+            "Brand": "adecco"
+          },
+          "nodes": [
+            {
+              "id": "40002394:43179",
+              "p": "Brand=adecco",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 3,
+                "paddingRight": 3,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  115,
+                  65.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43187",
+              "p": "Brand=adecco/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  109,
+                  59.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43188",
+              "p": "Brand=adecco/Frame/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#e1001a",
+                "size": [
+                  109,
+                  58.5
+                ]
+              }
+            },
+            {
+              "id": "40002394:43189",
+              "p": "Brand=adecco/Frame/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  92.5,
+                  22.7
                 ]
               }
             }

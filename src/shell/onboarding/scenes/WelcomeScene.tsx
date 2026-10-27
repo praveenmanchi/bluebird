@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'preact/hooks'
 import { Icon, ThinkingOrb } from '@shared/ui'
+import { BRANDS } from '@shared/brand'
 import { Fx, Stage, reveal, type CursorStop } from '../stage'
 import type { SceneProps } from './types'
 
@@ -18,7 +19,7 @@ export function WelcomeScene({ still, tabs }: SceneProps) {
         <div {...reveal(300, 'bounce')}><Fx kind="pulse" at={1800}><ThinkingOrb state="breathing" size="40" /></Fx></div>
         <div {...reveal(600, 'up', 'bb-ob-heading')}>
           <span class="bb-ob-label">Design studio</span>
-          <span class="bb-ob-meta">{tabs.length} tabs · 5 brands · 1 plugin</span>
+          <span class="bb-ob-meta">{tabs.length} tabs · {BRANDS.length} brands · 1 plugin</span>
         </div>
         <div class="bb-ob-chips bb-ob-chips--center">
           {tabs.map((tab, k) => (

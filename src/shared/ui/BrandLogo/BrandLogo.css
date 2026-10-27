@@ -9,8 +9,11 @@
 .bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-vector--1-brand-ikea-width); height: var(--bb-derived-brand-logo-vector--1-brand-ikea-height); }
 .bb-brand-logo[data-logo="richemont"] { width: var(--bb-derived-brand-logo-root-brand-richemont-width); height: var(--bb-derived-brand-logo-root-brand-richemont-height); }
 /* Disney's frame hugs its vector (2px / 5px padding) instead of carrying a fixed size. */
-.bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + 2 * var(--bb-derived-brand-logo-root-padding-left)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + 2 * var(--bb-derived-brand-logo-root-padding-top)); }
+.bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + var(--bb-derived-brand-logo-root-brand-disney-padding-left) + var(--bb-derived-brand-logo-root-brand-disney-padding-right)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + var(--bb-derived-brand-logo-root-brand-disney-padding-top) + var(--bb-derived-brand-logo-root-brand-disney-padding-bottom)); }
 .bb-brand-logo[data-logo="fiskars"]   { width: var(--bb-derived-brand-logo-root-brand-fiskars-width);   height: var(--bb-derived-brand-logo-root-brand-fiskars-height); }
+/* AkzoNobel's and Adecco's frames hug their artwork frame with 3px padding on every side. */
+.bb-brand-logo[data-logo="akzonobel"] { width: calc(var(--bb-derived-brand-logo-frame-brand-akzonobel-width) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-left) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-right)); height: calc(var(--bb-derived-brand-logo-frame-brand-akzonobel-height) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-top) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-bottom)); }
+.bb-brand-logo[data-logo="adecco"]    { width: calc(var(--bb-derived-brand-logo-frame-brand-adecco-width) + var(--bb-derived-brand-logo-root-brand-adecco-padding-left) + var(--bb-derived-brand-logo-root-brand-adecco-padding-right)); height: calc(var(--bb-derived-brand-logo-frame-brand-adecco-height) + var(--bb-derived-brand-logo-root-brand-adecco-padding-top) + var(--bb-derived-brand-logo-root-brand-adecco-padding-bottom)); }
 /* Brand=HCL is the company mark, not a client brand: a single-colour glyph bound to Banner/Text, used by the login screen and the Banner's "Powered by". */
 .bb-brand-logo[data-logo="hcltech"]   { width: var(--bb-derived-brand-logo-root-brand-hcl-width);       height: var(--bb-derived-brand-logo-root-brand-hcl-height); color: var(--bb-banner-text); }
 /* Figma's Banner scales its "brand logos" instance to ~50% of the set frame (51.8x15.3 of 103x30)
@@ -23,15 +26,19 @@
 /* The reveal follows the NEAREST [data-brand], the way the brand tokens do (inherited custom
  * properties): a descendant selector would also match inside a nested scope of another brand and
  * show both logos (Storybook's BrandGrid, any nested brand preview). */
-[data-brand]             { --brand-logo-bridge: none; --brand-logo-ikea: none; --brand-logo-richemont: none; --brand-logo-disney: none; --brand-logo-fiskars: none; }
+[data-brand]             { --brand-logo-bridge: none; --brand-logo-ikea: none; --brand-logo-richemont: none; --brand-logo-disney: none; --brand-logo-fiskars: none; --brand-logo-akzonobel: none; --brand-logo-adecco: none; }
 [data-brand="bridge"]    { --brand-logo-bridge: block; }
 [data-brand="ikea"]      { --brand-logo-ikea: block; }
 [data-brand="richemont"] { --brand-logo-richemont: block; }
 [data-brand="disney"]    { --brand-logo-disney: block; }
 [data-brand="fiskars"]   { --brand-logo-fiskars: block; }
+[data-brand="akzonobel"] { --brand-logo-akzonobel: block; }
+[data-brand="adecco"]    { --brand-logo-adecco: block; }
 .bb-brand-logo[data-logo="bridge"]    { display: var(--brand-logo-bridge, none); }
 .bb-brand-logo[data-logo="ikea"]      { display: var(--brand-logo-ikea, none); }
 .bb-brand-logo[data-logo="richemont"] { display: var(--brand-logo-richemont, none); }
 .bb-brand-logo[data-logo="disney"]    { display: var(--brand-logo-disney, none); }
 .bb-brand-logo[data-logo="fiskars"]   { display: var(--brand-logo-fiskars, none); }
+.bb-brand-logo[data-logo="akzonobel"] { display: var(--brand-logo-akzonobel, none); }
+.bb-brand-logo[data-logo="adecco"]    { display: var(--brand-logo-adecco, none); }
 .bb-brand-logo[data-forced] { display: block; }

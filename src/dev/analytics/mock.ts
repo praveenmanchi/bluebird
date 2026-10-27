@@ -60,7 +60,7 @@ const TICKET_TITLES = [
   'Product tile hover spec', 'Dark mode for settings', 'Form error messaging pass', 'Icon set audit (24px)',
   'Onboarding carousel motion', 'Price label typography', 'Filter chips spacing', 'Modal close target size',
 ]
-const BRAND_SHARE: Record<string, number> = { bridge: 1, ikea: 0.82, richemont: 0.46, disney: 0.64, fiskars: 0.33 }
+const BRAND_SHARE: Record<string, number> = { bridge: 1, ikea: 0.82, richemont: 0.46, disney: 0.64, fiskars: 0.33, akzonobel: 0.28, adecco: 0.21 }
 
 function kpi(random: () => number, base: number, growth: number, places = 0): Kpi {
   const trend = Array.from({ length: 12 }, (_, i) => round(base * (1 - growth + (growth * i) / 11) * (0.92 + random() * 0.16), places))

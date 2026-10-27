@@ -7,7 +7,7 @@ const meta = {
   title: 'Atoms/BrandLogo',
   component: BrandLogo,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  argTypes: { brand: { control: 'select', options: [undefined, 'bridge', 'ikea', 'richemont', 'disney', 'fiskars'] } },
+  argTypes: { brand: { control: 'select', options: [undefined, 'bridge', 'ikea', 'richemont', 'disney', 'fiskars', 'akzonobel', 'adecco'] } },
 } satisfies Meta<typeof BrandLogo>
 export default meta
 type Story = StoryObj<typeof meta>
@@ -20,6 +20,8 @@ export const Ikea: Story = { args: { brand: 'ikea' }, parameters: v('Brand=ikea'
 export const Richemont: Story = { args: { brand: 'richemont' }, parameters: v('Brand=richemont') }
 export const Disney: Story = { args: { brand: 'disney' }, parameters: v('Brand=disney') }
 export const Fiskars: Story = { args: { brand: 'fiskars' }, parameters: v('Brand=fiskars') }
+export const AkzoNobel: Story = { args: { brand: 'akzonobel' }, parameters: v('Brand=akzonobel') }
+export const Adecco: Story = { args: { brand: 'adecco' }, parameters: v('Brand=adecco') }
 export const Hcl: Story = { args: { logo: 'hcltech' }, parameters: v('Brand=HCL') }
 
 export const AcrossBrands: Story = {

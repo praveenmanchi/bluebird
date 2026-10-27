@@ -43,6 +43,22 @@
           "collection": "Brand UI",
           "mode": "Fiskars"
         }
+      },
+      "akzonobel": {
+        "label": "AkzoNobel",
+        "accessCodeHash": "0139f022ff66fe24375d6ba0b34b2e2395e7ecc43d9dfe4e2500775708b1ac62",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "AkzoNobel"
+        }
+      },
+      "adecco": {
+        "label": "Adecco",
+        "accessCodeHash": "4a2aa946346f2810d67b797f5dd41f3722d491c2b3ef394e4625933332bb5ee3",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Adecco"
+        }
       }
     }
   },

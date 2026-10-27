@@ -68,7 +68,10 @@ import { resolve } from 'node:path'
 // paths are already rounded to one decimal and minified. Same levers as above.
 // 2026-10-27 (Tab sub menu on every tab-selection row): user raised the budget to 1220 KB. ~20 `ui-*`
 // glyphs for the per-item icons (scope, severity, file type, activity, mode) added ~14 KB: 1214.4 KB.
-const BUDGET_KB = 1220
+// 2026-10-27 (AkzoNobel + Adecco brand modes): user raised the budget to 1310 KB. Every brand's Brand UI
+// CSS is inlined (~36 KB raw each) and the Figma pull brought ~70 unread docs/* tokens per brand: 1301.5 KB.
+// One-brand builds remain the lever; each further brand needs ~40 KB.
+const BUDGET_KB = 1310
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'
