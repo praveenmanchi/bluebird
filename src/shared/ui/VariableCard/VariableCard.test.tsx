@@ -9,7 +9,7 @@ describe('VariableCard', () => {
     expect(screen.getByText('Used by 52 components')).toHaveClass('bb-variable-card__meta')
     expect(screen.getByText('12 Days ago')).toHaveClass('bb-variable-card__updated')
     expect(container.querySelector('.bb-variable-card')?.getAttribute('data-kind')).toBe('variable')
-    expect(container.querySelector('.bb-variable-card__glyph[data-icon="variables"]')).not.toBeNull()
+    expect(container.querySelector('.bb-variable-card__glyph[data-icon="ui-variable-color"]')).not.toBeNull()
   })
   it('switches to the text glyph for kind="text-style"', () => {
     const { container } = render(<VariableCard kind="text-style" name="Heading/H2" />)

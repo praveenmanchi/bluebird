@@ -63,7 +63,10 @@ import { resolve } from 'node:path'
 // 2026-10-14 (WCAG 2.0 / 2.1 in the Standard dropdown): the standards table, per-version rule
 // filtering and W3C links added ~1 KB on a separate branch; folded into the 1200 KB budget above
 // when the branches merged on 2026-10-15.
-const BUDGET_KB = 1200
+// 2026-10-27 (UI Icons replace the Variables placeholder): user raised the budget to 1210 KB. Six `ui-*` glyphs
+// (variable color/value, sidebar libraries, toolbar component, general add/check) added ~5.5 KB; UI icon
+// paths are already rounded to one decimal and minified. Same levers as above.
+const BUDGET_KB = 1210
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

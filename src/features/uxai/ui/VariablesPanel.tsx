@@ -47,7 +47,7 @@ export function VariablesPanel({ variables, mode, onMode, onSwap, onDiscard, onA
         <div class="bb-uxai-variables__apply">
           <span class="bb-uxai-variables__summary">{`${changes} ${changes === 1 ? 'change' : 'changes'} · ${VARIABLES_PANEL.variants} variants`}</span>
           <Button variant="secondary" width="fixed" disabled={changes === 0} onClick={onDiscard}>Discard</Button>
-          <Button variant="primary" width="fixed" disabled={changes === 0} onClick={onApply}>Apply</Button>
+          <Button variant="primary" width="fixed" leadingIcon="ui-general-check" disabled={changes === 0} onClick={onApply}>Apply</Button>
         </div>
       </div>
     </section>

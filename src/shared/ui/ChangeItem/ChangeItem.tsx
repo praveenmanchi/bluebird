@@ -93,7 +93,7 @@ export function ChangeItem({
         {usedIn.length > 0 && <>
           <span id={`${regionId}-used-in`} class="bb-change-item__label">Used in</span>
           <ul class="bb-change-item__used-in" aria-labelledby={`${regionId}-used-in`}>
-            {usedIn.map((name) => <li key={name}><ContextChip type="source">{name}</ContextChip></li>)}
+            {usedIn.map((name) => <li key={name}><ContextChip type="source" icon="ui-toolbar-component">{name}</ContextChip></li>)}
           </ul>
         </>}
         <span class="bb-change-item__source">{source}</span>

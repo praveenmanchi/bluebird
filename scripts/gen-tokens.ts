@@ -7,14 +7,14 @@
 //                          → src/shared/brand/generated/active.css    (plugin: base + brand.active)
 //   figma/components.json  → src/shared/brand/generated/derived.css   (raw Figma values with no variable yet)
 //                          → src/shared/brand/generated/tokens.ts     (TokenName union, BRANDS, COMPONENT_TOKENS)
-//   figma/icons.json       → src/shared/ui/Icon/generated.ts
+//   figma/icons.json       → src/shared/ui/Icon/generated.ts (Tab Icons + `ui-*` UI icon sets)
 //
 // Everything is deterministic: `npm run tokens:check` regenerates in memory
 // and fails when the files on disk differ.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { brandIdFromMode, cssValueFor, cssVarName } from '../src/shared/brand/snapshot'
-import type { ComponentsSnapshot, ComponentSetSnapshot, IconsSnapshot, TokenSnapshot } from '../src/shared/brand/snapshot'
+import type { ComponentsSnapshot, ComponentSetSnapshot, IconsSnapshot, TokenSnapshot, UiIconSet } from '../src/shared/brand/snapshot'
 import { tokenKeyFromVariableName } from '../src/shared/brand/tokens'
 
 export const ROOT = resolve(import.meta.dirname, '..')
@@ -32,6 +32,8 @@ export interface GenInputs {
   tokens: TokenSnapshot
   components: ComponentsSnapshot
   icons: IconsSnapshot
+  /** figma/manifest.json → uiIconSets (which UI icon sets keep their own colours). */
+  uiIconSets?: UiIconSet[]
   /** figma/logos/<name>.svg — brand logos (artwork, colours kept) and marks. */
   logos: Record<string, string>
   activeBrand: string
@@ -49,6 +51,7 @@ export function readInputs(root = ROOT): GenInputs {
     tokens: json<TokenSnapshot>('figma/tokens.json'),
     components: json<ComponentsSnapshot>('figma/components.json'),
     icons: json<IconsSnapshot>('figma/icons.json'),
+    uiIconSets: json<{ uiIconSets?: UiIconSet[] }>('figma/manifest.json').uiIconSets ?? [],
     logos,
     activeBrand: config.brand.active,
     root,
@@ -304,8 +307,17 @@ function tsArray(items: readonly string[], indent = '  '): string {
 }
 
 /** Figma exports path data with 4–6 decimals; 2 are indistinguishable at icon sizes and halve the bundle. */
-export function roundPathData(svg: string): string {
-  return svg.replace(/ d="([^"]*)"/g, (_, d: string) => ` d="${d.replace(/-?\d*\.\d+/g, (n) => String(Math.round(Number(n) * 100) / 100))}"`)
+export function roundPathData(svg: string, decimals = 2): string {
+  const scale = 10 ** decimals
+  return svg.replace(/ d="([^"]*)"/g, (_, d: string) => ` d="${d.replace(/-?\d*\.\d+/g, (n) => String(Math.round(Number(n) * scale) / scale))}"`)
+}
+
+/** UI icons sit on a 24-unit grid and render at 12–24px, so one decimal (≤0.03px off at 16px) is enough. */
+const UI_ICON_DECIMALS = 1
+
+/** Lossless path-data minification (as svgo does): `0.5` → `.5`, `1 -2` → `1-2`. */
+export function minifyPathData(svg: string): string {
+  return svg.replace(/ d="([^"]*)"/g, (_, d: string) => ` d="${d.replace(/(^|[^\d.])0\./g, '$1.').replace(/ -/g, '-')}"`)
 }
 
 /** Strip size attributes, drop the wrapper, and route colours through currentColor. */
@@ -318,6 +330,55 @@ export function normalizeSvg(svg: string): { viewBox: string; body: string } {
     .replace(/(fill|stroke)="(#[0-9a-fA-F]{3,8}|white|black)"/g, '$1="currentColor"')
     .trim()
   return { viewBox, body }
+}
+
+/** The tokens UI icon sets are bound to (figma/manifest.json → uiIconSets), and how each reaches the SVG. */
+const UI_ICON_TONES: Record<string, 'currentColor' | 'var'> = {
+  'icon/glyph/default': 'currentColor',
+  'icon/glyph/muted': 'var',
+  'surface/canvas': 'var',
+  'surface/accent': 'var',
+}
+
+/**
+ * REST renders bound paints at the Brand UI default mode, so a UI icon colour is matched back to
+ * its token by that mode's hex. Glyph colour stays currentColor (the Icon `tone` still works);
+ * the secondary tones become `style` fills because SVG presentation attributes ignore var().
+ */
+export function uiIconTones(tokens: TokenSnapshot): Record<string, string> {
+  const brand = tokens.collections.find((c) => c.key === 'brand')
+  if (!brand) throw new Error('tokens.json has no "brand" collection')
+  const mode = brand.defaultMode
+  const tones: Record<string, string> = {}
+  for (const [name, kind] of Object.entries(UI_ICON_TONES)) {
+    const value = brand.variables.find((v) => v.name === name)?.values[mode]
+    if (typeof value !== 'string') throw new Error(`Brand UI has no colour for ${name} in ${mode}`)
+    const hex = value.toLowerCase()
+    if (tones[hex]) throw new Error(`${name} and another UI icon tone share ${hex} in ${mode}; the export cannot tell them apart`)
+    tones[hex] = kind === 'currentColor' ? 'currentColor' : `var(${cssVarName(name)})`
+  }
+  return tones
+}
+
+const HEX_NAMES: Record<string, string> = { white: '#ffffff', black: '#000000' }
+
+/** A UI icon body: colours that match a tone become tokens, anything else (red badges, app marks) stays as drawn. */
+export function normalizeUiSvg(svg: string, tones: Readonly<Record<string, string>>, rawColors = false): { viewBox: string; body: string } {
+  const viewBox = /viewBox="([^"]+)"/.exec(svg)?.[1] ?? '0 0 24 24'
+  const body = minifyPathData(roundPathData(svg, UI_ICON_DECIMALS))
+    .replace(/^[\s\S]*?<svg[^>]*>/, '')
+    .replace(/<\/svg>\s*$/, '')
+    .replace(/\s*\n\s*/g, '')
+    .trim()
+  if (rawColors) return { viewBox, body }
+  return {
+    viewBox,
+    body: body.replace(/(fill|stroke)="(#[0-9a-fA-F]{6}|white|black)"/g, (match, prop: string, colour: string) => {
+      const tone = tones[(HEX_NAMES[colour] ?? colour).toLowerCase()]
+      if (!tone) return match
+      return tone === 'currentColor' ? `${prop}="currentColor"` : `style="${prop}:${tone}"`
+    }),
+  }
 }
 
 export function generate(input: GenInputs): Record<string, string> {
@@ -389,8 +450,10 @@ export function generate(input: GenInputs): Record<string, string> {
     `/** Figma sets covered by another code component (duplicates, or glyph sources folded into Icon / BrandLogo). */\n` +
     `export const ALIAS_COMPONENTS = {\n${input.components.sets.filter((set) => set.status === 'alias').map((set) => `  ${set.code}: { id: ${JSON.stringify(set.id)}, name: ${JSON.stringify(set.name)}, aliasOf: ${JSON.stringify(set.aliasOf ?? '')} },`).join('\n')}\n} as const\n`
 
+  const uiTones = Object.values(input.icons.icons).some((icon) => icon.set) ? uiIconTones(input.tokens) : {}
+  const rawSets = new Set((input.uiIconSets ?? []).filter((set) => set.rawColors).map((set) => set.prefix))
   const iconEntries = Object.entries(input.icons.icons).sort(([a], [b]) => a.localeCompare(b)).map(([key, icon]) => {
-    const { viewBox, body } = normalizeSvg(icon.svg)
+    const { viewBox, body } = icon.set ? normalizeUiSvg(icon.svg, uiTones, rawSets.has(icon.set)) : normalizeSvg(icon.svg)
     return `  ${JSON.stringify(key)}: { id: ${JSON.stringify(icon.id)}, viewBox: ${JSON.stringify(viewBox)}, body: ${JSON.stringify(body)} },`
   })
   const markEntries = Object.entries(input.icons.marks).map(([key, mark]) => {

@@ -29,3 +29,28 @@ export const AllGlyphs: Story = {
     </div>
   ),
 }
+
+/** The Figma UI icon sets (Icons page → "UI icons"), grouped by set: `ui-<set>-<glyph>`. */
+export const UiIcons: Story = {
+  render: (args) => {
+    const groups = new Map<string, IconName[]>()
+    for (const name of Object.keys(ICONS) as IconName[]) {
+      if (!name.startsWith('ui-')) continue
+      const set = /^ui-(app|auto-layout|ai-feature|[a-z]+)-/.exec(name)?.[1] ?? 'other'
+      groups.set(set, [...(groups.get(set) ?? []), name])
+    }
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--bb-space-stack-md)', color: 'var(--bb-card-variable-meta-fg)', fontSize: 'var(--bb-font-size-caption)' }}>
+        {[...groups].map(([set, names]) => (
+          <section key={set}>
+            <p>{set} · {names.length}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--bb-space-inline-xs)' }}>
+              {names.map((name) => <span key={name} title={name}><Icon {...args} name={name} /></span>)}
+            </div>
+          </section>
+        ))}
+      </div>
+    )
+  },
+  args: { size: 'md' },
+}

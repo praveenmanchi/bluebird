@@ -14,7 +14,7 @@ import type { ComponentsSnapshot, IconsSnapshot, TokenSnapshot } from '../../src
 import { describeSet, tablesOf, type DescribeContext } from './describe'
 import { coverageRows, discoverSets, reconcile, type Reconciliation } from './discover'
 import { FigmaHttpError, figmaGet, withVersion } from './http'
-import { restIcons } from './icons'
+import { restIcons, restUiIcons } from './icons'
 import type { RestAlias, RestNode, RestNodesResponse } from './types'
 import { fetchVariableIndex, namesFromTokens, restTokens, type VariableIndex } from './variables'
 
@@ -118,7 +118,8 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   for (const page of pages) indexTree(page, byId)
 
   // 2. Whatever the manifest maps outside those pages (screens, legacy sets) plus the icon set.
-  const elsewhere = [...manifest.componentSets.map((s) => s.id), manifest.iconSet.id].filter((id) => !byId.has(id))
+  const uiIconSets = manifest.uiIconSets ?? []
+  const elsewhere = [...manifest.componentSets.map((s) => s.id), manifest.iconSet.id, ...uiIconSets.map((s) => s.id)].filter((id) => !byId.has(id))
   const responses: RestNodesResponse[] = [pageRes]
   if (elsewhere.length) {
     const extra = await figmaGet<RestNodesResponse>(withVersion(`/files/${manifest.fileKey}/nodes?ids=${encodeURIComponent(elsewhere.join(','))}`, options.version))
@@ -133,7 +134,7 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   const ctx: DescribeContext = { nameOf, ...tables }
 
   // 3. Manifest vs file: follow sets that moved, report the rest.
-  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(pageSource, layout.pages), [manifest.iconSet.id, ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
+  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(pageSource, layout.pages), [manifest.iconSet.id, ...uiIconSets.map((s) => s.id), ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
   const movedTo = new Map(reconciliation.moved.map((m) => [m.code, m.to]))
   if (reconciliation.missing.length) {
     throw new Error(`Manifest sets not found in the file: ${reconciliation.missing.map((m) => `${m.code} (${m.figma}, ${m.id})`).join('; ')}. Fix figma/manifest.json or remove them.`)
@@ -149,7 +150,8 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
     fileKey: manifest.fileKey, page: layout.pages[0] ?? manifest.componentsPage, ...(layout.kind === 'tiered' ? { pages: layout.pages } : {}),
     pulledAt: source.tokens.pulledAt, ...(version ? { version } : {}), sets, coverage: coverageRows(pageSource, layout.pages),
   }
-  const icons = await restIcons(manifest.fileKey, manifest.iconSet, byId.get(manifest.iconSet.id), options.version)
+  const tabIcons = await restIcons(manifest.fileKey, manifest.iconSet, byId.get(manifest.iconSet.id), options.version)
+  const icons = { ...tabIcons, icons: { ...tabIcons.icons, ...(await restUiIcons(manifest.fileKey, uiIconSets, byId, options.version)) } }
   const tokens = source.tokensStale || !version ? source.tokens : { ...source.tokens, version }
 
   return {

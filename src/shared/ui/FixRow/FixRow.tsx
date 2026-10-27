@@ -37,7 +37,7 @@ export function FixRow({
           {ratio !== undefined && <span class="bb-fix-row__ratio">{ratio}</span>}
         </div>
       </div>
-      {onApply && <Button onClick={onApply} leadingIcon="variables" width="fixed" class="bb-fix-row__apply">{applyLabel}</Button>}
+      {onApply && <Button onClick={onApply} leadingIcon="ui-general-check" width="fixed" class="bb-fix-row__apply">{applyLabel}</Button>}
     </div>
   )
 }

@@ -23,7 +23,7 @@ describe('ChangeRow', () => {
   it('shows the Tab Icons glyph box for Kind=Number and Kind=Component', () => {
     const { container, rerender } = render(<ChangeRow kind="number" />)
     expect(container.querySelector('.bb-change-row__preview--swatch')).toBeNull()
-    expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('variables')
+    expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('ui-variable-value')
     rerender(<ChangeRow kind="component" />)
     expect(root(container).getAttribute('data-kind')).toBe('component')
     expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('component')
