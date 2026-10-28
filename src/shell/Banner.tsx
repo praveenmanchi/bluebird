@@ -1,19 +1,17 @@
 import { Banner as BrandBanner } from '@shared/ui'
 import { config } from '@shared/config'
-import { brandStatus, connection } from './state'
+import { connection } from './state'
 
 /**
  * Shell header: the Figma "Banner" organism plus a slim status bar that only
- * appears when something needs attention (generated tokens, or the bridge is
- * not connected). The persona switch lives in Settings.
+ * appears while the live-mode bridge is connecting or disconnected (never in the
+ * published plugin, which talks to Figma over postMessage). Brand-token notes are
+ * not shown here: the generated tokens are the brand, and Settings names the token
+ * source and any fault. The persona switch lives in Settings.
  */
 export function Banner() {
-  const brand = brandStatus.value
   const status = connection.value
-  const fallback = brand?.source === 'fallback'
-  const note = fallback
-    ? (brand.note ?? 'Using generated brand tokens.')
-    : status === 'connecting' ? 'connecting…' : status !== 'connected' ? 'disconnected' : null
+  const note = status === 'connecting' ? 'connecting…' : status !== 'connected' ? 'disconnected' : null
   return (
     <div>
       <BrandBanner title={config.name} />

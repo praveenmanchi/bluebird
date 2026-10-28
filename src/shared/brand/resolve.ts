@@ -27,7 +27,7 @@ export async function resolveBrandTokens(source: BrandSource): Promise<BrandToke
     return { ...fallback, note: `Could not read the "${source.collection}" library collection (${reason}). Using fallback tokens.` }
   }
   if (!collection) {
-    return { ...fallback, note: `Variable collection "${source.collection}" not found in this file or its enabled libraries. Using fallback tokens.` }
+    return { ...fallback, expected: true, note: `Variable collection "${source.collection}" not found in this file or its enabled libraries. Using fallback tokens.` }
   }
   const mode = collection.modes.find((m) => m.name === source.mode)
   if (!mode) {

@@ -44,6 +44,8 @@ describe('resolveBrandTokens', () => {
     expect(result.source).toBe('fallback')
     expect(result.note).toMatch(/collection "Brand" not found in this file or its enabled libraries/)
     expect(result.tokens).toEqual(source.fallbackTokens)
+    // Normal in any user's file: the collection lives only in the Bluebird design file.
+    expect(result.expected).toBe(true)
   })
 
   it('falls back when the mode is missing', async () => {
@@ -100,5 +102,6 @@ describe('resolveBrandTokens', () => {
     const result = await resolveBrandTokens(source)
     expect(result.source).toBe('fallback')
     expect(result.note).toBe('Could not read the "Brand" library collection (offline). Using fallback tokens.')
+    expect(result.expected).toBeUndefined()
   })
 })

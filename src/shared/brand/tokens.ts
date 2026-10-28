@@ -10,6 +10,9 @@ export interface BrandTokensResult {
   tokens: TokenMap
   /** Human readable reason when source === 'fallback'. */
   note?: string
+  /** True when the fallback is the normal state, not a fault: the file simply carries no brand
+   *  collection (only the Bluebird design file does), and the generated tokens are the brand. */
+  expected?: boolean
 }
 
 /** Figma variable name "color/brand" or "Color / Brand" → token key "color-brand". */

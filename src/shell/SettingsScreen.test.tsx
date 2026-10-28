@@ -19,6 +19,16 @@ describe('SettingsScreen', () => {
     expect(screen.queryByRole('switch')).toBeNull()
   })
 
+  it('names the token source, and carries a real brand-token fault that the banner no longer shows', () => {
+    const session = { brandId: 'ikea', since: '2026-09-22T09:00:00Z' }
+    const description = () => document.querySelector('.bb-settings .bb-toggle__description')?.textContent ?? ''
+    const { rerender } = render(<SettingsScreen session={session} brand={{ brandId: 'ikea', source: 'fallback', tokens: {}, expected: true, note: 'Variable collection "Brand UI" not found in this file or its enabled libraries. Using fallback tokens.' }} onLogout={noop} onReset={noop} />)
+    expect(description()).toContain('generated tokens (no Brand collection in this document)')
+    rerender(<SettingsScreen session={session} brand={{ brandId: 'ikea', source: 'fallback', tokens: {}, note: 'Could not read the "Brand UI" library collection (offline). Using fallback tokens.' }} onLogout={noop} onReset={noop} />)
+    expect(description()).toContain('generated tokens: Could not read the "Brand UI" library collection (offline)')
+    expect(description()).not.toContain('Using fallback tokens')
+  })
+
   it('offers the persona switch when more than one persona is configured, listing the active persona’s tabs', () => {
     render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="product-designer" onPersonaChange={() => undefined} />)
     const group = screen.getByRole('tablist', { name: 'Persona' })
