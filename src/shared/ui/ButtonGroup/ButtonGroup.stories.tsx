@@ -27,7 +27,7 @@ export const CustomChildren: Story = {
     <ButtonGroup {...args}>
       <Button variant="secondary">Cancel</Button>
       <Button variant="secondary">Reset</Button>
-      <Button leadingIcon="variables">Apply</Button>
+      <Button leadingIcon="ui-general-check">Apply</Button>
     </ButtonGroup>
   ),
 }

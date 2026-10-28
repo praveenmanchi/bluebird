@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/preact'
 import { TeamBanner } from './TeamBanner'
+import { BUILD_UPDATED_AT, BUILD_VERSION, formatBuildDate } from '../../buildInfo'
 
 describe('TeamBanner', () => {
   it('renders the team credit, the version pill and the default tagline', () => {
@@ -10,6 +11,19 @@ describe('TeamBanner', () => {
     expect(screen.getByText('Version 1.3.3')).toBeInTheDocument()
     expect(container.querySelector('.bb-icon[data-icon="version"]')).not.toBeNull()
     expect(container.querySelector('.bb-team-banner__tagline')?.textContent).toContain('Together, every')
+  })
+  it('stamps the build version and date under it (Figma "Release" stack)', () => {
+    const { container, rerender } = render(<TeamBanner version="2.0.1" updated="28 Oct 2026" />)
+    const release = container.querySelector('.bb-team-banner__release')!
+    expect(release.querySelector('.bb-team-banner__version-text')?.textContent).toBe('Version 2.0.1')
+    expect(release.querySelector('.bb-team-banner__updated')?.textContent).toBe('Updated 28 Oct 2026')
+    rerender(<TeamBanner updated={false} />)
+    expect(container.querySelector('.bb-team-banner__updated')).toBeNull()
+  })
+  it('defaults version and date to build-info.json', () => {
+    render(<TeamBanner />)
+    expect(screen.getByText(`Version ${BUILD_VERSION}`)).toBeInTheDocument()
+    expect(screen.getByText(`Updated ${formatBuildDate(BUILD_UPDATED_AT)}`)).toBeInTheDocument()
   })
   it('defaults the credit to the Figma copy (text node 264:10144)', () => {
     const { container } = render(<TeamBanner />)

@@ -17,11 +17,13 @@ describe('SegmentTab', () => {
     expect(tab.dataset.selected).toBe('true')
     expect(tab.tabIndex).toBe(0)
   })
-  it('renders the icon only when given', () => {
+  it('renders the icon only when given and marks text-only tabs (Show icon = false)', () => {
     const { container, rerender } = render(<SegmentTab>x</SegmentTab>)
     expect(container.querySelector('.bb-segment-tab__icon')).toBeNull()
-    rerender(<SegmentTab icon="text">x</SegmentTab>)
-    expect(container.querySelector('[data-icon="text"]')).not.toBeNull()
+    expect(screen.getByRole('tab').classList.contains('bb-segment-tab--text-only')).toBe(true)
+    rerender(<SegmentTab icon="ui-variable-text">x</SegmentTab>)
+    expect(container.querySelector('[data-icon="ui-variable-text"]')).not.toBeNull()
+    expect(screen.getByRole('tab').classList.contains('bb-segment-tab--text-only')).toBe(false)
   })
   it('calls onClick and respects disabled', () => {
     const onClick = vi.fn()

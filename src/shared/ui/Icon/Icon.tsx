@@ -17,7 +17,7 @@ export interface IconProps extends Omit<JSX.SVGAttributes<SVGSVGElement>, 'size'
   title?: string
 }
 
-/** Glyphs exported from the Figma "Tab Icons" set; colour and size come from tokens. */
+/** Glyphs exported from the Figma "Tab Icons" set and the `ui-*` UI icon sets; colour and size come from tokens. */
 export function Icon({ name, size, tone, title, class: cls, ...rest }: IconProps) {
   const glyph = ICONS[name]
   if (!glyph) return null // not shipped in this bundle (see Icon/generated.active.ts)

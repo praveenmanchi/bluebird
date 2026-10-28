@@ -12,9 +12,9 @@ const PROPERTIES: readonly string[] = ['Type', 'State', 'Size', 'Label', 'Leadin
 function DefaultPreview() {
   return (
     <>
-      <Button variant="primary" width="fixed" leadingIcon="variables">Button</Button>
-      <Button variant="secondary" width="fixed" leadingIcon="variables">Button</Button>
-      <Button variant="primary" width="fixed" leadingIcon="variables" disabled>Button</Button>
+      <Button variant="primary" width="fixed" leadingIcon="ui-general-add">Button</Button>
+      <Button variant="secondary" width="fixed" leadingIcon="ui-general-add">Button</Button>
+      <Button variant="primary" width="fixed" leadingIcon="ui-general-add" disabled>Button</Button>
     </>
   )
 }

@@ -1,8 +1,8 @@
-/* Size expander — Figma "size expander" set (133:1628). Three SizeStep
- * ("Frame 1430102613") instances in a padded pill. Figma binds only
- * Background (root fill) and status-pill/fg/default (step text, an instance
- * override on each L/M/S text); geometry is raw → --bb-derived-size-expander-*. The Variant2 step
- * fill is the color/neutral/655 primitive. */
+/* Size expander — Figma "size expander" (133:1628). Three Screen size step
+ * instances (L · M · S) in a padded pill on Background. Steps carry no
+ * overrides: Default is transparent under footer/segment/fg, the active step is
+ * footer/segment/bg-active (brand accent) under footer/segment/fg-active.
+ * Geometry is raw → --bb-derived-size-expander-*. */
 .bb-size-expander {
   display: inline-flex;
   align-items: center;
@@ -11,7 +11,7 @@
   padding: var(--bb-derived-size-expander-root-padding-top) var(--bb-derived-size-expander-root-padding-right) var(--bb-derived-size-expander-root-padding-bottom) var(--bb-derived-size-expander-root-padding-left);
   border-radius: var(--bb-derived-size-expander-root-radius);
   background: var(--bb-background);
-  color: var(--bb-status-pill-fg-default);
+  color: var(--bb-footer-segment-fg);
 }
 .bb-size-expander__step {
   display: inline-flex;
@@ -39,7 +39,8 @@
   outline-offset: var(--bb-space-inset-xs);
 }
 .bb-size-expander__step[data-selected] {
-  background: var(--bb-border-strong);
+  background: var(--bb-footer-segment-bg-active);
+  color: var(--bb-footer-segment-fg-active);
 }
 .bb-size-expander[data-disabled] .bb-size-expander__step {
   cursor: not-allowed;

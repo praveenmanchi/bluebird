@@ -36,13 +36,13 @@ function shownLogos(ui: ComponentChild): (string | null)[] {
   return withStyles(ui, (container) => [...container.querySelectorAll('svg[data-logo]')].filter((n) => display(n) !== 'none').map((n) => n.getAttribute('data-logo')))
 }
 
-const BRANDS = ['bridge', 'ikea', 'richemont', 'disney', 'fiskars'] as const
+const BRANDS = ['bridge', 'ikea', 'richemont', 'disney', 'fiskars', 'akzonobel', 'adecco', 'gap'] as const
 
 describe('BrandLogo', () => {
   it('renders every brand logo so [data-brand] can reveal the active one', () => {
     const { container } = render(<BrandLogo />)
     const logos = [...container.querySelectorAll('svg[data-logo]')].map((n) => n.getAttribute('data-logo'))
-    expect(logos).toEqual(['bridge', 'ikea', 'richemont', 'disney', 'fiskars'])
+    expect(logos).toEqual(['bridge', 'ikea', 'richemont', 'disney', 'fiskars', 'akzonobel', 'adecco', 'gap'])
     expect(container.querySelector('[data-forced]')).toBeNull()
   })
   it('renders a single forced logo when brand is given', () => {

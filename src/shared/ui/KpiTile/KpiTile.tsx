@@ -27,12 +27,14 @@ export function KpiTile({
     <div {...rest} class={`bb-kpi-tile ${cls ?? ''}`} data-tone={tone}>
       <div class="bb-kpi-tile__row">
         {showIcon && <span class="bb-kpi-tile__icon"><Icon name={icon} /></span>}
-        <span class="bb-kpi-tile__value-group">
-          <span class="bb-kpi-tile__value">{value}</span>
-          <span class="bb-kpi-tile__label">{label}</span>
+        <span class="bb-kpi-tile__text">
+          <span class="bb-kpi-tile__value-group">
+            <span class="bb-kpi-tile__value">{value}</span>
+            <span class="bb-kpi-tile__label">{label}</span>
+          </span>
+          {caption !== undefined && <span class="bb-kpi-tile__caption">{caption}</span>}
         </span>
       </div>
-      {caption !== undefined && <span class="bb-kpi-tile__caption">{caption}</span>}
     </div>
   )
 }

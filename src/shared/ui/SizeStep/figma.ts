@@ -1,8 +1,8 @@
 /** Figma ↔ code contract for SizeStep. */
 export const figma = {
   setId: '133:1618',
-  name: 'Frame 1430102613',
-  props: { 'Property 1': 'selected (Default = false, Variant2 = true)', L: 'label' },
+  name: 'Screen size',
+  props: { State: 'selected (Default = false, active = true)', L: 'label' },
   figmaGaps: {},
-  notes: 'The set binds no variables; colours, size and type come from --bb-derived-size-step-*.',
+  notes: 'Colours are footer/segment/fg (Default) and footer/segment/bg-active + fg-active (active) since 2026-10-28; size and type come from --bb-derived-size-step-*.',
 } as const

@@ -19,7 +19,7 @@ export const CHANGE_BADGE: Readonly<Record<ChangeKind, { label: string; tone: Me
 }
 
 /** The "Tab Icons" glyph Figma puts in the Preview box for non-colour kinds. */
-const PREVIEW_ICON: Record<Exclude<ChangeRowKind, 'color'>, IconName> = { number: 'variables', component: 'component' }
+const PREVIEW_ICON: Record<Exclude<ChangeRowKind, 'color'>, IconName> = { number: 'ui-variable-value', component: 'component' }
 
 export interface ChangeRowProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'name'> {
   /** Figma "Kind": Color (swatch preview) / Number / Component (icon preview). */

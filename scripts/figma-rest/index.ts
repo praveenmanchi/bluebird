@@ -14,7 +14,7 @@ import type { ComponentsSnapshot, IconsSnapshot, TokenSnapshot } from '../../src
 import { describeSet, tablesOf, type DescribeContext } from './describe'
 import { coverageRows, discoverSets, reconcile, type Reconciliation } from './discover'
 import { FigmaHttpError, figmaGet, withVersion } from './http'
-import { restIcons } from './icons'
+import { restIcons, restUiIcons } from './icons'
 import type { RestAlias, RestNode, RestNodesResponse } from './types'
 import { fetchVariableIndex, namesFromTokens, restTokens, type VariableIndex } from './variables'
 
@@ -51,18 +51,29 @@ export interface RestPullResult {
 
 interface TokenSource { tier: ResolvedTier; tierReason?: string; tokens: TokenSnapshot; index?: VariableIndex; names: Map<string, string>; tokensStale?: boolean }
 
+/** The professional-tier reason for the log, from Figma's 403 / 404. */
+export function forbiddenMessage(error: FigmaHttpError): string {
+  switch (error.forbiddenReason) {
+    case 'scope': return 'FIGMA_TOKEN lacks the file_variables:read scope — regenerate it with Variables: Read'
+    case 'account': return '/variables/local is for full members of the Enterprise org — FIGMA_TOKEN belongs to a guest or another account type'
+    case 'plan': return '/variables/local denied (403) — the file\'s plan has no variables REST access'
+    default: return `/variables/local denied (${error.status}) — the token cannot read this file's variables (plan, membership or file access)`
+  }
+}
+
 async function resolveTokens(manifest: RestManifest, options: RestPullOptions, fallbacks: TokenFallbacks, log: (m: string) => void): Promise<TokenSource> {
   const tier = options.tier ?? 'auto'
   let tierReason = 'forced with --tier professional'
   if (tier !== 'professional') {
     try {
       const index = await fetchVariableIndex(manifest.fileKey)
-      return { tier: 'enterprise', tokens: restTokens(manifest, index, options.version), index, names: new Map() }
+      if (options.version) {
+        log(`--version ${options.version} pins the nodes only: /variables/local has no version parameter, so variable values are the file's latest`)
+      }
+      return { tier: 'enterprise', tokens: restTokens(manifest, index), index, names: new Map() }
     } catch (error) {
       if (!(error instanceof FigmaHttpError) || (error.status !== 403 && error.status !== 404)) throw error
-      tierReason = error.isScope
-        ? 'FIGMA_TOKEN lacks the file_variables:read scope — regenerate it with Variables: Read'
-        : `/variables/local denied (${error.status}) — the file's plan has no variables REST access`
+      tierReason = forbiddenMessage(error)
       if (tier === 'enterprise') throw new Error(`--tier enterprise: ${tierReason}`)
     }
   }
@@ -118,7 +129,8 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   for (const page of pages) indexTree(page, byId)
 
   // 2. Whatever the manifest maps outside those pages (screens, legacy sets) plus the icon set.
-  const elsewhere = [...manifest.componentSets.map((s) => s.id), manifest.iconSet.id].filter((id) => !byId.has(id))
+  const uiIconSets = manifest.uiIconSets ?? []
+  const elsewhere = [...manifest.componentSets.map((s) => s.id), manifest.iconSet.id, ...uiIconSets.map((s) => s.id)].filter((id) => !byId.has(id))
   const responses: RestNodesResponse[] = [pageRes]
   if (elsewhere.length) {
     const extra = await figmaGet<RestNodesResponse>(withVersion(`/files/${manifest.fileKey}/nodes?ids=${encodeURIComponent(elsewhere.join(','))}`, options.version))
@@ -133,7 +145,7 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
   const ctx: DescribeContext = { nameOf, ...tables }
 
   // 3. Manifest vs file: follow sets that moved, report the rest.
-  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(pageSource, layout.pages), [manifest.iconSet.id, ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
+  const reconciliation = reconcile(manifest.componentSets, new Set(byId.keys()), discoverSets(pageSource, layout.pages), [manifest.iconSet.id, ...uiIconSets.map((s) => s.id), ...(manifest.logoSet ? [manifest.logoSet.id] : [])])
   const movedTo = new Map(reconciliation.moved.map((m) => [m.code, m.to]))
   if (reconciliation.missing.length) {
     throw new Error(`Manifest sets not found in the file: ${reconciliation.missing.map((m) => `${m.code} (${m.figma}, ${m.id})`).join('; ')}. Fix figma/manifest.json or remove them.`)
@@ -149,7 +161,8 @@ export async function pullRest(manifest: RestManifest, options: RestPullOptions,
     fileKey: manifest.fileKey, page: layout.pages[0] ?? manifest.componentsPage, ...(layout.kind === 'tiered' ? { pages: layout.pages } : {}),
     pulledAt: source.tokens.pulledAt, ...(version ? { version } : {}), sets, coverage: coverageRows(pageSource, layout.pages),
   }
-  const icons = await restIcons(manifest.fileKey, manifest.iconSet, byId.get(manifest.iconSet.id), options.version)
+  const tabIcons = await restIcons(manifest.fileKey, manifest.iconSet, byId.get(manifest.iconSet.id), options.version)
+  const icons = { ...tabIcons, icons: { ...tabIcons.icons, ...(await restUiIcons(manifest.fileKey, uiIconSets, byId, options.version)) } }
   const tokens = source.tokensStale || !version ? source.tokens : { ...source.tokens, version }
 
   return {

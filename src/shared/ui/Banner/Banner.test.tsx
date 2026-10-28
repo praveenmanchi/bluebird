@@ -8,9 +8,9 @@ describe('Banner', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByText('Design Studio')).toBeInTheDocument()
     expect(screen.getByText('Connecting Gap between design workflow')).toBeInTheDocument()
-    // Five client logos (CSS reveals the active one) plus the HCL mark, which since 2026-09-23 is
+    // Eight client logos (CSS reveals the active one) plus the HCL mark, which since 2026-09-23 is
     // a composed <BrandLogo> at half size — Figma replaced the inline vector with an instance.
-    expect(container.querySelectorAll('.bb-brand-logo')).toHaveLength(6)
+    expect(container.querySelectorAll('.bb-brand-logo')).toHaveLength(9)
     expect(screen.getByText('Powered By')).toBeInTheDocument()
     const mark = screen.getByRole('img', { name: 'HCLTech' })
     expect(mark).toBeInTheDocument()

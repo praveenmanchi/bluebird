@@ -1,6 +1,46 @@
 import { describe, it, expect } from 'vitest'
 import { colorHex, fontStyleName, toComponents, toStyles, toVariables } from '../normalize'
 import { COMPONENT_SETS, COMPONENTS, STYLE_NODES, STYLES, VARIABLES } from './fixtures'
+import type { RestVariablesResponse } from '../normalize'
+
+describe('toVariables — Variables REST API value rules', () => {
+  const color = (r: number, g: number, b: number, a = 1) => ({ r, g, b, a })
+  const alias = (id: string) => ({ type: 'VARIABLE_ALIAS' as const, id })
+  const res: RestVariablesResponse = {
+    meta: {
+      variableCollections: {
+        root: { id: 'root', name: 'Theme', modes: [{ modeId: 'r1', name: 'Light' }], defaultModeId: 'r1' },
+        ext: { id: 'ext', name: 'Theme · Acme', isExtension: true, parentVariableCollectionId: 'root', modes: [{ modeId: 'e1', name: 'Acme', parentModeId: 'r1' }], defaultModeId: 'e1',
+          variableOverrides: { 'v:brand': { e1: color(1, 0, 0) } } },
+        hidden: { id: 'hidden', name: 'Internal', hiddenFromPublishing: true, modes: [{ modeId: 'h1', name: 'Value' }], defaultModeId: 'h1' },
+      },
+      variables: {
+        'v:brand': { id: 'v:brand', name: 'brand', key: 'kb', variableCollectionId: 'root', resolvedType: 'COLOR', valuesByMode: { r1: color(0, 0, 1) } },
+        'v:o': { id: 'v:o', name: 'opacity/half', key: 'ko', variableCollectionId: 'root', resolvedType: 'FLOAT', valuesByMode: { r1: 50 } },
+        'v:overlay': { id: 'v:overlay', name: 'overlay', key: 'kov', variableCollectionId: 'root', resolvedType: 'COLOR', valuesByMode: { r1: { color: alias('v:brand'), opacity: alias('v:o') } } },
+        'v:acme': { id: 'v:acme', name: 'acme/only', key: 'ka', variableCollectionId: 'ext', resolvedType: 'FLOAT', valuesByMode: { e1: 4 } },
+        'v:draft': { id: 'v:draft', name: 'draft', key: 'kd', variableCollectionId: 'root', resolvedType: 'FLOAT', hiddenFromPublishing: true, valuesByMode: { r1: 1 } },
+        'v:internal': { id: 'v:internal', name: 'internal', key: 'ki', variableCollectionId: 'hidden', resolvedType: 'FLOAT', valuesByMode: { h1: 2 } },
+      },
+    },
+  }
+  const { variables, collections } = toVariables(res, 'F')
+  const byName = (n: string) => variables.find((v) => v.name === n)
+
+  it('leaves out variables hidden from publishing, and every variable of a hidden collection', () => {
+    expect(byName('draft')).toBeUndefined()
+    expect(byName('internal')).toBeUndefined()
+    expect(collections.map((c) => c.name)).toEqual(['Theme', 'Theme · Acme'])
+  })
+
+  it('flattens a composed colour (alias colour × alias opacity) to one RGBA', () => {
+    expect(byName('overlay')!.values).toEqual([{ mode: 'Light', value: '#0000FF80' }])
+  })
+
+  it('reads an extended collection’s own variables from its modes', () => {
+    expect(byName('acme/only')!.values).toEqual([{ mode: 'Acme', value: '4' }])
+  })
+})
 
 describe('toVariables', () => {
   const { variables, collections } = toVariables(VARIABLES, 'F1')

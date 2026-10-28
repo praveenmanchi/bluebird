@@ -1,13 +1,14 @@
 /* VariableCard — Figma "Variable search card" set (83:940): Property 1 =
  * variable / text style (only the leading Tab Icon differs). Border, radius,
  * horizontal padding and the title/meta type ramp are card-variable/*
- * tokens. Vertical padding, the root gap, the inner gaps, the Gap Sans
- * family/weights and the timestamp opacity are raw → --bb-derived-variable-card-*.
+ * tokens (title: card-variable/title/*, meta and timestamp: card-variable/meta/*
+ * + font/weight-regular, bound in Figma since 2026-10-28). Vertical padding, the
+ * root gap, the inner gaps and the timestamp opacity are raw → --bb-derived-variable-card-*.
  * The chip is the composed ChangeStatus; the icon actions are Tab Icons at
  * card-variable/row/icon-size. */
 .bb-variable-card {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   box-sizing: border-box;
   width: var(--bb-derived-variable-card-root-width);
   max-width: 100%;
@@ -36,8 +37,8 @@
 .bb-variable-card__stack {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-width: 0;
-  max-width: var(--bb-derived-variable-card-frame-1430102565-width);
   gap: var(--bb-derived-variable-card-frame-1430102565-gap);
 }
 /* "Color/Border/Black" */
@@ -46,10 +47,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-derived-variable-card-black-font-family), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-title-font-size);
-  /* Raw Museo Sans 300 since the 2026-10-11 pull: Figma no longer binds card-variable/title/font-weight here. */
-  font-weight: var(--bb-derived-variable-card-black-font-weight);
+  font-weight: var(--bb-card-variable-title-font-weight);
   line-height: var(--bb-card-variable-title-line-height);
 }
 /* "Universal Toolkit · Used by 52 components · Affects 1 mode/brands" */
@@ -58,9 +58,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-derived-variable-card-brands-font-family), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-meta-font-size);
-  font-weight: var(--bb-derived-variable-card-brands-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-card-variable-meta-line-height);
 }
 /* Frame 1430102567 */
@@ -75,10 +75,10 @@
 .bb-variable-card__updated {
   white-space: nowrap;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-derived-variable-card-12-days-ago-font-family), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-meta-font-size);
-  font-weight: var(--bb-derived-variable-card-12-days-ago-font-weight);
-  line-height: var(--bb-derived-variable-card-12-days-ago-line-height);
+  font-weight: var(--bb-font-weight-regular);
+  line-height: var(--bb-card-variable-meta-line-height);
   opacity: var(--bb-derived-variable-card-12-days-ago-opacity);
 }
 /* Frame 1430102562 — the composed change-status chip. Figma rebinds its caption and count text to card-variable/title/fg. */

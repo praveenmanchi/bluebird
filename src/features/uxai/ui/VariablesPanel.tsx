@@ -1,4 +1,4 @@
-import { ArtifactHeader, Button, SegmentTab, VariableRow } from '@shared/ui'
+import { ArtifactHeader, Button, SegmentedControl, VariableRow } from '@shared/ui'
 import { PANEL_MODES, SWAP_OPTIONS, VARIABLES_PANEL, type BoundVariable, type PanelMode } from '../fixtures'
 
 export interface VariablesPanelProps {
@@ -39,15 +39,11 @@ export function VariablesPanel({ variables, mode, onMode, onSwap, onDiscard, onA
         ))}
       </div>
       <div class="bb-uxai-variables__footer">
-        <div class="bb-uxai-variables__modes" role="tablist" aria-label="Edit mode">
-          {PANEL_MODES.map((m) => (
-            <SegmentTab key={m.value} icon={m.icon} selected={mode === m.value} onClick={() => onMode?.(m.value)}>{m.label}</SegmentTab>
-          ))}
-        </div>
+        <SegmentedControl class="bb-uxai-variables__modes" aria-label="Edit mode" options={PANEL_MODES} value={mode} onChange={(m) => onMode?.(m)} />
         <div class="bb-uxai-variables__apply">
           <span class="bb-uxai-variables__summary">{`${changes} ${changes === 1 ? 'change' : 'changes'} · ${VARIABLES_PANEL.variants} variants`}</span>
           <Button variant="secondary" width="fixed" disabled={changes === 0} onClick={onDiscard}>Discard</Button>
-          <Button variant="primary" width="fixed" disabled={changes === 0} onClick={onApply}>Apply</Button>
+          <Button variant="primary" width="fixed" leadingIcon="ui-general-check" disabled={changes === 0} onClick={onApply}>Apply</Button>
         </div>
       </div>
     </section>

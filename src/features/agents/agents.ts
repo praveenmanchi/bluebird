@@ -1,7 +1,7 @@
 // The six agents: who they are, what they check and the copy their screens show.
 // Static. What they find comes from the sandbox (../sandbox/run.ts).
 import { config } from '@shared/config'
-import type { BotAvatarProps, RatingLevel } from '@shared/ui'
+import type { BotAvatarProps, IconName, RatingLevel } from '@shared/ui'
 import type { AgentId, RunMode, ScopeId } from './messages'
 
 export type { AgentId, RunMode, ScopeId } from './messages'
@@ -36,17 +36,18 @@ export interface AgentDef {
   unit: string
 }
 
-export const SCOPES: readonly { id: ScopeId; label: string }[] = [
-  { id: 'selection', label: 'Selection' },
-  { id: 'frame', label: 'Current frame' },
-  { id: 'section', label: 'Section' },
-  { id: 'page', label: 'Whole page' },
+/** Icons match the Figma Tab sub menu items (UI Icons). */
+export const SCOPES: readonly { id: ScopeId; label: string; icon: IconName }[] = [
+  { id: 'selection', label: 'Selection', icon: 'ui-toolbar-move' },
+  { id: 'frame', label: 'Current frame', icon: 'ui-toolbar-frame' },
+  { id: 'section', label: 'Section', icon: 'ui-toolbar-section' },
+  { id: 'page', label: 'Whole page', icon: 'ui-library-this-file' },
 ]
 
-export const MODES: readonly { id: RunMode; label: string; help: string }[] = [
-  { id: 'review', label: 'Review only', help: 'Review only lists each issue with the rule it breaks. Nothing changes in the file.' },
-  { id: 'suggest', label: 'Suggest fixes', help: 'Suggest fixes explains each issue and proposes a token swap or new copy. Nothing changes until you apply it.' },
-  { id: 'autofix', label: 'Auto-fix safe issues', help: 'Auto-fix safe issues applies the token swaps and text fixes that cannot change the design, and lists the rest for you.' },
+export const MODES: readonly { id: RunMode; label: string; help: string; icon: IconName }[] = [
+  { id: 'review', label: 'Review only', help: 'Review only lists each issue with the rule it breaks. Nothing changes in the file.', icon: 'ui-general-show' },
+  { id: 'suggest', label: 'Suggest fixes', help: 'Suggest fixes explains each issue and proposes a token swap or new copy. Nothing changes until you apply it.', icon: 'ui-misc-bulb-on' },
+  { id: 'autofix', label: 'Auto-fix safe issues', help: 'Auto-fix safe issues applies the token swaps and text fixes that cannot change the design, and lists the rest for you.', icon: 'ui-ai-feature-wand' },
 ]
 
 /** The brand modes the Accessibility agent can check: every brand in plugin.config.json. */

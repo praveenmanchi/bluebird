@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generate, readInputs, derivedDeclarations, derivedLayerCollisions, assertNoCollisions, normalizeSvg } from '../../scripts/gen-tokens'
+import { generate, readInputs, derivedDeclarations, derivedLayerCollisions, assertNoCollisions, normalizeSvg, normalizeUiSvg, uiIconTones, minifyPathData } from '../../scripts/gen-tokens'
 import { cssValueFor, cssVarName, brandIdFromMode, parseVariantName } from '../../src/shared/brand/snapshot'
 import type { ComponentsSnapshot } from '../../src/shared/brand/snapshot'
 
@@ -194,5 +194,26 @@ describe('generate()', () => {
     const { viewBox, body } = normalizeSvg('<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 1" fill="#F5F5F5"/>\n<rect stroke="white"/></svg>')
     expect(viewBox).toBe('0 0 24 24')
     expect(body).toBe('<path d="M1 1" fill="currentColor"/><rect stroke="currentColor"/>')
+  })
+  it('maps UI icon colours back to the tokens they are bound to', () => {
+    const tones = { '#f7f7f7': 'currentColor', '#757575': 'var(--bb-icon-glyph-muted)' }
+    const { body } = normalizeUiSvg('<svg viewBox="0 0 24 24"><path d="M1 1" fill="#F7F7F7"/><path stroke="#757575"/><path fill="#F24822"/><mask><rect fill="white"/></mask></svg>', tones)
+    expect(body).toBe('<path d="M1 1" fill="currentColor"/><path style="stroke:var(--bb-icon-glyph-muted)"/><path fill="#F24822"/><mask><rect fill="white"/></mask>')
+  })
+  it('rounds UI icon path data to one decimal and minifies it', () => {
+    expect(normalizeUiSvg('<svg viewBox="0 0 24 24"><path d="M1.234 5.678L-0.051 2"/></svg>', {}).body).toBe('<path d="M1.2 5.7L-.1 2"/>')
+  })
+  it('minifies path numbers without touching values', () => {
+    expect(minifyPathData('<path d="M0.5 10.5L1 -2.25 -0.5 0"/>')).toBe('<path d="M.5 10.5L1-2.25-.5 0"/>')
+  })
+  it('keeps every colour of a raw UI icon set (app marks)', () => {
+    const { body } = normalizeUiSvg('<svg viewBox="0 0 16 16"><path fill="#0D99FF"/></svg>', { '#0d99ff': 'currentColor' }, true)
+    expect(body).toBe('<path fill="#0D99FF"/>')
+  })
+  it('derives UI icon tones from the Brand UI default mode of the committed tokens', () => {
+    const tones = uiIconTones(readInputs().tokens)
+    expect(Object.values(tones)).toContain('currentColor')
+    expect(Object.values(tones)).toContain('var(--bb-surface-canvas)')
+    expect(Object.keys(tones)).toHaveLength(4)
   })
 })

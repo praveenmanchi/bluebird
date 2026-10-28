@@ -62,8 +62,8 @@
   gap: var(--bb-derived-footer-frame-1430102622-gap);
 }
 /* The size expander instance is overridden in the footer (Figma 133:1629):
- * `Background` fill with a half-pixel `Boader` stroke, and each step a filled pill —
- * app-header blue when active (bound), strong-border grey otherwise. */
+ * `Background` fill with a half-pixel `Boader` stroke and footer/segment/radius
+ * corners. The steps keep the size expander's own colours (transparent / brand accent). */
 .bb-footer__size {
   border-radius: var(--bb-footer-segment-radius);
   padding-left: var(--bb-footer-padding-x);
@@ -73,11 +73,6 @@
 }
 .bb-footer__size .bb-size-expander__step {
   border-radius: var(--bb-footer-segment-radius);
-  background: var(--bb-border-strong);
-  color: var(--bb-text-primary);
-}
-.bb-footer__size .bb-size-expander__step[data-selected] {
-  background: var(--bb-app-header-bg-default); /* Figma override on the active step instance */
 }
 /* The four status pills override their glyph fill to connection/icon/ok. */
 .bb-footer .bb-status-pill[data-status="good"] .bb-status-pill__icon { color: var(--bb-connection-icon-ok); }

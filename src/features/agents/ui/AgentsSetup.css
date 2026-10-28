@@ -33,8 +33,7 @@
   flex-wrap: wrap;
   gap: var(--bb-agents-space-tight) var(--bb-agents-space-section);
 }
-.bb-agents-setup__options,
-.bb-agents-setup__tabs {
+.bb-agents-setup__options {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

@@ -419,3 +419,9 @@
   .bb-onboarding__next { animation: none; }
   .bb-onboarding__dot { transition: none; }
 }
+
+/* Scene · Setup providers: the brand marks fill their frame, so Figma overrides each item to a
+ * size/icon-sm glyph, a dimension/space/6 gap and a dimension/space/8 left inset. */
+.bb-ob-providers .bb-segment-tab { padding-left: var(--bb-dimension-space-8); }
+.bb-ob-providers .bb-segment-tab__container { gap: var(--bb-dimension-space-6); }
+.bb-ob-providers .bb-segment-tab__icon { width: var(--bb-size-icon-sm); height: var(--bb-size-icon-sm); }

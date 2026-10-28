@@ -1,9 +1,10 @@
 /* PersonaCard — Figma "Frame 1430102664" set (264:10472), single variant.
- * The only bound tokens are on its instances (tab/* on the five Variant3
- * Tabs, button/primary/radius on the "variable button") and are consumed by
- * the composed Tab and Button. Paddings, gaps, the Inter type ramp and the
- * userpic backdrop are raw → --bb-derived-persona-card-*. The illustration
- * is figma/assets/persona-userpic-05.png at its intrinsic size. */
+ * Text is bound: the name to text/primary, the description and footnote to
+ * text/secondary, all three to font/family-ui (they were raw dark-theme whites
+ * in Inter, invisible on light brands). tab/* on the five Variant3 Tabs and
+ * button/primary/radius are consumed by the composed Tab and Button. Paddings,
+ * gaps, sizes and the userpic backdrop are raw → --bb-derived-persona-card-*.
+ * The illustration is figma/assets/persona-userpic-05.png at its intrinsic size. */
 .bb-persona-card {
   display: flex;
   flex-direction: column;
@@ -12,7 +13,7 @@
   max-width: 100%;
   gap: var(--bb-derived-persona-card-root-gap);
   padding: var(--bb-derived-persona-card-root-padding-top) var(--bb-derived-persona-card-root-padding-right) var(--bb-derived-persona-card-root-padding-bottom) var(--bb-derived-persona-card-root-padding-left);
-  color: var(--bb-derived-persona-card-design-system-color);
+  color: var(--bb-text-primary);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
 /* Frame 1430102662 */
@@ -49,20 +50,20 @@
 /* "Design System" */
 .bb-persona-card__name {
   margin: 0;
-  color: var(--bb-derived-persona-card-design-system-color);
-  font-family: var(--bb-derived-persona-card-design-system-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-text-primary);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-persona-card-design-system-font-size);
-  font-weight: var(--bb-derived-persona-card-design-system-font-weight);
+  font-weight: var(--bb-font-weight-medium); /* Figma style Medium; weight is not variable-bound */
   line-height: var(--bb-derived-persona-card-design-system-line-height);
 }
 /* "Choose your role to customize the toolset…" (10px, in the heading stack) */
 .bb-persona-card__description {
   margin: 0;
-  color: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color);
-  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-text-secondary);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   /* The footnote layer carries the same name (its copy), so this layer's size is the position-indexed `--1`. */
   font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-font-size);
-  font-weight: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-line-height);
 }
 /* Frame 1430102659 — the compact tool tabs */
@@ -88,10 +89,10 @@
   flex: 1;
   min-width: 0;
   margin: 0;
-  color: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-color);
-  font-family: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-text-secondary);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-font-size);
-  font-weight: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-line-height);
 }
 /* variable button — the composed primary Button; radius is button/primary/radius. */

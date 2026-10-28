@@ -54,9 +54,15 @@ export interface RestVariable {
   id: string; name: string; key?: string; remote?: boolean
   resolvedType: VariableType; variableCollectionId: string; valuesByMode: Record<string, unknown>
   description?: string; scopes?: string[]; codeSyntax?: Record<string, string>; hiddenFromPublishing?: boolean
+  deletedButReferenced?: boolean
 }
 
 export interface RestCollection {
-  id: string; name: string; key?: string; remote?: boolean
-  modes: { modeId: string; name: string }[]; defaultModeId: string; variableIds: string[]
+  id: string; name: string; key?: string; remote?: boolean; hiddenFromPublishing?: boolean
+  modes: { modeId: string; name: string; parentModeId?: string }[]; defaultModeId: string
+  /** Includes the inherited ids on an extended collection. */
+  variableIds: string[]
+  isExtension?: boolean; parentVariableCollectionId?: string; rootVariableCollectionId?: string
+  /** variableId → modeId → value; only on extended collections. */
+  variableOverrides?: Record<string, Record<string, unknown>>
 }

@@ -195,8 +195,8 @@
     },
     {
       "code": "SegmentedControl",
-      "figma": "Group Tab selecters",
-      "id": "308:51205"
+      "figma": "Tab sub menu",
+      "id": "40002378:50041"
     },
     {
       "code": "SelectFieldLabeled",
@@ -834,6 +834,33 @@
     "name": "Tab Icons",
     "variantProperty": "Tab Icon"
   },
+  "uiIconSets": [
+    {"id": "40002356:6650", "name": "UI Icons / Toolbar", "prefix": "toolbar"},
+    {"id": "40002358:6646", "name": "UI Icons / Sidebar", "prefix": "sidebar"},
+    {"id": "40002358:6764", "name": "UI Icons / Frame & Shape", "prefix": "shape"},
+    {"id": "40002358:6882", "name": "UI Icons / Effect", "prefix": "effect"},
+    {"id": "40002358:7000", "name": "UI Icons / Auto layout", "prefix": "auto-layout"},
+    {"id": "40002358:7118", "name": "UI Icons / Layer", "prefix": "layer"},
+    {"id": "40002358:7236", "name": "UI Icons / General", "prefix": "general"},
+    {"id": "40002358:7354", "name": "UI Icons / Constraints", "prefix": "constraints"},
+    {"id": "40002358:7472", "name": "UI Icons / Stroke", "prefix": "stroke"},
+    {"id": "40002358:62056", "name": "UI Icons / Fill", "prefix": "fill"},
+    {"id": "40002358:62174", "name": "UI Icons / Color picker", "prefix": "color"},
+    {"id": "40002358:62292", "name": "UI Icons / Style", "prefix": "style"},
+    {"id": "40002358:62410", "name": "UI Icons / Appearance", "prefix": "appearance"},
+    {"id": "40002358:62528", "name": "UI Icons / Position", "prefix": "position"},
+    {"id": "40002358:62646", "name": "UI Icons / AI feature", "prefix": "ai-feature"},
+    {"id": "40002358:62764", "name": "UI Icons / Variable", "prefix": "variable"},
+    {"id": "40002358:62882", "name": "UI Icons / Share", "prefix": "share"},
+    {"id": "40002358:63000", "name": "UI Icons / Libraries", "prefix": "library"},
+    {"id": "40002358:63118", "name": "UI Icons / Grid", "prefix": "grid"},
+    {"id": "40002358:63236", "name": "UI Icons / Prototype", "prefix": "prototype"},
+    {"id": "40002358:63354", "name": "UI Icons / App icon", "prefix": "app", "rawColors": true},
+    {"id": "40002358:63472", "name": "UI Icons / Text", "prefix": "text"},
+    {"id": "40002358:63590", "name": "UI Icons / Comment", "prefix": "comment"},
+    {"id": "40002358:63708", "name": "UI Icons / Other", "prefix": "misc"},
+    {"id": "40002358:63826", "name": "UI Icons / Legacy", "prefix": "legacy"}
+  ],
   "brandShowcases": [
     {
       "name": "Brand comparison",

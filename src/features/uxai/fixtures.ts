@@ -180,8 +180,8 @@ export const VARIABLES_PANEL = {
 
 export type PanelMode = 'swap' | 'edit'
 export const PANEL_MODES: readonly { value: PanelMode; label: string; icon: IconName }[] = [
-  { value: 'swap', label: 'Swap binding', icon: 'variable-mapper' },
-  { value: 'edit', label: 'Edit value', icon: 'text' },
+  { value: 'swap', label: 'Swap binding', icon: 'ui-shape-instance-swap' },
+  { value: 'edit', label: 'Edit value', icon: 'ui-sidebar-edit' },
 ]
 
 /** The conversations each Figma screen shows (stories and view tests). */

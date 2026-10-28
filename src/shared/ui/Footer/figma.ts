@@ -11,7 +11,9 @@ export const figma = {
     'size expander (instance)': 'size / onSizeChange',
     'footer-chevron (glyph)': 'onExpand',
   },
-  figmaGaps: {},
+  figmaGaps: {
+    'footer/segment/fg': 'the size expander step label, read by the composed SizeExpander',
+  },
   derivedGaps: {
     '--bb-derived-footer-vector--1-width': 'The footer-chevron glyph vector (133:1663, 8.7x8.7 in its 16px frame; seven layers are named "Vector"). Icon draws it; only the glyph box is CSS.',
     '--bb-derived-footer-vector--1-height': 'The footer-chevron glyph vector (133:1663, 8.7x8.7 in its 16px frame; seven layers are named "Vector"). Icon draws it; only the glyph box is CSS.',

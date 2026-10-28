@@ -9,7 +9,7 @@ describe('ComponentArtifact', () => {
     expect(buttons.map((b) => b.getAttribute('data-variant'))).toEqual(['primary', 'secondary', 'primary'])
     expect(buttons.map((b) => (b as HTMLButtonElement).disabled)).toEqual([false, false, true])
     expect(buttons.every((b) => b.getAttribute('data-width') === 'fixed')).toBe(true)
-    expect(buttons[0]!.querySelector('[data-icon="variables"]')).toBeInTheDocument()
+    expect(buttons[0]!.querySelector('[data-icon="ui-general-add"]')).toBeInTheDocument()
   })
   it('renders the header with the component glyph and the overridden link label', () => {
     const { container } = render(<ComponentArtifact />)

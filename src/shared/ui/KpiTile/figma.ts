@@ -6,5 +6,5 @@ export const figma = {
   derivedGaps: {
     '--bb-derived-kpi-tile-root-width': 'Fills its row or grid column in code instead of pinning the Figma frame width; tiles reflow at the M and S plugin sizes.',
   },
-  notes: 'Created 2026-10-11; layout follows the user\'s Neutral edit (icon left, value + label on one baseline right-aligned, caption below). Summary icons: component, status-good, status-error, layers.',
+  notes: 'Created 2026-10-11. Re-laid out 2026-10-28: Icon box (no fill) beside a left-aligned Text stack (value + label baseline, caption), tile stroked with a11y/surface/panel-border so it reads on light brands. Summary icons: component, status-good, status-error, layers.',
 } as const

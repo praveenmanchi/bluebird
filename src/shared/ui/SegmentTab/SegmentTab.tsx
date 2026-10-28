@@ -3,17 +3,17 @@ import { Icon, type IconName } from '../Icon/Icon'
 import './SegmentTab.css'
 
 export interface SegmentTabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'icon' | 'selected'> {
-  /** Figma "Property 1": Selected. */
+  /** Figma State=Selected. */
   selected?: boolean
-  /** Figma "Select Text". */
+  /** Figma "Label". */
   children?: ComponentChildren
-  /** The fixed "Tab Icons" instance in Figma (`text` in the set). Omit for a text-only segment. */
+  /** Figma "Icon" (swap any UI Icons glyph). Omit for "Show icon" = false. */
   icon?: IconName
-  /** Force the Hover visuals (stories, visual regression). Figma has no Hover variant. */
+  /** Force State=Hover (stories, visual regression). Disabled is the native `disabled`. */
   state?: 'default' | 'hover'
 }
 
-/** Figma "Tab selecters" (308:51054): one segment of a segmented control. Renders <button role="tab">. */
+/** Figma "Tab selecters" (308:51054): one segment of the Tab sub menu. Renders <button role="tab">. */
 export function SegmentTab({ selected = false, children, icon, state, class: cls, type = 'button', ...rest }: SegmentTabProps) {
   return (
     <button
@@ -24,7 +24,7 @@ export function SegmentTab({ selected = false, children, icon, state, class: cls
       tabIndex={rest.tabIndex ?? (selected ? 0 : -1)}
       data-selected={selected || undefined}
       data-state={state}
-      class={`bb-segment-tab ${cls ?? ''}`}
+      class={`bb-segment-tab${icon ? '' : ' bb-segment-tab--text-only'} ${cls ?? ''}`}
     >
       <span class="bb-segment-tab__container">
         {icon && <span class="bb-segment-tab__icon"><Icon name={icon} /></span>}

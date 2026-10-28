@@ -131,7 +131,10 @@ export interface ComponentsSnapshot {
   coverage: CoverageRow[]
 }
 
-export interface IconEntry { id: string; name: string; svg: string }
+/** `set` is the code prefix of a UI icon set (figma/manifest.json → uiIconSets); absent for the Tab Icons set. */
+export interface IconEntry { id: string; name: string; svg: string; set?: string }
+/** A Figma UI icon set exported as `ui-<prefix>-<variant>` glyphs. `rawColors` keeps product colours (app marks). */
+export interface UiIconSet { id: string; name: string; prefix: string; rawColors?: boolean }
 export interface IconsSnapshot {
   fileKey: string
   set: { id: string; name: string; variantProperty: string }

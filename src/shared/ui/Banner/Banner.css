@@ -75,9 +75,8 @@
   font-size: var(--bb-derived-banner-powered-by-font-size);
   font-weight: var(--bb-derived-banner-powered-by-font-weight);
   line-height: normal;
-  /* Raw white in Figma since 2026-09-24. Banner/powered by is #ffffff00 (transparent) in every
-   * Brand mode except Bridge, so reading it hid the label in four brands. */
-  color: var(--bb-derived-banner-powered-by-color);
+  /* Bound to Banner/Text since 2026-10-27 (was raw white); keeps "Powered By" legible on any brand's banner colour. */
+  color: var(--bb-banner-text);
   white-space: nowrap;
 }
 /* The mark is the composed <BrandLogo logo="hcltech" size="sm">, matching Figma, which replaced

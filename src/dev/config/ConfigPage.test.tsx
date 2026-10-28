@@ -16,14 +16,14 @@ function serve() {
 afterEach(() => { vi.unstubAllGlobals(); sessionStorage.clear() })
 
 describe('ConfigPage', () => {
-  it('lists the five brands and the selected brand’s tabs', async () => {
+  it('lists the eight brands and the selected brand’s tabs', async () => {
     serve()
     render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
     const brands = await screen.findByRole('complementary', { name: 'Brands' })
     expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'),
+      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
     ])
-    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(7)
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(8)
   })
 
   it('saves a hidden tab, a new order and a section set here as one patch for that brand', async () => {
@@ -42,7 +42,7 @@ describe('ConfigPage', () => {
     const patch = calls.find((c) => c.method === 'PUT')!.body as Record<string, { tabs: { id: string; enabled: boolean }[]; integrations: { github: Record<string, unknown> } }>
     expect(Object.keys(patch)).toEqual(['ikea'])
     expect(patch.ikea!.tabs.find((t) => t.id === 'jira')?.enabled).toBe(false)
-    expect(patch.ikea!.tabs.map((t) => t.id).indexOf('publish')).toBe(5)
+    expect(patch.ikea!.tabs.map((t) => t.id).indexOf('publish')).toBe(6)
     expect(patch.ikea!.integrations.github).toMatchObject({ repo: 'ikea/tokens' })
     expect(patch.ikea!.integrations.github).not.toHaveProperty('apiKey')
     expect(await screen.findByRole('heading', { name: /Rebuild the plugin to use it in Figma/ })).toBeInTheDocument()

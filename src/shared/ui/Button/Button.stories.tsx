@@ -10,10 +10,10 @@ const meta = {
   argTypes: {
     variant: { control: 'inline-radio', options: ['primary', 'secondary'] },
     size: { control: 'inline-radio', options: ['md', 'lg'] },
-    leadingIcon: { control: 'select', options: [undefined, 'variables', 'accessibility', 'inspect', 'component'] },
+    leadingIcon: { control: 'select', options: [undefined, 'ui-general-add', 'ui-general-check', 'ui-misc-save', 'ui-general-x', 'accessibility', 'inspect', 'component'] },
     trailingIcon: { control: 'select', options: [undefined, 'dropdown-down', 'dropdown-up'] },
   },
-  args: { variant: 'primary', children: 'Button', leadingIcon: 'variables', width: 'fixed' },
+  args: { variant: 'primary', children: 'Button', leadingIcon: 'ui-general-add', width: 'fixed' },
 } satisfies Meta<typeof Button>
 export default meta
 type Story = StoryObj<typeof meta>

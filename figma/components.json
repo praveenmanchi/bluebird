@@ -3756,9 +3756,10 @@
               "id": "40000061:9819",
               "p": "Banner/Frame 1430102690/Frame 1430102691/Frame 1430102694/Powered By",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "Banner/Text"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Powered By",
                 "fontSize": 4,
                 "font": "Michroma",
@@ -3814,7 +3815,10 @@
             "fiskars",
             "bridge",
             "ikea",
-            "HCL"
+            "HCL",
+            "akzonobel",
+            "adecco",
+            "gap"
           ],
           "default": "ikea"
         }
@@ -4128,6 +4132,201 @@
               }
             }
           ]
+        },
+        {
+          "id": "40002444:66792",
+          "key": "ea48e1fbc1cc2f0e12b09f4433c62fc033e7a02e",
+          "name": "Brand=gap",
+          "props": {
+            "Brand": "gap"
+          },
+          "nodes": [
+            {
+              "id": "40002444:66792",
+              "p": "Brand=gap",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 6,
+                "paddingBottom": 6,
+                "size": [
+                  59,
+                  54.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66799",
+              "p": "Brand=gap/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  47,
+                  42.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66800",
+              "p": "Brand=gap/Frame/Group",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  47,
+                  42.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66801",
+              "p": "Brand=gap/Frame/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  47,
+                  42.2
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002394:43169",
+          "key": "4ae757d777d1510e35cfe211e46d3121a814cc47",
+          "name": "Brand=akzonobel",
+          "props": {
+            "Brand": "akzonobel"
+          },
+          "nodes": [
+            {
+              "id": "40002394:43169",
+              "p": "Brand=akzonobel",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 3,
+                "paddingRight": 3,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  165.6,
+                  29.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43172",
+              "p": "Brand=akzonobel/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  159.6,
+                  23.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43173",
+              "p": "Brand=akzonobel/Frame/Group",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  159.5,
+                  23.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43174",
+              "p": "Brand=akzonobel/Frame/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  159.5,
+                  23.3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002394:43179",
+          "key": "dc5e3fd1b442bf44eaa037444248d05ee4e1c39a",
+          "name": "Brand=adecco",
+          "props": {
+            "Brand": "adecco"
+          },
+          "nodes": [
+            {
+              "id": "40002394:43179",
+              "p": "Brand=adecco",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "itemSpacing": 10,
+                "paddingLeft": 3,
+                "paddingRight": 3,
+                "paddingTop": 3,
+                "paddingBottom": 3,
+                "size": [
+                  115,
+                  65.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43187",
+              "p": "Brand=adecco/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  109,
+                  59.3
+                ]
+              }
+            },
+            {
+              "id": "40002394:43188",
+              "p": "Brand=adecco/Frame/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#e1001a",
+                "size": [
+                  109,
+                  58.5
+                ]
+              }
+            },
+            {
+              "id": "40002394:43189",
+              "p": "Brand=adecco/Frame/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  92.5,
+                  22.7
+                ]
+              }
+            }
+          ]
         }
       ],
       "status": "built"
@@ -4136,14 +4335,14 @@
       "code": "SizeStep",
       "id": "133:1618",
       "key": "8210da896bff68b749ba4cbf331e9ca8c8a78f64",
-      "name": "Frame 1430102613",
+      "name": "Screen size",
       "description": "",
       "props": {
-        "Property 1": {
+        "State": {
           "type": "VARIANT",
           "options": [
             "Default",
-            "Variant2"
+            "active"
           ],
           "default": "Default"
         }
@@ -4152,14 +4351,14 @@
         {
           "id": "133:1614",
           "key": "b3a85676ede01f94361521bc9ba9ac6956f2fe63",
-          "name": "Property 1=Default",
+          "name": "State=Default",
           "props": {
-            "Property 1": "Default"
+            "State": "Default"
           },
           "nodes": [
             {
               "id": "133:1614",
-              "p": "Property 1=Default",
+              "p": "State=Default",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -4178,11 +4377,12 @@
             },
             {
               "id": "133:1609",
-              "p": "Property 1=Default/L",
+              "p": "State=Default/L",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/fg"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "L",
                 "fontSize": 11,
                 "font": "Inter",
@@ -4194,18 +4394,19 @@
         {
           "id": "133:1619",
           "key": "c54038e8bf999a3e84bbf653800126b681d47f01",
-          "name": "Property 1=Variant2",
+          "name": "State=active",
           "props": {
-            "Property 1": "Variant2"
+            "State": "active"
           },
           "nodes": [
             {
               "id": "133:1619",
-              "p": "Property 1=Variant2",
+              "p": "State=active",
               "t": "COMPONENT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/bg-active"
+              },
               "r": {
-                "fill": "#777373",
                 "radius": 2,
                 "layout": "VERTICAL CENTER CENTER FIXED HUG",
                 "itemSpacing": 10,
@@ -4221,11 +4422,12 @@
             },
             {
               "id": "133:1620",
-              "p": "Property 1=Variant2/L",
+              "p": "State=active/L",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/fg-active"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "L",
                 "fontSize": 11,
                 "font": "Inter",
@@ -6169,7 +6371,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6182,7 +6384,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  47,
+                  45,
                   16
                 ]
               }
@@ -6194,12 +6396,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Updated",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Updated"
               }
             },
             {
@@ -6232,12 +6434,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -6259,7 +6461,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 19,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6272,7 +6474,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  36,
+                  34,
                   16
                 ]
               }
@@ -6284,12 +6486,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Added  ",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Added  "
               }
             },
             {
@@ -6322,12 +6524,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -6349,7 +6551,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 4,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6362,7 +6564,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  51,
+                  49,
                   16
                 ]
               }
@@ -6374,12 +6576,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Removed",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Removed"
               }
             },
             {
@@ -6412,12 +6614,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -7447,10 +7649,10 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
+              "i": "State=Default <Screen size>",
               "mc": "133:1614",
               "cp": {
-                "Property 1": "Default"
+                "State": "Default"
               }
             },
             {
@@ -7458,7 +7660,7 @@
               "p": "size expander/Frame 1430102614/L",
               "t": "TEXT",
               "b": {
-                "fill": "status-pill/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -7470,7 +7672,9 @@
               "id": "133:1623",
               "p": "size expander/Frame 1430102615",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "footer/segment/bg-active"
+              },
               "r": {
                 "radius": 2,
                 "layout": "VERTICAL CENTER CENTER FIXED HUG",
@@ -7484,24 +7688,21 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
-              "mc": "133:1614",
+              "i": "State=active <Screen size>",
+              "mc": "133:1619",
               "cp": {
-                "Property 1": "Default"
+                "State": "active"
               }
             },
             {
-              "id": "I133:1623;133:1609",
+              "id": "I133:1623;133:1620",
               "p": "size expander/Frame 1430102615/L",
               "t": "TEXT",
-              "b": {
-                "fill": "status-pill/fg/default"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
                 "characterStyleOverrides",
                 "characters",
-                "fills",
                 "lineIndentations",
                 "lineTypes",
                 "styleOverrideTable",
@@ -7529,10 +7730,10 @@
                   13
                 ]
               },
-              "i": "Property 1=Default <Frame 1430102613>",
+              "i": "State=Default <Screen size>",
               "mc": "133:1614",
               "cp": {
-                "Property 1": "Default"
+                "State": "Default"
               }
             },
             {
@@ -7540,7 +7741,7 @@
               "p": "size expander/Frame 1430102616/L",
               "t": "TEXT",
               "b": {
-                "fill": "status-pill/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -10078,57 +10279,50 @@
       "name": "Tab selecters",
       "description": "",
       "props": {
-        "Select Text": {
+        "Label": {
           "type": "TEXT",
           "default": "Label"
         },
-        "Property 1": {
+        "Show icon": {
+          "type": "BOOLEAN",
+          "default": true
+        },
+        "Icon": {
+          "type": "INSTANCE_SWAP",
+          "default": "40002351:19434"
+        },
+        "State": {
           "type": "VARIANT",
           "options": [
             "Default",
-            "Selected"
+            "Selected",
+            "Hover",
+            "Disabled"
           ],
-          "default": "Selected"
+          "default": "Default"
         }
       },
       "variants": [
         {
           "id": "308:51053",
           "key": "bd5103cc80c54ef81d1cf44e66aa70461696829c",
-          "name": "Property 1=Default",
+          "name": "State=Default",
           "props": {
-            "Property 1": "Default"
+            "State": "Default"
           },
           "nodes": [
             {
               "id": "308:51053",
-              "p": "Property 1=Default",
+              "p": "State=Default",
               "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  78,
-                  26
-                ]
-              }
-            },
-            {
-              "id": "308:51039",
-              "p": "Property 1=Default/Container",
-              "t": "FRAME",
               "b": {
-                "itemSpacing": "chip-filter/gap"
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
               },
               "r": {
-                "layout": "HORIZONTAL MIN CENTER HUG HUG",
-                "paddingLeft": 2,
-                "paddingRight": 2,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
                   62,
                   24
@@ -10136,123 +10330,103 @@
               }
             },
             {
-              "id": "308:51060",
-              "p": "Property 1=Default/Container/Tab Icons",
+              "id": "40002384:61109",
+              "p": "State=Default/Icon",
               "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "size": [
-                  24,
-                  24
-                ]
-              },
-              "i": "Tab Icon=text <Tab Icons>",
-              "mc": "287:46071",
-              "cp": {
-                "Tab Icon": "text"
-              }
-            },
-            {
-              "id": "I308:51060;287:46076",
-              "p": "Property 1=Default/Container/Tab Icons/Vector",
-              "t": "VECTOR",
               "b": {
-                "fill": "tab/icon/default"
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
               },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "308:51043",
-              "p": "Property 1=Default/Container/JSON",
-              "t": "TEXT",
-              "b": {
-                "fontSize": "chip-filter/font/size",
-                "fontFamily": "chip-filter/font/family",
-                "fontWeight": "chip-filter/font/weight",
-                "lineHeight": "chip-filter/line-height"
-              },
-              "r": {
-                "fill": "#b3b3b3",
-                "text": "JSON"
-              }
-            }
-          ]
-        },
-        {
-          "id": "308:51052",
-          "key": "cf23359bd06a356ba7c49a2ad00df5517290554a",
-          "name": "Property 1=Selected",
-          "props": {
-            "Property 1": "Selected"
-          },
-          "nodes": [
-            {
-              "id": "308:51052",
-              "p": "Property 1=Selected",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "fill": "#1a5ee5",
-                "stroke": "#323232",
-                "strokeWeight": 1,
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FIXED",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  63,
-                  26
-                ]
-              }
-            },
-            {
-              "id": "308:51093",
-              "p": "Property 1=Selected/Tab Icons",
-              "t": "INSTANCE",
-              "b": {},
               "r": {
                 "size": [
                   18,
                   18
                 ]
               },
-              "i": "Tab Icon=text <Tab Icons>",
-              "mc": "287:46071",
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
               "cp": {
-                "Tab Icon": "text"
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
               }
             },
             {
-              "id": "I308:51093;287:46076",
-              "p": "Property 1=Selected/Tab Icons/Vector",
-              "t": "VECTOR",
+              "id": "308:51043",
+              "p": "State=Default/Label",
+              "t": "TEXT",
               "b": {
-                "fill": "tab/icon/default"
+                "fill": "input/fg/helper",
+                "fontSize": "chip-filter/font/size",
+                "fontFamily": "chip-filter/font/family",
+                "fontWeight": "chip-filter/font/weight",
+                "lineHeight": "chip-filter/line-height"
               },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "308:51094",
-              "p": "Property 1=Selected/Container",
-              "t": "FRAME",
-              "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002384:61113",
+          "key": "a9d4444d54466bf22902d45ac3e4b286de17741c",
+          "name": "State=Hover",
+          "props": {
+            "State": "Hover"
+          },
+          "nodes": [
+            {
+              "id": "40002384:61113",
+              "p": "State=Hover",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "dropdown/item/bg-hover",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  29,
-                  11
+                  62,
+                  24
                 ]
               }
             },
             {
-              "id": "308:51095",
-              "p": "Property 1=Selected/Container/Label",
+              "id": "40002384:61114",
+              "p": "State=Hover/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
+              },
+              "r": {
+                "size": [
+                  18,
+                  18
+                ]
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "40002384:61115",
+              "p": "State=Hover/Label",
               "t": "TEXT",
               "b": {
                 "fill": "tab/fg/default",
@@ -10265,7 +10439,160 @@
                 "text": "Label"
               },
               "pr": {
-                "characters": "Select Text"
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "308:51052",
+          "key": "cf23359bd06a356ba7c49a2ad00df5517290554a",
+          "name": "State=Selected",
+          "props": {
+            "State": "Selected"
+          },
+          "nodes": [
+            {
+              "id": "308:51052",
+              "p": "State=Selected",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:61111",
+              "p": "State=Selected/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
+              },
+              "r": {
+                "size": [
+                  18,
+                  18
+                ]
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "I40002384:61111;40002351:19435",
+              "p": "State=Selected/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "icon/glyph/on-accent"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "308:51095",
+              "p": "State=Selected/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/on-accent",
+                "fontSize": "chip-filter/font/size",
+                "fontFamily": "chip-filter/font/family",
+                "fontWeight": "chip-filter/font/weight",
+                "lineHeight": "chip-filter/line-height"
+              },
+              "r": {
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002384:61117",
+          "key": "c66337798ef3b2c1c0f30f38e647f5187a2c5f7c",
+          "name": "State=Disabled",
+          "props": {
+            "State": "Disabled"
+          },
+          "nodes": [
+            {
+              "id": "40002384:61117",
+              "p": "State=Disabled",
+              "t": "COMPONENT",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              }
+            },
+            {
+              "id": "40002384:61118",
+              "p": "State=Disabled/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "dimension/size/icon-18",
+                "height": "dimension/size/icon-18"
+              },
+              "r": {
+                "size": [
+                  18,
+                  18
+                ],
+                "opacity": 0.4
+              },
+              "i": "Icon=text <UI Icons / Variable>",
+              "mc": "40002351:19434",
+              "cp": {
+                "Icon": "text"
+              },
+              "pr": {
+                "visible": "Show icon",
+                "mainComponent": "Icon"
+              }
+            },
+            {
+              "id": "40002384:61119",
+              "p": "State=Disabled/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "icon/glyph/muted",
+                "fontSize": "chip-filter/font/size",
+                "fontFamily": "chip-filter/font/family",
+                "fontWeight": "chip-filter/font/weight",
+                "lineHeight": "chip-filter/line-height"
+              },
+              "r": {
+                "text": "Label"
+              },
+              "pr": {
+                "characters": "Label"
               }
             }
           ]
@@ -10275,487 +10602,965 @@
     },
     {
       "code": "SegmentedControl",
-      "id": "308:51205",
-      "key": "74481f57b94901484f1f221979c2f9a5156267b1",
-      "name": "Group Tab selecters",
+      "id": "40002378:50041",
+      "key": "b40fea2f01ba6001bba961b8bdea60948b65ed80",
+      "name": "Tab sub menu",
       "description": "",
       "props": {
-        "Property 1": {
+        "Level": {
           "type": "VARIANT",
           "options": [
-            "4 level",
-            "2 level",
-            "3 level"
+            "4",
+            "3",
+            "2",
+            "5",
+            "6"
           ],
-          "default": "4 level"
+          "default": "2"
         }
       },
       "variants": [
         {
-          "id": "308:51117",
-          "key": "48cd27a04af9dc0584348aefd038836d494afa86",
-          "name": "Property 1=4 level",
+          "id": "40002378:50063",
+          "key": "c474da75f234e7544c33e4ccbee30a31fdedf381",
+          "name": "Level=2",
           "props": {
-            "Property 1": "4 level"
+            "Level": "2"
           },
           "nodes": [
             {
-              "id": "308:51117",
-              "p": "Property 1=4 level",
+              "id": "40002378:50063",
+              "p": "Level=2",
               "t": "COMPONENT",
               "b": {
-                "radius": "chip-filter/radius"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
               },
               "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "itemSpacing": 4,
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  401,
-                  30
+                  144,
+                  32
                 ]
               }
             },
             {
-              "id": "308:51063",
-              "p": "Property 1=4 level/Tab selecters",
+              "id": "40002384:62149",
+              "p": "Level=2/Item 1",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  103,
-                  26
+                  68,
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
+              "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
-                "Select Text": "Multi Inspect",
-                "Property 1": "Selected"
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
               }
             },
             {
-              "id": "I308:51063;308:51093;287:46173",
-              "p": "Property 1=4 level/Tab selecters/Tab Icons/Vector",
+              "id": "I40002384:62149;40002384:61111",
+              "p": "Level=2/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62149;40002384:61111;40002351:19435",
+              "p": "Level=2/Item 1/Icon/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "tab/icon/default"
+                "fill": "icon/glyph/on-accent"
               },
               "o": [
                 "fills"
               ]
             },
             {
-              "id": "308:51070",
-              "p": "Property 1=4 level/Tab selecters",
+              "id": "40002384:62157",
+              "p": "Level=2/Item 2",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  86,
-                  26
+                  66,
+                  24
                 ]
               },
-              "i": "Property 1=Default <Tab selecters>",
+              "i": "State=Default <Tab selecters>",
               "mc": "308:51053",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
               }
             },
             {
-              "id": "I308:51070;308:51060;287:46189",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
-              "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "I308:51070;308:51043",
-              "p": "Property 1=4 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
-              ],
-              "r": {
-                "text": "Debug"
-              }
-            },
-            {
-              "id": "308:51195",
-              "p": "Property 1=4 level/Tab selecters",
+              "id": "I40002384:62157;40002384:61109",
+              "p": "Level=2/Item 2/Icon",
               "t": "INSTANCE",
               "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  118,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I308:51195;308:51060;308:51240",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
               "o": [
-                "fills"
-              ]
-            },
-            {
-              "id": "I308:51195;308:51043",
-              "p": "Property 1=4 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
-              ],
-              "r": {
-                "text": "Visualization"
-              }
-            },
-            {
-              "id": "308:51185",
-              "p": "Property 1=4 level/Tab selecters",
-              "t": "INSTANCE",
-              "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  78,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
-            },
-            {
-              "id": "I308:51185;308:51060;308:51249",
-              "p": "Property 1=4 level/Tab selecters/Container/Tab Icons/Vector",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
-              "o": [
-                "fills"
+                "boundVariables",
+                "name"
               ]
             }
           ]
         },
         {
-          "id": "308:51206",
-          "key": "dbb6c8a21db1e3740637b37f3de104b5ad5bbd08",
-          "name": "Property 1=2 level",
+          "id": "40002378:50042",
+          "key": "11be0aa439d1208d55849c518b48f46aad4d7587",
+          "name": "Level=3",
           "props": {
-            "Property 1": "2 level"
+            "Level": "3"
           },
           "nodes": [
             {
-              "id": "308:51206",
-              "p": "Property 1=2 level",
+              "id": "40002378:50042",
+              "p": "Level=3",
               "t": "COMPONENT",
               "b": {
-                "radius": "chip-filter/radius"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
               },
               "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  153,
-                  30
+                  208,
+                  32
                 ]
               }
             },
             {
-              "id": "308:51207",
-              "p": "Property 1=2 level/Tab selecters",
+              "id": "40002384:62163",
+              "p": "Level=3/Item 1",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  63,
-                  26
+                  68,
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
+              "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Selected"
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
               }
             },
             {
-              "id": "308:51208",
-              "p": "Property 1=2 level/Tab selecters",
+              "id": "I40002384:62163;40002384:61111",
+              "p": "Level=3/Item 1/Icon",
               "t": "INSTANCE",
               "b": {},
-              "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
-                "size": [
-                  86,
-                  26
-                ]
-              },
-              "i": "Property 1=Default <Tab selecters>",
-              "mc": "308:51053",
-              "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
-              }
+              "o": [
+                "boundVariables",
+                "name"
+              ]
             },
             {
-              "id": "I308:51208;308:51060;287:46076",
-              "p": "Property 1=2 level/Tab selecters/Container/Tab Icons/Vector",
+              "id": "I40002384:62163;40002384:61111;40002351:19435",
+              "p": "Level=3/Item 1/Icon/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "icon/glyph/muted"
+                "fill": "icon/glyph/on-accent"
               },
               "o": [
                 "fills"
               ]
             },
             {
-              "id": "I308:51208;308:51043",
-              "p": "Property 1=2 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
+              "id": "40002384:62171",
+              "p": "Level=3/Item 2",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  66,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62171;40002384:61109",
+              "p": "Level=3/Item 2/Icon",
+              "t": "INSTANCE",
               "b": {},
               "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
-              ],
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62177",
+              "p": "Level=3/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "text": "Debug"
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
               }
+            },
+            {
+              "id": "I40002384:62177;40002384:61109",
+              "p": "Level=3/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
             }
           ]
         },
         {
-          "id": "40000368:9080",
-          "key": "e8e97875d7540c6eed2058b18516cae03c7175b2",
-          "name": "Property 1=3 level",
+          "id": "40002378:50040",
+          "key": "4c6ec1b6af0bcb86acf426312f8654c84b634856",
+          "name": "Level=4",
           "props": {
-            "Property 1": "3 level"
+            "Level": "4"
           },
           "nodes": [
             {
-              "id": "40000368:9080",
-              "p": "Property 1=3 level",
+              "id": "40002378:50040",
+              "p": "Level=4",
               "t": "COMPONENT",
               "b": {
-                "radius": "chip-filter/radius"
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
               },
               "r": {
-                "fill": "#383838",
-                "stroke": "#ffffff33",
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MIN HUG HUG",
-                "itemSpacing": 4,
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 2,
-                "paddingBottom": 2,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  279,
-                  30
+                  278,
+                  32
                 ]
               }
             },
             {
-              "id": "40000368:9081",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "40002384:62183",
+              "p": "Level=4/Item 1",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "fill": "#1a5ee5",
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  103,
-                  26
+                  68,
+                  24
                 ]
               },
-              "i": "Property 1=Selected <Tab selecters>",
+              "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
-                "Select Text": "Multi Inspect",
-                "Property 1": "Selected"
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
               }
             },
             {
-              "id": "I40000368:9081;308:51093;287:46173",
-              "p": "Property 1=3 level/Tab selecters/Tab Icons/Vector",
+              "id": "I40002384:62183;40002384:61111",
+              "p": "Level=4/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62183;40002384:61111;40002351:19435",
+              "p": "Level=4/Item 1/Icon/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "tab/icon/default"
+                "fill": "icon/glyph/on-accent"
               },
               "o": [
                 "fills"
               ]
             },
             {
-              "id": "40000368:9082",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "40002384:62191",
+              "p": "Level=4/Item 2",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  86,
-                  26
+                  66,
+                  24
                 ]
               },
-              "i": "Property 1=Default <Tab selecters>",
+              "i": "State=Default <Tab selecters>",
               "mc": "308:51053",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
               }
             },
             {
-              "id": "I40000368:9082;308:51060;287:46189",
-              "p": "Property 1=3 level/Tab selecters/Container/Tab Icons/Vector",
+              "id": "I40002384:62191;40002384:61109",
+              "p": "Level=4/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62197",
+              "p": "Level=4/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62197;40002384:61109",
+              "p": "Level=4/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62203",
+              "p": "Level=4/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  68,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62203;40002384:61109",
+              "p": "Level=4/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "40002384:62139",
+          "key": "21ddeaab2569f34791abcf57a34770e0e9be4f0b",
+          "name": "Level=5",
+          "props": {
+            "Level": "5"
+          },
+          "nodes": [
+            {
+              "id": "40002384:62139",
+              "p": "Level=5",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  339,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002384:62223",
+              "p": "Level=5/Item 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  68,
+                  24
+                ]
+              },
+              "i": "State=Selected <Tab selecters>",
+              "mc": "308:51052",
+              "cp": {
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
+              }
+            },
+            {
+              "id": "I40002384:62223;40002384:61111",
+              "p": "Level=5/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62223;40002384:61111;40002351:19435",
+              "p": "Level=5/Item 1/Icon/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "icon/glyph/muted"
+                "fill": "icon/glyph/on-accent"
               },
               "o": [
                 "fills"
               ]
             },
             {
-              "id": "I40000368:9082;308:51043",
-              "p": "Property 1=3 level/Tab selecters/Container/JSON",
-              "t": "TEXT",
-              "b": {},
-              "o": [
-                "characterStyleOverrides",
-                "characters",
-                "lineIndentations",
-                "lineTypes",
-                "styleOverrideTable"
-              ],
-              "r": {
-                "text": "Debug"
-              }
-            },
-            {
-              "id": "40000368:9084",
-              "p": "Property 1=3 level/Tab selecters",
+              "id": "40002384:62231",
+              "p": "Level=5/Item 2",
               "t": "INSTANCE",
-              "b": {},
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
               "r": {
-                "radius": 4,
-                "layout": "HORIZONTAL CENTER CENTER HUG FILL",
-                "paddingLeft": 8,
-                "paddingRight": 8,
-                "paddingTop": 1,
-                "paddingBottom": 1,
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  78,
-                  26
+                  66,
+                  24
                 ]
               },
-              "i": "Property 1=Default <Tab selecters>",
+              "i": "State=Default <Tab selecters>",
               "mc": "308:51053",
               "cp": {
-                "Select Text": "Label",
-                "Property 1": "Default"
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
               }
             },
             {
-              "id": "I40000368:9084;308:51060;308:51249",
-              "p": "Property 1=3 level/Tab selecters/Container/Tab Icons/Vector",
+              "id": "I40002384:62231;40002384:61109",
+              "p": "Level=5/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62237",
+              "p": "Level=5/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62237;40002384:61109",
+              "p": "Level=5/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62243",
+              "p": "Level=5/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  68,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62243;40002384:61109",
+              "p": "Level=5/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62251",
+              "p": "Level=5/Item 5",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:19255",
+                "Show icon": true,
+                "Label": "CSS",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62251;40002384:61109",
+              "p": "Level=5/Item 5/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "40002384:62144",
+          "key": "5379bd9d48e31c82f54b60002a3e8d32d1d61505",
+          "name": "Level=6",
+          "props": {
+            "Level": "6"
+          },
+          "nodes": [
+            {
+              "id": "40002384:62144",
+              "p": "Level=6",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "dropdown/menu/bg",
+                "stroke": "dropdown/border/default",
+                "radius": "dimension/radius/8",
+                "itemSpacing": "dimension/space/2",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/4",
+                "paddingTop": "dimension/space/4",
+                "paddingBottom": "dimension/space/4"
+              },
+              "r": {
+                "strokeWeight": 1,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  437,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002384:62268",
+              "p": "Level=6/Item 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "surface/accent-strong",
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  68,
+                  24
+                ]
+              },
+              "i": "State=Selected <Tab selecters>",
+              "mc": "308:51052",
+              "cp": {
+                "Icon": "40002351:19434",
+                "Show icon": true,
+                "Label": "Label",
+                "State": "Selected"
+              }
+            },
+            {
+              "id": "I40002384:62268;40002384:61111",
+              "p": "Level=6/Item 1/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "I40002384:62268;40002384:61111;40002351:19435",
+              "p": "Level=6/Item 1/Icon/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "icon/glyph/muted"
+                "fill": "icon/glyph/on-accent"
               },
               "o": [
                 "fills"
+              ]
+            },
+            {
+              "id": "40002384:62276",
+              "p": "Level=6/Item 2",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  66,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:17614",
+                "Show icon": true,
+                "Label": "JSON",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62276;40002384:61109",
+              "p": "Level=6/Item 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62282",
+              "p": "Level=6/Item 3",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  62,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20080",
+                "Show icon": true,
+                "Label": "XML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62282;40002384:61109",
+              "p": "Level=6/Item 3/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62288",
+              "p": "Level=6/Item 4",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  68,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20076",
+                "Show icon": true,
+                "Label": "YAML",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62288;40002384:61109",
+              "p": "Level=6/Item 4/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62296",
+              "p": "Level=6/Item 5",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  59,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:19255",
+                "Show icon": true,
+                "Label": "CSS",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62296;40002384:61109",
+              "p": "Level=6/Item 5/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002384:62301",
+              "p": "Level=6/Item 6",
+              "t": "INSTANCE",
+              "b": {
+                "radius": "dimension/radius/4",
+                "itemSpacing": "dimension/space/3",
+                "paddingLeft": "dimension/space/4",
+                "paddingRight": "dimension/space/8"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  96,
+                  24
+                ]
+              },
+              "i": "State=Default <Tab selecters>",
+              "mc": "308:51053",
+              "cp": {
+                "Icon": "40002351:20061",
+                "Show icon": true,
+                "Label": "Markdown",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002384:62301;40002384:61109",
+              "p": "Level=6/Item 6/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
               ]
             }
           ]
@@ -12340,26 +13145,21 @@
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614",
               "t": "INSTANCE",
               "b": {
-                "fill": "app-header/bg/default",
                 "radius": "footer/segment/radius"
               },
               "o": [
                 "boundVariables",
                 "cornerRadius",
-                "fills",
                 "name"
               ]
             },
             {
-              "id": "I133:1629;133:1621;133:1620",
+              "id": "I133:1629;133:1621;133:1609",
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102614/L",
               "t": "TEXT",
-              "b": {
-                "fill": "footer/fg/default"
-              },
+              "b": {},
               "o": [
                 "boundVariables",
-                "fills",
                 "textAlignHorizontal"
               ]
             },
@@ -12373,18 +13173,6 @@
               "o": [
                 "boundVariables",
                 "cornerRadius"
-              ]
-            },
-            {
-              "id": "I133:1629;133:1623;133:1609",
-              "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102615/L",
-              "t": "TEXT",
-              "b": {
-                "fill": "footer/fg/default"
-              },
-              "o": [
-                "boundVariables",
-                "fills"
               ]
             },
             {
@@ -12404,7 +13192,7 @@
               "p": "footer/Frame 1430102625/Frame 1430102622/Frame 1430102618/Frame 1430102616/L",
               "t": "TEXT",
               "b": {
-                "fill": "footer/fg/default"
+                "fill": "footer/segment/fg"
               },
               "o": [
                 "boundVariables",
@@ -22301,8 +23089,22 @@
               }
             },
             {
+              "id": "40002413:6353",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MAX HUG HUG",
+                "itemSpacing": 2,
+                "size": [
+                  98,
+                  26
+                ]
+              }
+            },
+            {
               "id": "204:7261",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -22316,7 +23118,7 @@
             },
             {
               "id": "204:7262",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Frame",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Frame",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -22328,7 +23130,7 @@
             },
             {
               "id": "204:7263",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Frame/Vector",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Frame/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -22341,7 +23143,7 @@
             },
             {
               "id": "204:7264",
-              "p": "team Banner/Frame 1430102643/Frame 1430102640/Frame 1430102641/Version 1.3.3",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Frame 1430102641/Version 1.3.3",
               "t": "TEXT",
               "b": {},
               "r": {
@@ -22350,6 +23152,21 @@
                 "fontSize": 10,
                 "font": "Museo Sans",
                 "style": "300"
+              }
+            },
+            {
+              "id": "40002413:6559",
+              "p": "team Banner/Frame 1430102643/Frame 1430102640/Release/Updated",
+              "t": "TEXT",
+              "b": {
+                "fontFamily": "font/family-ui"
+              },
+              "r": {
+                "fill": "#ffffff",
+                "text": "Updated 28 Oct 2026",
+                "fontSize": 10,
+                "lineHeightPx": 12,
+                "opacity": 0.72
               }
             },
             {
@@ -22494,7 +23311,7 @@
                 "itemSpacing": 16,
                 "size": [
                   654,
-                  106
+                  94
                 ]
               }
             },
@@ -22508,7 +23325,7 @@
                 "itemSpacing": 9,
                 "size": [
                   654,
-                  62
+                  50
                 ]
               }
             },
@@ -22516,13 +23333,13 @@
               "id": "264:10358",
               "p": "Frame 1430102664/Frame 1430102662/Frame 1430102661/Frame 1430102660/Design System",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/primary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#f5f5f5",
                 "text": "Design System",
                 "fontSize": 16,
-                "font": "Inter",
-                "style": "Medium",
                 "lineHeightPx": 16.799999237060547
               }
             },
@@ -22530,13 +23347,13 @@
               "id": "264:10360",
               "p": "Frame 1430102664/Frame 1430102662/Frame 1430102661/Frame 1430102660/Choose your role to customize the toolset. Design ",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/secondary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow. Switching teams will replay the onboarding tour for your new role.",
                 "fontSize": 10,
-                "font": "Inter",
-                "style": "Regular",
                 "lineHeightPx": 12
               }
             },
@@ -22732,13 +23549,13 @@
               "id": "264:10439",
               "p": "Frame 1430102664/Frame 1430102663/Choose your role to customize the toolset. Design ",
               "t": "TEXT",
-              "b": {},
+              "b": {
+                "fill": "text/secondary",
+                "fontFamily": "font/family-ui"
+              },
               "r": {
-                "fill": "#ffffff",
                 "text": "Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow. ",
                 "fontSize": 11,
-                "font": "Inter",
-                "style": "Regular",
                 "lineHeightPx": 17.600000381469727
               }
             },
@@ -23265,13 +24082,13 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MAX FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "itemSpacing": 16,
                 "paddingTop": 12,
                 "paddingBottom": 12,
                 "size": [
                   1049,
-                  60
+                  61
                 ]
               }
             },
@@ -23284,14 +24101,14 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  617,
-                  36
+                  775,
+                  37
                 ]
               }
             },
             {
               "id": "394:13358",
-              "p": "Property 1=variable/Frame 1430102566/Tab Icons",
+              "p": "Property 1=variable/Frame 1430102566/UI Icons / Variable",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -23300,15 +24117,15 @@
                   24
                 ]
               },
-              "i": "Tab Icon=Variables <Tab Icons>",
-              "mc": "91:1958",
+              "i": "Icon=color <UI Icons / Variable>",
+              "mc": "40002351:19429",
               "cp": {
-                "Tab Icon": "Variables"
+                "Icon": "color"
               }
             },
             {
-              "id": "I394:13358;91:1904",
-              "p": "Property 1=variable/Frame 1430102566/Tab Icons/Vector",
+              "id": "I394:13358;40002351:19430",
+              "p": "Property 1=variable/Frame 1430102566/UI Icons / Variable/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -23325,11 +24142,11 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
-                  36
+                  748,
+                  37
                 ]
               }
             },
@@ -23340,12 +24157,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -23355,12 +24172,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "100"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -23369,10 +24186,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  280,
+                  232,
                   24
                 ]
               }
@@ -23383,13 +24200,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size"
+                "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
+                "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
                 "text": "12 Days ago",
-                "font": "Museo Sans",
-                "style": "100",
-                "lineHeightPx": 15.399999618530273,
                 "opacity": 0.5
               }
             },
@@ -23554,13 +24371,13 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MAX FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "itemSpacing": 16,
                 "paddingTop": 12,
                 "paddingBottom": 12,
                 "size": [
                   1049,
-                  60
+                  61
                 ]
               }
             },
@@ -23573,8 +24390,8 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  617,
-                  36
+                  775,
+                  37
                 ]
               }
             },
@@ -23613,11 +24430,11 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
-                  36
+                  748,
+                  37
                 ]
               }
             },
@@ -23628,12 +24445,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -23643,12 +24460,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "100"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -23657,10 +24474,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  280,
+                  232,
                   24
                 ]
               }
@@ -23671,13 +24488,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size"
+                "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
+                "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
                 "text": "12 Days ago",
-                "font": "Museo Sans",
-                "style": "100",
-                "lineHeightPx": 15.399999618530273,
                 "opacity": 0.5
               }
             },
@@ -23849,9 +24666,15 @@
               },
               "r": {
                 "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "itemSpacing": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "paddingTop": 12,
+                "paddingBottom": 12,
                 "size": [
                   1049,
-                  449
+                  267
                 ]
               }
             },
@@ -23863,12 +24686,12 @@
                 "stroke": "card-variable/border/default"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN MIN FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL SPACE_BETWEEN MIN FILL HUG",
+                "itemSpacing": 16,
                 "paddingBottom": 12,
                 "size": [
-                  1025,
-                  48
+                  1023,
+                  49
                 ]
               }
             },
@@ -23878,17 +24701,17 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  741,
-                  36
+                  869,
+                  37
                 ]
               }
             },
             {
               "id": "394:13389",
-              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/Tab Icons",
+              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/UI Icons / Variable",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -23897,15 +24720,15 @@
                   24
                 ]
               },
-              "i": "Tab Icon=Variables <Tab Icons>",
-              "mc": "91:1958",
+              "i": "Icon=color <UI Icons / Variable>",
+              "mc": "40002351:19429",
               "cp": {
-                "Tab Icon": "Variables"
+                "Icon": "color"
               }
             },
             {
-              "id": "I394:13389;91:1904",
-              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/Tab Icons/Vector",
+              "id": "I394:13389;40002351:19430",
+              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/UI Icons / Variable/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -23922,11 +24745,11 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
-                  36
+                  842,
+                  37
                 ]
               }
             },
@@ -23937,12 +24760,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -23952,12 +24775,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -23966,10 +24789,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  198,
+                  154,
                   24
                 ]
               }
@@ -24105,10 +24928,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 432,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -24120,12 +24943,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-medium",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Components Using the Searched Variable",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Components Using the Searched Variable"
               }
             },
             {
@@ -24134,10 +24957,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
-                "itemSpacing": 41,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  361,
+                  323,
                   24
                 ]
               }
@@ -24151,7 +24974,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  152,
+                  148,
                   24
                 ]
               },
@@ -24231,10 +25054,10 @@
               "t": "INSTANCE",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  168,
+                  163,
                   24
                 ]
               },
@@ -24314,10 +25137,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -24329,8 +25152,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  69,
                   24
                 ]
               }
@@ -24367,13 +25191,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -24382,10 +25206,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  176,
                   24
                 ]
               }
@@ -24399,7 +25223,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -24537,10 +25361,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -24552,8 +25376,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  69,
                   24
                 ]
               }
@@ -24590,13 +25415,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -24605,10 +25430,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  176,
                   24
                 ]
               }
@@ -24622,7 +25447,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -24768,10 +25593,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -24783,8 +25608,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  69,
                   24
                 ]
               }
@@ -24821,13 +25647,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -24836,10 +25662,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  176,
                   24
                 ]
               }
@@ -24853,7 +25679,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -24999,10 +25825,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25014,8 +25840,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  69,
                   24
                 ]
               }
@@ -25052,13 +25879,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25067,10 +25894,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  176,
                   24
                 ]
               }
@@ -25084,7 +25911,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -25222,10 +26049,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25237,8 +26064,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  69,
                   24
                 ]
               }
@@ -25275,13 +26103,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25290,10 +26118,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  176,
                   24
                 ]
               }
@@ -25307,7 +26135,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -68376,6 +69204,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -68384,10 +69213,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -68399,10 +69229,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -68411,7 +69241,6 @@
               "p": "Tone=Neutral/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -68448,8 +69277,21 @@
               }
             },
             {
+              "id": "40002409:18166",
+              "p": "Tone=Neutral/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8969",
-              "p": "Tone=Neutral/Row/Value group",
+              "p": "Tone=Neutral/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -68464,7 +69306,7 @@
             },
             {
               "id": "40000447:8594",
-              "p": "Tone=Neutral/Row/Value group/Value",
+              "p": "Tone=Neutral/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/title",
@@ -68482,7 +69324,7 @@
             },
             {
               "id": "40000447:8593",
-              "p": "Tone=Neutral/Row/Value group/Label",
+              "p": "Tone=Neutral/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68500,7 +69342,7 @@
             },
             {
               "id": "40000447:8595",
-              "p": "Tone=Neutral/Caption",
+              "p": "Tone=Neutral/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68532,6 +69374,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -68540,10 +69383,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -68555,10 +69399,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -68567,7 +69411,6 @@
               "p": "Tone=Success/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -68604,8 +69447,21 @@
               }
             },
             {
+              "id": "40002409:18167",
+              "p": "Tone=Success/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8979",
-              "p": "Tone=Success/Row/Value group",
+              "p": "Tone=Success/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -68620,7 +69476,7 @@
             },
             {
               "id": "40000447:8598",
-              "p": "Tone=Success/Row/Value group/Value",
+              "p": "Tone=Success/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/success",
@@ -68638,7 +69494,7 @@
             },
             {
               "id": "40000447:8597",
-              "p": "Tone=Success/Row/Value group/Label",
+              "p": "Tone=Success/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68656,7 +69512,7 @@
             },
             {
               "id": "40000447:8599",
-              "p": "Tone=Success/Caption",
+              "p": "Tone=Success/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68688,6 +69544,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -68696,10 +69553,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -68711,10 +69569,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -68723,7 +69581,6 @@
               "p": "Tone=Warning/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -68760,8 +69617,21 @@
               }
             },
             {
+              "id": "40002409:18168",
+              "p": "Tone=Warning/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8989",
-              "p": "Tone=Warning/Row/Value group",
+              "p": "Tone=Warning/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -68776,7 +69646,7 @@
             },
             {
               "id": "40000447:8602",
-              "p": "Tone=Warning/Row/Value group/Value",
+              "p": "Tone=Warning/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/warning",
@@ -68794,7 +69664,7 @@
             },
             {
               "id": "40000447:8601",
-              "p": "Tone=Warning/Row/Value group/Label",
+              "p": "Tone=Warning/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68812,7 +69682,7 @@
             },
             {
               "id": "40000447:8603",
-              "p": "Tone=Warning/Caption",
+              "p": "Tone=Warning/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68844,6 +69714,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -68852,10 +69723,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -68867,10 +69739,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -68879,7 +69751,6 @@
               "p": "Tone=Danger/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -68916,8 +69787,21 @@
               }
             },
             {
+              "id": "40002409:18169",
+              "p": "Tone=Danger/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:8999",
-              "p": "Tone=Danger/Row/Value group",
+              "p": "Tone=Danger/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -68932,7 +69816,7 @@
             },
             {
               "id": "40000447:8606",
-              "p": "Tone=Danger/Row/Value group/Value",
+              "p": "Tone=Danger/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/status/danger",
@@ -68950,7 +69834,7 @@
             },
             {
               "id": "40000447:8605",
-              "p": "Tone=Danger/Row/Value group/Label",
+              "p": "Tone=Danger/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -68968,7 +69852,7 @@
             },
             {
               "id": "40000447:8607",
-              "p": "Tone=Danger/Caption",
+              "p": "Tone=Danger/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69000,6 +69884,7 @@
               "t": "COMPONENT",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -69008,10 +69893,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   130,
-                  58
+                  52
                 ]
               }
             },
@@ -69023,10 +69909,10 @@
                 "itemSpacing": "a11y/space/tight"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER FILL HUG",
                 "size": [
-                  114,
-                  24
+                  112,
+                  34
                 ]
               }
             },
@@ -69035,7 +69921,6 @@
               "p": "Tone=Empty/Row/Icon box",
               "t": "FRAME",
               "b": {
-                "fill": "a11y/surface/panel",
                 "radius": "a11y/radius/control",
                 "width": "a11y/size/icon-box",
                 "height": "a11y/size/icon-box"
@@ -69072,8 +69957,21 @@
               }
             },
             {
+              "id": "40002409:18170",
+              "p": "Tone=Empty/Row/Text",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN MIN FILL HUG",
+                "size": [
+                  84,
+                  34
+                ]
+              }
+            },
+            {
               "id": "40000451:9009",
-              "p": "Tone=Empty/Row/Value group",
+              "p": "Tone=Empty/Row/Text/Value group",
               "t": "FRAME",
               "b": {
                 "itemSpacing": "a11y/space/tight"
@@ -69088,7 +69986,7 @@
             },
             {
               "id": "40000447:8610",
-              "p": "Tone=Empty/Row/Value group/Value",
+              "p": "Tone=Empty/Row/Text/Value group/Value",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69106,7 +70004,7 @@
             },
             {
               "id": "40000447:8609",
-              "p": "Tone=Empty/Row/Value group/Label",
+              "p": "Tone=Empty/Row/Text/Value group/Label",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -69124,7 +70022,7 @@
             },
             {
               "id": "40000447:8611",
-              "p": "Tone=Empty/Caption",
+              "p": "Tone=Empty/Row/Text/Caption",
               "t": "TEXT",
               "b": {
                 "fill": "a11y/text/meta",
@@ -70674,6 +71572,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -70682,10 +71581,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -70705,6 +71605,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -70713,10 +71614,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Success <KPI Tile>",
@@ -70745,6 +71647,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -70753,10 +71656,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Danger <KPI Tile>",
@@ -70785,6 +71689,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -70793,10 +71698,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  18
                 ]
               },
               "i": "Tone=Warning <KPI Tile>",
@@ -71340,7 +72246,7 @@
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   568,
-                  574
+                  568
                 ]
               }
             },
@@ -71407,7 +72313,7 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "size": [
                   542,
-                  58
+                  52
                 ]
               }
             },
@@ -71417,6 +72323,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71425,10 +72332,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -71448,6 +72356,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71456,10 +72365,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Success <KPI Tile>",
@@ -71488,6 +72398,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71496,10 +72407,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Danger <KPI Tile>",
@@ -71528,6 +72440,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -71536,10 +72449,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Warning <KPI Tile>",
@@ -72218,6 +73132,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72226,10 +73141,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -72249,6 +73165,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72257,10 +73174,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -72289,6 +73207,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72297,10 +73216,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -72329,6 +73249,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72337,10 +73258,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  16
+                  18
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -72755,7 +73677,7 @@
                 "layout": "VERTICAL MIN MIN FIXED HUG",
                 "size": [
                   568,
-                  394
+                  388
                 ]
               }
             },
@@ -72882,7 +73804,7 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "size": [
                   542,
-                  58
+                  52
                 ]
               }
             },
@@ -72892,6 +73814,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72900,10 +73823,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Neutral <KPI Tile>",
@@ -72923,6 +73847,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72931,10 +73856,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -72963,6 +73889,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -72971,10 +73898,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -73003,6 +73931,7 @@
               "t": "INSTANCE",
               "b": {
                 "fill": "a11y/surface/sunken",
+                "stroke": "a11y/surface/panel-border",
                 "radius": "a11y/radius/control",
                 "itemSpacing": "a11y/space/tight",
                 "paddingLeft": "a11y/space/inline",
@@ -73011,10 +73940,11 @@
                 "paddingBottom": "a11y/space/inline"
               },
               "r": {
+                "strokeWeight": 1,
                 "layout": "VERTICAL MIN MIN FILL FILL",
                 "size": [
                   129.5,
-                  58
+                  52
                 ]
               },
               "i": "Tone=Empty <KPI Tile>",
@@ -80698,10 +81628,10 @@
     {
       "section": "Atoms",
       "type": "COMPONENT_SET",
-      "name": "Frame 1430102613",
+      "name": "Screen size",
       "id": "133:1618",
       "variants": 2,
-      "coverage": 0
+      "coverage": 16
     },
     {
       "section": "Atoms",
@@ -81009,8 +81939,8 @@
       "type": "COMPONENT_SET",
       "name": "Tab selecters",
       "id": "308:51054",
-      "variants": 2,
-      "coverage": 26
+      "variants": 4,
+      "coverage": 94
     },
     {
       "section": "Molecules",
@@ -81019,7 +81949,16 @@
       "name": "Group Tab selecters",
       "id": "308:51205",
       "variants": 3,
-      "coverage": 25
+      "coverage": 73
+    },
+    {
+      "section": "Molecules",
+      "group": "Shared",
+      "type": "COMPONENT_SET",
+      "name": "Tab sub menu",
+      "id": "40002378:50041",
+      "variants": 5,
+      "coverage": 97
     },
     {
       "section": "Molecules",
@@ -81064,7 +82003,7 @@
       "name": "size expander",
       "id": "133:1628",
       "variants": 1,
-      "coverage": 23
+      "coverage": 25
     },
     {
       "section": "Molecules",
@@ -81658,7 +82597,7 @@
       "name": "team Banner",
       "id": "204:7270",
       "variants": 1,
-      "coverage": 8
+      "coverage": 11
     },
     {
       "section": "Organisms",
@@ -81667,7 +82606,7 @@
       "name": "Frame 1430102664",
       "id": "264:10472",
       "variants": 1,
-      "coverage": 47
+      "coverage": 51
     },
     {
       "section": "Organisms",
@@ -81694,7 +82633,7 @@
       "name": "Variable search card expand",
       "id": "84:1043",
       "variants": 1,
-      "coverage": 69
+      "coverage": 65
     },
     {
       "section": "Organisms",
@@ -81882,8 +82821,8 @@
       "type": "COMPONENT_SET",
       "name": "brand logos",
       "id": "40000064:9865",
-      "variants": 6,
-      "coverage": 11
+      "variants": 9,
+      "coverage": 5
     }
   ],
   "tiers": {

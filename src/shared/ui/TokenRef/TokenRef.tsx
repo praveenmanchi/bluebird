@@ -13,7 +13,7 @@ export interface TokenRefProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>,
 export function TokenRef({ name, mode, class: cls, ...rest }: TokenRefProps) {
   return (
     <span {...rest} class={`bb-token-ref ${cls ?? ''}`} title={mode ? `${name} · mode ${mode}` : name}>
-      <Icon name="variables" class="bb-token-ref__icon" />
+      <Icon name="ui-variable-color" class="bb-token-ref__icon" />
       <span class="bb-token-ref__name">{name}</span>
       {mode !== undefined && <span class="bb-token-ref__mode">{mode}</span>}
     </span>

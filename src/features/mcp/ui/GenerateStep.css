@@ -20,10 +20,5 @@
   min-width: 100%;
 }
 
-/* Files: HORIZONTAL, gap mcp/space/tight, Tab selecters instances. */
-.bb-mcp-handoff__files {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--bb-mcp-space-tight);
-}
+/* Files: a Tab sub menu (Level=3) that hugs its items. */
+.bb-mcp-handoff__files { align-self: flex-start; }

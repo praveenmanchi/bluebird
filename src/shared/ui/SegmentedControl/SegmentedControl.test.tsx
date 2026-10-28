@@ -29,7 +29,31 @@ describe('SegmentedControl', () => {
     fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowLeft' })
     expect(onChange).toHaveBeenLastCalledWith('Three')
   })
-  it('renders two segments for the 2 level variant and disables all of them', () => {
+  it('takes { value, label, icon } options and points every tab at the controlled panel', () => {
+    const onChange = vi.fn()
+    const { container } = render(
+      <SegmentedControl
+        options={[{ value: 'all', label: 'All 12', icon: 'ui-general-show-as-list' }, { value: 'variable', label: 'Variables 8' }]}
+        value="all"
+        controls="panel"
+        icons={{ variable: 'ui-variable-color' }}
+        onChange={onChange}
+      />,
+    )
+    expect(screen.getByRole('tab', { name: 'All 12' }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getAllByRole('tab').every((t) => t.getAttribute('aria-controls') === 'panel')).toBe(true)
+    expect(container.querySelector('[data-icon="ui-general-show-as-list"]')).not.toBeNull()
+    expect(container.querySelector('[data-icon="ui-variable-color"]')).not.toBeNull()
+    fireEvent.click(screen.getByRole('tab', { name: 'Variables 8' }))
+    expect(onChange).toHaveBeenCalledWith('variable')
+  })
+  it('ignores arrow keys while disabled', () => {
+    const onChange = vi.fn()
+    render(<SegmentedControl options={OPTIONS} value="One" disabled onChange={onChange} />)
+    fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowRight' })
+    expect(onChange).not.toHaveBeenCalled()
+  })
+  it('renders two segments for the Level=2 variant and disables all of them', () => {
     render(<SegmentedControl options={['A', 'B']} value="A" disabled />)
     const tabs = screen.getAllByRole('tab')
     expect(tabs).toHaveLength(2)

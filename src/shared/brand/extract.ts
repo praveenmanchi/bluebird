@@ -3,7 +3,7 @@
 // Only the Plugin API is used; nothing here touches the DOM.
 import type {
   ComponentNode as SnapNode, ComponentSetSnapshot, ComponentsSnapshot, CoverageRow,
-  IconsSnapshot, ResolvedValue, SnapshotCollection, SnapshotVariable, TokenSnapshot, VariableType,
+  IconsSnapshot, ResolvedValue, SnapshotCollection, SnapshotVariable, TokenSnapshot, UiIconSet, VariableType,
 } from './snapshot'
 import { parseVariantName, variableMeta } from './snapshot'
 import { rgbaToHex } from '../figma/color'
@@ -17,6 +17,8 @@ export interface ExtractManifest {
   collections: { primitives: string; semantics: string; brand: string }
   componentSets: { code: string; figma: string; id: string }[]
   iconSet: { id: string; name: string; variantProperty: string }
+  /** Figma UI icon sets on the Icons page (REST pull only; the relay keeps the committed glyphs). */
+  uiIconSets?: UiIconSet[]
 }
 
 const MAX_ALIAS_DEPTH = 10

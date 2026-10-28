@@ -11,7 +11,7 @@ export const figma = {
     Ratio: 'ratio',
     'Sample (frame)': 'sample + on',
     'Button (instance)': 'onApply + applyLabel',
-    'Button › Show leading icon + Leading icon (91:1958)': 'leadingIcon="variables" (fixed; Fix Row exposes no property for it)',
+    'Button › Show leading icon + Leading icon (UI Icons / General › check)': 'leadingIcon="ui-general-check" (fixed; Fix Row exposes no property for it)',
     'Button › width FIXED (button/primary/width-md)': 'width="fixed" (Apply is 120 wide in Figma, not hugging its label)',
   },
   figmaGaps: {

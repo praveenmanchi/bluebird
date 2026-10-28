@@ -4,7 +4,7 @@
 // rather than explained with a placeholder.
 import type { ResolvedTab } from '@shared/config'
 
-export type SceneId = 'welcome' | 'a11y' | 'tokens' | 'jira' | 'mcp' | 'uxai' | 'agents' | 'publish' | 'setup'
+export type SceneId = 'welcome' | 'a11y' | 'tokens' | 'varsearch' | 'jira' | 'mcp' | 'uxai' | 'agents' | 'publish' | 'setup'
 
 /** The Settings entry at the right end of the tour's tab list (Setup step). */
 export const SETTINGS_TAB = 'settings'
@@ -25,12 +25,17 @@ const TAB_COPY: Readonly<Record<string, TabCopy>> = {
   a11y: {
     scene: 'a11y',
     title: 'Catch contrast issues before they ship',
-    body: 'Scan a selection, frame or page against WCAG 2.2, 2.1 or 2.0. Every finding shows its ratio in all five brands and suggests the token that fixes it.',
+    body: 'Scan a selection, frame or page against WCAG 2.2, 2.1 or 2.0. Every finding shows its ratio in every brand and suggests the token that fixes it.',
   },
   tokens: {
     scene: 'tokens',
     title: 'See how well your file uses tokens',
     body: 'Measure token coverage, find colours painted as literals and spacing that’s off the scale, with the variable that already holds the value.',
+  },
+  varsearch: {
+    scene: 'varsearch',
+    title: 'Find everything that uses a variable',
+    body: 'Type a variable name and see every component, frame and text style bound to it, on all pages or the ones you pick. Select the layers or jump straight to them.',
   },
   jira: {
     scene: 'jira',

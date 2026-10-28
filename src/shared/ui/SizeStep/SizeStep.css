@@ -1,6 +1,8 @@
-/* SizeStep — Figma "Frame 1430102613" set (133:1618): Property 1 = Default /
- * Variant2. Nothing is variable-bound in Figma yet, so every value is a
- * --bb-derived-size-step-* token (font family via the shared Inter token). */
+/* SizeStep — Figma "Screen size" set (133:1618): State = Default / active.
+ * Default has no fill and a footer/segment/fg label; active fills with
+ * footer/segment/bg-active (the brand accent) under a footer/segment/fg-active
+ * label, so the selected step reads the same as a selected Tab selecters
+ * segment on every brand. Geometry and type are raw → --bb-derived-size-step-*. */
 .bb-size-step {
   display: inline-flex;
   flex-direction: column;
@@ -12,7 +14,7 @@
   padding: var(--bb-derived-size-step-root-padding-top) var(--bb-derived-size-step-root-padding-right) var(--bb-derived-size-step-root-padding-bottom) var(--bb-derived-size-step-root-padding-left);
   border-radius: var(--bb-derived-size-step-root-radius);
   background: var(--bb-surface-transparent);
-  color: var(--bb-derived-size-step-l-color);
+  color: var(--bb-footer-segment-fg);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-derived-size-step-l-font-size);
   font-weight: var(--bb-derived-size-step-l-font-weight);
@@ -21,6 +23,7 @@
   transition: background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-size-step[data-selected] {
-  background: var(--bb-derived-size-step-root-fill);
+  background: var(--bb-footer-segment-bg-active);
+  color: var(--bb-footer-segment-fg-active);
 }
 .bb-size-step__label { display: inline-block; }

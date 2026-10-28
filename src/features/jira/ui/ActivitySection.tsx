@@ -1,4 +1,4 @@
-import { Comment, CommentComposer, SectionTitle, useRpc } from '@shared/ui'
+import { Comment, CommentComposer, SectionTitle, useRpc, type IconName } from '@shared/ui'
 import { write } from '../actions'
 import { MSG } from '../messages'
 import { activityTab, busy, commentDraft, editingCommentId, me, notice, type ActivityTab } from '../state'
@@ -6,6 +6,7 @@ import type { ActivityEntry, Ticket } from '../types'
 import { TabStrip } from './TabStrip'
 
 const ACTIVITY_TABS: readonly ActivityTab[] = ['Comments', 'History', 'Work log']
+const ACTIVITY_ICONS: Record<ActivityTab, IconName> = { Comments: 'ui-toolbar-comment', History: 'ui-toolbar-version-history', 'Work log': 'ui-prototype-time' }
 
 const EMPTY: Record<ActivityTab, string> = {
   Comments: 'No comments yet.',
@@ -42,6 +43,7 @@ export function ActivitySection({ ticket }: { ticket: Ticket }) {
         aria-label="Activity"
         aria-controls={panelId}
         options={ACTIVITY_TABS}
+        icons={ACTIVITY_ICONS}
         value={tab}
         onChange={(v) => { activityTab.value = v }}
       />

@@ -1,6 +1,7 @@
 import {
-  Button, ChangeItem, LinkButton, PIPELINE_DEFAULT_NODES, Pipeline, PublishEmptyState, SectionTitle, SegmentTab, Spinner,
+  Button, ChangeItem, LinkButton, PIPELINE_DEFAULT_NODES, Pipeline, PublishEmptyState, SectionTitle, SegmentedControl, Spinner,
   type PipelineNodeProps, type PipelineNodes, type PublishEmptyStateAction,
+  type IconName,
 } from '@shared/ui'
 import { requestSettings } from '@shared/navigation'
 import {
@@ -68,7 +69,7 @@ function StartState({ onExtract, onRetryStatus }: ReviewStepProps) {
   )
 }
 
-const FILTERS: ReadonlyArray<[ChangeFilter, string]> = [['all', 'All'], ['variable', 'Variables'], ['component', 'Components']]
+const FILTERS: ReadonlyArray<[ChangeFilter, string, IconName]> = [['all', 'All', 'ui-general-show-as-list'], ['variable', 'Variables', 'ui-variable-color'], ['component', 'Components', 'ui-toolbar-component']]
 const LIST_ID = 'bb-publish-changes'
 
 function pickFilter(id: ChangeFilter): void {
@@ -77,17 +78,6 @@ function pickFilter(id: ChangeFilter): void {
 }
 
 /** Arrow keys move between the filter tabs (only the selected one is in the Tab order). */
-function onFilterKey(e: KeyboardEvent): void {
-  const delta = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
-  if (!delta) return
-  e.preventDefault()
-  const i = FILTERS.findIndex(([id]) => id === filter.value)
-  const next = FILTERS[(i + delta + FILTERS.length) % FILTERS.length]![0]
-  pickFilter(next)
-  const tabs = (e.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('[role="tab"]')
-  tabs[FILTERS.findIndex(([id]) => id === next)]?.focus()
-}
-
 function ChangeList({ onExtract }: Pick<ReviewStepProps, 'onExtract'>) {
   const r = result.value!
   const all = changes.value
@@ -122,13 +112,14 @@ function ChangeList({ onExtract }: Pick<ReviewStepProps, 'onExtract'>) {
         actionLabel={allIncluded ? 'Clear all' : 'Select all'}
         onAction={() => setAllIncluded(!allIncluded)}
       />
-      <div class="bb-publish__filters" role="tablist" aria-label="Filter changes" onKeyDown={onFilterKey}>
-        {FILTERS.map(([id, label]) => (
-          <SegmentTab key={id} selected={filter.value === id} aria-controls={LIST_ID} onClick={() => pickFilter(id)}>
-            {label} {count(id)}
-          </SegmentTab>
-        ))}
-      </div>
+      <SegmentedControl
+        class="bb-publish__filters"
+        aria-label="Filter changes"
+        controls={LIST_ID}
+        options={FILTERS.map(([id, label, icon]) => ({ value: id, label: `${label} ${count(id)}`, icon }))}
+        value={filter.value}
+        onChange={pickFilter}
+      />
       <ul id={LIST_ID} class="bb-publish__list" aria-label="Changes">
         {visible.map((change) => (
           <li key={change.id}>

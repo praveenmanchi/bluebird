@@ -43,6 +43,30 @@
           "collection": "Brand UI",
           "mode": "Fiskars"
         }
+      },
+      "akzonobel": {
+        "label": "AkzoNobel",
+        "accessCodeHash": "0139f022ff66fe24375d6ba0b34b2e2395e7ecc43d9dfe4e2500775708b1ac62",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "AkzoNobel"
+        }
+      },
+      "adecco": {
+        "label": "Adecco",
+        "accessCodeHash": "4a2aa946346f2810d67b797f5dd41f3722d491c2b3ef394e4625933332bb5ee3",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Adecco"
+        }
+      },
+      "gap": {
+        "label": "Gap Inc.",
+        "accessCodeHash": "4f5cd1f98e6bbab5f2c5345e2933a23855fb229c84600917470ff5425344b0e6",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Gap"
+        }
       }
     }
   },
@@ -52,6 +76,7 @@
       "label": "Product Designer",
       "tabs": [
         "a11y",
+        "varsearch",
         "jira",
         "mcp",
         "publish",
@@ -63,6 +88,7 @@
       "label": "Design System",
       "tabs": [
         "tokens",
+        "varsearch",
         "publish",
         "a11y",
         "uxai",
@@ -80,6 +106,11 @@
       "enabled": true,
       "label": "Design tokens",
       "icon": "variables"
+    },
+    "varsearch": {
+      "enabled": true,
+      "label": "Variable search",
+      "icon": "research"
     },
     "jira": {
       "enabled": true,
@@ -99,7 +130,7 @@
     "agents": {
       "enabled": true,
       "label": "UX AI agents",
-      "icon": "uxai"
+      "icon": "ai-model"
     },
     "publish": {
       "enabled": true,

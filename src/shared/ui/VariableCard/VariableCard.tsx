@@ -31,7 +31,7 @@ export interface VariableCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>,
   trailing?: ComponentChildren
 }
 
-const GLYPH: Record<VariableCardKind, 'variables' | 'text'> = { variable: 'variables', 'text-style': 'text' }
+const GLYPH: Record<VariableCardKind, 'ui-variable-color' | 'text'> = { variable: 'ui-variable-color', 'text-style': 'text' }
 
 /**
  * Figma "Variable search card" (83:940): a collapsed search-result row —

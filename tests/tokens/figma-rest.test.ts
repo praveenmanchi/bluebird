@@ -1,11 +1,12 @@
 // The REST extractor must describe a file exactly as the Plugin API extractor does. These pin the
 // REST → Plugin-API translations, discovery/reconciliation and the pull's argument parsing.
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { mixedStrokeWeight, mixedText, pluginBindings, restFontStyle, styleKind, unrotatedSize } from '../../scripts/figma-rest/normalize'
 import { coverageOf, coverageRows, discoverSets, reconcile } from '../../scripts/figma-rest/discover'
 import { describeSet, type DescribeContext } from '../../scripts/figma-rest/describe'
 import { restTokens } from '../../scripts/figma-rest/variables'
-import { withVersion } from '../../scripts/figma-rest/http'
+import { FigmaHttpError, figmaGet, MAX_RATE_LIMIT_RETRIES, retryDelayMs, withVersion } from '../../scripts/figma-rest/http'
+import { forbiddenMessage } from '../../scripts/figma-rest/index'
 import { parseArgs } from '../../scripts/figma-pull'
 import type { RestNode } from '../../scripts/figma-rest/types'
 
@@ -191,13 +192,75 @@ describe('restTokens', () => {
           { id: 'c:b', name: 'B', modes: [{ modeId: 'm3', name: 'Default' }], defaultModeId: 'm3', variableIds: ['v:b'] },
         ],
       },
-      '123',
     )
-    expect(tokens.version).toBe('123')
+    // /variables/local takes no version, so the values are never stamped with one.
+    expect(tokens.version).toBeUndefined()
     const [colors, semantics] = tokens.collections
     expect(colors).toMatchObject({ id: 'c:local', publishKey: 'ck', name: 'Colors' })
     expect(colors!.variables).toEqual([{ id: 'v:local', name: 'blue', type: 'COLOR', values: { Default: '#0000ff' }, publishKey: 'k1', description: 'Brand blue', scopes: ['ALL_FILLS'], codeSyntax: { WEB: 'var(--blue)' } }])
     expect(semantics!.variables[0]).toMatchObject({ values: { Default: '#0000ff' }, aliases: { Default: 'Colors/blue' } })
+  })
+})
+
+describe('restTokens — Variables REST API value rules', () => {
+  const manifest = { fileKey: 'f', componentsPage: { id: 'p', name: 'P' }, collections: { primitives: 'Theme', semantics: 'Theme · Acme', brand: 'Theme' }, componentSets: [], iconSet: { id: 'i', name: 'I', variantProperty: 'X' } }
+  const tokens = restTokens(manifest, {
+    byId: {
+      'v:brand': { id: 'v:brand', name: 'brand', resolvedType: 'COLOR', variableCollectionId: 'root', valuesByMode: { r1: { r: 0, g: 0, b: 1 } } },
+      'v:space': { id: 'v:space', name: 'space', resolvedType: 'FLOAT', variableCollectionId: 'root', valuesByMode: { r1: 8 } },
+      'v:op': { id: 'v:op', name: 'opacity', resolvedType: 'FLOAT', variableCollectionId: 'root', valuesByMode: { r1: 25 } },
+      'v:scrim': { id: 'v:scrim', name: 'scrim', resolvedType: 'COLOR', variableCollectionId: 'root', valuesByMode: { r1: { color: alias('v:brand'), opacity: alias('v:op') } } },
+    },
+    collections: [
+      { id: 'root', name: 'Theme', modes: [{ modeId: 'r1', name: 'Light' }], defaultModeId: 'r1', variableIds: ['v:brand', 'v:space', 'v:op', 'v:scrim'] },
+      { id: 'ext', name: 'Theme · Acme', isExtension: true, parentVariableCollectionId: 'root', modes: [{ modeId: 'e1', name: 'Acme', parentModeId: 'r1' }], defaultModeId: 'e1',
+        variableIds: ['v:brand', 'v:space'], variableOverrides: { 'v:brand': { e1: { r: 1, g: 0, b: 0 } } } },
+    ],
+  })
+  const [root, ext] = tokens.collections
+
+  it('flattens a composed colour: the aliased colour at the aliased opacity', () => {
+    expect(root!.variables.find((v) => v.name === 'scrim')!.values).toEqual({ Light: '#0000ff40' })
+  })
+
+  it('reads an extended collection from its overrides, then the parent mode', () => {
+    expect(ext!.variables.map((v) => [v.name, v.values])).toEqual([['brand', { Acme: '#ff0000' }], ['space', { Acme: 8 }]])
+  })
+})
+
+describe('figmaGet — rate limits and 403 reasons', () => {
+  const env = process.env.FIGMA_TOKEN
+  afterEach(() => { process.env.FIGMA_TOKEN = env })
+  const res = (status: number, body: unknown, retryAfter?: string) =>
+    new Response(JSON.stringify(body), { status, headers: retryAfter ? { 'retry-after': retryAfter } : {} })
+
+  it('retries a 429 after Retry-After, then returns the answer', async () => {
+    process.env.FIGMA_TOKEN = 't'
+    const answers = [res(429, {}, '2'), res(200, { meta: 1 })]
+    const fetchImpl = vi.fn(async () => answers.shift()!) as unknown as typeof fetch
+    const sleep = vi.fn<(ms: number) => Promise<void>>(async () => undefined)
+    await expect(figmaGet('/files/f/variables/local', { fetchImpl, sleep })).resolves.toEqual({ meta: 1 })
+    expect(sleep).toHaveBeenCalledWith(2000)
+  })
+
+  it('stops after the retries with the HTTP error', async () => {
+    process.env.FIGMA_TOKEN = 't'
+    const fetchImpl = vi.fn(async () => res(429, { err: 'Rate limit' })) as unknown as typeof fetch
+    const sleep = vi.fn<(ms: number) => Promise<void>>(async () => undefined)
+    await expect(figmaGet('/x', { fetchImpl, sleep })).rejects.toMatchObject({ status: 429 })
+    expect(fetchImpl).toHaveBeenCalledTimes(MAX_RATE_LIMIT_RETRIES + 1)
+    expect(retryDelayMs(null, 2)).toBe(4000)
+    expect(retryDelayMs('600', 0)).toBe(60_000)
+  })
+
+  it('names why a 403 happened', () => {
+    const e = (body: string) => new FigmaHttpError(403, `Figma API 403 for /files/f/variables/local: ${body}`)
+    expect(e('{"err":"Invalid scope(s)"}').forbiddenReason).toBe('scope')
+    expect(e('{"err":"Incorrect account type"}').forbiddenReason).toBe('account')
+    expect(e('{"err":"Limited by Figma plan"}').forbiddenReason).toBe('plan')
+    expect(e('{"err":"Forbidden"}').forbiddenReason).toBe('access')
+    expect(forbiddenMessage(e('{"err":"Incorrect account type"}'))).toMatch(/full members of the Enterprise org/)
+    expect(new FigmaHttpError(404, 'x').forbiddenReason).toBeUndefined()
   })
 })
 

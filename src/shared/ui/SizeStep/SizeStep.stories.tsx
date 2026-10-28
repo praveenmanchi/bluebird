@@ -13,8 +13,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const v = (variant: string) => ({ figma: { variant } })
-export const Default: Story = { parameters: v('Property 1=Default') }
-export const Variant2: Story = { args: { selected: true }, parameters: v('Property 1=Variant2') }
+export const Default: Story = { parameters: v('State=Default') }
+export const Active: Story = { args: { selected: true }, parameters: v('State=active') }
 
 /** A typical S / M / L step row with the current size filled. */
 export const StepRow: Story = {

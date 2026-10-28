@@ -4,10 +4,10 @@ import './ContextChip.css'
 
 export type ContextChipType = 'selection' | 'source' | 'citation'
 
-/** The Tab Icons glyph each Figma variant swaps in. */
+/** The glyph each Figma variant swaps in (Source: UI Icons / Sidebar › libraries since 2026-10-27). */
 const ICON: Record<ContextChipType, IconName> = {
   selection: 'component-select',
-  source: 'variables',
+  source: 'ui-sidebar-libraries',
   citation: 'text',
 }
 

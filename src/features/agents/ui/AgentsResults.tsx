@@ -1,4 +1,4 @@
-import { AgentHeader, Button, FindingRow, LinkButton, MetaBadge, Notice, ReadinessMeter, type FindingAction, type MetaBadgeTone, type ReadinessMeterTone } from '@shared/ui'
+import { AgentHeader, Button, FindingRow, LinkButton, MetaBadge, Notice, ReadinessMeter, type FindingAction, type IconName, type MetaBadgeTone, type ReadinessMeterTone } from '@shared/ui'
 import { agentById, type AgentDef } from '../agents'
 import { SAMPLE_FINDINGS } from '../fixtures'
 import type { AgentFinding } from '../messages'
@@ -34,13 +34,13 @@ export interface AgentsResultsProps {
   onBack?: () => void
 }
 
-const FILTERS: readonly { id: FindingFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'critical', label: 'Critical' },
-  { id: 'serious', label: 'Serious' },
-  { id: 'moderate', label: 'Moderate' },
-  { id: 'minor', label: 'Minor' },
-  { id: 'fixable', label: 'Fixable' },
+const FILTERS: readonly { id: FindingFilter; label: string; icon: IconName }[] = [
+  { id: 'all', label: 'All', icon: 'ui-general-show-as-list' },
+  { id: 'critical', label: 'Critical', icon: 'ui-share-attention' },
+  { id: 'serious', label: 'Serious', icon: 'ui-share-attention' },
+  { id: 'moderate', label: 'Moderate', icon: 'ui-share-attention' },
+  { id: 'minor', label: 'Minor', icon: 'ui-share-attention' },
+  { id: 'fixable', label: 'Fixable', icon: 'ui-ai-feature-wand' },
 ]
 
 const SEVERITY_BADGES: readonly { id: 'critical' | 'serious' | 'moderate' | 'minor'; tone: MetaBadgeTone }[] = [
@@ -93,7 +93,7 @@ export function AgentsResults({
       <SelecterRow
         class="bb-agents-results__filters"
         label="Filter findings"
-        options={FILTERS.map((f) => ({ id: f.id, label: `${f.label} ${counts[f.id]}` }))}
+        options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${counts[f.id]}` }))}
         value={filter}
         onChange={(f) => onFilter?.(f)}
       />

@@ -76,12 +76,7 @@
   font-weight: var(--bb-jira-font-weight-strong);
   line-height: var(--bb-jira-font-line-label);
 }
-.bb-jira-board__tabs {
-  display: flex;
-  align-items: center;
-  gap: var(--bb-jira-space-tight);
-  flex-wrap: wrap;
-}
+.bb-jira-board__tabs { align-self: flex-start; }
 /* "Scope tabs & search": the scope Dropdown fills the row and the "Search toggle" /
  * "Filter toggle" Buttons hug beside it; each opens its (hidden in Figma) panel below. */
 .bb-jira-board__scope-search {

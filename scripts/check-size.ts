@@ -63,7 +63,21 @@ import { resolve } from 'node:path'
 // 2026-10-14 (WCAG 2.0 / 2.1 in the Standard dropdown): the standards table, per-version rule
 // filtering and W3C links added ~1 KB on a separate branch; folded into the 1200 KB budget above
 // when the branches merged on 2026-10-15.
-const BUDGET_KB = 1200
+// 2026-10-27 (UI Icons replace the Variables placeholder): user raised the budget to 1210 KB. Six `ui-*` glyphs
+// (variable color/value, sidebar libraries, toolbar component, general add/check) added ~5.5 KB; UI icon
+// paths are already rounded to one decimal and minified. Same levers as above.
+// 2026-10-27 (Tab sub menu on every tab-selection row): user raised the budget to 1220 KB. ~20 `ui-*`
+// glyphs for the per-item icons (scope, severity, file type, activity, mode) added ~14 KB: 1214.4 KB.
+// 2026-10-27 (AkzoNobel + Adecco brand modes): user raised the budget to 1310 KB. Every brand's Brand UI
+// CSS is inlined (~36 KB raw each) and the Figma pull brought ~70 unread docs/* tokens per brand: 1301.5 KB.
+// One-brand builds remain the lever; each further brand needs ~40 KB.
+// 2026-10-28 (Variable search tab): user raised the budget to 1330 KB. The tab (Pages/Type filters,
+// search, Variable search cards with Show layers / Go to, recent searches, toasts), its onboarding
+// scene and the reflowed card CSS took the build from 1302 to 1323 KB (~21 KB). Same levers as above.
+// 2026-10-28 (Gap brand mode, Bridge-based): user raised the budget to 1370 KB. The eighth brand's Brand UI
+// CSS, gap/* foundations and the stacked GAP INC. logo took the build to 1360.9 KB (~38 KB). One-brand
+// builds remain the lever.
+const BUDGET_KB = 1370
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

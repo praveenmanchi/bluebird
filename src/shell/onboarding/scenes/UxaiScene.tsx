@@ -29,7 +29,7 @@ export function UxaiScene({ still }: SceneProps) {
           <Fx kind="spin" at={2300}><ThinkingOrb state="composing" size="20" /></Fx>
           <span class="bb-ob-meta">Searched 3 sources · Brand UI, Components, Docs</span>
         </div>
-        <Message role="assistant" text="Use text/accent. It passes AA on every surface in all five brands." {...reveal(3300)} />
+        <Message role="assistant" text="Use text/accent. It passes AA on every surface in every brand." {...reveal(3300)} />
         <div class="bb-ob-row bb-ob-row--start">
           {SWATCHES.map((s, k) => (
             <div key={s.token} ref={k === 0 ? swatch : undefined} {...reveal(3600 + k * 80, 'pop')}>

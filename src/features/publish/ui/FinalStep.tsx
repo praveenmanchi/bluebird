@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks'
-import { Checkbox, CodeSnippet, ConnectionRow, SectionTitle, SegmentTab, Spinner, VersionOption, useRpc } from '@shared/ui'
+import { Checkbox, CodeSnippet, ConnectionRow, SectionTitle, SegmentedControl, Spinner, VersionOption, useRpc } from '@shared/ui'
 import { requestSettings } from '@shared/navigation'
 import { canPostToTeams, loadPreview } from '../actions'
 import { versionOptions } from '../semver'
@@ -29,13 +29,14 @@ function CommitContents() {
   return (
     <>
       <p class="bb-publish__hint">{p.message.split('\n')[0]}</p>
-      <div class="bb-publish__filters" role="tablist" aria-label="Files in this commit">
-        {p.files.map((f) => (
-          <SegmentTab key={f.path} icon="file" selected={f.path === shown.path} aria-controls={FILES_ID} onClick={() => { previewFile.value = f.path }}>
-            {f.path} · {fileSize(f.bytes)}
-          </SegmentTab>
-        ))}
-      </div>
+      <SegmentedControl
+        class="bb-publish__filters"
+        aria-label="Files in this commit"
+        controls={FILES_ID}
+        options={p.files.map((f) => ({ value: f.path, label: `${f.path} · ${fileSize(f.bytes)}`, icon: 'file' as const }))}
+        value={shown.path}
+        onChange={(path) => { previewFile.value = path }}
+      />
       <CodeSnippet id={FILES_ID} role="tabpanel" aria-label={shown.path} language={shown.language} code={shown.content} copyLabel={`Copy ${shown.path}`} onCopy={() => { void copyText(shown.content) }} />
       {shown.truncated && <p class="bb-publish__hint">Showing the start of {shown.path} ({fileSize(shown.bytes)} in the commit).</p>}
       {shown.path === 'CHANGELOG.md' && <p class="bb-publish__hint">Added above the existing entries of the repository’s CHANGELOG.md.</p>}

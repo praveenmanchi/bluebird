@@ -11,7 +11,7 @@ describe('ContextChip', () => {
   })
   it('swaps the glyph per Figma Type', () => {
     const { container, rerender } = render(<ContextChip type="source">Vars</ContextChip>)
-    expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('variables')
+    expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('ui-sidebar-libraries')
     rerender(<ContextChip type="citation">Doc</ContextChip>)
     expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('text')
   })

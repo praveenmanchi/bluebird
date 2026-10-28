@@ -53,12 +53,8 @@
   gap: var(--bb-agents-space-tight);
 }
 
-.bb-agents-results__filters {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--bb-agents-space-tight);
-}
+/* Filters: a Tab sub menu (SegmentedControl) that hugs its items. */
+.bb-agents-results__filters { align-self: flex-start; }
 
 /* The design clips the list at the frame; here it scrolls. */
 .bb-agents-results__findings {

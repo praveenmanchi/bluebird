@@ -1,8 +1,8 @@
 // Raw Figma REST payloads → the library index. Pure: no fetch, no figma global.
+import { composeColor, isAlias, isComposedColor, MAX_VALUE_DEPTH, rawModeValue } from '../figma/variableValues'
 import type { LibraryCollection, LibraryComponent, LibraryStyle, LibraryVariable, ModeValue, VariableType } from './types'
 
 interface RestColor { r: number; g: number; b: number; a?: number }
-interface RestAlias { type: 'VARIABLE_ALIAS'; id: string }
 
 export interface RestVariable {
   id: string
@@ -14,14 +14,20 @@ export interface RestVariable {
   remote?: boolean
   description?: string
   scopes?: string[]
+  hiddenFromPublishing?: boolean
 }
 
 export interface RestCollection {
   id: string
   name: string
-  modes: { modeId: string; name: string }[]
+  modes: { modeId: string; name: string; parentModeId?: string }[]
   defaultModeId: string
   remote?: boolean
+  hiddenFromPublishing?: boolean
+  isExtension?: boolean
+  parentVariableCollectionId?: string
+  /** variableId → modeId → value; only on extended collections. */
+  variableOverrides?: Record<string, Record<string, unknown>>
 }
 
 export interface RestVariablesResponse {
@@ -41,11 +47,9 @@ export interface RestComponent { key: string; node_id: string; name: string; des
 export interface RestComponentsResponse { meta: { components: RestComponent[] } }
 export interface RestComponentSetsResponse { meta: { component_sets: RestComponent[] } }
 
-const MAX_ALIAS_DEPTH = 10
 /** What an alias into a library this file only imports (or a broken alias) shows instead of a value. */
 export const EXTERNAL_VALUE = 'another library'
 
-const isAlias = (v: unknown): v is RestAlias => typeof v === 'object' && v !== null && (v as { type?: string }).type === 'VARIABLE_ALIAS'
 const isColor = (v: unknown): v is RestColor => typeof v === 'object' && v !== null && 'r' in v && 'g' in v && 'b' in v
 
 const hex2 = (n: number) => Math.round(Math.min(1, Math.max(0, n)) * 255).toString(16).padStart(2, '0').toUpperCase()
@@ -61,38 +65,51 @@ function display(value: unknown): string {
   return String(value)
 }
 
-/** Every local variable with each mode's value resolved through aliases inside the file. Remote (imported) variables are left out. */
+/**
+ * Every variable a consuming file can use, with each mode's value resolved through aliases inside
+ * the file. Remote (imported) variables are left out, and so is anything hidden from publishing:
+ * a variable is published only when neither it nor its collection is hidden.
+ * Extended collections answer from their overrides, then the parent's mode; composed colours
+ * (colour + opacity, either an alias) flatten to one #RRGGBBAA.
+ */
 export function toVariables(res: RestVariablesResponse, fileKey: string): { variables: LibraryVariable[]; collections: LibraryCollection[] } {
   const { variables, variableCollections } = res.meta
   const valueIn = (variable: RestVariable, modeName: string): unknown => {
     const collection = variableCollections[variable.variableCollectionId]
     const mode = collection?.modes.find((m) => m.name === modeName) ?? collection?.modes.find((m) => m.modeId === collection.defaultModeId)
-    return mode ? variable.valuesByMode[mode.modeId] : Object.values(variable.valuesByMode)[0]
+    return mode ? rawModeValue(variable, collection, mode.modeId, variableCollections) : Object.values(variable.valuesByMode)[0]
   }
-  const resolve = (value: unknown, modeName: string, depth: number): string => {
-    if (value === undefined || value === null) return EXTERNAL_VALUE
-    if (!isAlias(value)) return display(value)
+  /** The concrete value, or undefined when it lives in another library (or the alias is broken / loops). */
+  const resolveRaw = (value: unknown, modeName: string, depth: number): unknown => {
+    if (value === undefined || value === null || depth >= MAX_VALUE_DEPTH) return undefined
+    if (isComposedColor(value)) return composeColor(resolveRaw(value.color, modeName, depth + 1), resolveRaw(value.opacity, modeName, depth + 1))
+    if (!isAlias(value)) return value
     const target = variables[value.id]
     // Imported (remote) variables come back without their values: they live in another library.
-    if (!target || target.remote || depth >= MAX_ALIAS_DEPTH) return EXTERNAL_VALUE
-    return resolve(valueIn(target, modeName), modeName, depth + 1)
+    if (!target || target.remote) return undefined
+    return resolveRaw(valueIn(target, modeName), modeName, depth + 1)
+  }
+  const resolve = (value: unknown, modeName: string): string => {
+    const raw = resolveRaw(value, modeName, 0)
+    return raw === undefined ? EXTERNAL_VALUE : display(raw)
   }
 
-  const local = Object.values(variables).filter((v) => !v.remote)
+  const published = (c: RestCollection | undefined) => c !== undefined && !c.remote && !c.hiddenFromPublishing
+  const local = Object.values(variables).filter((v) => !v.remote && !v.hiddenFromPublishing && published(variableCollections[v.variableCollectionId]))
   const out = local.map((v): LibraryVariable => {
     const collection = variableCollections[v.variableCollectionId]
     const modes = collection?.modes ?? Object.keys(v.valuesByMode).map((modeId) => ({ modeId, name: modeId }))
     const values = modes.map((m): ModeValue => {
-      const raw = v.valuesByMode[m.modeId]
+      const raw = rawModeValue(v, collection, m.modeId, variableCollections)
       const aliasOf = isAlias(raw) ? variables[raw.id]?.name : undefined
-      return { mode: m.name, value: resolve(raw, m.name, 0), ...(aliasOf ? { aliasOf } : {}) }
+      return { mode: m.name, value: resolve(raw, m.name), ...(aliasOf ? { aliasOf } : {}) }
     })
     return {
       id: v.id, key: v.key, name: v.name, collection: collection?.name ?? '', type: v.resolvedType,
       description: v.description ?? '', scopes: v.scopes ?? [], values, fileKey,
     }
   })
-  const collections = Object.values(variableCollections).filter((c) => !c.remote).map((c): LibraryCollection => ({
+  const collections = Object.values(variableCollections).filter(published).map((c): LibraryCollection => ({
     name: c.name, modes: c.modes.map((m) => m.name), variables: out.filter((v) => v.collection === c.name).length, fileKey,
   }))
   return { variables: out, collections }
