@@ -55,7 +55,7 @@ wss.on('connection', (socket, request) => {
 })
 
 console.log(`[relay] ws://localhost:${PORT}${token ? `  token=${token}` : '  (no token)'}`)
-console.log('[relay] 1. In Figma: Plugins → Development → bluebird → "Dev: connect to browser"')
+console.log('[relay] 1. npm run dev:live, then run the plugin in Figma (it opens the live bridge panel)')
 console.log(`[relay] 2. In browser: http://localhost:5173/?mode=live${token ? `&token=${token}` : ''}`)
 
 function log(message: string) { console.log(`[relay ${new Date().toLocaleTimeString()}] ${message}`) }

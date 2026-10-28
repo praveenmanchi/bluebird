@@ -64,7 +64,7 @@ Unit tests prove a rule does what we meant. The ground-truth page proves it matc
 ```bash
 npm run dev:relay        # once
 # In Figma desktop: re-run the plugin (Cmd+Opt+P) after any sandbox change, then
-# Plugins → Development → bluebird → "Dev: connect to browser (live mode)", and
+# npm run dev:live, then run the plugin in Figma (it opens the live bridge panel), and
 # make the ground-truth page the current page.
 npm run gt               # runs the real a11y:scan and compares every case
 ```

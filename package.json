@@ -8,6 +8,7 @@
     "gen": "tsx scripts/gen-registry.ts && tsx scripts/gen-tokens.ts",
     "dev": "npm run gen && vite",
     "dev:sandbox": "npm run gen && tsx scripts/build-sandbox.ts --watch",
+    "dev:live": "npm run gen && BB_LIVE=1 tsx scripts/build-sandbox.ts --watch",
     "dev:relay": "tsx tools/relay/server.ts",
     "build": "npm run gen && npm run build:stamp && npm run build:ui && npm run build:sandbox && npm run check:size",
     "build:stamp": "tsx scripts/bump-build.ts",

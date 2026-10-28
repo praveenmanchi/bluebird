@@ -182,7 +182,7 @@ function pullPlugin(manifest: Manifest, options: PullOptions): Promise<Snapshot>
     const timer = setTimeout(() => {
       ws.close()
       reject(new Error(connected
-        ? 'The relay is running but nothing answered from Figma — the bridge is not connected. In Figma desktop: Plugins → Development → bluebird → "Dev: connect to browser (live mode)".'
+        ? 'The relay is running but nothing answered from Figma — the bridge is not connected. Run npm run dev:live, then run the plugin in Figma desktop (it opens the live bridge panel).'
         : 'Could not reach the relay on ws://localhost:4001. Start it with `npm run dev:relay`.'))
     }, options.timeoutMs ?? 600_000)
     ws.on('open', () => { connected = true; ws.send(JSON.stringify({ kind: 'request', id, type: 'figma:snapshot', payload: manifest })) })
