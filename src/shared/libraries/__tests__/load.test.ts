@@ -69,7 +69,7 @@ describe('loadLibraries', () => {
     [401, { status: 401, err: 'Invalid token' }, 'rejected File 1’s API key'],
     [403, { status: 403, err: 'Invalid scope(s): file_variables:read. This endpoint requires the file_variables:read scope' }, 'missing the file_variables:read scope'],
     [404, { status: 404, err: 'Not found' }, 'couldn’t find File 1'],
-    [429, { status: 429, err: 'Rate limit' }, 'rate-limiting'],
+    [403, { status: 403, err: 'Incorrect account type' }, 'guest or another account type'],
   ])('explains a %i', async (status, body, message) => {
     const figma = fakeFigma({ '/variables/local': [status, JSON.stringify(body)] })
     const index = await loadLibraries(filesFromSettings(df({ file1Id: 'V', file1Key: 't' })), figma.fetch)

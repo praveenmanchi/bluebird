@@ -51,18 +51,29 @@ export interface RestPullResult {
 
 interface TokenSource { tier: ResolvedTier; tierReason?: string; tokens: TokenSnapshot; index?: VariableIndex; names: Map<string, string>; tokensStale?: boolean }
 
+/** The professional-tier reason for the log, from Figma's 403 / 404. */
+export function forbiddenMessage(error: FigmaHttpError): string {
+  switch (error.forbiddenReason) {
+    case 'scope': return 'FIGMA_TOKEN lacks the file_variables:read scope — regenerate it with Variables: Read'
+    case 'account': return '/variables/local is for full members of the Enterprise org — FIGMA_TOKEN belongs to a guest or another account type'
+    case 'plan': return '/variables/local denied (403) — the file\'s plan has no variables REST access'
+    default: return `/variables/local denied (${error.status}) — the token cannot read this file's variables (plan, membership or file access)`
+  }
+}
+
 async function resolveTokens(manifest: RestManifest, options: RestPullOptions, fallbacks: TokenFallbacks, log: (m: string) => void): Promise<TokenSource> {
   const tier = options.tier ?? 'auto'
   let tierReason = 'forced with --tier professional'
   if (tier !== 'professional') {
     try {
       const index = await fetchVariableIndex(manifest.fileKey)
-      return { tier: 'enterprise', tokens: restTokens(manifest, index, options.version), index, names: new Map() }
+      if (options.version) {
+        log(`--version ${options.version} pins the nodes only: /variables/local has no version parameter, so variable values are the file's latest`)
+      }
+      return { tier: 'enterprise', tokens: restTokens(manifest, index), index, names: new Map() }
     } catch (error) {
       if (!(error instanceof FigmaHttpError) || (error.status !== 403 && error.status !== 404)) throw error
-      tierReason = error.isScope
-        ? 'FIGMA_TOKEN lacks the file_variables:read scope — regenerate it with Variables: Read'
-        : `/variables/local denied (${error.status}) — the file's plan has no variables REST access`
+      tierReason = forbiddenMessage(error)
       if (tier === 'enterprise') throw new Error(`--tier enterprise: ${tierReason}`)
     }
   }

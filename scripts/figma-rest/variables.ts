@@ -3,42 +3,52 @@
 import type { ExtractManifest } from '../../src/shared/brand/extract'
 import type { ResolvedValue, TokenSnapshot } from '../../src/shared/brand/snapshot'
 import { variableMeta } from '../../src/shared/brand/snapshot'
+import { composeColor, isAlias, isComposedColor, isRgba, MAX_VALUE_DEPTH, rawModeValue } from '../../src/shared/figma/variableValues'
 import { figmaGet } from './http'
 import { restColorToHex } from './normalize'
 import type { RestCollection, RestVariable } from './types'
 
 export interface VariableIndex { byId: Record<string, RestVariable>; collections: RestCollection[] }
 
-const MAX_ALIAS_DEPTH = 10
-
 export async function fetchVariableIndex(fileKey: string): Promise<VariableIndex> {
   const res = await figmaGet<{ meta: { variables: Record<string, RestVariable>; variableCollections: Record<string, RestCollection> } }>(`/files/${fileKey}/variables/local`)
   return { byId: res.meta.variables, collections: Object.values(res.meta.variableCollections) }
 }
 
-const isAlias = (v: unknown): v is { type: 'VARIABLE_ALIAS'; id: string } =>
-  typeof v === 'object' && v !== null && (v as { type?: string }).type === 'VARIABLE_ALIAS'
-
-/** Build the token snapshot. Mirrors extract.ts: an alias hop into another collection uses that
- *  collection's mode of the same name, falling back to its default mode. */
-export function restTokens(manifest: ExtractManifest, index: VariableIndex, version?: string): TokenSnapshot {
+/**
+ * Build the token snapshot. Mirrors extract.ts: an alias hop into another collection uses that
+ * collection's mode of the same name, falling back to its default mode. Extended collections answer
+ * from their overrides, then the parent's mode; composed colours flatten to one RGBA.
+ *
+ * Not stamped with a file version: /variables/local takes no `version` parameter, so the values are
+ * always the file's latest even when the nodes were read at `--version`.
+ */
+export function restTokens(manifest: ExtractManifest, index: VariableIndex): TokenSnapshot {
   const { byId, collections } = index
-  const collectionsById = Object.fromEntries(collections.map((c) => [c.id, c]))
-  const resolve = (value: unknown, mode: { modeId: string; name: string }, depth = 0): ResolvedValue => {
-    if (value === undefined || depth > MAX_ALIAS_DEPTH) return null
+  const collectionsById: Record<string, RestCollection | undefined> = Object.fromEntries(collections.map((c) => [c.id, c]))
+  const resolveRaw = (value: unknown, mode: { modeId: string; name: string }, depth = 0): unknown => {
+    if (value === undefined || depth > MAX_VALUE_DEPTH) return undefined
     if (isAlias(value)) {
       const target = byId[value.id]
-      if (!target) return null
+      if (!target) return undefined
       const collection = collectionsById[target.variableCollectionId]
       const modeId = collection?.modes.find((m) => m.name === mode.name)?.modeId ?? collection?.defaultModeId ?? mode.modeId
-      return resolve(target.valuesByMode[modeId] ?? Object.values(target.valuesByMode)[0], { modeId, name: mode.name }, depth + 1)
+      const raw = rawModeValue(target, collection, modeId, collectionsById) ?? Object.values(target.valuesByMode)[0]
+      return resolveRaw(raw, { modeId, name: mode.name }, depth + 1)
     }
-    if (typeof value === 'object' && value !== null && 'r' in value) return restColorToHex(value as { r: number; g: number; b: number; a?: number })
-    return value as string | number | boolean
+    if (isComposedColor(value)) {
+      return composeColor(resolveRaw(value.color, mode, depth + 1), resolveRaw(value.opacity, mode, depth + 1))
+    }
+    return value
+  }
+  const resolve = (value: unknown, mode: { modeId: string; name: string }): ResolvedValue => {
+    const raw = resolveRaw(value, mode)
+    if (raw === undefined || raw === null) return null
+    if (isRgba(raw)) return restColorToHex(raw)
+    return typeof raw === 'object' ? null : raw as string | number | boolean
   }
   return {
     fileKey: manifest.fileKey, fileName: '', pulledAt: new Date().toISOString().slice(0, 10), source: 'figma-rest',
-    ...(version ? { version } : {}),
     collections: Object.entries(manifest.collections).map(([key, name]) => {
       // Subscribed libraries bring their own collections, often with the same names ("Colors",
       // "Sizing"). The manifest always means this file's own collection.
@@ -52,7 +62,7 @@ export function restTokens(manifest: ExtractManifest, index: VariableIndex, vers
           const values: Record<string, ResolvedValue> = {}
           const aliases: Record<string, string> = {}
           for (const m of c.modes) {
-            const raw = v.valuesByMode[m.modeId]
+            const raw = rawModeValue(v, c, m.modeId, collectionsById)
             values[m.name] = resolve(raw, m)
             if (isAlias(raw)) {
               const t = byId[raw.id]
