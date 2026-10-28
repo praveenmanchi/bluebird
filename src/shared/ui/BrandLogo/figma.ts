@@ -26,7 +26,10 @@ export const figma = {
       'vector-brand-adecco-width', 'vector-brand-adecco-height', 'vector-brand-adecco-fill',
       'vector--1-brand-adecco-width', 'vector--1-brand-adecco-height', 'vector--2-brand-adecco-fill',
     ].map((t) => [`--bb-derived-brand-logo-${t}`, 'Adecco artwork part (red box / white wordmark, both named "Vector"); adecco.svg draws it and the box is its Frame plus root padding.'])),
-    '--bb-derived-brand-logo-vector--2-width': 'Richemont artwork part (second of three "Vector" layers); richemont.svg draws it and the fixed root frame sizes the logo.',
+    ...Object.fromEntries(['group-brand-gap-width', 'group-brand-gap-height', 'vector-brand-gap-width', 'vector-brand-gap-height']
+      .map((t) => [`--bb-derived-brand-logo-${t}`, 'Gap Inc. stacked wordmark inside gap.svg; the box is its Frame plus root padding.'])),
+    '--bb-derived-brand-logo-vector-brand-gap-fill': 'Logo artwork colour (white, reversed for the Bridge-style blue banner). Colours live in figma/logos/gap.svg, not in tokens.',
+    '--bb-derived-brand-logo-vector--2-width':'Richemont artwork part (second of three "Vector" layers); richemont.svg draws it and the fixed root frame sizes the logo.',
     '--bb-derived-brand-logo-vector--2-height': 'Richemont artwork part (second of three "Vector" layers); richemont.svg draws it and the fixed root frame sizes the logo.',
     '--bb-derived-brand-logo-vector--1-brand-fiskars-fill': 'Logo artwork colour (the black 140.4x29.6 box behind the Fiskars wordmark; both are named "Vector"). Colours live in figma/logos/fiskars.svg.',
     '--bb-derived-brand-logo-vector--1-brand-fiskars-width': 'The 140.4x29.6 artwork box inside fiskars.svg; the fixed 140x30 root frame sizes the logo (notes).',
@@ -37,5 +40,6 @@ export const figma = {
     'Figma pads SVG exports to whole pixels (ikea.svg is 0 0 107 35 around the 106.281x35 artwork, bridge 163 for 162.7), so in the 106.3 box the ikea artwork scales ~0.7% to fit. ' +
     'Brand=fiskars (40000064:9860) keeps its fixed 140x30 frame: fiskars.svg (0 0 141 30, re-exported 2026-09-26) puts the 140.4x29.6 box at the origin, so it fills the frame at 99% like bridge instead of letterboxing. ' +
     'Brand=akzonobel (40002394:43169) and Brand=adecco (40002394:43179), both added 2026-10-27, hug their artwork Frame (159.6x23.3 / 109x59.3) with 3px padding; BrandLogo.css adds the per-brand padding tokens to the frame size. ' +
+    'Brand=gap (40002444:66792, drawn by the designer as "Brand=Gap Inc", renamed and given hug auto-layout with 6px padding 2026-10-28) is the stacked GAP INC. mark, reversed white because the Gap mode copies Bridge\'s blue banner. ' +
     'Since 2026-09-27 the generator gives same-named layers position-indexed tokens (vector--1) instead of dropping all but the last. Those names follow layer order, so distinct names in Figma (e.g. "Oval" / "Wordmark") would make the ikea sizing robust to a reorder.',
 } as const

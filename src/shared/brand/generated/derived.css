@@ -355,12 +355,16 @@
   --bb-derived-brand-logo-frame-brand-adecco-width: 109px;
   --bb-derived-brand-logo-frame-brand-akzonobel-height: 23.3px;
   --bb-derived-brand-logo-frame-brand-akzonobel-width: 159.6px;
+  --bb-derived-brand-logo-frame-brand-gap-height: 42.2px;
+  --bb-derived-brand-logo-frame-brand-gap-width: 47px;
   --bb-derived-brand-logo-frame-brand-hcl-height: 17.5px;
   --bb-derived-brand-logo-frame-brand-hcl-width: 103.6px;
   --bb-derived-brand-logo-group-14741-height: 29.6px;
   --bb-derived-brand-logo-group-14741-width: 140.4px;
   --bb-derived-brand-logo-group-brand-akzonobel-height: 23.3px;
   --bb-derived-brand-logo-group-brand-akzonobel-width: 159.5px;
+  --bb-derived-brand-logo-group-brand-gap-height: 42.2px;
+  --bb-derived-brand-logo-group-brand-gap-width: 47px;
   --bb-derived-brand-logo-group-brand-richemont-height: 9.1px;
   --bb-derived-brand-logo-group-brand-richemont-width: 152px;
   --bb-derived-brand-logo-root-brand-adecco-padding-bottom: 3px;
@@ -379,6 +383,10 @@
   --bb-derived-brand-logo-root-brand-disney-padding-top: 5px;
   --bb-derived-brand-logo-root-brand-fiskars-height: 30px;
   --bb-derived-brand-logo-root-brand-fiskars-width: 140px;
+  --bb-derived-brand-logo-root-brand-gap-padding-bottom: 6px;
+  --bb-derived-brand-logo-root-brand-gap-padding-left: 6px;
+  --bb-derived-brand-logo-root-brand-gap-padding-right: 6px;
+  --bb-derived-brand-logo-root-brand-gap-padding-top: 6px;
   --bb-derived-brand-logo-root-brand-hcl-height: 30px;
   --bb-derived-brand-logo-root-brand-hcl-width: 103px;
   --bb-derived-brand-logo-root-brand-richemont-height: 48px;
@@ -414,6 +422,9 @@
   --bb-derived-brand-logo-vector-brand-fiskars-fill: #de8a2e;
   --bb-derived-brand-logo-vector-brand-fiskars-height: 14.4px;
   --bb-derived-brand-logo-vector-brand-fiskars-width: 120.9px;
+  --bb-derived-brand-logo-vector-brand-gap-fill: #ffffff;
+  --bb-derived-brand-logo-vector-brand-gap-height: 42.2px;
+  --bb-derived-brand-logo-vector-brand-gap-width: 47px;
   --bb-derived-brand-logo-vector-brand-hcl-height: 17.5px;
   --bb-derived-brand-logo-vector-brand-hcl-width: 97.2px;
   --bb-derived-brand-logo-vector-brand-ikea-fill: #2360a5;

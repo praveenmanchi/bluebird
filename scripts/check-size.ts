@@ -74,7 +74,10 @@ import { resolve } from 'node:path'
 // 2026-10-28 (Variable search tab): user raised the budget to 1330 KB. The tab (Pages/Type filters,
 // search, Variable search cards with Show layers / Go to, recent searches, toasts), its onboarding
 // scene and the reflowed card CSS took the build from 1302 to 1323 KB (~21 KB). Same levers as above.
-const BUDGET_KB = 1330
+// 2026-10-28 (Gap brand mode, Bridge-based): user raised the budget to 1370 KB. The eighth brand's Brand UI
+// CSS, gap/* foundations and the stacked GAP INC. logo took the build to 1360.9 KB (~38 KB). One-brand
+// builds remain the lever.
+const BUDGET_KB = 1370
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

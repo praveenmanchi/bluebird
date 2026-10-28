@@ -9,6 +9,7 @@ import disneyCss from '../../src/shared/brand/generated/brand.disney.css?raw'
 import fiskarsCss from '../../src/shared/brand/generated/brand.fiskars.css?raw'
 import akzonobelCss from '../../src/shared/brand/generated/brand.akzonobel.css?raw'
 import adeccoCss from '../../src/shared/brand/generated/brand.adecco.css?raw'
+import gapCss from '../../src/shared/brand/generated/brand.gap.css?raw'
 import { BRANDS, type BrandId } from '../../src/shared/brand/generated/tokens'
 
 export interface TokenVar { name: string; value: string }
@@ -37,6 +38,7 @@ export const BRAND_VARS: Record<BrandId, TokenVar[]> = {
   fiskars: parseVars(fiskarsCss),
   akzonobel: parseVars(akzonobelCss),
   adecco: parseVars(adeccoCss),
+  gap: parseVars(gapCss),
 }
 
 const baseIndex = new Map(BASE_VARS.map((v) => [v.name, v.value]))

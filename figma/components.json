@@ -3817,7 +3817,8 @@
             "ikea",
             "HCL",
             "akzonobel",
-            "adecco"
+            "adecco",
+            "gap"
           ],
           "default": "ikea"
         }
@@ -4127,6 +4128,70 @@
                 "size": [
                   97.2,
                   17.5
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002444:66792",
+          "key": "ea48e1fbc1cc2f0e12b09f4433c62fc033e7a02e",
+          "name": "Brand=gap",
+          "props": {
+            "Brand": "gap"
+          },
+          "nodes": [
+            {
+              "id": "40002444:66792",
+              "p": "Brand=gap",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN MIN HUG HUG",
+                "paddingLeft": 6,
+                "paddingRight": 6,
+                "paddingTop": 6,
+                "paddingBottom": 6,
+                "size": [
+                  59,
+                  54.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66799",
+              "p": "Brand=gap/Frame",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  47,
+                  42.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66800",
+              "p": "Brand=gap/Frame/Group",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  47,
+                  42.2
+                ]
+              }
+            },
+            {
+              "id": "40002444:66801",
+              "p": "Brand=gap/Frame/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  47,
+                  42.2
                 ]
               }
             }
@@ -82756,8 +82821,8 @@
       "type": "COMPONENT_SET",
       "name": "brand logos",
       "id": "40000064:9865",
-      "variants": 6,
-      "coverage": 11
+      "variants": 9,
+      "coverage": 5
     }
   ],
   "tiers": {

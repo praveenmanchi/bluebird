@@ -16,12 +16,12 @@ function serve() {
 afterEach(() => { vi.unstubAllGlobals(); sessionStorage.clear() })
 
 describe('ConfigPage', () => {
-  it('lists the seven brands and the selected brand’s tabs', async () => {
+  it('lists the eight brands and the selected brand’s tabs', async () => {
     serve()
     render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
     const brands = await screen.findByRole('complementary', { name: 'Brands' })
     expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'),
+      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
     ])
     expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(8)
   })

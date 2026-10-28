@@ -59,6 +59,14 @@
           "collection": "Brand UI",
           "mode": "Adecco"
         }
+      },
+      "gap": {
+        "label": "Gap Inc.",
+        "accessCodeHash": "4f5cd1f98e6bbab5f2c5345e2933a23855fb229c84600917470ff5425344b0e6",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Gap"
+        }
       }
     }
   },
