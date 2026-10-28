@@ -68,6 +68,7 @@
       "label": "Product Designer",
       "tabs": [
         "a11y",
+        "varsearch",
         "jira",
         "mcp",
         "publish",
@@ -79,6 +80,7 @@
       "label": "Design System",
       "tabs": [
         "tokens",
+        "varsearch",
         "publish",
         "a11y",
         "uxai",
@@ -96,6 +98,11 @@
       "enabled": true,
       "label": "Design tokens",
       "icon": "variables"
+    },
+    "varsearch": {
+      "enabled": true,
+      "label": "Variable search",
+      "icon": "research"
     },
     "jira": {
       "enabled": true,

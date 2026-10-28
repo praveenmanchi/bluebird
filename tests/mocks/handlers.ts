@@ -11,6 +11,7 @@ import { createMockHandlers as uxai } from '@features/uxai/mock'
 import { createAskHandlers } from '@features/uxai/sandbox/ask'
 import { createMockHandlers as agents } from '@features/agents/mock'
 import { createMockHandlers as publish } from '@features/publish/mock'
+import { createMockHandlers as varsearch } from '@features/varsearch/mock'
 import { config } from '@shared/config'
 import { readIntegrations } from '@shared/integrations/effective'
 import { createSessionHandlers, type SessionStore } from '../../src/sandbox/session'
@@ -90,7 +91,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
   const uxaiHandlers = import.meta.env.DEV && persist
     ? { ...uxai(), ...createAskHandlers({ readSettings: async () => (await readIntegrations((k) => store.get(k))).ai, fetch: (url, init) => globalThis.fetch(url, init) }) }
     : uxai()
-  return { ...shell, ...a11y(scenario), ...tokens(), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario) }
+  return { ...shell, ...a11y(scenario), ...tokens(), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario), ...varsearch(scenario) }
 }
 
 export const mockHandlers: HandlerMap = createMockHandlers()

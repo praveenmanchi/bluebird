@@ -24017,8 +24017,8 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MAX FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "itemSpacing": 16,
                 "paddingTop": 12,
                 "paddingBottom": 12,
                 "size": [
@@ -24036,14 +24036,14 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  617,
+                  775,
                   36
                 ]
               }
             },
             {
               "id": "394:13358",
-              "p": "Property 1=variable/Frame 1430102566/Tab Icons",
+              "p": "Property 1=variable/Frame 1430102566/UI Icons / Variable",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -24052,15 +24052,15 @@
                   24
                 ]
               },
-              "i": "Tab Icon=Variables <Tab Icons>",
-              "mc": "91:1958",
+              "i": "Icon=color <UI Icons / Variable>",
+              "mc": "40002351:19429",
               "cp": {
-                "Tab Icon": "Variables"
+                "Icon": "color"
               }
             },
             {
-              "id": "I394:13358;91:1904",
-              "p": "Property 1=variable/Frame 1430102566/Tab Icons/Vector",
+              "id": "I394:13358;40002351:19430",
+              "p": "Property 1=variable/Frame 1430102566/UI Icons / Variable/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -24077,10 +24077,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
+                  748,
                   36
                 ]
               }
@@ -24092,12 +24092,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -24107,12 +24107,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "100"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -24121,10 +24121,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  280,
+                  232,
                   24
                 ]
               }
@@ -24135,13 +24135,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size"
+                "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
+                "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
                 "text": "12 Days ago",
-                "font": "Museo Sans",
-                "style": "100",
-                "lineHeightPx": 15.399999618530273,
                 "opacity": 0.5
               }
             },
@@ -24306,8 +24306,8 @@
               },
               "r": {
                 "strokeWeight": 1,
-                "layout": "HORIZONTAL MIN MAX FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "itemSpacing": 16,
                 "paddingTop": 12,
                 "paddingBottom": 12,
                 "size": [
@@ -24325,7 +24325,7 @@
                 "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  617,
+                  775,
                   36
                 ]
               }
@@ -24365,10 +24365,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
+                  748,
                   36
                 ]
               }
@@ -24380,12 +24380,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -24395,12 +24395,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "100"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -24409,10 +24409,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  280,
+                  232,
                   24
                 ]
               }
@@ -24423,13 +24423,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size"
+                "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
+                "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
                 "text": "12 Days ago",
-                "font": "Museo Sans",
-                "style": "100",
-                "lineHeightPx": 15.399999618530273,
                 "opacity": 0.5
               }
             },
@@ -24601,9 +24601,15 @@
               },
               "r": {
                 "strokeWeight": 1,
+                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "itemSpacing": 8,
+                "paddingLeft": 12,
+                "paddingRight": 12,
+                "paddingTop": 12,
+                "paddingBottom": 12,
                 "size": [
                   1049,
-                  449
+                  266
                 ]
               }
             },
@@ -24615,11 +24621,11 @@
                 "stroke": "card-variable/border/default"
               },
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN MIN FIXED HUG",
-                "itemSpacing": 126,
+                "layout": "HORIZONTAL SPACE_BETWEEN MIN FILL HUG",
+                "itemSpacing": 16,
                 "paddingBottom": 12,
                 "size": [
-                  1025,
+                  1023,
                   48
                 ]
               }
@@ -24630,17 +24636,17 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN MIN FIXED HUG",
+                "layout": "HORIZONTAL MIN MIN FILL HUG",
                 "itemSpacing": 3,
                 "size": [
-                  741,
+                  869,
                   36
                 ]
               }
             },
             {
               "id": "394:13389",
-              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/Tab Icons",
+              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/UI Icons / Variable",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -24649,15 +24655,15 @@
                   24
                 ]
               },
-              "i": "Tab Icon=Variables <Tab Icons>",
-              "mc": "91:1958",
+              "i": "Icon=color <UI Icons / Variable>",
+              "mc": "40002351:19429",
               "cp": {
-                "Tab Icon": "Variables"
+                "Icon": "color"
               }
             },
             {
-              "id": "I394:13389;91:1904",
-              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/Tab Icons/Vector",
+              "id": "I394:13389;40002351:19430",
+              "p": "Variable search card expand/Frame 1430102576/Frame 1430102566/UI Icons / Variable/Vector",
               "t": "VECTOR",
               "b": {
                 "fill": "icon/glyph/default"
@@ -24674,10 +24680,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "VERTICAL MIN MIN FIXED HUG",
+                "layout": "VERTICAL MIN MIN FILL HUG",
                 "itemSpacing": 4,
                 "size": [
-                  336,
+                  842,
                   36
                 ]
               }
@@ -24689,12 +24695,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/title/font-size",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Color/Border/Black",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Color/Border/Black"
               }
             },
             {
@@ -24704,12 +24710,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Universal ToolkitUsed by 52 components Affects 1 mode/brands"
               }
             },
             {
@@ -24718,10 +24724,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 14,
                 "size": [
-                  198,
+                  154,
                   24
                 ]
               }
@@ -24857,10 +24863,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 432,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -24886,10 +24892,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
-                "itemSpacing": 41,
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  361,
+                  332,
                   24
                 ]
               }
@@ -24983,7 +24989,7 @@
               "t": "INSTANCE",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MIN CENTER FILL HUG",
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
                   168,
@@ -25066,10 +25072,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25081,8 +25087,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  70,
                   24
                 ]
               }
@@ -25119,13 +25126,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25134,10 +25141,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  178,
                   24
                 ]
               }
@@ -25289,10 +25296,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25304,8 +25311,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  70,
                   24
                 ]
               }
@@ -25342,13 +25350,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25357,10 +25365,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  178,
                   24
                 ]
               }
@@ -25520,10 +25528,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25535,8 +25543,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  70,
                   24
                 ]
               }
@@ -25573,13 +25582,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25588,10 +25597,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  178,
                   24
                 ]
               }
@@ -25751,10 +25760,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25766,8 +25775,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  70,
                   24
                 ]
               }
@@ -25804,13 +25814,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -25819,10 +25829,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  178,
                   24
                 ]
               }
@@ -25974,10 +25984,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FIXED HUG",
-                "itemSpacing": 939,
+                "layout": "HORIZONTAL SPACE_BETWEEN CENTER FILL HUG",
+                "itemSpacing": 16,
                 "size": [
-                  1025,
+                  1023,
                   24
                 ]
               }
@@ -25989,8 +25999,9 @@
               "b": {},
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "itemSpacing": 8,
                 "size": [
-                  59,
+                  70,
                   24
                 ]
               }
@@ -26027,13 +26038,13 @@
               "t": "TEXT",
               "b": {
                 "fill": "card-variable/title/fg",
-                "fontSize": "card-variable/meta/font-size",
+                "fontSize": "card-variable/title/font-size-sm",
+                "fontFamily": "card-variable/title/font-family",
+                "fontWeight": "card-variable/title/font-weight",
                 "lineHeight": "card-variable/title/line-height"
               },
               "r": {
-                "text": "Button",
-                "font": "Museo Sans",
-                "style": "300"
+                "text": "Button"
               }
             },
             {
@@ -26042,10 +26053,10 @@
               "t": "FRAME",
               "b": {},
               "r": {
-                "layout": "HORIZONTAL MAX CENTER FIXED HUG",
-                "itemSpacing": 28,
+                "layout": "HORIZONTAL MAX CENTER HUG HUG",
+                "itemSpacing": 12,
                 "size": [
-                  225,
+                  178,
                   24
                 ]
               }
@@ -82557,7 +82568,7 @@
       "name": "Variable search card expand",
       "id": "84:1043",
       "variants": 1,
-      "coverage": 69
+      "coverage": 65
     },
     {
       "section": "Organisms",

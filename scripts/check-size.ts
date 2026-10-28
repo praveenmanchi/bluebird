@@ -71,7 +71,10 @@ import { resolve } from 'node:path'
 // 2026-10-27 (AkzoNobel + Adecco brand modes): user raised the budget to 1310 KB. Every brand's Brand UI
 // CSS is inlined (~36 KB raw each) and the Figma pull brought ~70 unread docs/* tokens per brand: 1301.5 KB.
 // One-brand builds remain the lever; each further brand needs ~40 KB.
-const BUDGET_KB = 1310
+// 2026-10-28 (Variable search tab): user raised the budget to 1330 KB. The tab (Pages/Type filters,
+// search, Variable search cards with Show layers / Go to, recent searches, toasts), its onboarding
+// scene and the reflowed card CSS took the build from 1302 to 1323 KB (~21 KB). Same levers as above.
+const BUDGET_KB = 1330
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

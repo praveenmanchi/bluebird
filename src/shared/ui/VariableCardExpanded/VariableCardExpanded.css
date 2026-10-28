@@ -1,18 +1,18 @@
 /* VariableCardExpanded — Figma "Variable search card expand" set (84:1043),
- * single variant. Border, radius, divider and the type ramp are
+ * single variant, VERTICAL auto layout since 2026-10-28 (it reflows from 1049
+ * down to the 600 plugin). Border, radius, divider and the type ramp are
  * card-variable/* tokens; the header row is the composed VariableCard,
- * flattened to a bottom divider. Root stroke, the header padding, the row
- * gaps and the Museo Sans / MuseoModerno families are raw →
- * --bb-derived-variable-card-expanded-*. Museo Sans is not a web font, so
- * type/family/brand stands in where it is not installed. */
+ * flattened to a bottom divider. Root stroke, padding and gap, the header
+ * padding and the row gaps are raw → --bb-derived-variable-card-expanded-*.
+ * The section title is MuseoModerno → type/family/display. */
 .bb-variable-card-expanded {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   width: var(--bb-derived-variable-card-expanded-root-width);
   max-width: 100%;
-  gap: var(--bb-card-variable-gap-row);
-  padding: var(--bb-card-variable-padding);
+  gap: var(--bb-derived-variable-card-expanded-root-gap);
+  padding: var(--bb-derived-variable-card-expanded-root-padding-top) var(--bb-derived-variable-card-expanded-root-padding-right) var(--bb-derived-variable-card-expanded-root-padding-bottom) var(--bb-derived-variable-card-expanded-root-padding-left);
   border: var(--bb-derived-variable-card-expanded-root-stroke-width) solid var(--bb-card-variable-border-default);
   border-radius: var(--bb-card-variable-radius);
   background: var(--bb-surface-transparent);
@@ -22,7 +22,7 @@
 /* Frame 1430102576 — the composed VariableCard as header: no own box, a divider below. */
 .bb-variable-card-expanded__header.bb-variable-card {
   width: auto;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--bb-derived-variable-card-expanded-frame-1430102576-gap);
   padding: 0 0 var(--bb-derived-variable-card-expanded-frame-1430102576-padding-bottom);
   border-width: 0 0 var(--bb-derived-variable-card-expanded-root-stroke-width);
@@ -30,17 +30,14 @@
   border-radius: 0;
 }
 .bb-variable-card-expanded__header .bb-variable-card__lead { gap: var(--bb-derived-variable-card-expanded-frame-1430102566-gap); }
-.bb-variable-card-expanded__header .bb-variable-card__stack {
-  max-width: var(--bb-derived-variable-card-expanded-frame-1430102565-width);
-  gap: var(--bb-derived-variable-card-expanded-frame-1430102565-gap);
-}
+.bb-variable-card-expanded__header .bb-variable-card__stack { gap: var(--bb-derived-variable-card-expanded-frame-1430102565-gap); }
 .bb-variable-card-expanded__header .bb-variable-card__name {
-  font-family: var(--bb-derived-variable-card-expanded-black-font-family), var(--bb-font-family-brand), var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-weight: var(--bb-derived-variable-card-expanded-black-font-weight);
+  font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-weight: var(--bb-card-variable-title-font-weight);
 }
 .bb-variable-card-expanded__header .bb-variable-card__meta {
-  font-family: var(--bb-derived-variable-card-expanded-brands-font-family), var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-weight: var(--bb-derived-variable-card-expanded-brands-font-weight);
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-weight: var(--bb-font-weight-regular);
 }
 .bb-variable-card-expanded__header .bb-variable-card__trail { gap: var(--bb-derived-variable-card-expanded-frame-1430102568-gap); }
 
@@ -49,7 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--bb-card-variable-gap-row);
+  gap: var(--bb-derived-variable-card-expanded-frame-gap);
 }
 /* "Components Using the Searched Variable" */
 .bb-variable-card-expanded__title {
@@ -83,13 +80,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--bb-card-variable-gap-row);
+  gap: var(--bb-derived-variable-card-expanded-frame-1430102590-gap);
 }
 /* Frame 1430102559 */
 .bb-variable-card-expanded__component {
   display: inline-flex;
   align-items: center;
   min-width: 0;
+  gap: var(--bb-derived-variable-card-expanded-frame-1430102559-gap);
 }
 .bb-variable-card-expanded__glyph.bb-icon {
   width: var(--bb-card-variable-row-icon-size);
@@ -102,9 +100,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-derived-variable-card-expanded-button-font-family), var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-card-variable-meta-font-size);
-  font-weight: var(--bb-derived-variable-card-expanded-button-font-weight);
+  font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-card-variable-title-font-size-sm);
+  font-weight: var(--bb-card-variable-title-font-weight);
   line-height: var(--bb-card-variable-title-line-height);
 }
 /* Frame 1430102679 */

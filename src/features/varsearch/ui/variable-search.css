@@ -1,0 +1,130 @@
+/* Variable search tab — Figma "Variable search · 600" (page "Variable Search"),
+ * rebuilt from the original 1074 screens on the UX copy page. The toolbar is
+ * the legacy "Background+HorizontalBorder" row: full width, a bottom border,
+ * 8 px gap, 8/12 padding — pages, filters, search bar (FILL) and the Search
+ * button. Content: card-variable/padding all round, card-variable/gap/row
+ * between the title row and the Variable search cards; only the content scrolls. */
+.bb-varsearch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-card-variable-title-fg);
+}
+
+.bb-varsearch__toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inline-md) var(--bb-space-inset-lg-alt);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-card-variable-divider-color);
+  container: varsearch-toolbar / inline-size;
+}
+/* The pages / filters triggers hug their label here instead of the Figma 142 / 133
+ * frames, so the search field gets the room; a long label ellipsizes. */
+.bb-varsearch__filter {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 30%;
+}
+.bb-varsearch__filter .bb-page-filter {
+  width: auto;
+  max-width: 100%;
+}
+.bb-varsearch__filter .bb-page-filter__container {
+  width: auto;
+  gap: var(--bb-space-inline-sm);
+}
+.bb-varsearch__filter .bb-filter-dropdown {
+  min-width: 0;
+  max-width: 100%;
+}
+.bb-varsearch__filter .bb-filter-dropdown__label {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-search-bar.bb-varsearch__search {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+}
+/* Narrow windows (S / M): the filters drop their leading glyph and the Search
+ * button keeps only its glyph, so the search field stays usable. */
+@container varsearch-toolbar (max-width: 520px) { /* allow-raw: S/M-window breakpoint (480 wide), not a Figma value */
+  .bb-varsearch__go .bb-button__label,
+  .bb-varsearch__filter .bb-page-filter__icon,
+  .bb-varsearch__filter .bb-filter-dropdown__icon { display: none; }
+}
+
+/* Pages / Type menus drop below their trigger; the page list scrolls. */
+.bb-dropdown-menu.bb-varsearch__menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + var(--bb-space-inline-xs));
+  left: 0;
+  width: max-content;
+  min-width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.bb-varsearch__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  min-height: 0;
+  padding: var(--bb-card-variable-padding);
+  overflow-y: auto;
+}
+.bb-varsearch__content > .bb-variable-card,
+.bb-varsearch__content > .bb-variable-card-expanded {
+  flex: none;
+  width: 100%;
+}
+
+/* "Recent Searches" / "Search Results" + Clear All. */
+.bb-varsearch__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-md);
+}
+.bb-varsearch__title {
+  margin: 0;
+  color: var(--bb-card-variable-title-fg);
+  font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-card-variable-title-font-size);
+  font-weight: var(--bb-card-variable-title-font-weight);
+  line-height: var(--bb-card-variable-title-line-height);
+}
+.bb-varsearch__status {
+  margin: 0;
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+
+/* The legacy empty block: centred in the content area. */
+.bb-empty-state.bb-varsearch__empty {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+/* Show layers / Go to confirmation, over the bottom of the content. */
+.bb-notice.bb-varsearch__toast {
+  position: absolute;
+  width: auto;
+  box-sizing: border-box;
+  z-index: 3;
+  right: var(--bb-space-inset-lg-alt);
+  bottom: var(--bb-space-inset-lg-alt);
+  left: var(--bb-space-inset-lg-alt);
+}
