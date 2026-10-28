@@ -66,7 +66,7 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
   const [confirmReset, setConfirmReset] = useState(false)
   const label = session ? (config.brand.brands[session.brandId]?.label ?? session.brandId) : 'No session'
   const since = session ? new Date(session.since).toLocaleDateString() : ''
-  const source = brand?.source === 'figma' ? 'tokens resolved from this Figma document' : 'generated tokens (no Brand collection in this document)'
+  const source = tokenSource(brand)
   const run = async (which: 'logout' | 'reset', fn: () => Promise<void>) => { setBusy(which); try { await fn() } finally { setBusy(null) } }
 
   return (
@@ -120,4 +120,12 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
       <TeamBanner class="bb-settings__team" taglineSize="auto" />
     </section>
   )
+}
+
+/** Where the brand tokens came from. A fault (library unreadable, mode missing) is named here
+ *  rather than in the banner; a file without the Brand collection is the normal case. */
+function tokenSource(brand: BrandTokensResult | null): string {
+  if (brand?.source === 'figma') return 'tokens resolved from this Figma document'
+  if (brand?.note && !brand.expected) return `generated tokens: ${brand.note.replace(/\s*Using (fallback|generated) tokens[^.]*\.$/, '').replace(/\.$/, '')}`
+  return 'generated tokens (no Brand collection in this document)'
 }

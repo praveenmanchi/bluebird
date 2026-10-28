@@ -18,13 +18,26 @@ describe('shell Banner', () => {
     expect(container.querySelector('.bb-app-subbar')).toBeNull()
   })
 
-  it('shows the fallback note while tokens are generated, and the link state when disconnected', () => {
+  it('never shows brand-token notes: generated tokens are the brand, and Settings names the source', () => {
+    for (const status of [
+      { brandId: 'ikea', source: 'fallback' as const, tokens: {}, expected: true, note: 'Variable collection "Brand UI" not found in this file or its enabled libraries. Using fallback tokens.' },
+      { brandId: 'ikea', source: 'fallback' as const, tokens: {}, note: 'Could not read the "Brand UI" library collection (offline). Using fallback tokens.' },
+      { brandId: 'bridge', source: 'fallback' as const, tokens: {}, note: 'Mock mode: no Figma document. Using generated tokens from figma/tokens.json.' },
+    ]) {
+      brandStatus.value = status
+      const { container, unmount } = render(<Banner />)
+      expect(container.querySelector('.bb-app-subbar')).toBeNull()
+      unmount()
+    }
+  })
+
+  it('shows the link state while the live bridge is not connected', () => {
     brandStatus.value = { brandId: 'bridge', source: 'fallback', tokens: {}, note: 'Using generated tokens.' }
-    const { container, rerender } = render(<Banner />)
-    expect(container.querySelector('.bb-app-subbar')?.textContent).toBe('Using generated tokens.')
-    brandStatus.value = { brandId: 'bridge', source: 'figma', tokens: {} }
     connection.value = 'disconnected'
-    rerender(<Banner />)
+    const { container, rerender } = render(<Banner />)
     expect(container.querySelector('.bb-app-subbar')?.textContent).toBe('disconnected')
+    connection.value = 'connecting'
+    rerender(<Banner />)
+    expect(container.querySelector('.bb-app-subbar')?.textContent).toBe('connecting…')
   })
 })
