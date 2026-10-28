@@ -13,6 +13,10 @@ import { handlers as featureHandlers } from './registry.generated'
 
 const TOKEN_KEY = 'bluebird:relay-token'
 
+/** True only in `npm run dev:live` builds (scripts/build-sandbox.ts defines it). Production builds
+ *  drop the bridge branch, and manifest.json has no menu, so published users always get the plugin. */
+declare const __LIVE_BRIDGE__: boolean
+
 const store = clientStorageStore()
 
 /** Brand tokens for the requested brand, else the session's brand, else the config default. */
@@ -55,8 +59,8 @@ const coreHandlers: HandlerMap = {
 
 const router = createRouter({ ...coreHandlers, ...featureHandlers }, (message) => figma.ui.postMessage(message))
 
-if (figma.command === 'bridge') {
-  figma.showUI(uiFile('bridge'), { width: 320, height: 260, title: 'Bluebird · live bridge' })
+if (__LIVE_BRIDGE__) {
+  figma.showUI(uiFile('bridge'), { width: 320, height: 260, title: 'Bluebird · live bridge (dev build)' })
 } else {
   figma.showUI(uiFile('main'), { width: config.window.width, height: config.window.height, themeColors: false })
 }

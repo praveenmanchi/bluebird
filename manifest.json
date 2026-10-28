@@ -7,19 +7,6 @@
     "main": "dist/index.html",
     "bridge": "dist/bridge.html"
   },
-  "menu": [
-    {
-      "name": "Open Bluebird",
-      "command": "open"
-    },
-    {
-      "separator": true
-    },
-    {
-      "name": "Dev: connect to browser (live mode)",
-      "command": "bridge"
-    }
-  ],
   "capabilities": [],
   "permissions": [
     "teamlibrary"

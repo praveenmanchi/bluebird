@@ -14,6 +14,7 @@ Persona-based, multi-tab, multi-brand Figma plugin. Speed and accuracy first.
 npm install
 npm run dev            # browser preview with fixtures  → http://localhost:5173/?mode=mock
 npm run dev:sandbox    # rebuild dist/code.js on change (Figma side)
+npm run dev:live       # same, but running the plugin opens the live-mode bridge panel
 npm run dev:relay      # WebSocket relay for live mode (port 4001)
 npm run jira:proxy     # local CORS proxy the Jira tab calls Jira through (port 8787)
 npm run build          # dist/index.html + dist/bridge.html + dist/code.js, enforces size budget
@@ -32,7 +33,7 @@ npm run verify         # typecheck + lint + tokens:check + test + build
 
 1. `npm run build`
 2. Figma → Plugins → Development → Import plugin from manifest… → pick `manifest.json`
-3. Run **bluebird → Open Bluebird**. Re-run with `Cmd+Opt+P` after each sandbox change.
+3. Run **Plugins → Development → Design Studio (Beta 2.0)**; it opens Bluebird directly (the manifest has no menu, so published users never see dev commands). Re-run with `Cmd+Opt+P` after each sandbox change.
 
 ## Live mode (UI in your browser, real Figma document)
 
@@ -41,11 +42,14 @@ browser  ─►  ws://127.0.0.1:4001 relay  ─►  bridge page inside Figma  �
 ```
 
 1. `npm run dev:relay` (add `-- --token abc` for a shared secret)
-2. `npm run dev:sandbox` and `npm run dev` in two more terminals
-3. In Figma: **bluebird → Dev: connect to browser (live mode)**. Leave that small panel open.
+2. `npm run dev:live` and `npm run dev` in two more terminals. `dev:live` builds a dev-only `dist/code.js`
+   that opens the bridge panel instead of the plugin UI.
+3. In Figma: run the plugin. The small "Bluebird · live bridge (dev build)" panel opens; leave it open.
 4. Open `http://localhost:5173/?mode=live` (append `&token=abc` if you set one)
 
 Sandbox changes still need a plugin re-run in Figma (`Cmd+Opt+P`). UI changes hot-reload in the browser.
+Run `npm run build` (or `npm run dev:sandbox`) before using or publishing the plugin normally again: the
+live build is never what you publish.
 
 ## AI providers (Settings › AI Agent Assistance)
 
@@ -159,7 +163,7 @@ agent.
 
 ```
 plugin.config.json         the switchboard (validated by src/shared/config/schema.ts)
-manifest.json              Figma manifest: two UIs (main, bridge), dev-only localhost access
+manifest.json              Figma manifest: no menu (opens Bluebird), two UIs (main, bridge — dev:live only), dev-only localhost access
 src/
   shared/                  read-only for tabs
     config/                schema + loader

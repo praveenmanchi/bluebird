@@ -14,7 +14,7 @@ git clone <repo-url> bluebird && cd bluebird && npm install && npm run build
 
 1. Open Figma desktop → **Plugins → Development → Import plugin from manifest…**
 2. Pick `manifest.json` from the folder you just cloned.
-3. In any design file: **Plugins → Development → Design Studio (Beta 2.0) → Open Bluebird**.
+3. In any design file: **Plugins → Development → Design Studio (Beta 2.0)**; it opens Bluebird directly.
 
 The plugin opens at 480 × 640. Drag the bottom-right corner to resize, or use the size toggle in the banner.
 
