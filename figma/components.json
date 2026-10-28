@@ -6371,7 +6371,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6384,7 +6384,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  47,
+                  45,
                   16
                 ]
               }
@@ -6396,12 +6396,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Updated",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Updated"
               }
             },
             {
@@ -6434,12 +6434,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -6461,7 +6461,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 19,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6474,7 +6474,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  36,
+                  34,
                   16
                 ]
               }
@@ -6486,12 +6486,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Added  ",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Added  "
               }
             },
             {
@@ -6524,12 +6524,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -6551,7 +6551,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 4,
                 "size": [
-                  79,
+                  77,
                   24
                 ]
               }
@@ -6564,7 +6564,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  51,
+                  49,
                   16
                 ]
               }
@@ -6576,12 +6576,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-regular",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "Removed",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Removed"
               }
             },
             {
@@ -6614,12 +6614,12 @@
               "b": {
                 "fill": "change-status/fg",
                 "fontSize": "change-status/font/size",
+                "fontFamily": "change-status/font/family",
+                "fontWeight": "font/weight-strong",
                 "lineHeight": "change-status/line-height"
               },
               "r": {
-                "text": "52 ",
-                "font": "MuseoModerno",
-                "style": "SemiBold"
+                "text": "52 "
               }
             }
           ]
@@ -24088,7 +24088,7 @@
                 "paddingBottom": 12,
                 "size": [
                   1049,
-                  60
+                  61
                 ]
               }
             },
@@ -24102,7 +24102,7 @@
                 "itemSpacing": 3,
                 "size": [
                   775,
-                  36
+                  37
                 ]
               }
             },
@@ -24146,7 +24146,7 @@
                 "itemSpacing": 4,
                 "size": [
                   748,
-                  36
+                  37
                 ]
               }
             },
@@ -24377,7 +24377,7 @@
                 "paddingBottom": 12,
                 "size": [
                   1049,
-                  60
+                  61
                 ]
               }
             },
@@ -24391,7 +24391,7 @@
                 "itemSpacing": 3,
                 "size": [
                   775,
-                  36
+                  37
                 ]
               }
             },
@@ -24434,7 +24434,7 @@
                 "itemSpacing": 4,
                 "size": [
                   748,
-                  36
+                  37
                 ]
               }
             },
@@ -24674,7 +24674,7 @@
                 "paddingBottom": 12,
                 "size": [
                   1049,
-                  266
+                  267
                 ]
               }
             },
@@ -24691,7 +24691,7 @@
                 "paddingBottom": 12,
                 "size": [
                   1023,
-                  48
+                  49
                 ]
               }
             },
@@ -24705,7 +24705,7 @@
                 "itemSpacing": 3,
                 "size": [
                   869,
-                  36
+                  37
                 ]
               }
             },
@@ -24749,7 +24749,7 @@
                 "itemSpacing": 4,
                 "size": [
                   842,
-                  36
+                  37
                 ]
               }
             },
@@ -24943,12 +24943,12 @@
               "b": {
                 "fill": "card-variable/title/fg",
                 "fontSize": "card-variable/meta/font-size",
+                "fontFamily": "card-variable/meta/font-family",
+                "fontWeight": "font/weight-medium",
                 "lineHeight": "card-variable/meta/line-height"
               },
               "r": {
-                "text": "Components Using the Searched Variable",
-                "font": "MuseoModerno",
-                "style": "Regular"
+                "text": "Components Using the Searched Variable"
               }
             },
             {
@@ -24960,7 +24960,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  332,
+                  323,
                   24
                 ]
               }
@@ -24974,7 +24974,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  152,
+                  148,
                   24
                 ]
               },
@@ -25057,7 +25057,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  168,
+                  163,
                   24
                 ]
               },
@@ -25154,7 +25154,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  70,
+                  69,
                   24
                 ]
               }
@@ -25209,7 +25209,7 @@
                 "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  178,
+                  176,
                   24
                 ]
               }
@@ -25223,7 +25223,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -25378,7 +25378,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  70,
+                  69,
                   24
                 ]
               }
@@ -25433,7 +25433,7 @@
                 "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  178,
+                  176,
                   24
                 ]
               }
@@ -25447,7 +25447,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -25610,7 +25610,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  70,
+                  69,
                   24
                 ]
               }
@@ -25665,7 +25665,7 @@
                 "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  178,
+                  176,
                   24
                 ]
               }
@@ -25679,7 +25679,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -25842,7 +25842,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  70,
+                  69,
                   24
                 ]
               }
@@ -25897,7 +25897,7 @@
                 "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  178,
+                  176,
                   24
                 ]
               }
@@ -25911,7 +25911,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },
@@ -26066,7 +26066,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  70,
+                  69,
                   24
                 ]
               }
@@ -26121,7 +26121,7 @@
                 "layout": "HORIZONTAL MAX CENTER HUG HUG",
                 "itemSpacing": 12,
                 "size": [
-                  178,
+                  176,
                   24
                 ]
               }
@@ -26135,7 +26135,7 @@
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "itemSpacing": 8,
                 "size": [
-                  106,
+                  104,
                   24
                 ]
               },

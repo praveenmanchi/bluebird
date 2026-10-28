@@ -1,14 +1,15 @@
 /* ChangeStatus — Figma "change status" set (86:966): Property 1 = Default
  * (Updated) / Variant2 (Added) / Variant3 (Removed). Text colour, type size,
- * line-height, per-state square fills, border and radius are Brand-bound
- * (change-status/*). The MuseoModerno family, weights, square inset, stroke
- * and the per-variant root gap are raw → --bb-derived-change-status-*. */
+ * line-height, family, per-state square fills, border and radius are Brand-bound
+ * (change-status/*); the caption is font/weight-regular and the count font/weight-strong
+ * (bound in Figma 2026-10-28, was raw MuseoModerno). The square inset, stroke and the
+ * per-variant root gap are raw → --bb-derived-change-status-*. */
 .bb-change-status {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   color: var(--bb-change-status-fg);
-  font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-change-status-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-change-status-font-size);
   line-height: var(--bb-change-status-line-height);
   white-space: nowrap;
@@ -20,7 +21,7 @@
 .bb-change-status__label {
   display: inline-flex;
   align-items: center;
-  font-weight: var(--bb-derived-change-status-updated-font-weight);
+  font-weight: var(--bb-font-weight-regular);
 }
 .bb-change-status__count {
   display: inline-flex;
@@ -33,7 +34,7 @@
   border: var(--bb-derived-change-status-frame-1430102560-stroke-width) solid var(--bb-change-status-border);
   border-radius: var(--bb-change-status-radius);
   background: var(--bb-change-status-updated-bg);
-  font-weight: var(--bb-derived-change-status-52-font-weight);
+  font-weight: var(--bb-font-weight-strong);
 }
 .bb-change-status[data-status="added"] .bb-change-status__count {
   background: var(--bb-change-status-added-bg);

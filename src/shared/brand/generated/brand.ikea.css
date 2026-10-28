@@ -116,7 +116,7 @@
   --bb-card-variable-padding: 13px;
   --bb-card-variable-gap-row: 12px;
   --bb-card-variable-title-fg: #161616;
-  --bb-card-variable-title-font-size: 16px;
+  --bb-card-variable-title-font-size: 12px;
   --bb-card-variable-title-font-family: "Noto Sans";
   --bb-card-variable-meta-fg: #767676;
   --bb-card-variable-meta-font-size: 11px;
@@ -253,7 +253,7 @@
   --bb-toggle-description-line-height: 14px;
   --bb-badge-count-line-height: 15.4px;
   --bb-card-variable-title-font-weight: 500;
-  --bb-card-variable-title-line-height: 15.4px;
+  --bb-card-variable-title-line-height: 16.8px;
   --bb-card-variable-meta-font-family: "Noto Sans";
   --bb-card-variable-meta-line-height: 15.4px;
   --bb-section-header-title-font-family: "Noto Sans";

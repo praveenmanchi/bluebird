@@ -17,7 +17,7 @@
   border-radius: var(--bb-card-variable-radius);
   background: var(--bb-surface-transparent);
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-font-family-brand), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
 }
 /* Frame 1430102576 — the composed VariableCard as header: no own box, a divider below. */
 .bb-variable-card-expanded__header.bb-variable-card {
@@ -52,9 +52,9 @@
 .bb-variable-card-expanded__title {
   margin: 0;
   color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-font-family-display), var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-card-variable-meta-font-size);
-  font-weight: var(--bb-derived-variable-card-expanded-components-using-the-searched-variable-font-weight);
+  font-weight: var(--bb-font-weight-medium);
   line-height: var(--bb-card-variable-meta-line-height);
 }
 /* Frame 1430102678 */

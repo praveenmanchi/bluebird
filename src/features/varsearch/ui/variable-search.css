@@ -90,21 +90,8 @@
   width: 100%;
 }
 
-/* "Recent Searches" / "Search Results" + Clear All. */
-.bb-varsearch__title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--bb-space-inline-md);
-}
-.bb-varsearch__title {
-  margin: 0;
-  color: var(--bb-card-variable-title-fg);
-  font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-card-variable-title-font-size);
-  font-weight: var(--bb-card-variable-title-font-weight);
-  line-height: var(--bb-card-variable-title-line-height);
-}
+/* Section Title fills the column, as in Figma (Fill width); its own default is a fixed bar. */
+.bb-varsearch__heading { width: 100%; }
 .bb-varsearch__status {
   margin: 0;
   color: var(--bb-card-variable-meta-fg);

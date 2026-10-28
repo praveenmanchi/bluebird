@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks'
-import { Button, EmptyState, LinkButton, Notice, SearchBar, VariableCard, useRpc } from '@shared/ui'
+import { Button, EmptyState, LinkButton, Notice, SearchBar, SectionTitle, VariableCard, useRpc } from '@shared/ui'
 import { pageScopeIds, relativeTime, typesLabel, variableMeta, type PageScope } from '../format'
 import {
   MIN_QUERY, MSG,
@@ -192,11 +192,7 @@ export function Tab() {
   )
 }
 
+/** Figma "Section Title" (count hidden), the heading every tab uses: "Recent Searches" / "Search Results" + Clear. */
 function TitleRow({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) {
-  return (
-    <div class="bb-varsearch__title-row">
-      <h3 class="bb-varsearch__title">{title}</h3>
-      {action && <LinkButton onClick={onAction}>{action}</LinkButton>}
-    </div>
-  )
+  return <SectionTitle class="bb-varsearch__heading" title={title} showCount={false} showAction={!!action} actionLabel={action} onAction={onAction} />
 }
