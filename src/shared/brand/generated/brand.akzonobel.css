@@ -6,9 +6,9 @@
   --bb-button-primary-fg-default: #ffffff;
   --bb-button-primary-fg-disabled: #838383;
   --bb-button-primary-border-default: #005192;
-  --bb-banner-bg: #ffffff;
-  --bb-banner-text: #333333;
-  --bb-banner-powered-by: #ffffff00;
+  --bb-banner-bg: #005192;
+  --bb-banner-text: #ffffff;
+  --bb-banner-powered-by: #ffffff;
   --bb-button-primary-border-width: 1px;
   --bb-button-primary-radius: 0px;
   --bb-button-primary-padding-x: 13px;

@@ -75,7 +75,7 @@
   font-size: var(--bb-derived-banner-powered-by-font-size);
   font-weight: var(--bb-derived-banner-powered-by-font-weight);
   line-height: normal;
-  /* Bound to Banner/Text since 2026-10-27 (was raw white, invisible on AkzoNobel's white banner). */
+  /* Bound to Banner/Text since 2026-10-27 (was raw white); keeps "Powered By" legible on any brand's banner colour. */
   color: var(--bb-banner-text);
   white-space: nowrap;
 }

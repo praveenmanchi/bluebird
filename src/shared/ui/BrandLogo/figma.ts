@@ -21,7 +21,7 @@ export const figma = {
     '--bb-derived-brand-logo-group-brand-akzonobel-height': 'AkzoNobel wordmark group inside akzonobel.svg; the box is its Frame plus root padding.',
     '--bb-derived-brand-logo-vector-brand-akzonobel-width': 'AkzoNobel wordmark vector inside akzonobel.svg; the box is its Frame plus root padding.',
     '--bb-derived-brand-logo-vector-brand-akzonobel-height': 'AkzoNobel wordmark vector inside akzonobel.svg; the box is its Frame plus root padding.',
-    '--bb-derived-brand-logo-vector-brand-akzonobel-fill': 'Logo artwork colour (AkzoNobel blue #005596). Colours live in figma/logos/akzonobel.svg, not in tokens.',
+    '--bb-derived-brand-logo-vector-brand-akzonobel-fill': 'Logo artwork colour (white since 2026-10-28, reversed for the brand-blue banner; was AkzoNobel blue #005596). Colours live in figma/logos/akzonobel.svg, not in tokens.',
     ...Object.fromEntries([
       'vector-brand-adecco-width', 'vector-brand-adecco-height', 'vector-brand-adecco-fill',
       'vector--1-brand-adecco-width', 'vector--1-brand-adecco-height', 'vector--2-brand-adecco-fill',
