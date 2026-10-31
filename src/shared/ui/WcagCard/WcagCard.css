@@ -342,17 +342,26 @@
   line-height: var(--bb-font-line-caption);
   cursor: pointer;
 }
-.bb-wcag-card__action--annotate {
+.bb-wcag-card__action:focus-visible {
+  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
+  outline-offset: var(--bb-space-inset-xs);
+}
+/* Annotate and Select are filled with surface/accent, so their label and icon are text/on-accent
+ * (2026-10-31). They used wcag-card/title/fg, which failed contrast on the accent in every brand. */
+.bb-wcag-card__action--annotate,
+.bb-wcag-card__action--select {
   border-color: var(--bb-surface-accent);
   background: var(--bb-surface-accent);
-  color: var(--bb-wcag-card-title-fg);
+  color: var(--bb-text-on-accent);
 }
 .bb-wcag-card__action--select {
   padding-left: var(--bb-derived-wcag-card-select-button-padding-left);
   padding-right: var(--bb-derived-wcag-card-select-button-padding-right);
-  border-color: var(--bb-surface-accent);
-  background: var(--bb-surface-accent);
-  color: var(--bb-wcag-card-title-fg);
+}
+.bb-wcag-card__action--annotate:not(:disabled):not([data-state='placed']):hover,
+.bb-wcag-card__action--select:not(:disabled):hover {
+  border-color: var(--bb-surface-accent-strong);
+  background: var(--bb-surface-accent-strong);
 }
 .bb-wcag-card__action--select svg {
   width: var(--bb-derived-wcag-card-vector-width);
@@ -403,7 +412,9 @@
   color: var(--bb-feedback-success);
 }
 .bb-wcag-card__action--annotate[data-state='queued'] {
-  color: var(--bb-text-tertiary);
+  border-color: var(--bb-button-primary-border-disabled);
+  background: var(--bb-button-primary-bg-disabled);
+  color: var(--bb-button-primary-fg-disabled);
   cursor: progress;
 }
 .bb-wcag-card__action:disabled { cursor: not-allowed; }
