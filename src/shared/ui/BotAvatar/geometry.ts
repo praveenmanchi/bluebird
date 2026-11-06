@@ -1,6 +1,8 @@
-// Vector geometry of Figma "Bot Avatar" (40000295:8478), copied from the Figma vector exports
-// (40 × 40 frame, origin top-left). Colour never lives here: every layer is painted by
-// BotAvatar.css with agents/* tokens.
+// Vector geometry of Figma "Bot Avatar" (40000295:8478), a hover robot in a 40 × 40 frame, origin
+// top-left. Every agent shares the same body; only the chest emblem and the colour change. Colour
+// never lives here: every layer is painted by BotAvatar.css with tokens. Stroke widths and layer
+// opacities are layer properties of the vector, so they travel with the shapes.
+import type { IconName } from '../Icon/Icon'
 
 export type BotAgent = 'accessibility' | 'content' | 'writing' | 'spelling' | 'design-system' | 'localization'
 export type BotState = 'default' | 'working' | 'sleeping'
@@ -8,57 +10,52 @@ export type BotState = 'default' | 'working' | 'sleeping'
 export const BOT_AGENTS: readonly BotAgent[] = ['accessibility', 'content', 'writing', 'spelling', 'design-system', 'localization']
 export const BOT_STATES: readonly BotState[] = ['default', 'working', 'sleeping']
 
-interface BodyGeometry {
-  /** Default and Sleeping share the resting body. */
-  rest: string
-  /** Working tilts the body ~6° mid-hop (Figma bakes the rotation into the path). */
-  working: string
-  /** Offset the Working body's path carries in the Figma export, when it starts left of the frame. */
-  workingOffsetX?: number
+export const FRAME_CENTRE = 20
+
+/** The chest "Icon" layer: a library icon, sized and centred on the shield as Figma places it. */
+export const EMBLEM: Record<BotAgent, { icon: IconName; size: number; cy: number }> = {
+  accessibility: { icon: 'accessibility', size: 15, cy: 25.2 },
+  content: { icon: 'text', size: 21, cy: 24.7 },
+  writing: { icon: 'ui-ai-feature-rewrite', size: 19, cy: 24.7 },
+  spelling: { icon: 'ui-text-underline-wave', size: 21, cy: 24.7 },
+  'design-system': { icon: 'ui-layer-component', size: 15, cy: 24.7 },
+  localization: { icon: 'ui-misc-language', size: 20, cy: 24.7 },
 }
 
-/** "Body" vector per agent: circle, rounded square, cloud, drop, hexagon, ghost. */
-export const BODY: Record<BotAgent, BodyGeometry> = {
-  accessibility: {
-    rest: 'M20 38C29.3888 38 37 30.3888 37 21C37 11.6112 29.3888 4 20 4C10.6112 4 3 11.6112 3 21C3 30.3888 10.6112 38 20 38Z',
-    working: 'M16.3529 39.5907C25.6903 40.5721 34.0554 33.7982 35.0368 24.4608C36.0182 15.1234 29.2443 6.75838 19.9069 5.77698C10.5695 4.79558 2.20442 11.5695 1.22302 20.9069C0.241615 30.2443 7.0155 38.6093 16.3529 39.5907Z',
-  },
-  content: {
-    rest: 'M27 4H13C7.47715 4 3 8.47715 3 14V28C3 33.5228 7.47715 38 13 38H27C32.5228 38 37 33.5228 37 28V14C37 8.47715 32.5228 4 27 4Z',
-    working: 'M26.8685 6.50868L12.9452 5.04528C7.45263 4.46799 2.53201 8.45263 1.95472 13.9452L0.491317 27.8685C-0.085978 33.3611 3.89866 38.2817 9.39125 38.859L23.3146 40.3224C28.8072 40.8997 33.7278 36.9151 34.3051 31.4225L35.7685 17.4992C36.3458 12.0066 32.3611 7.08598 26.8685 6.50868Z',
-  },
-  writing: {
-    rest: 'M11 36H29C31.2329 36.029 33.3968 35.2268 35.0713 33.7494C36.7457 32.2719 37.8111 30.2248 38.0605 28.0057C38.3098 25.7866 37.7253 23.554 36.4204 21.7418C35.1156 19.9296 33.1836 18.6673 31 18.2C30.576 15.7501 29.3345 13.5162 27.478 11.8624C25.6214 10.2086 23.2594 9.23248 20.777 9.09328C18.2946 8.95408 15.8383 9.65997 13.8085 11.0958C11.7787 12.5317 10.2953 14.6129 9.6 17C8.35244 17.0919 7.13521 17.4287 6.01779 17.991C4.90038 18.5534 3.90467 19.3303 3.08751 20.2775C1.43719 22.1903 0.614348 24.6804 0.8 27.2C0.985652 29.7196 2.16459 32.0622 4.07746 33.7125C5.99033 35.3628 8.48044 36.1857 11 36Z',
-    working: 'M9.2289 36.9214L27.1303 38.8029C29.3479 39.0651 31.5838 38.4935 33.4035 37.1992C35.2233 35.9049 36.4968 33.9803 36.9768 31.7994C37.4567 29.6186 37.1087 27.3371 36.0005 25.3985C34.8922 23.4598 33.1028 22.0024 30.9799 21.3095C30.8143 18.8287 29.8131 16.4772 28.1397 14.6384C26.4662 12.7996 24.2191 11.582 21.7649 11.184C19.3106 10.7861 16.7939 11.2314 14.6252 12.4472C12.4565 13.6631 10.7636 15.5778 9.82262 17.8791C8.57228 17.8402 7.32652 18.0478 6.15644 18.4903C4.98637 18.9328 3.9149 19.6013 3.00321 20.4579C1.16198 22.1878 0.0833628 24.5783 0.00463191 27.1034C-0.074099 29.6286 0.853511 32.0816 2.5834 33.9228C4.31328 35.764 6.70374 36.8427 9.2289 36.9214Z',
-    // The tilted cloud overhangs the frame by 1.0992 on the left; the export shifted its viewBox by that much.
-    workingOffsetX: -1.0992,
-  },
-  spelling: {
-    rest: 'M20 2C20 2 6 16.5 6 25C6 28.713 7.475 32.274 10.1005 34.8995C12.726 37.525 16.287 39 20 39C23.713 39 27.274 37.525 29.8995 34.8995C32.525 32.274 34 28.713 34 25C34 16.5 20 2 20 2Z',
-    working: 'M19.9233 3.4634C19.9233 3.4634 4.48434 16.4206 3.59585 24.874C3.20773 28.5667 4.30242 32.2623 6.63911 35.1479C8.97579 38.0335 12.3631 39.8726 16.0558 40.2607C19.7484 40.6488 23.4441 39.5541 26.3296 37.2174C29.2152 34.8808 31.0543 31.4935 31.4425 27.8008C32.331 19.3474 19.9233 3.4634 19.9233 3.4634Z',
-  },
-  'design-system': {
-    rest: 'M20 2L36 11V29L20 38L4 29V11L20 2Z',
-    working: 'M19.9124 3.67246L34.8839 14.2956L33.0024 32.197L16.1493 39.4752L1.17773 28.8521L3.05924 10.9507L19.9124 3.67246Z',
-  },
-  localization: {
-    rest: 'M5 20C5 16.0218 6.58035 12.2064 9.3934 9.3934C12.2064 6.58035 16.0218 5 20 5C23.9782 5 27.7936 6.58035 30.6066 9.3934C33.4196 12.2064 35 16.0218 35 20V38L30 34.8L25 38L20 34.8L15 38L10 34.8L5 38V20Z',
-    working: 'M3.43207 19.9178C3.84791 15.9614 5.81842 12.3322 8.9101 9.82857C12.0018 7.32497 15.9614 6.15209 19.9178 6.56793C23.8743 6.98377 27.5035 8.95427 30.0071 12.0459C32.5107 15.1376 33.6836 19.0972 33.2677 23.0537L31.3862 40.9551L26.7481 37.25L21.441 39.9098L16.8029 36.2047L11.4958 38.8645L6.85766 35.1594L1.55056 37.8192L3.43207 19.9178Z',
-  },
-}
-
-/** Layers shared by every agent (positions are identical across the 18 variants). */
-export const SHEEN = { cx: 14.7245, cy: 9.10898, rx: 5, ry: 3, rotate: -20 } as const
-export const EYES = [
-  'M14 26C16.2091 26 18 23.7614 18 21C18 18.2386 16.2091 16 14 16C11.7909 16 10 18.2386 10 21C10 23.7614 11.7909 26 14 26Z',
-  'M26 26C28.2091 26 30 23.7614 30 21C30 18.2386 28.2091 16 26 16C23.7909 16 22 18.2386 22 21C22 23.7614 23.7909 26 26 26Z',
+export const HOVER = { cx: 20, cy: 38.33, rx: 8.67, ry: 1.2, restRx: 6 } as const
+export const THRUSTER = { x: 15.33, y: 35.33, width: 9.33, height: 2, rx: 1 } as const
+export const ARMS = [
+  { x: 1.33, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(28 4 20)' },
+  { x: 35, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(-28 36 20)' },
 ] as const
-export const PUPILS = [{ cx: 15.2, cy: 21.8 }, { cx: 27.2, cy: 21.8 }] as const
-export const PUPIL_R = 1.8
-/** Working: ^ ^ eyes and a smile. */
-export const FACE_WORKING = 'M10.5 22L14 18L17.5 22M22.5 22L26 18L29.5 22M16 27.5C16.3786 27.9897 16.9521 28.4004 17.6577 28.6872C18.3633 28.9739 19.1736 29.1256 20 29.1256C20.8264 29.1256 21.6367 28.9739 22.3423 28.6872C23.0479 28.4004 23.6214 27.9897 24 27.5'
-/** Working: the three motion ticks above the right shoulder. */
-export const MOTION = 'M33 3L35 6M37 9H40M30 1.5V4.5'
-/** Sleeping: closed eyes. */
-export const FACE_SLEEPING = 'M10.5 22.5H17.5M22.5 22.5H29.5'
-export const ZZZ = 'M31 2H36L31 7H36M36.5 9H39.5L36.5 12H39.5'
+export const EARS = [
+  { x: 5.67, y: 5.33, width: 3, height: 7.33, rx: 1.5 },
+  { x: 31.33, y: 5.33, width: 3, height: 7.33, rx: 1.5 },
+] as const
+export const NECK = { x: 16.67, y: 14.67, width: 6.67, height: 3.33 } as const
+export const HEAD = { x: 7.67, y: 1.33, width: 24.67, height: 14.67, rx: 6.67 } as const
+export const VISOR = { x: 10.33, y: 4, width: 19.33, height: 9.33, rx: 4.67, strokeWidth: 0.83 } as const
+export const TORSO = { x: 5.33, y: 16.67, width: 29.33, height: 19.33, rx: 8 } as const
+export const SHIELD = 'M12.67 17.67H27.33a2.67 2.67 0 0 1 2.2 1.17l2.67 4a2.67 2.67 0 0 1-.23 3.2L22 34.67a2.67 2.67 0 0 1-4 0L8.03 26.03a2.67 2.67 0 0 1-.23-3.2l2.67-4A2.67 2.67 0 0 1 12.67 17.67Z'
+
+/** Default: two upright eyes. */
+export const EYES = [
+  { x: 15, y: 6.17, width: 3, height: 5, rx: 1.5 },
+  { x: 22, y: 6.17, width: 3, height: 5, rx: 1.5 },
+] as const
+/** Sleeping: the eyes close to two dashes. */
+export const EYES_SHUT = [
+  { x: 14.33, y: 8.17, width: 4.33, height: 1.2, rx: 0.6 },
+  { x: 21.33, y: 8.17, width: 4.33, height: 1.2, rx: 0.6 },
+] as const
+/** Working: one scan line across the visor. */
+export const SCAN = { x: 13.67, y: 7.67, width: 12.67, height: 2, rx: 1 } as const
+/** Working: thruster flames under the body. */
+export const THRUST = 'M16.67 37.67v1.67M20 37.67v2M23.33 37.67v1.67'
+/** Working: targeting brackets in the frame corners. */
+export const BRACKETS = 'M1 5V1H5M35 1H39V5M39 35V39H35M5 39H1V35'
+export const LINE_WIDTH = 1
+/** Sleeping: a single Z. */
+export const ZZZ = 'M33.33 2h4L33.33 6.67h4'
+
+export const OPACITY = { limb: 0.85, neck: 0.7, hover: 0.35, hoverRest: 0.2, emblemRest: 0.72 } as const

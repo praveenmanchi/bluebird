@@ -46,7 +46,7 @@ export const Matrix: Story = {
 
 export const AcrossBrands: Story = {
   render: () => (
-    <BrandGrid width='200px'>
+    <BrandGrid width='320px'>
       <div style={{ display: 'flex', gap: 'var(--bb-agents-space-inline)' }}>
         {BOT_AGENTS.map((agent) => <BotAvatar key={agent} agent={agent} />)}
       </div>

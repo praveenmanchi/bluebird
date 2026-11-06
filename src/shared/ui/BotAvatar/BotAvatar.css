@@ -1,9 +1,11 @@
 /* BotAvatar — Figma "Bot Avatar" (40000295:8478). One 40-unit vector frame
  * (agents/size/bot) scaled as a whole, so composed instances can resize it.
- * The body and pupils take the agent colour (currentColor = agents/bot/<agent>),
- * eyes / face lines / sheen take agents/bot/face, Zzz takes agents/text/meta.
- * Motion follows the Figma description: Default glances around, Working hops,
- * Sleeping breathes its Zzz. All of it stops under prefers-reduced-motion. */
+ * The body takes the agent colour (currentColor = agents/bot/<agent>), and the eyes, scan
+ * line and shield take persona/bird/eye. The visor is persona/bird/pupil, the thruster
+ * persona/bird/beak and Zzz icon/muted. The emblem icon takes the agent colour too, except
+ * on the two pale agents, where it needs persona/bird/pupil to read on the white shield.
+ * Default floats and glances, Working scans and fires its thrusters, Sleeping dozes.
+ * All of it stops under prefers-reduced-motion. */
 .bb-bot-avatar {
   display: block;
   flex: none;
@@ -18,54 +20,75 @@
 .bb-bot-avatar[data-agent='design-system'] { color: var(--bb-agents-bot-ds); }
 .bb-bot-avatar[data-agent='localization'] { color: var(--bb-agents-bot-l10n); }
 
-.bb-bot-avatar__body,
-.bb-bot-avatar__pupil { fill: currentColor; }
-.bb-bot-avatar__sheen {
-  fill: var(--bb-agents-bot-face);
-  opacity: var(--bb-derived-bot-avatar-sheen-opacity);
+.bb-bot-avatar__hover,
+.bb-bot-avatar__arm,
+.bb-bot-avatar__ear,
+.bb-bot-avatar__neck,
+.bb-bot-avatar__head,
+.bb-bot-avatar__torso { fill: currentColor; }
+.bb-bot-avatar__thruster { fill: var(--bb-persona-bird-beak); }
+.bb-bot-avatar__visor {
+  fill: var(--bb-persona-bird-pupil);
+  stroke: var(--bb-persona-bird-eye);
 }
-.bb-bot-avatar__eye { fill: var(--bb-agents-bot-face); }
+.bb-bot-avatar__eye,
+.bb-bot-avatar__scan,
+.bb-bot-avatar__shield { fill: var(--bb-persona-bird-eye); }
+.bb-bot-avatar[data-agent='writing'] .bb-bot-avatar__icon,
+.bb-bot-avatar[data-agent='spelling'] .bb-bot-avatar__icon { color: var(--bb-persona-bird-pupil); }
 
-.bb-bot-avatar__face-line,
-.bb-bot-avatar__motion,
+.bb-bot-avatar__thrust,
+.bb-bot-avatar__brackets,
 .bb-bot-avatar__zzz {
   fill: none;
-  stroke-width: var(--bb-agents-face-stroke);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.bb-bot-avatar__face-line { stroke: var(--bb-agents-bot-face); }
-.bb-bot-avatar__motion { stroke: currentColor; }
-.bb-bot-avatar__zzz { stroke: var(--bb-agents-text-meta); }
+.bb-bot-avatar__thrust { stroke: var(--bb-persona-bird-beak); }
+.bb-bot-avatar__brackets { stroke: currentColor; }
+.bb-bot-avatar__zzz {
+  stroke: var(--bb-icon-muted);
+  stroke-width: var(--bb-agents-face-stroke);
+}
 
 /* ── Motion ─────────────────────────────────────────────────────────────── */
 .bb-bot-avatar__figure,
-.bb-bot-avatar__pupils,
+.bb-bot-avatar__eyes,
+.bb-bot-avatar__scan,
 .bb-bot-avatar__zzz { transform-box: fill-box; transform-origin: center; }
 
-.bb-bot-avatar[data-state='default'] .bb-bot-avatar__pupils {
+.bb-bot-avatar[data-state='default'] .bb-bot-avatar__figure {
+  animation: bb-bot-avatar-float 3.6s ease-in-out infinite; /* allow-raw */
+}
+.bb-bot-avatar[data-state='default'] .bb-bot-avatar__eyes {
   animation: bb-bot-avatar-glance 4.8s ease-in-out infinite; /* allow-raw */
 }
 .bb-bot-avatar[data-state='working'] .bb-bot-avatar__figure {
-  transform-origin: center bottom;
-  animation: bb-bot-avatar-hop 0.9s ease-in-out infinite; /* allow-raw */
+  animation: bb-bot-avatar-float 0.9s ease-in-out infinite; /* allow-raw */
 }
-.bb-bot-avatar[data-state='working'] .bb-bot-avatar__motion {
+.bb-bot-avatar[data-state='working'] .bb-bot-avatar__scan {
+  animation: bb-bot-avatar-scan 1.2s ease-in-out infinite; /* allow-raw */
+}
+.bb-bot-avatar[data-state='working'] .bb-bot-avatar__thrust,
+.bb-bot-avatar[data-state='working'] .bb-bot-avatar__brackets {
   animation: bb-bot-avatar-flicker 0.9s ease-in-out infinite; /* allow-raw */
 }
 .bb-bot-avatar[data-state='sleeping'] .bb-bot-avatar__zzz {
   animation: bb-bot-avatar-doze 3.2s ease-in-out infinite; /* allow-raw */
 }
 
+@keyframes bb-bot-avatar-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); } /* allow-raw */
+}
 @keyframes bb-bot-avatar-glance {
   0%, 20%, 100% { transform: translate(0, 0); }
-  30%, 45% { transform: translate(-1.6px, 0); } /* allow-raw */
-  55%, 70% { transform: translate(0, -0.8px); } /* allow-raw */
+  30%, 45% { transform: translate(-1.4px, 0); } /* allow-raw */
+  55%, 70% { transform: translate(1.4px, 0); } /* allow-raw */
 }
-@keyframes bb-bot-avatar-hop {
-  0%, 100% { transform: translateY(0); }
-  45% { transform: translateY(-2.5px); } /* allow-raw */
-  60% { transform: translateY(-2px); } /* allow-raw */
+@keyframes bb-bot-avatar-scan {
+  0%, 100% { transform: scaleX(0.45); }
+  50% { transform: scaleX(1); }
 }
 @keyframes bb-bot-avatar-flicker {
   0%, 100% { opacity: 1; }
@@ -79,7 +102,9 @@
 @media (prefers-reduced-motion: reduce) {
   .bb-bot-avatar *,
   .bb-bot-avatar[data-state] .bb-bot-avatar__figure,
-  .bb-bot-avatar[data-state] .bb-bot-avatar__pupils,
-  .bb-bot-avatar[data-state] .bb-bot-avatar__motion,
+  .bb-bot-avatar[data-state] .bb-bot-avatar__eyes,
+  .bb-bot-avatar[data-state] .bb-bot-avatar__scan,
+  .bb-bot-avatar[data-state] .bb-bot-avatar__thrust,
+  .bb-bot-avatar[data-state] .bb-bot-avatar__brackets,
   .bb-bot-avatar[data-state] .bb-bot-avatar__zzz { animation: none; }
 }
