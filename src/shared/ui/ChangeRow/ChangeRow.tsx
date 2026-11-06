@@ -58,7 +58,7 @@ export function ChangeRow({
   kind = 'color',
   state = 'default',
   name = 'button/bg/primary',
-  detail = '#0C8CE9 → #0560A3 · 3 of 5 brands',
+  detail = '#0C8CE9 → #0978C8 · 2 of 8 brands',
   change = 'modified',
   swatch = '#0560A3',
   included,

@@ -8,7 +8,7 @@ const meta = {
   title: 'Molecules/SearchBar',
   component: SearchBar,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { value: '', placeholder: 'Enter Variables here' },
+  args: { value: '', placeholder: 'Search variables' },
 } satisfies Meta<typeof SearchBar>
 export default meta
 type Story = StoryObj<typeof meta>

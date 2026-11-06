@@ -39,7 +39,7 @@ function sample(overrides: Partial<ExtractResult> = {}): ExtractResult {
 const STEP_STATES = (statuses: PipelineStepState['status'][]): PipelineStepState[] =>
   (['extract', 'components', 'commit', 'build', 'deploy'] as const).map((id, i) => ({
     id, status: statuses[i]!, time: statuses[i] === 'done' ? ['3s', '6s', '2s', '1m 12s', '18s'][i]! : statuses[i] === 'running' ? '…' : '—',
-    detail: { extract: 'Figma REST · 8 variables · 5 brand modes', components: 'Code Connect · 9 components · 4 changed', commit: 'bridge-ds-site · release/v4.0.0 · PR #62', build: 'GitHub Actions #484 · Build docs', deploy: 'Vercel · production · ds.bridge.design' }[id],
+    detail: { extract: 'Figma REST · 8 variables · 8 brand modes', components: 'Code Connect · 9 components · 4 changed', commit: 'bridge-ds-site · release/v4.0.0 · PR #62', build: 'GitHub Actions #484 · Build docs', deploy: 'Vercel · production · ds.bridge.design' }[id],
   }))
 
 const release = { version: 'v4.0.0', title: 'Button, Date picker and 10 more', publishedAt: new Date().toISOString(), changes: 12 }

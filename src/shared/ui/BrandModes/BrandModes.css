@@ -10,7 +10,6 @@
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);
   color: var(--bb-text-tertiary);
-  text-transform: uppercase;
 }
 .bb-brand-modes__list {
   display: flex;

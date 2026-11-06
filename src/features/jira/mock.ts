@@ -41,7 +41,7 @@ function fixtureHandlers(scenario: MockScenario, now: () => number): HandlerMap 
 
   return {
     [MSG.load]: async (): Promise<LoadResult> => {
-      if (scenario === 'not-connected') return { status: 'not-connected', reason: 'incomplete', missing: ['Site URL', 'Jira API Key', 'Email ID'] }
+      if (scenario === 'not-connected') return { status: 'not-connected', reason: 'incomplete', missing: ['Site URL', 'Jira API key', 'Email ID'] }
       if (scenario === 'error') throw new Error('The Jira API didn’t respond. Check your token or network and try again.')
       const result: LoadResult = { status: 'connected', site: SAMPLE_SITE, me: ME, tickets: [...tickets], activeSprint: CURRENT_SPRINT, syncedAt: synced, truncated: false }
       synced = now()

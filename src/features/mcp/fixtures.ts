@@ -73,7 +73,7 @@ export const CONNECTIONS: readonly HandoffConnection[] = [
 
 /** Settings › MCP + Code Sync as the fixtures assume it. */
 export const SAMPLE_GITHUB: GithubStatus = { connected: true, repo: 'praveenmanchi/bluebird', branch: 'main' }
-export const NO_GITHUB: GithubStatus = { connected: false, repo: '', branch: 'main', problem: 'Add the repository and personal access token in Settings › MCP + Code Sync' }
+export const NO_GITHUB: GithubStatus = { connected: false, repo: '', branch: 'main', problem: 'Add the repository and personal access token in Settings › MCP + code sync' }
 
 export const FRAMEWORKS = ['Preact + TypeScript', 'React + TypeScript', 'Web components'] as const
 export const STYLINGS = ['CSS variables (--bb-*)', 'CSS modules', 'Tailwind'] as const

@@ -26,7 +26,7 @@ export interface AgentsRunningProps {
 // The Figma "AI Agents · Running" screen, verbatim.
 const FIGMA_STEPS: readonly RunningStep[] = [
   { label: 'Loaded rule pack · WCAG 2.2 AA (6 of 7 rules on)', status: 'done' },
-  { label: 'Resolved Brand UI tokens in 5 brand modes', status: 'done' },
+  { label: 'Resolved Brand UI tokens in 8 brand modes', status: 'done' },
   { label: 'Checked contrast · 3 frames × 5 modes', status: 'done' },
   { label: 'Checking target size and spacing exceptions…', status: 'running' },
 ]
@@ -35,7 +35,7 @@ const FIGMA_FINDINGS: readonly AgentFinding[] = [SAMPLE_FINDINGS.accessibility[0
 /** Figma "Agents body" on "AI Agents · Running" (40000298:6038): progress, reasoning steps, findings as they stream in. */
 export function AgentsRunning({
   agent = agentById('accessibility'), percent = 64,
-  progressLabel = 'Checking 8 of 12 frames · 96 of 148 layers · 5 brand modes',
+  progressLabel = 'Checking 8 of 12 frames · 96 of 148 layers · 8 brand modes',
   steps = FIGMA_STEPS, findings = FIGMA_FINDINGS, foundCount, onStop, onFindingAction, onBack,
 }: AgentsRunningProps) {
   const pct = Math.round(percent)

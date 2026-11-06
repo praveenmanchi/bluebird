@@ -19,7 +19,7 @@ export interface Source {
 }
 
 export const SOURCES: readonly Source[] = [
-  { id: 'brand-ui', name: 'Brand UI variables', chip: 'Brand UI variables', meta: 'Variables · 421 tokens · 5 brand modes', icon: 'variables', status: 'Indexed', statusTone: 'success', selected: true },
+  { id: 'brand-ui', name: 'Brand UI variables', chip: 'Brand UI variables', meta: 'Variables · 1,026 tokens · 8 brand modes', icon: 'variables', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'components', name: 'Components library', chip: 'Components', meta: 'Components · 87 sets · 34 atoms, 41 molecules, 12 organisms', icon: 'component', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'icons', name: 'Iconography', chip: 'Icons', meta: 'Icons · 69 glyphs · 16 / 24 px', icon: 'layers', status: 'Indexed', statusTone: 'success', selected: true },
   { id: 'type', name: 'Typography styles', chip: 'Type styles', meta: 'Type · 12 styles · Noto Sans, MuseoModerno, Noto Serif', icon: 'text', status: 'Indexed', statusTone: 'success', selected: true },
@@ -77,7 +77,7 @@ export const ANSWERS: Record<AnswerKind, CannedAnswer> = {
     text: 'Your primary colour is surface/accent. It drives primary buttons, the tab indicator and avatars, and it changes with the brand:',
     searching: 'Searching your variables…',
     hint: 'Reading Brand UI…',
-    steps: ['Searched Variables · Brand UI (421 tokens, 5 modes)', 'Matched surface/accent via button/primary/bg/default'],
+    steps: ['Searched Variables · Brand UI (1,026 tokens, 5 modes)', 'Matched surface/accent via button/primary/bg/default'],
     thoughtFor: 'Thought for 2s',
     followUps: [
       { label: 'Check contrast in every brand', icon: 'colors' },

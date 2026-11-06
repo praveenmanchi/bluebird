@@ -52,3 +52,5 @@
   align-items: center;
   gap: var(--bb-jira-space-inline);
 }
+/* Destructive, so it reads apart from Reply and Edit. */
+.bb-link-button.bb-comment__delete { color: var(--bb-feedback-danger); }

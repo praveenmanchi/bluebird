@@ -17,8 +17,8 @@
   transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-button:focus-visible {
-  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
-  outline-offset: var(--bb-space-inset-xs);
+  outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-border-focus);
+  outline-offset: 0;
 }
 .bb-button__label { display: inline-block; }
 .bb-button__icon { display: inline-flex; flex: none; }
@@ -54,7 +54,6 @@
   background: var(--bb-button-primary-bg-disabled);
   border-color: var(--bb-button-primary-border-disabled);
   color: var(--bb-button-primary-fg-disabled);
-  opacity: var(--bb-dimension-opacity-55);
   cursor: not-allowed;
 }
 .bb-button[data-variant="primary"]:disabled .bb-button__icon { color: var(--bb-button-primary-icon-color-disabled); }
@@ -96,7 +95,6 @@
   background: var(--bb-button-secondary-bg-disabled);
   border-color: var(--bb-button-secondary-border-disabled);
   color: var(--bb-button-secondary-fg-disabled);
-  opacity: var(--bb-dimension-opacity-55);
   cursor: not-allowed;
 }
 .bb-button[data-variant="secondary"]:disabled .bb-button__icon { color: var(--bb-button-secondary-icon-color-disabled); }
@@ -109,3 +107,44 @@
   line-height: var(--bb-button-secondary-line-height-lg);
 }
 .bb-button[data-variant="secondary"][data-size="lg"] .bb-button__icon { width: var(--bb-button-secondary-icon-size-lg); height: var(--bb-button-secondary-icon-size-lg); }
+
+/* ----------------------------------------------------------------- Danger */
+/* Figma Type=Danger: Secondary's metrics with the destructive colours, so a risky action never out-shouts a safe one. */
+.bb-button[data-variant="danger"] {
+  height: var(--bb-button-secondary-height);
+  padding-inline: var(--bb-button-secondary-padding-x);
+  gap: var(--bb-button-secondary-gap);
+  border-radius: var(--bb-button-secondary-radius);
+  border-width: var(--bb-button-secondary-border-width);
+  background: var(--bb-button-danger-bg-default);
+  border-color: var(--bb-button-danger-border-default);
+  color: var(--bb-button-danger-fg-default);
+  font-family: var(--bb-button-secondary-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-button-secondary-font-size);
+  font-weight: var(--bb-button-secondary-font-weight);
+  line-height: var(--bb-button-secondary-line-height);
+}
+.bb-button[data-variant="danger"] .bb-button__icon {
+  width: var(--bb-button-secondary-icon-size);
+  height: var(--bb-button-secondary-icon-size);
+  color: currentColor;
+}
+.bb-button[data-variant="danger"]:not(:disabled):is(:hover, [data-state="hover"]) {
+  background: var(--bb-button-danger-bg-hover);
+  border-color: var(--bb-button-danger-border-hover);
+  color: var(--bb-button-danger-fg-hover);
+}
+.bb-button[data-variant="danger"]:disabled {
+  background: var(--bb-button-secondary-bg-disabled);
+  border-color: var(--bb-button-secondary-border-disabled);
+  color: var(--bb-button-secondary-fg-disabled);
+  cursor: not-allowed;
+}
+.bb-button[data-variant="danger"][data-width="fixed"] { width: var(--bb-button-secondary-width-md); }
+.bb-button[data-variant="danger"][data-size="lg"][data-width="fixed"] { width: var(--bb-button-secondary-width-lg); }
+.bb-button[data-variant="danger"][data-size="lg"] {
+  height: var(--bb-button-secondary-height-lg);
+  padding-inline: var(--bb-button-secondary-padding-x-lg);
+  font-size: var(--bb-button-secondary-font-size-lg);
+  line-height: var(--bb-button-secondary-line-height-lg);
+}

@@ -23,7 +23,7 @@ const meta = {
     meta: 'Universal Toolkit · Used by 52 components · Affects 1 mode/brands',
     changeCount: 52,
     summary: [
-      { label: 'Total No. of Usage No.', count: 52 },
+      { label: 'Total No. of Used in', count: 52 },
       { label: 'Total No. of Nodes  Using', count: 52 },
     ],
     rows: FIGMA_ROWS,

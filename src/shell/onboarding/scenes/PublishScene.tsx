@@ -4,7 +4,7 @@ import { Fx, Stage, Swap, reveal, type CursorStop } from '../stage'
 import type { SceneProps } from './types'
 
 const CHANGES = [
-  { name: 'button/bg/primary', detail: '#0C8CE9 → #0560A3 · 3 of 5 brands', tone: 'accent', label: 'Modified' },
+  { name: 'button/bg/primary', detail: '#0C8CE9 → #0978C8 · 2 of 8 brands', tone: 'accent', label: 'Modified' },
   { name: 'Date picker', detail: 'New · 6 variants', tone: 'success', label: 'Added' },
   { name: 'surface/translucent', detail: 'Removed · used by 4 components', tone: 'danger', label: 'Removed' },
 ] as const

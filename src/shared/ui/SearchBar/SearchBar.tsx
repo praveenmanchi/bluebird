@@ -19,7 +19,7 @@ export interface SearchBarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>,
 }
 
 /** Figma "search bar" (7:44532): a bordered field with the `search` glyph trailing the query. */
-export function SearchBar({ value, placeholder = 'Enter Variables here', label = 'Search', disabled, onValueChange, onSubmit, inputProps, class: cls, ...rest }: SearchBarProps) {
+export function SearchBar({ value, placeholder = 'Search variables', label = 'Search', disabled, onValueChange, onSubmit, inputProps, class: cls, ...rest }: SearchBarProps) {
   return (
     <div {...rest} role="search" class={`bb-search-bar ${cls ?? ''}`} data-disabled={disabled || undefined}>
       <input

@@ -107,10 +107,10 @@ export function VariableCardExpanded({
               </span>
               <span class="bb-variable-card-expanded__actions">
                 <ChangeStatus status={row.status ?? 'updated'} label={row.valueLabel} count={row.value} class="bb-variable-card-expanded__chip" />
-                <button type="button" class="bb-variable-card-expanded__action" aria-label={`Show layers of ${rowName}`} onClick={() => onShowLayers?.(row, i)}>
+                <button type="button" class="bb-variable-card-expanded__action" aria-label={`Show layers of ${rowName}`} title="Select layers" onClick={() => onShowLayers?.(row, i)}>
                   <Icon name="layers-show" />
                 </button>
-                <button type="button" class="bb-variable-card-expanded__action" aria-label={`Show ${rowName}`} onClick={() => onShow?.(row, i)}>
+                <button type="button" class="bb-variable-card-expanded__action" aria-label={`Show ${rowName}`} title="Go to" onClick={() => onShow?.(row, i)}>
                   <Icon name="show" />
                 </button>
               </span>

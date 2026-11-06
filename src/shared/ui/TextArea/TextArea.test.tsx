@@ -4,8 +4,8 @@ import { TextArea } from './TextArea'
 
 describe('TextArea', () => {
   it('labels a native textarea and describes it with the helper', () => {
-    render(<TextArea label="Custom Instructions (optional)" helperText="Included in every prompt." placeholder="Add any custom instructions…" />)
-    const field = screen.getByLabelText('Custom Instructions (optional)') as HTMLTextAreaElement
+    render(<TextArea label="Custom instructions (optional)" helperText="Included in every prompt." placeholder="Add any custom instructions…" />)
+    const field = screen.getByLabelText('Custom instructions (optional)') as HTMLTextAreaElement
     expect(field.tagName).toBe('TEXTAREA')
     expect(field.placeholder).toBe('Add any custom instructions…')
     expect(field).toHaveAccessibleDescription('Included in every prompt.')

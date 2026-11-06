@@ -23,7 +23,7 @@ export interface JiraConfig {
 export type SettingsProblem = { reason: 'disabled' | 'incomplete' | 'invalid'; missing: string[] }
 
 const trimSlash = (s: string) => s.trim().replace(/\/+$/, '')
-const FIELD_LABELS: Record<string, string> = { siteUrl: 'Site URL', baseUrl: 'Base URL', proxyUrl: 'Proxy URL', email: 'Email ID', projectKey: 'Project Key' }
+const FIELD_LABELS: Record<string, string> = { siteUrl: 'Site URL', baseUrl: 'Base URL', proxyUrl: 'Proxy URL', email: 'Email ID', projectKey: 'Project key' }
 
 /** The connection Settings describe, or why there is none. */
 export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | SettingsProblem {
@@ -31,7 +31,7 @@ export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | S
   const server = s.baseUrl.trim() !== ''
   const missing = [
     ...(server || s.siteUrl.trim() ? [] : ['Site URL']),
-    ...(s.apiKey.trim() ? [] : ['Jira API Key']),
+    ...(s.apiKey.trim() ? [] : ['Jira API key']),
     ...(server || s.email.trim() ? [] : ['Email ID']),
   ]
   if (missing.length) return { reason: 'incomplete', missing }
@@ -50,9 +50,9 @@ export function isConfig(value: JiraConfig | SettingsProblem): value is JiraConf
 
 /** What to tell the designer when Settings don't describe a usable connection. */
 export function problemMessage(problem: SettingsProblem): string {
-  if (problem.reason === 'disabled') return 'Jira is switched off. Turn it on in Settings › Jira Integration.'
+  if (problem.reason === 'disabled') return 'Jira is switched off. Turn it on in Settings › Jira integration.'
   const fields = problem.missing.join(', ')
-  return problem.reason === 'invalid' ? `Fix the ${fields} in Settings › Jira Integration.` : `Add your ${fields} in Settings › Jira Integration.`
+  return problem.reason === 'invalid' ? `Fix the ${fields} in Settings › Jira integration.` : `Add your ${fields} in Settings › Jira integration.`
 }
 
 /** Settings › Test Connection: the form's (unsaved) values as a connection, tested even while the switch is off. */
@@ -118,7 +118,7 @@ function failure(status: number, body: string, viaProxy: boolean): JiraError {
   const detail = jiraDetail(body)
   const said = detail ? ` Jira said: ${detail}` : ''
   switch (status) {
-    case 401: return new JiraError('Jira rejected the email or API token. Check them in Settings › Jira Integration.', status)
+    case 401: return new JiraError('Jira rejected the email or API token. Check them in Settings › Jira integration.', status)
     case 403: return new JiraError(`Your Jira account isn’t allowed to do that.${said}`, status)
     case 404: return new JiraError(`Jira couldn’t find that. Check the Site URL in Settings.${said}`, status)
     case 429: return new JiraError('Jira is rate-limiting requests. Wait a minute and try again.', status)
@@ -143,7 +143,7 @@ export function createRequest(config: JiraConfig, fetchImpl: HttpFetch): JiraReq
     } catch {
       throw new JiraError(viaProxy
         ? 'Couldn’t reach the Jira proxy. Start it with `npm run jira:proxy` and check Settings › Proxy URL.'
-        : 'Couldn’t reach Jira from Figma. Jira Cloud blocks direct plugin calls — set a Proxy URL in Settings › Jira Integration.', 0)
+        : 'Couldn’t reach Jira from Figma. Jira Cloud blocks direct plugin calls — set a Proxy URL in Settings › Jira integration.', 0)
     }
     const text = await res.text()
     if (res.status < 200 || res.status >= 300) throw failure(res.status, text, viaProxy)

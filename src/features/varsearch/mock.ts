@@ -8,8 +8,8 @@ import {
   type SelectResult, type Usage, type VariableMatch,
 } from './messages'
 
-const PAGE_NAMES = ['Cover', 'Colors', 'Typography', 'Icons', 'Atoms', 'Molecules', 'Organisms', 'Login', 'Onboarding', 'Tokens',
-  'Accessibility', 'Jira', 'MCP', 'UX AI', 'AI Agents', 'Publish', 'Documentation', 'Variable Search', 'Settings']
+const PAGE_NAMES = ['Cover', 'Colours', 'Typography', 'Icons', 'Atoms', 'Molecules', 'Organisms', 'Login', 'Onboarding', 'Tokens',
+  'Accessibility', 'Jira', 'MCP', 'UXAI', 'AI Agents', 'Publish', 'Documentation', 'Variable Search', 'Settings']
 export const MOCK_PAGES: readonly PageInfo[] = PAGE_NAMES.map((name, i) => ({ id: `p:${i}`, name }))
 const page = (name: string) => MOCK_PAGES.find((p) => p.name === name)!
 
@@ -19,7 +19,7 @@ const usage = (name: string, pageName: string, count: number, kind: Usage['kind'
 })
 
 const variable = (name: string, usages: Usage[]): VariableMatch => ({
-  id: `v:${name}`, name, collection: 'Brand UI', resolvedType: 'COLOR', modes: 7, textLike: false,
+  id: `v:${name}`, name, collection: 'Brand UI', resolvedType: 'COLOR', modes: 8, textLike: false,
   usages, totalNodes: usages.reduce((n, u) => n + u.count, 0),
 })
 
@@ -47,9 +47,9 @@ const DAY = 86_400_000
 
 export function createMockHandlers(scenario: MockScenario = 'default', now: () => number = Date.now): HandlerMap {
   let recent: RecentSearch[] = scenario === 'empty' ? [] : [
-    { query: 'button/primary/bg/default', name: 'button/primary/bg/default', meta: 'Brand UI · Used by 10 components · Affects 7 modes/brands', usage: 15, textLike: false, at: now() - 2 * 60_000 },
-    { query: 'surface/accent-strong', name: 'surface/accent-strong', meta: 'Brand UI · Used by 4 components · Affects 7 modes/brands', usage: 10, textLike: false, at: now() - DAY },
-    { query: 'font/family-ui', name: 'font/family-ui', meta: 'Brand UI · Used by 2 text styles · Affects 7 modes/brands', usage: 8, textLike: true, at: now() - 12 * DAY },
+    { query: 'button/primary/bg/default', name: 'button/primary/bg/default', meta: 'Brand UI · Used by 10 components · Affects 8 brand modes', usage: 15, textLike: false, at: now() - 2 * 60_000 },
+    { query: 'surface/accent-strong', name: 'surface/accent-strong', meta: 'Brand UI · Used by 4 components · Affects 8 brand modes', usage: 10, textLike: false, at: now() - DAY },
+    { query: 'font/family-ui', name: 'font/family-ui', meta: 'Brand UI · Used by 2 text styles · Affects 8 brand modes', usage: 8, textLike: true, at: now() - 12 * DAY },
   ]
   const delay = scenario === 'slow' ? 1000 : 120
 

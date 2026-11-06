@@ -58,7 +58,7 @@ describe('libraries handlers', () => {
     expect(Object.keys(setup().handlers).filter((type) => !isMessageType(type))).toEqual([])
   })
 
-  it('wires Test Connection on dual-file:test', async () => {
+  it('wires Test connection on dual-file:test', async () => {
     const { handlers } = setup()
     const result = await handlers["dual-file:test"]!({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: "V", file1Key: "t" } as never, ctx)
     expect((result as { message: string }).message).toContain('5 variables')

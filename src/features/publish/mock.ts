@@ -32,7 +32,7 @@ const PUSH_LOG = '$ git push origin release/{v}:main\n! [remote rejected] main (
 const BUILD_LOG = '> astro build\nerror  Could not resolve "tokens/brand.richemont.json"\n  imported by src/pages/tokens/[brand].astro\nProcess completed with exit code 1.'
 
 const STEP_DETAIL: Record<PipelineStepId, string> = {
-  extract: 'Figma REST · 8 variables · 5 brand modes',
+  extract: 'Figma REST · 8 variables · 8 brand modes',
   components: 'Code Connect · 9 components · 4 changed',
   commit: `${SAMPLE_REPO.repo.split('/')[1]} · release/{v} · PR #62`,
   build: 'GitHub Actions #484 · Build docs',

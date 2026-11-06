@@ -37,4 +37,12 @@ describe('Button', () => {
     rerender(<Button size="lg">Save</Button>)
     expect(screen.getByRole('button').dataset.size).toBe('lg')
   })
+  it('renders the danger type and keeps it clickable', () => {
+    const onClick = vi.fn()
+    render(<Button variant="danger" onClick={onClick}>Reset</Button>)
+    const button = screen.getByRole('button', { name: 'Reset' })
+    expect(button).toHaveAttribute('data-variant', 'danger')
+    fireEvent.click(button)
+    expect(onClick).toHaveBeenCalledOnce()
+  })
 })

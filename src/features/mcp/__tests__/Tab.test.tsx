@@ -257,9 +257,9 @@ describe('mcp Tab — empty states', () => {
     expect(button('Next: Check')).toBeEnabled()
   })
 
-  it('locks the push without GitHub (Settings › MCP + Code Sync) but still offers the prompt', async () => {
+  it('locks the push without GitHub (Settings › MCP + code sync) but still offers the prompt', async () => {
     await renderTab({ githubConnected: false })
-    expect(await screen.findByText('Add the repository and personal access token in Settings › MCP + Code Sync')).toBeInTheDocument()
+    expect(await screen.findByText('Add the repository and personal access token in Settings › MCP + code sync')).toBeInTheDocument()
     await toShip()
     expect(screen.getByText('Connect GitHub to push')).toBeInTheDocument()
     expect(button('Push and open PR')).toBeDisabled()

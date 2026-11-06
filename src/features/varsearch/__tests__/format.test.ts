@@ -58,10 +58,10 @@ describe('types', () => {
 
 describe('card copy', () => {
   it('writes the meta line from what uses the variable', () => {
-    expect(variableMeta({ collection: 'Brand UI', modes: 7, usages: [u('component'), u('component'), u('frame')] }))
-      .toBe('Brand UI · Used by 2 components, 1 frame · Affects 7 modes/brands')
+    expect(variableMeta({ collection: 'Brand UI', modes: 8, usages: [u('component'), u('component'), u('frame')] }))
+      .toBe('Brand UI · Used by 2 components, 1 frame · Affects 8 brand modes')
     expect(variableMeta({ collection: 'Primitives', modes: 1, usages: [u('text-style')] }))
-      .toBe('Primitives · Used by 1 text style · Affects 1 mode/brands')
+      .toBe('Primitives · Used by 1 text style · Affects 1 brand mode')
   })
   it('names the summary chip after the row kind', () => {
     expect(usagesLabel({ usages: [u('component')] })).toBe('Components')

@@ -85,7 +85,7 @@ describe('generate()', () => {
     ]))
   })
   it('resolves brand values per mode', () => {
-    expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-button-primary-bg-default: #0c8ce9;')
+    expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-button-primary-bg-default: #0978c8;')
     expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-bg-default: #161616;')
     expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-radius: 64px;')
     expect(files['src/shared/brand/generated/brand.richemont.css']).toContain('--bb-button-primary-radius: 0px;')

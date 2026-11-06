@@ -4,7 +4,7 @@ import { Fx, Stage, Swap, reveal, type CursorStop } from '../stage'
 import type { SceneProps } from './types'
 
 const CHIPS = [
-  { brand: 'Bridge', ratio: '4.8:1', pass: true },
+  { brand: 'Bridge', ratio: '4.6:1', pass: true },
   { brand: 'Ikea', ratio: '5.2:1', pass: true },
   { brand: 'Richemont', ratio: '2.9:1', pass: false },
   { brand: 'Disney', ratio: '4.6:1', pass: true },
@@ -51,7 +51,7 @@ export function A11yScene({ still }: SceneProps) {
             />
           </div>
           <CheckItem status="warning" title="Icon button below 24 × 24" detail="Target size 2.5.8 · ×4 layers" showAction actionLabel="Fix" {...reveal(3120, 'right')} />
-          <CheckItem status="pass" title="Primary button label" detail="4.8:1 · passes AA in all brands" {...reveal(3240, 'right')} />
+          <CheckItem status="pass" title="Primary button label" detail="4.6:1 · passes AA in all brands" {...reveal(3240, 'right')} />
         </div>
       </div>
     </Stage>

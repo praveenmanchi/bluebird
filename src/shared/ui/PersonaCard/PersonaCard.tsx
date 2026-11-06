@@ -6,7 +6,7 @@ import './PersonaCard.css'
 
 /** Figma "Team Description" default. */
 export const PERSONA_CARD_DESCRIPTION =
-  'Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow. Switching teams will replay the onboarding tour for your new role.'
+  'Your persona sets which tabs you see. Change it any time and the tour replays for your new tabs.'
 
 export interface PersonaCardTab {
   /** Tab "Label" (read as the compact tab's accessible name). */

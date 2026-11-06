@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = { parameters: { figma: { variant: 'footer' } } }
 export const LocalOnly: Story = { args: { uxai: false, mcp: false, dualFile: false } }
-export const CustomPills: Story = { args: { pills: [{ label: 'Git', status: 'good' }, { label: 'UX AI', status: 'issue' }, { label: 'MCP', status: 'error' }, { label: 'Dual File', status: 'retry' }] } }
+export const CustomPills: Story = { args: { pills: [{ label: 'Git', status: 'good' }, { label: 'UXAI', status: 'issue' }, { label: 'MCP', status: 'error' }, { label: 'Dual File', status: 'retry' }] } }
 
 export const Interactive: Story = {
   render: (args) => {

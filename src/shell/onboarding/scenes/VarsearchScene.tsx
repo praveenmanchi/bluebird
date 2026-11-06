@@ -4,7 +4,7 @@ import { Stage, Swap, reveal, type CursorStop } from '../stage'
 import type { SceneProps } from './types'
 
 const NAME = 'dropdown/border/default'
-const META = 'Brand UI · Used by 5 components · Affects 7 modes/brands'
+const META = 'Brand UI · Used by 5 components · Affects 8 brand modes'
 const ROWS = [
   { label: 'Tab sub menu', value: 5, valueLabel: 'Nodes using' },
   { label: 'Variable Row', value: 2, valueLabel: 'Nodes using' },

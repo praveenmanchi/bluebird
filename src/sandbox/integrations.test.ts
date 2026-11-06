@@ -46,7 +46,7 @@ describe('integrations handlers', () => {
     expect(all.jira.projectKey).toBe('DS')
   })
 
-  it('is cleared by "Reset all Settings" with the rest of the bluebird: keys', async () => {
+  it('is cleared by "Reset all settings" with the rest of the bluebird: keys', async () => {
     const store = memoryStore()
     await call(createIntegrationsHandlers(store), INTEGRATIONS_MSG.save, { section: 'github', values: github })
     const config = loadConfig({ brand: { active: 'a', brands: { a: { label: 'A', accessCodeHash: hashAccessCode('A-CODE'), source: { collection: 'Brand', mode: 'A' } } } }, activePersona: 'p', personas: { p: { label: 'P', tabs: [] } }, tabs: {} })

@@ -32,7 +32,7 @@ export const ComponentSelected: Story = { args: { kind: 'component', state: 'sel
 export const ChangeKinds: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--bb-publish-space-tight)' }}>
-      <ChangeRow {...args} change="added" name="button/bg/success" detail="New in 3 of 5 brands" />
+      <ChangeRow {...args} change="added" name="button/bg/success" detail="New in 3 of 8 brands" />
       <ChangeRow {...args} change="modified" />
       <ChangeRow {...args} kind="number" change="removed" name="space/legacy-gutter" detail="Removed from all brands" />
       <ChangeRow {...args} kind="component" change="deprecated" name="Badge/Legacy" detail="Use Meta Badge instead" included={false} />

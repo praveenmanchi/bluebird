@@ -7,7 +7,7 @@ describe('Banner', () => {
     const { container } = render(<Banner />)
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByText('Design Studio')).toBeInTheDocument()
-    expect(screen.getByText('Connecting Gap between design workflow')).toBeInTheDocument()
+    expect(screen.getByText('Connecting design and development')).toBeInTheDocument()
     // Eight client logos (CSS reveals the active one) plus the HCL mark, which since 2026-09-23 is
     // a composed <BrandLogo> at half size — Figma replaced the inline vector with an instance.
     expect(container.querySelectorAll('.bb-brand-logo')).toHaveLength(9)

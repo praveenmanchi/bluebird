@@ -81,7 +81,7 @@ const SETUP: TourStep = {
   id: 'setup',
   scene: 'setup',
   title: 'One last thing — add a key',
-  body: 'The AI features need a Claude, OpenAI, or Gemini API key — paste one in Settings and they light up. Everything else works right away.',
+  body: 'The AI features need a Claude, OpenAI, or Gemini API key. Paste one in Settings and they light up. Jira, GitHub and your other connections are set up there too.',
   tabId: SETTINGS_TAB,
 }
 

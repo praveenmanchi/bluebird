@@ -638,6 +638,9 @@
   --bb-dimension-radius-16: 16px;
   --bb-type-size-15: 15px;
   --bb-type-size-36: 36px;
+  --bb-bridge-color-status-danger-200: #f28b82;
+  --bb-disney-color-status-danger-200: #f28b82;
+  --bb-gap-color-status-danger-200: #f28b82;
   --bb-surface-transparent: #ffffff00;
   --bb-border-on-accent: #ffffff4a;
   --bb-space-inset-xs: 2px;

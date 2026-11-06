@@ -1,7 +1,7 @@
 import { CATEGORIES, type Candidate, type Category, type MapperGroup, type MatchKind } from './messages'
 import type { Binding, Filter } from './state'
 
-export const CATEGORY_LABEL: Readonly<Record<Category, string>> = { colors: 'Colors', border: 'Border', spacing: 'Spacing', typography: 'Typography' }
+export const CATEGORY_LABEL: Readonly<Record<Category, string>> = { colors: 'Colours', border: 'Border', spacing: 'Spacing', typography: 'Typography' }
 
 const MAX_NAMES = 3
 const plural = (n: number, one: string) => `${n.toLocaleString()} ${one}${n === 1 ? '' : 's'}`

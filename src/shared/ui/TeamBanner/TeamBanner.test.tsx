@@ -53,7 +53,7 @@ describe('TeamBanner', () => {
     expect([...brand.children].map((c) => c.className)).toEqual(['bb-team-banner__mark', 'bb-team-banner__product'])
     expect(container.querySelector('.bb-team-banner__rule')).not.toBeNull()
     expect(container.querySelector('.bb-team-banner__product-name')?.textContent).toBe('Design Studio')
-    expect(container.querySelector('.bb-team-banner__product-tagline')?.textContent).toBe('Connecting Gap between design workflow')
+    expect(container.querySelector('.bb-team-banner__product-tagline')?.textContent).toBe('Connecting design and development')
   })
   it('takes custom product copy and hides the lockup with showProduct', () => {
     const { container, rerender } = render(<TeamBanner product="Studio X" productTagline="Tagline" />)

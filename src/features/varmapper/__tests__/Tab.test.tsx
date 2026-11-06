@@ -20,7 +20,7 @@ describe('varmapper Tab', () => {
     expect(await screen.findByRole('heading', { name: 'Page header' })).toBeInTheDocument()
     expect(screen.getByText('Frame on Login · 55 hard-coded values · Bridge mode')).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'All 55' })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: 'Colors 16' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Colours 16' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Typography 10' })).toBeInTheDocument()
     const gap = await row('Gap 32 px')
     expect(within(gap).getByText('Exact')).toBeInTheDocument()

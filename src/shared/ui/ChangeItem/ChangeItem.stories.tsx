@@ -26,7 +26,7 @@ export const Interactive: Story = { render: () => <ChangeItem /> }
 export const Spacing: Story = {
   args: {
     expanded: true,
-    row: { kind: 'number', name: 'space/gutter', detail: '12px → 16px · 2 of 5 brands', change: 'modified' },
+    row: { kind: 'number', name: 'space/gutter', detail: '12px → 16px · 2 of 8 brands', change: 'modified' },
     brandValues: [
       { brand: 'Bridge', state: 'changed', kind: 'number', old: '12px', new: '16px' },
       { brand: 'Ikea', state: 'changed', kind: 'number', old: '12px', new: '16px' },

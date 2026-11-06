@@ -15,7 +15,7 @@ describe('SettingsScreen', () => {
     const row = container.querySelector('.bb-settings .bb-toggle')
     expect(row).not.toBeNull()
     expect(row?.querySelector('.bb-toggle__title')?.textContent).toBe('Signed in as Ikea')
-    expect(row?.querySelector('.bb-toggle__description')?.textContent).toMatch(/You stay signed in until you log off/)
+    expect(row?.querySelector('.bb-toggle__description')?.textContent).toMatch(/You stay signed in until you sign out/)
     expect(screen.queryByRole('switch')).toBeNull()
   })
 
@@ -65,7 +65,7 @@ describe('SettingsScreen', () => {
     const api = { load: async () => DEFAULT_INTEGRATIONS, save: async (_s: string, v: unknown) => v as never }
     const onChangePersona = vi.fn()
     const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onChangePersona={onChangePersona} integrations={api} />)
-    await screen.findByRole('region', { name: 'Jira Integration' })
+    await screen.findByRole('region', { name: 'Jira integration' })
     const settings = container.querySelector('.bb-settings')!
     expect(settings.firstElementChild?.classList.contains('bb-persona-card')).toBe(true)
     expect(settings.querySelector('.bb-persona-card')?.textContent).toContain('Design System')

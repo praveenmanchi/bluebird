@@ -6,10 +6,10 @@ describe('ReadinessMeter', () => {
   it('defaults to Tone=Success with the Figma copy and a named progressbar', () => {
     const { container } = render(<ReadinessMeter />)
     expect(container.querySelector('.bb-readiness-meter')?.getAttribute('data-tone')).toBe('success')
-    expect(screen.getByText('Handoff readiness')).toBeInTheDocument()
+    expect(screen.getByText('Readiness score')).toBeInTheDocument()
     expect(screen.getByText('92%')).toBeInTheDocument()
     expect(screen.getByText('Ready to generate · 2 warnings won’t block the push')).toBeInTheDocument()
-    const bar = screen.getByRole('progressbar', { name: 'Handoff readiness' })
+    const bar = screen.getByRole('progressbar', { name: 'Readiness score' })
     expect(bar.getAttribute('aria-valuenow')).toBe('92')
     expect(bar.getAttribute('data-tone')).toBe('success')
   })

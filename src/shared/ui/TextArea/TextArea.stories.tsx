@@ -10,7 +10,7 @@ const meta = {
   parameters: { figma: { setId: figma.setId, name: figma.name } },
   decorators: [(Story) => <div style={{ width: '466px', padding: '4px' }}><Story /></div>],
   args: {
-    label: 'Custom Instructions (optional)',
+    label: 'Custom instructions (optional)',
     placeholder: 'Add any custom instructions…',
     helperText: 'These instructions will be included in every AI analysis prompt to guide the assistant’s behavior.',
   },

@@ -165,15 +165,15 @@ describe('mcp:check (collectInventory)', () => {
 describe('mcp:status', () => {
   const mcp = { ...DEFAULT_INTEGRATIONS.mcp, repo: 'acme/web', token: 'ghp_x', baseBranch: 'develop' }
 
-  it('reports Settings › MCP + Code Sync', async () => {
+  it('reports Settings › MCP + code sync', async () => {
     installFigmaMock({ clientStorage: { getAsync: vi.fn(async (key: string) => key === INTEGRATIONS_KEY ? { mcp } : undefined) } } as unknown as Partial<PluginAPI>)
     expect(await call<McpStatus>(MSG.status)).toEqual({ github: { connected: true, repo: 'acme/web', branch: 'develop' } })
   })
 
   it('names what is missing or wrong', () => {
-    expect(githubStatus(DEFAULT_INTEGRATIONS.mcp)).toMatchObject({ connected: false, problem: 'Add the repository and personal access token in Settings › MCP + Code Sync' })
-    expect(githubStatus({ ...mcp, token: '' })).toMatchObject({ connected: false, repo: 'acme/web', problem: 'Add the personal access token in Settings › MCP + Code Sync' })
-    expect(githubStatus({ ...mcp, enabled: false })).toMatchObject({ connected: false, problem: 'Turn on MCP + Code Sync in Settings' })
-    expect(githubStatus({ ...mcp, repo: 'acme' })).toMatchObject({ connected: false, problem: 'Fix the repo in Settings › MCP + Code Sync' })
+    expect(githubStatus(DEFAULT_INTEGRATIONS.mcp)).toMatchObject({ connected: false, problem: 'Add the repository and personal access token in Settings › MCP + code sync' })
+    expect(githubStatus({ ...mcp, token: '' })).toMatchObject({ connected: false, repo: 'acme/web', problem: 'Add the personal access token in Settings › MCP + code sync' })
+    expect(githubStatus({ ...mcp, enabled: false })).toMatchObject({ connected: false, problem: 'Turn on MCP + code sync in Settings' })
+    expect(githubStatus({ ...mcp, repo: 'acme' })).toMatchObject({ connected: false, problem: 'Fix the repo in Settings › MCP + code sync' })
   })
 })

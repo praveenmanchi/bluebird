@@ -38,7 +38,7 @@ const GLYPH: Record<VariableCardKind, 'ui-variable-color' | 'text' | 'component'
  * Tab Icon, name + meta stack, then the timestamp, a change-status chip and
  * the research / dropdown icon actions.
  */
-export function VariableCard({ kind = 'variable', name, meta, updated, changeCount = 52, changeStatus = 'updated', changeLabel = 'Usage No.', expanded = false, onToggle, onInspect, trailing, class: cls, ...rest }: VariableCardProps) {
+export function VariableCard({ kind = 'variable', name, meta, updated, changeCount = 52, changeStatus = 'updated', changeLabel = 'Used in', expanded = false, onToggle, onInspect, trailing, class: cls, ...rest }: VariableCardProps) {
   return (
     <article {...rest} class={`bb-variable-card ${cls ?? ''}`} data-kind={kind} data-expanded={expanded || undefined}>
       <div class="bb-variable-card__lead">
@@ -52,10 +52,10 @@ export function VariableCard({ kind = 'variable', name, meta, updated, changeCou
         {updated !== undefined && <span class="bb-variable-card__updated">{updated}</span>}
         <ChangeStatus status={changeStatus} label={changeLabel} count={changeCount} class="bb-variable-card__status" />
         {trailing}
-        <button type="button" class="bb-variable-card__action" aria-label="Inspect" onClick={onInspect}>
+        <button type="button" class="bb-variable-card__action" aria-label="Inspect" title="Inspect" onClick={onInspect}>
           <Icon name="research" />
         </button>
-        <button type="button" class="bb-variable-card__action" aria-label={expanded ? 'Collapse' : 'Expand'} aria-expanded={expanded} onClick={() => onToggle?.(!expanded)}>
+        <button type="button" class="bb-variable-card__action" aria-label={expanded ? 'Collapse' : 'Expand'} title={expanded ? 'Collapse' : 'Expand'} aria-expanded={expanded} onClick={() => onToggle?.(!expanded)}>
           <Icon name={expanded ? 'dropdown-up' : 'dropdown-down'} />
         </button>
       </div>

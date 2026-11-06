@@ -4,7 +4,7 @@ import { SectionHeader } from './SectionHeader'
 import { figma } from './figma'
 import { BrandGrid, VariantGrid } from '../../../../.storybook/helpers'
 
-const DESCRIPTION = 'When enabled, the Extract tab will compare your local variables.json against the one stored on GitHub before creating a PR.'
+const DESCRIPTION = 'When enabled, the Publish tab will compare your local variables.json against the one stored on GitHub before creating a PR.'
 
 const meta = {
   title: 'Molecules/SectionHeader',

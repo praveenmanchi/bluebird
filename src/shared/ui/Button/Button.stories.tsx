@@ -48,10 +48,10 @@ export const Matrix: Story = {
 export const AcrossBrands: Story = {
   render: (args) => (
     <BrandGrid>
-      <Button {...args} width="hug">Save Configuration</Button>
-      <Button {...args} width="hug" variant="secondary">Test Connection</Button>
-      <Button {...args} width="hug" disabled>Save Configuration</Button>
-      <Button {...args} width="hug" variant="secondary" disabled>Test Connection</Button>
+      <Button {...args} width="hug">Save configuration</Button>
+      <Button {...args} width="hug" variant="secondary">Test connection</Button>
+      <Button {...args} width="hug" disabled>Save configuration</Button>
+      <Button {...args} width="hug" variant="secondary" disabled>Test connection</Button>
     </BrandGrid>
   ),
 }

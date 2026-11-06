@@ -65,7 +65,7 @@ export function LoginSso({ onSso, onUseAccessCode, contact, initialPhase = { kin
         icon="url"
         titleId="bb-login-title"
         title="Sign in with SSO"
-        subtitle="Use your HCLTech work account. Your organisation’s design-system admin must have approved you for Design studio."
+        subtitle="Use your HCLTech work account. Your organisation’s design-system admin must have approved you for Design Studio."
       />
       {phase.kind === 'not-approved' && <Notice tone="error" />}
       {phase.kind === 'failed' && <Notice tone="error" title="Couldn’t sign in with SSO">{phase.message}</Notice>}

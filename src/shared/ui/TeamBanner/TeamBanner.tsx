@@ -39,7 +39,7 @@ export interface TeamBannerProps extends Omit<JSX.HTMLAttributes<HTMLElement>, '
  * a Release stack (version pill + "Updated <date>", both stamped by the build);
  * bottom row = faded tagline and a "Built with Care by the … Team" credit.
  */
-export function TeamBanner({ org = 'HCL', team = 'Design System', version = BUILD_VERSION, updated = formatBuildDate(), showProduct = true, product = 'Design Studio', productTagline = 'Connecting Gap between design workflow', tagline = TEAM_BANNER_TAGLINE, taglineSize = 'md', children, class: cls, ...rest }: TeamBannerProps) {
+export function TeamBanner({ org = 'HCL', team = 'Design System', version = BUILD_VERSION, updated = formatBuildDate(), showProduct = true, product = 'Design Studio', productTagline = 'Connecting design and development', tagline = TEAM_BANNER_TAGLINE, taglineSize = 'md', children, class: cls, ...rest }: TeamBannerProps) {
   return (
     <header {...rest} class={`bb-team-banner ${cls ?? ''}`} data-tagline={taglineSize}>
       <div class="bb-team-banner__stack">

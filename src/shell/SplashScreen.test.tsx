@@ -14,7 +14,7 @@ describe('SplashScreen', () => {
     const splash = screen.getByRole('region', { name: 'Loading' })
     expect(container.querySelector('.bb-splash__logo')).toBeInTheDocument()
     expect(splash.children).toHaveLength(1)
-    expect(splash).not.toHaveTextContent('Design studio')
+    expect(splash).not.toHaveTextContent('Design Studio')
     act(() => { vi.advanceTimersByTime(SPLASH_MS - 1) })
     expect(onDone).not.toHaveBeenCalled()
     act(() => { vi.advanceTimersByTime(1) })

@@ -401,7 +401,7 @@ describe('posting the changelog to Teams', () => {
   })
 })
 
-describe('Settings › GitHub › Test Connection', () => {
+describe('Settings › GitHub › Test connection', () => {
   const form = { ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: TOKEN }
   it('names the account, confirms it can push and says what the branch holds', async () => {
     expect((await setup().test(form)).message).toBe(`Connected as designer · can push to ${REPO} (default branch main). main has no Bluebird release yet.`)

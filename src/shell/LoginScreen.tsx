@@ -27,7 +27,7 @@ export interface LoginScreenProps {
  * Figma "Login Page" (40000308:21144): HCLTech header with the private-plugin badge, a centred
  * login card (access code, or SSO via the footer switch) and the legal footer.
  */
-export function LoginScreen({ title = 'Design studio', onSubmit, onSso, contact, initial }: LoginScreenProps) {
+export function LoginScreen({ title = 'Design Studio', onSubmit, onSso, contact, initial }: LoginScreenProps) {
   const [view, setView] = useState<LoginView>(initial?.view ?? 'access-code')
   return (
     <div class="bb-login">
@@ -43,7 +43,7 @@ export function LoginScreen({ title = 'Design studio', onSubmit, onSso, contact,
         </section>
       </main>
       <footer class="bb-login__footer">
-        <p class="bb-login__legal">Design studio · Internal tool for HCLTech design teams</p>
+        <p class="bb-login__legal">Design Studio · Internal tool for HCLTech design teams</p>
         <p class="bb-login__legal">Never share your access code outside your team</p>
       </footer>
     </div>
@@ -95,7 +95,7 @@ function AccessCodeCard({ title, onSubmit, onUseSso, contact, initialCode = '', 
         />
         <Button type="submit" variant="primary" size="lg" class="bb-login__wide" disabled={!busy && !code.trim()} aria-disabled={busy || undefined}>
           {phase.kind === 'checking' ? <Busy>Checking code…</Busy>
-            : phase.kind === 'accepted' ? <Busy>Opening Design studio…</Busy>
+            : phase.kind === 'accepted' ? <Busy>Opening Design Studio…</Busy>
             : phase.kind === 'error' ? 'Try again' : 'Sign in'}
         </Button>
       </form>

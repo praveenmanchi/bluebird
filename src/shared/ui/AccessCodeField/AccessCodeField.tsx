@@ -30,7 +30,7 @@ export interface AccessCodeFieldProps extends InputAttrs {
 const HELPER = {
   default: 'Codes look like TEAM-2026 and aren’t case-sensitive.',
   error: 'That code didn’t work. Check for typos — 4 attempts left.',
-  success: 'Code accepted. Opening Design studio…',
+  success: 'Code accepted. Opening Design Studio…',
   disabled: 'Checking your code…',
 } as const
 

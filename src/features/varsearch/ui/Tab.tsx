@@ -127,7 +127,7 @@ export function Tab() {
       <div class="bb-varsearch__content">
         {busy && (
           <>
-            <TitleRow title="Search Results" />
+            <TitleRow title="Search results" />
             <p class="bb-varsearch__status" role="status">
               {progress.value
                 ? `Scanning ${progress.value.page} · page ${progress.value.index} of ${progress.value.total} · ${progress.value.visited.toLocaleString()} layers`
@@ -144,7 +144,7 @@ export function Tab() {
 
         {status.value === 'done' && r && r.variables.length > 0 && (
           <>
-            <TitleRow title="Search Results" action="Clear" onAction={clear} />
+            <TitleRow title="Search results" action="Clear" onAction={clear} />
             <p class="bb-varsearch__status">
               {`${r.variables.length} variable${r.variables.length === 1 ? '' : 's'} · ${r.scannedPages} page${r.scannedPages === 1 ? '' : 's'} scanned · ${r.durationMs} ms`}
             </p>
@@ -168,7 +168,7 @@ export function Tab() {
 
         {status.value === 'idle' && recent.value.length > 0 && (
           <>
-            <TitleRow title="Recent Searches" action="Clear All" onAction={() => {
+            <TitleRow title="Recent searches" action="Clear all" onAction={() => {
               rpc.call<RecentSearch[]>(MSG.recentClear).then((list) => { recent.value = list }).catch(() => undefined)
             }} />
             {recent.value.map((s) => (
@@ -181,7 +181,7 @@ export function Tab() {
         )}
 
         {status.value === 'idle' && recent.value.length === 0 && (
-          <EmptyState class="bb-varsearch__empty" title="Search Variables" description="Type a variable name to search." hint={modeLine(pageScope.value)} />
+          <EmptyState class="bb-varsearch__empty" title="Search variables" description="Type a variable name to search." hint={modeLine(pageScope.value)} />
         )}
       </div>
 

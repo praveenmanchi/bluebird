@@ -6,7 +6,7 @@ describe('SourceCard', () => {
   it('renders the Figma defaults: name, meta, Variables glyph, Indexed badge and a checked Include', () => {
     const { container } = render(<SourceCard />)
     expect(screen.getByText('Brand UI variables')).toBeInTheDocument()
-    expect(screen.getByText('Variables · 421 tokens · 5 brand modes')).toBeInTheDocument()
+    expect(screen.getByText('Variables · 1,026 tokens · 8 brand modes')).toBeInTheDocument()
     expect(container.querySelector('.bb-source-card__type [data-icon]')?.getAttribute('data-icon')).toBe('variables')
     expect(screen.getByText('Indexed').closest('.bb-meta-badge')?.getAttribute('data-tone')).toBe('success')
     expect(screen.getByRole('checkbox', { name: 'Include Brand UI variables' })).toBeChecked()

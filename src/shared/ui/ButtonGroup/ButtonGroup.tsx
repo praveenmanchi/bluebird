@@ -5,6 +5,8 @@ import './ButtonGroup.css'
 export interface ButtonGroupProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Figma "Save Configuration" instance (Type=Primary) label. */
   primaryLabel?: ComponentChildren
+  /** Figma "Type" of the right-hand button. `danger` for a destructive action. */
+  primaryVariant?: 'primary' | 'danger'
   /** Figma "Test Connection" instance (Type=Secondary) label. */
   secondaryLabel?: ComponentChildren
   /** Figma "Primary Button" boolean — shows the primary action (on by default, as in Figma). */
@@ -24,13 +26,13 @@ export interface ButtonGroupProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 /** Figma "Container" (215:12537): a right-aligned pair of Buttons — Secondary then Primary, each shown by its own boolean. */
-export function ButtonGroup({ primaryLabel = 'Save Configuration', secondaryLabel = 'Test Connection', showPrimary = true, showSecondary = true, onPrimary, onSecondary, primaryDisabled, secondaryDisabled, primaryLoading, secondaryLoading, children, class: cls, ...rest }: ButtonGroupProps) {
+export function ButtonGroup({ primaryLabel = 'Save configuration', primaryVariant = 'primary', secondaryLabel = 'Test connection', showPrimary = true, showSecondary = true, onPrimary, onSecondary, primaryDisabled, secondaryDisabled, primaryLoading, secondaryLoading, children, class: cls, ...rest }: ButtonGroupProps) {
   return (
     <div {...rest} role="group" class={`bb-button-group ${cls ?? ''}`}>
       {children ?? (
         <>
           {showSecondary && <Button variant="secondary" onClick={onSecondary} disabled={secondaryDisabled} loading={secondaryLoading}>{secondaryLabel}</Button>}
-          {showPrimary && <Button variant="primary" onClick={onPrimary} disabled={primaryDisabled} loading={primaryLoading}>{primaryLabel}</Button>}
+          {showPrimary && <Button variant={primaryVariant} onClick={onPrimary} disabled={primaryDisabled} loading={primaryLoading}>{primaryLabel}</Button>}
         </>
       )}
     </div>

@@ -76,11 +76,11 @@ export function sampleRun(agent: AgentId, scope: ScopeId, runId = `sample-${agen
 
 /** The Running screen's steps per agent (after "Loaded rule pack"). */
 export const SAMPLE_STEPS: Record<AgentId, readonly string[]> = {
-  accessibility: ['Loaded rule pack · WCAG 2.2 AA (6 rules on)', 'Resolved Brand UI tokens in 5 brand modes', 'Checked contrast · 3 frames × 5 modes', 'Checking target size and spacing exceptions…'],
+  accessibility: ['Loaded rule pack · WCAG 2.2 AA (6 rules on)', 'Resolved Brand UI tokens in 8 brand modes', 'Checked contrast · 3 frames × 5 modes', 'Checking target size and spacing exceptions…'],
   content: ['Loaded rule pack · Content guide (all rules on)', 'Read 42 text layers', 'Found placeholder text in 3 frames', 'Asking claude-opus-5-5 for realistic copy (9 placeholders)'],
   writing: ['Loaded rule pack · Voice & tone (all rules on)', 'Read 42 text layers', 'Reviewing microcopy with the model (claude-opus-5-5, 38 texts in 1 request)'],
   spelling: ['Loaded rule pack · en-GB (all rules on)', 'Read 42 text layers', 'Checking spelling and grammar with the model (claude-opus-5-5, 38 texts in 1 request)'],
-  'design-system': ['Loaded rule pack · Brand UI (all rules on)', 'Loaded Brand UI · 421 colour and 64 number tokens', 'Checking token bindings against Brand UI'],
+  'design-system': ['Loaded rule pack · Brand UI (all rules on)', 'Loaded Brand UI · 1,026 colour and 64 number tokens', 'Checking token bindings against Brand UI'],
   localization: ['Loaded rule pack · de · fr · ar (all rules on)', 'Read 42 text layers', 'Estimating expansion and RTL impact'],
 }
 

@@ -300,7 +300,7 @@ export function WcagCard({
               </Row>
             )}
             {colors && (
-              <Row label="Colors" class="bb-wcag-card__row--colors">
+              <Row label="Colours" class="bb-wcag-card__row--colors">
                 <Swatch value={colors.fg} token={colors.fgToken} />
                 <Swatch value={colors.bg} token={colors.bgToken} prefix="on" />
               </Row>

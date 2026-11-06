@@ -34,7 +34,7 @@ describe('AccessCodeField', () => {
   it('shows the success glyph and copy', () => {
     const { container } = render(<AccessCodeField status="success" />)
     expect(container.querySelector('[data-icon="status-good"]')).not.toBeNull()
-    expect(screen.getByText('Code accepted. Opening Design studio…')).toBeInTheDocument()
+    expect(screen.getByText('Code accepted. Opening Design Studio…')).toBeInTheDocument()
   })
   it('locks the input and the eye while checking', () => {
     render(<AccessCodeField disabled />)

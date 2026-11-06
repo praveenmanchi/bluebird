@@ -18,7 +18,7 @@ interface StateSpec {
 
 /** What each Figma State variant puts in the nested instances, and its default copy. */
 const STATE: Record<AgentCardState, StateSpec> = {
-  ready: { bot: 'default', tone: 'success', status: 'Ready', meta: 'Last run 2h ago · 14 issues', action: 'Run', variant: 'primary' },
+  ready: { bot: 'default', tone: 'success', status: 'Ready', meta: 'Last run 2h ago · 14 issues', action: 'Run', variant: 'secondary' },
   running: { bot: 'working', tone: 'accent', status: 'Running 64%', meta: 'Checking 8 of 12 frames…', action: 'Stop', variant: 'secondary' },
   idle: { bot: 'sleeping', tone: 'neutral', status: 'Idle', meta: 'Not run on this file yet', action: 'Run', variant: 'secondary' },
   'coming-soon': { bot: 'default', tone: 'neutral', status: 'Coming soon', meta: 'Joining in Q1', action: 'Notify me', variant: 'secondary' },

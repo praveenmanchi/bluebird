@@ -17,7 +17,7 @@ export interface FooterPill {
 /** The four "Buttom Status" instances Figma toggles with Git / UXAI / MCP / Dual File. */
 export const FOOTER_DEFAULT_PILLS = {
   git: { label: 'Git', status: 'good' },
-  uxai: { label: 'UX AI', status: 'good' },
+  uxai: { label: 'UXAI', status: 'good' },
   mcp: { label: 'MCP', status: 'good' },
   dualFile: { label: 'Dual File', status: 'good' },
 } as const satisfies Record<string, FooterPill>

@@ -2,7 +2,7 @@ import type { ComponentChildren, JSX } from 'preact'
 import { Icon, type IconName } from '../Icon/Icon'
 import './Button.css'
 
-export type ButtonVariant = 'primary' | 'secondary'
+export type ButtonVariant = 'primary' | 'secondary' | 'danger'
 export type ButtonSize = 'md' | 'lg'
 
 export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'icon'> {

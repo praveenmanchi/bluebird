@@ -9,7 +9,7 @@ describe('ButtonGroup', () => {
     const buttons = screen.getAllByRole('button')
     expect(screen.getByRole('group')).toBeInTheDocument()
     expect(buttons.map((b) => b.dataset.variant)).toEqual(['secondary', 'primary'])
-    expect(buttons.map((b) => b.textContent)).toEqual(['Test Connection', 'Save Configuration'])
+    expect(buttons.map((b) => b.textContent)).toEqual(['Test connection', 'Save configuration'])
   })
   it('forwards the primary and secondary handlers', () => {
     const onPrimary = vi.fn()
@@ -31,13 +31,13 @@ describe('ButtonGroup', () => {
     render(<ButtonGroup showPrimary={false} />)
     const buttons = screen.getAllByRole('button')
     expect(buttons.map((b) => b.dataset.variant)).toEqual(['secondary'])
-    expect(screen.queryByRole('button', { name: 'Save Configuration' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Save configuration' })).toBeNull()
   })
   it('hides the secondary Button when showSecondary is false (Figma "Seconndary butto"=false)', () => {
     render(<ButtonGroup showSecondary={false} />)
     const buttons = screen.getAllByRole('button')
     expect(buttons.map((b) => b.dataset.variant)).toEqual(['primary'])
-    expect(screen.queryByRole('button', { name: 'Test Connection' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Test connection' })).toBeNull()
   })
   it('renders no Button when both are hidden', () => {
     render(<ButtonGroup showPrimary={false} showSecondary={false} />)
@@ -48,5 +48,9 @@ describe('ButtonGroup', () => {
     render(<ButtonGroup><Button>Only</Button></ButtonGroup>)
     expect(screen.getAllByRole('button')).toHaveLength(1)
     expect(screen.getByRole('button', { name: 'Only' })).toBeInTheDocument()
+  })
+  it('passes a danger type to the right-hand button', () => {
+    render(<ButtonGroup primaryLabel="Reset" primaryVariant="danger" />)
+    expect(screen.getByRole('button', { name: 'Reset' })).toHaveAttribute('data-variant', 'danger')
   })
 })

@@ -29,7 +29,7 @@
   --bb-input-bg-default: #ffffff;
   --bb-input-bg-disabled: #fafafa;
   --bb-input-fg-value: #333333;
-  --bb-input-fg-placeholder: #838383;
+  --bb-input-fg-placeholder: #666666;
   --bb-input-fg-label: #494949;
   --bb-input-fg-helper: #666666;
   --bb-input-border-default: #e1e1e1;
@@ -57,7 +57,7 @@
   --bb-dropdown-gap-label: 8px;
   --bb-dropdown-height: 32px;
   --bb-search-bar-bg-default: #ffffff;
-  --bb-search-bar-fg-placeholder: #838383;
+  --bb-search-bar-fg-placeholder: #666666;
   --bb-search-bar-fg-value: #333333;
   --bb-search-bar-border-default: #e1e1e1;
   --bb-search-bar-icon-color: #666666;
@@ -132,7 +132,7 @@
   --bb-section-header-padding: 12px;
   --bb-status-pill-fg-default: #333333;
   --bb-status-pill-icon-good: #1e7f5c;
-  --bb-status-pill-icon-warn: #c78500;
+  --bb-status-pill-icon-warn: #9a6400;
   --bb-status-pill-icon-error: #cc1719;
   --bb-status-pill-icon-size: 16px;
   --bb-status-pill-divider-color: #666666;
@@ -152,7 +152,7 @@
   --bb-empty-state-title-fg: #494949;
   --bb-empty-state-title-font-size: 12px;
   --bb-empty-state-body-fg: #666666;
-  --bb-empty-state-hint-fg: #838383;
+  --bb-empty-state-hint-fg: #666666;
   --bb-empty-state-radius: 0px;
   --bb-empty-state-gap: 7px;
   --bb-app-header-bg-default: #005192;
@@ -206,7 +206,7 @@
   --bb-connection-border-default: #e1e1e1;
   --bb-connection-icon-ok: #1e7f5c;
   --bb-connection-icon-error: #cc1719;
-  --bb-connection-icon-warn: #c78500;
+  --bb-connection-icon-warn: #9a6400;
   --bb-connection-radius: 0px;
   --bb-change-status-added-bg: #1e7f5c;
   --bb-change-status-removed-bg: #cc1719;
@@ -366,7 +366,7 @@
   --bb-dropdown-border-hover: #666666;
   --bb-dropdown-border-focus: #008bc5;
   --bb-dropdown-border-disabled: #f4f4f4;
-  --bb-dropdown-fg-placeholder: #838383;
+  --bb-dropdown-fg-placeholder: #666666;
   --bb-dropdown-fg-disabled: #838383;
   --bb-dropdown-chevron-size: 16px;
   --bb-dropdown-gap: 8px;
@@ -403,14 +403,14 @@
   --bb-text-primary: #333333;
   --bb-text-secondary: #494949;
   --bb-text-tertiary: #666666;
-  --bb-text-placeholder: #838383;
+  --bb-text-placeholder: #666666;
   --bb-text-on-accent: #ffffff;
   --bb-text-accent: #005192;
   --bb-icon-default: #333333;
   --bb-icon-muted: #666666;
   --bb-icon-on-accent: #ffffff;
   --bb-feedback-success: #1e7f5c;
-  --bb-feedback-warning: #c78500;
+  --bb-feedback-warning: #9a6400;
   --bb-feedback-danger: #cc1719;
   --bb-font-family-ui: "Noto Sans";
   --bb-font-family-display: "Noto Sans";
@@ -433,7 +433,7 @@
   --bb-jira-text-title: #333333;
   --bb-jira-text-body: #494949;
   --bb-jira-text-meta: #666666;
-  --bb-jira-text-placeholder: #838383;
+  --bb-jira-text-placeholder: #666666;
   --bb-jira-text-link: #005192;
   --bb-jira-type-story: #1e7f5c;
   --bb-jira-type-bug: #cc1719;
@@ -442,7 +442,7 @@
   --bb-jira-type-subtask: #005192;
   --bb-jira-type-glyph: #ffffff;
   --bb-jira-priority-high: #cc1719;
-  --bb-jira-priority-medium: #c78500;
+  --bb-jira-priority-medium: #9a6400;
   --bb-jira-priority-low: #005192;
   --bb-jira-priority-lowest: #666666;
   --bb-jira-points-bg: #fafafa;
@@ -491,7 +491,7 @@
   --bb-mcp-text-accent: #005192;
   --bb-mcp-meter-track: #fafafa;
   --bb-mcp-meter-success: #1e7f5c;
-  --bb-mcp-meter-warning: #c78500;
+  --bb-mcp-meter-warning: #9a6400;
   --bb-mcp-meter-danger: #cc1719;
   --bb-mcp-step-done-bg: #1e7f5c;
   --bb-mcp-step-current-bg: #005192;
@@ -536,7 +536,7 @@
   --bb-uxai-text-body: #494949;
   --bb-uxai-text-meta: #666666;
   --bb-uxai-text-accent: #005192;
-  --bb-uxai-text-placeholder: #838383;
+  --bb-uxai-text-placeholder: #666666;
   --bb-uxai-bubble-user-bg: #e6f1fa;
   --bb-uxai-bubble-user-border: #005192;
   --bb-uxai-swatch-border: #666666;
@@ -721,7 +721,7 @@
   --bb-publish-diff-added: #1e7f5c;
   --bb-publish-diff-modified: #005192;
   --bb-publish-diff-removed: #cc1719;
-  --bb-publish-diff-breaking: #c78500;
+  --bb-publish-diff-breaking: #9a6400;
   --bb-publish-diff-old-text: #666666;
   --bb-publish-diff-arrow: #666666;
   --bb-publish-swatch-border: #f4f4f4;
@@ -901,10 +901,10 @@
   --bb-onboarding-scene-padding: 16px;
   --bb-onboarding-field-ring: #008bc5;
   --bb-a11y-status-success: #1e7f5c;
-  --bb-a11y-status-warning: #c78500;
+  --bb-a11y-status-warning: #9a6400;
   --bb-a11y-status-danger: #cc1719;
   --bb-a11y-severity-critical: #cc1719;
-  --bb-a11y-severity-serious: #c78500;
+  --bb-a11y-severity-serious: #9a6400;
   --bb-a11y-severity-moderate: #005192;
   --bb-a11y-severity-minor: #666666;
   --bb-a11y-font-size-display: 24px;
@@ -958,8 +958,8 @@
   --bb-docs-anatomy-marker-text: #ffffff;
   --bb-docs-guidance-do: #1e7f5c;
   --bb-docs-guidance-dont: #cc1719;
-  --bb-docs-guidance-caution: #c78500;
-  --bb-docs-token-off-scale: #c78500;
+  --bb-docs-guidance-caution: #9a6400;
+  --bb-docs-token-off-scale: #9a6400;
   --bb-docs-preview-canvas: #ffffff;
   --bb-docs-preview-stage-border: #f4f4f4;
   --bb-docs-page-font-size-display: 32px;
@@ -1016,4 +1016,14 @@
   --bb-persona-bird-screen: #fafafa;
   --bb-persona-feather: #55bae4;
   --bb-font-family-mono: "JetBrains Mono";
+  --bb-feedback-danger-fill: #cc1719;
+  --bb-feedback-success-fill: #1e7f5c;
+  --bb-feedback-warning-fill: #c78500;
+  --bb-text-disabled: #838383;
+  --bb-button-danger-fg-default: #cc1719;
+  --bb-button-danger-border-default: #cc1719;
+  --bb-button-danger-bg-default: #ffffff00;
+  --bb-button-danger-bg-hover: #cc1719;
+  --bb-button-danger-border-hover: #cc1719;
+  --bb-button-danger-fg-hover: #ffffff;
 }

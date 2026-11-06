@@ -22,9 +22,9 @@ describe('VariableCard', () => {
     expect(chip?.getAttribute('data-status')).toBe('added')
     expect(chip?.querySelector('.bb-change-status__count')?.textContent).toBe('7')
   })
-  it('captions the chip "Usage No." (the Figma text override) unless changeLabel says otherwise', () => {
+  it('captions the chip "Used in" (the Figma text override) unless changeLabel says otherwise', () => {
     const { container, rerender } = render(<VariableCard name="x" />)
-    expect(container.querySelector('.bb-change-status__label')?.textContent).toBe('Usage No.')
+    expect(container.querySelector('.bb-change-status__label')?.textContent).toBe('Used in')
     rerender(<VariableCard name="x" changeStatus="added" changeLabel="Added" />)
     expect(container.querySelector('.bb-change-status__label')?.textContent).toBe('Added')
   })

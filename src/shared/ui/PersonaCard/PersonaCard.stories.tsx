@@ -4,7 +4,7 @@ import { figma } from './figma'
 import { BrandGrid } from '../../../../.storybook/helpers'
 import userpic from '../../../../figma/assets/persona-userpic-05.png'
 
-const DESCRIPTION = 'Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow.'
+const DESCRIPTION = 'Your persona sets which tabs you see. Change it any time and the tour replays for your new tabs.'
 const FOOTNOTE = 'Switching teams will replay the onboarding tour for your new role.'
 
 const meta = {

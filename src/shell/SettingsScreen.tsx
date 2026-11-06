@@ -37,7 +37,7 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
   const [busy, setBusy] = useState<'logout' | 'reset' | null>(null)
   const [confirmReset, setConfirmReset] = useState(false)
   const label = session ? (config.brand.brands[session.brandId]?.label ?? session.brandId) : 'No session'
-  const since = session ? new Date(session.since).toLocaleDateString() : ''
+  const since = session ? new Date(session.since).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : ''
   const source = tokenSource(brand)
   const run = async (which: 'logout' | 'reset', fn: () => Promise<void>) => { setBusy(which); try { await fn() } finally { setBusy(null) } }
 
@@ -57,13 +57,14 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
         class="bb-settings__row"
         showSwitch={false}
         title={`Signed in as ${label}`}
-        description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you log off; resetting also forgets window size and preferences.`}
+        description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you sign out; resetting also forgets window size and preferences.`}
       />
       {confirmReset ? (
         <ButtonGroup
           class="bb-settings__actions"
           secondaryLabel="Keep settings"
           primaryLabel="Yes, reset everything"
+          primaryVariant="danger"
           onSecondary={() => setConfirmReset(false)}
           onPrimary={() => { void run('reset', onReset) }}
           primaryLoading={busy === 'reset'}
@@ -72,8 +73,9 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
       ) : (
         <ButtonGroup
           class="bb-settings__actions"
-          secondaryLabel="Logoff session"
-          primaryLabel="Reset all Settings"
+          secondaryLabel="Sign out"
+          primaryLabel="Reset all settings"
+          primaryVariant="danger"
           onSecondary={() => { void run('logout', onLogout) }}
           onPrimary={() => setConfirmReset(true)}
           secondaryLoading={busy === 'logout'}

@@ -7,7 +7,7 @@ describe('SearchBar', () => {
     const { container } = render(<SearchBar value="" />)
     expect(screen.getByRole('search')).toBeInTheDocument()
     const input = screen.getByRole('searchbox', { name: 'Search' })
-    expect(input.getAttribute('placeholder')).toBe('Enter Variables here')
+    expect(input.getAttribute('placeholder')).toBe('Search variables')
     expect(container.querySelector('[data-icon="search"]')).not.toBeNull()
   })
   it('reports typing and Enter', () => {

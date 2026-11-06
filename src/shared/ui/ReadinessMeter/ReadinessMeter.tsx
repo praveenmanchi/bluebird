@@ -29,7 +29,7 @@ export interface ReadinessMeterProps extends Omit<JSX.HTMLAttributes<HTMLDivElem
 
 /** Figma "Readiness Meter" (40000275:8183): label + score, a Progress Bar, and a caption saying what the score allows. */
 export function ReadinessMeter({
-  tone = 'success', value, label = 'Handoff readiness', score, caption, class: cls, ...rest
+  tone = 'success', value, label = 'Readiness score', score, caption, class: cls, ...rest
 }: ReadinessMeterProps) {
   const pct = clampPercent(value ?? DEFAULT_VALUE[tone])
   return (

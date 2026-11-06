@@ -102,7 +102,7 @@ export function ShipStep({ onCopyPrompt, onPush, onPushNewBranch }: ShipStepProp
             <PublishEmptyState
               state="not-connected"
               title="Connect GitHub to push"
-              body={`${repo.problem ?? 'Add the repository and a personal access token in Settings › MCP + Code Sync'} to push branches and open pull requests. You can still copy the prompt and ship from Claude Code.`}
+              body={`${repo.problem ?? 'Add the repository and a personal access token in Settings › MCP + code sync'} to push branches and open pull requests. You can still copy the prompt and ship from Claude Code.`}
               actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]}
             />
           </Card>

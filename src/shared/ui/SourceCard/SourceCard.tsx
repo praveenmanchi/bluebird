@@ -23,7 +23,7 @@ export interface SourceCardProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>
 
 /** Figma "Source Card" (40000284:8167): an attached source the user can include in or leave out of answers. */
 export function SourceCard({
-  name = 'Brand UI variables', meta = 'Variables · 421 tokens · 5 brand modes', icon = 'variables',
+  name = 'Brand UI variables', meta = 'Variables · 1,026 tokens · 8 brand modes', icon = 'variables',
   status = 'Indexed', statusTone = 'success', selected = true, onToggle, class: cls, ...rest
 }: SourceCardProps) {
   return (

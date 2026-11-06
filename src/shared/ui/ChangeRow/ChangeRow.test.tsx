@@ -11,7 +11,7 @@ describe('ChangeRow', () => {
     expect(root(container).getAttribute('data-kind')).toBe('color')
     expect(root(container).getAttribute('data-state')).toBe('default')
     expect(screen.getByText('button/bg/primary')).toBeInTheDocument()
-    expect(screen.getByText('#0C8CE9 → #0560A3 · 3 of 5 brands')).toBeInTheDocument()
+    expect(screen.getByText('#0C8CE9 → #0978C8 · 2 of 8 brands')).toBeInTheDocument()
     const include = screen.getByRole('checkbox', { name: 'Include button/bg/primary' }) as HTMLInputElement
     expect(include.checked).toBe(true)
     expect(badge(container).textContent).toBe('Modified')

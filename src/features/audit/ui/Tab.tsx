@@ -208,7 +208,7 @@ export function Tab() {
               <>
                 <SegmentedControl class="bb-audit__segments" aria-label="Issues" options={filterOptions(ready.counts, ready.issues, !!ready.source)} value={filter.value} onChange={(v: Filter) => { filter.value = v }} />
                 {(filter.value === 'colours' || filter.value === 'spacing') && items.length > 0 && (
-                  <div class="bb-audit__actions"><LinkButton onClick={() => requestTab('varmapper')}>Fix these in Variable mapper</LinkButton></div>
+                  <div class="bb-audit__actions"><Button variant="secondary" onClick={() => requestTab('varmapper')}>Fix these in Variable mapper</Button></div>
                 )}
                 {filter.value === 'all' && values.length > 0 && parts.length > 0 ? (
                   <>

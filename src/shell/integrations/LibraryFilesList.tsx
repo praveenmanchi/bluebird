@@ -34,7 +34,7 @@ export function LibraryFilesList({ label, files, errors, disabled = false, onCha
                 <SelectInput label={`File ${n} contains`} icon="layers" value={f.role} options={FILE_ROLES} disabled={disabled} onChange={(v) => update(i, { role: v })} />
               </div>
               <div class="bb-integrations__column">
-                <Input label={`File ${n} API Key`} icon="api-key" password value={f.key} placeholder="Personal access token (optional when File 1’s key opens it)" helperText={error(i, 'key') ?? 'Leave empty to reuse File 1’s key.'} error={error(i, 'key') !== undefined} disabled={disabled} maxLength={MAX_TEXT} spellcheck={false} autoComplete="new-password" onValueChange={(v) => update(i, { key: v })} />
+                <Input label={`File ${n} API key`} icon="api-key" password value={f.key} placeholder="Personal access token (optional when File 1’s key opens it)" helperText={error(i, 'key') ?? 'Leave empty to reuse File 1’s key.'} error={error(i, 'key') !== undefined} disabled={disabled} maxLength={MAX_TEXT} spellcheck={false} autoComplete="new-password" onValueChange={(v) => update(i, { key: v })} />
                 <LinkButton class="bb-integrations__files-remove" disabled={disabled} onClick={() => remove(i)}>{`Remove File ${n}`}</LinkButton>
               </div>
             </div>

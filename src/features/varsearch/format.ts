@@ -64,7 +64,7 @@ export function toggleType(types: readonly UsageKind[], kind: UsageKind, all: re
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
 
-/** Card second line: "Brand UI · Used by 5 components, 2 frames · Affects 7 modes/brands". */
+/** Card second line: "Brand UI · Used by 5 components, 2 frames · Affects 8 brand modes". */
 export function variableMeta(v: Pick<VariableMatch, 'collection' | 'modes' | 'usages'>): string {
   const counts: Record<UsageKind, number> = { frame: 0, component: 0, 'text-style': 0 }
   for (const u of v.usages) counts[u.kind] += 1
@@ -72,7 +72,7 @@ export function variableMeta(v: Pick<VariableMatch, 'collection' | 'modes' | 'us
     .filter((k) => counts[k] > 0)
     .map((k) => plural(counts[k], KIND_LABEL[k].many.replace(/s$/, ''), KIND_LABEL[k].many))
     .join(', ')
-  return [v.collection, used && `Used by ${used}`, `Affects ${plural(v.modes, 'mode', 'modes')}/brands`].filter(Boolean).join(' · ')
+  return [v.collection, used && `Used by ${used}`, `Affects ${plural(v.modes, 'brand mode', 'brand modes')}`].filter(Boolean).join(' · ')
 }
 
 /** The expanded card's first summary chip: what the rows are. */

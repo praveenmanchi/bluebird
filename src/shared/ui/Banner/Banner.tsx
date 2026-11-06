@@ -19,7 +19,7 @@ export interface BannerProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'titl
 }
 
 /** Figma "Banner" (40000064:9910): brand logo · rule · product name + tagline, "Powered By HCLTech" bottom-right. */
-export function Banner({ showPoweredBy = true, dualLogo = true, brand, title = 'Design Studio', tagline = 'Connecting Gap between design workflow', children, class: cls, ...rest }: BannerProps) {
+export function Banner({ showPoweredBy = true, dualLogo = true, brand, title = 'Design Studio', tagline = 'Connecting design and development', children, class: cls, ...rest }: BannerProps) {
   const mark = LOGOS.hcltech
   return (
     <header {...rest} class={`bb-banner ${cls ?? ''}`}>

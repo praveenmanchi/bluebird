@@ -8,7 +8,7 @@ const meta = {
   title: 'Molecules/SourceCard',
   component: SourceCard,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { name: 'Brand UI variables', meta: 'Variables · 421 tokens · 5 brand modes', selected: true },
+  args: { name: 'Brand UI variables', meta: 'Variables · 1,026 tokens · 8 brand modes', selected: true },
 } satisfies Meta<typeof SourceCard>
 export default meta
 type Story = StoryObj<typeof meta>

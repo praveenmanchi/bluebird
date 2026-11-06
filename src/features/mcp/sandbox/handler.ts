@@ -26,11 +26,11 @@ async function check(payload: unknown): Promise<CheckResult> {
 /** Settings › MCP + Code Sync, as the Ship step reports it. */
 export function githubStatus(mcp: IntegrationValues<'mcp'>): GithubStatus {
   const repo = mcp.repo.trim(), branch = mcp.baseBranch.trim() || 'main'
-  if (!mcp.enabled) return { connected: false, repo, branch, problem: 'Turn on MCP + Code Sync in Settings' }
+  if (!mcp.enabled) return { connected: false, repo, branch, problem: 'Turn on MCP + code sync in Settings' }
   const missing = [...(repo ? [] : ['repository']), ...(mcp.token.trim() ? [] : ['personal access token'])]
-  if (missing.length) return { connected: false, repo, branch, problem: `Add the ${missing.join(' and ')} in Settings › MCP + Code Sync` }
+  if (missing.length) return { connected: false, repo, branch, problem: `Add the ${missing.join(' and ')} in Settings › MCP + code sync` }
   const invalid = Object.keys(validateIntegration('mcp', mcp))
-  if (invalid.length) return { connected: false, repo, branch, problem: `Fix the ${invalid.join(' and ')} in Settings › MCP + Code Sync` }
+  if (invalid.length) return { connected: false, repo, branch, problem: `Fix the ${invalid.join(' and ')} in Settings › MCP + code sync` }
   return { connected: true, repo, branch }
 }
 

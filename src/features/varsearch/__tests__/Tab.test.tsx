@@ -19,17 +19,17 @@ async function searchFor(text: string) {
 }
 
 describe('varsearch Tab', () => {
-  it('starts with the toolbar and the Search Variables empty state when nothing was searched', async () => {
+  it('starts with the toolbar and the Search variables empty state when nothing was searched', async () => {
     renderTab('empty')
     expect(screen.getByRole('toolbar', { name: 'Variable search' })).toBeInTheDocument()
-    expect(screen.getByText('Search Variables')).toBeInTheDocument()
+    expect(screen.getByText('Search variables')).toBeInTheDocument()
     expect(screen.getByText('All-pages mode: scanning every page in the document.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Search' })).toBeDisabled()
   })
 
   it('lists recent searches with their age and usage', async () => {
     renderTab()
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'Recent Searches' })).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Recent searches' })).toBeInTheDocument())
     expect(screen.getByText('button/primary/bg/default')).toBeInTheDocument()
     expect(screen.getByText('Yesterday')).toBeInTheDocument()
     expect(screen.getByText('12 days ago')).toBeInTheDocument()
@@ -38,10 +38,10 @@ describe('varsearch Tab', () => {
   it('searches and opens the best match on the components using it', async () => {
     renderTab()
     await searchFor('dropdown/border/default')
-    expect(screen.getByRole('heading', { name: 'Search Results' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Search results' })).toBeInTheDocument()
     expect(screen.getByText('Components using this variable')).toBeInTheDocument()
     expect(screen.getByText('Tab sub menu')).toBeInTheDocument()
-    expect(screen.getByText('Brand UI · Used by 5 components · Affects 7 modes/brands')).toBeInTheDocument()
+    expect(screen.getByText('Brand UI · Used by 5 components · Affects 8 brand modes')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Show layers of Tab sub menu' })).toBeInTheDocument()
   })
 
@@ -77,7 +77,7 @@ describe('varsearch Tab', () => {
     fireEvent.click(within(types).getByText('Component'))
     expect(screen.getByRole('button', { name: /Component/ })).toBeInTheDocument()
     await searchFor('dropdown/border/default')
-    expect(screen.getByText('Brand UI · Used by 1 component · Affects 7 modes/brands')).toBeInTheDocument()
+    expect(screen.getByText('Brand UI · Used by 1 component · Affects 8 brand modes')).toBeInTheDocument()
   })
 
   it('says why there are no results', async () => {

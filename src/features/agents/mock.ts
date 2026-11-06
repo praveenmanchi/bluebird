@@ -61,7 +61,7 @@ export function createMockHandlers({ tickMs = MOCK_TICK_MS, chat }: AgentsMockOp
       const text = /fix|apply/.test(last) ? 'Applying the safe fixes now; the rest need a design decision. [apply-safe]'
         : /show|see|list/.test(last) ? 'Here are the findings. [show-findings]'
           : /report|canvas/.test(last) ? 'Drawing the report frame next to the scope. [report]'
-            : 'I found 14 issues in 3 frames across 5 brand modes; 6 can be fixed safely with tokens. Say “apply the safe fixes” and I’ll do it.'
+            : 'I found 14 issues in 3 frames across 8 brand modes; 6 can be fixed safely with tokens. Say “apply the safe fixes” and I’ll do it.'
       return { status: 'answered', text, provider: 'claude', model: 'claude-opus-5-5' }
     }),
   }

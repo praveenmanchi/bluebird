@@ -13,9 +13,9 @@ export interface TabProps {
 
 /** Not connected body: Jira switched off, fields missing, or fields Settings would not accept. */
 function notConnectedBody({ reason, fields }: { reason: 'disabled' | 'incomplete' | 'invalid'; fields: readonly string[] }): string {
-  if (reason === 'disabled') return 'Jira is switched off. Turn on Jira Integration in Settings, then add your site, email and API token.'
-  if (reason === 'invalid') return `Fix the ${fields.join(', ')} in Settings › Jira Integration.`
-  return `Add your ${fields.join(', ')} in Settings › Jira Integration to pull the tickets assigned to you.`
+  if (reason === 'disabled') return 'Jira is switched off. Turn on Jira integration in Settings, then add your site, email and API token.'
+  if (reason === 'invalid') return `Fix the ${fields.join(', ')} in Settings › Jira integration.`
+  return `Add your ${fields.join(', ')} in Settings › Jira integration to pull the tickets assigned to you.`
 }
 
 /**

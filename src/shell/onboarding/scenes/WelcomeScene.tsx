@@ -14,11 +14,11 @@ export function WelcomeScene({ still, tabs }: SceneProps) {
     ...(laterIndex > 0 ? [{ at: 4000, target: later, click: true }] : []),
   ], [laterIndex])
   return (
-    <Stage still={still} stops={stops} label="Design studio introduces its tabs">
+    <Stage still={still} stops={stops} label="Design Studio introduces its tabs">
       <div class="bb-ob-scene bb-ob-scene--center">
         <div {...reveal(300, 'bounce')}><Fx kind="pulse" at={1800}><ThinkingOrb state="breathing" size="40" /></Fx></div>
         <div {...reveal(600, 'up', 'bb-ob-heading')}>
-          <span class="bb-ob-label">Design studio</span>
+          <span class="bb-ob-label">Design Studio</span>
           <span class="bb-ob-meta">{tabs.length} tabs · {BRANDS.length} brands · 1 plugin</span>
         </div>
         <div class="bb-ob-chips bb-ob-chips--center">

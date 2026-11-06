@@ -13,7 +13,7 @@ function type(code: string) {
 describe('LoginScreen · access code', () => {
   it('renders the Login Page chrome and keeps Sign in disabled until a code is typed', () => {
     render(<LoginScreen onSubmit={vi.fn()} onSso={noSso} />)
-    expect(screen.getByRole('heading', { name: 'Design studio' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Design Studio' })).toBeInTheDocument()
     expect(screen.getByText('Private plugin')).toBeInTheDocument()
     expect(screen.getByText('Never share your access code outside your team')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sign in' })).toBeDisabled()
@@ -33,8 +33,8 @@ describe('LoginScreen · access code', () => {
     expect(screen.getByRole('button', { name: 'Checking code…' })).toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByRole('button', { name: 'Sign in with SSO' })).toBeDisabled()
     accept()
-    expect(await screen.findByText('Code accepted. Opening Design studio…')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Opening Design studio…' })).toBeInTheDocument()
+    expect(await screen.findByText('Code accepted. Opening Design Studio…')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Opening Design Studio…' })).toBeInTheDocument()
   })
 
   it('ignores a second submit while checking', async () => {

@@ -6,7 +6,7 @@ describe('Footer', () => {
   it('renders a <footer> with the four default status pills and the meta line', () => {
     render(<Footer />)
     expect(screen.getByRole('contentinfo')).toHaveClass('bb-footer')
-    expect(screen.getAllByRole('status').map((el) => el.textContent)).toEqual(['Git', 'UX AI', 'MCP', 'Dual File'])
+    expect(screen.getAllByRole('status').map((el) => el.textContent)).toEqual(['Git', 'UXAI', 'MCP', 'Dual File'])
     expect(screen.getByText('V2.11.0')).toBeInTheDocument()
   })
   it('hides pills through the Figma booleans and separates the rest with dividers', () => {

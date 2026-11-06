@@ -14,7 +14,7 @@ const MATCH: Readonly<Record<MatchKind, { label: string; tone: MetaBadgeTone; ca
 const SHOWN_MATCHES = 5
 
 function IconAction({ icon, label, onClick, expanded }: { icon: IconName; label: string; onClick: () => void; expanded?: boolean }) {
-  return <button type="button" class="bb-varmapper-row__action" aria-label={label} aria-expanded={expanded} onClick={onClick}><Icon name={icon} /></button>
+  return <button type="button" class="bb-varmapper-row__action" aria-label={label} title={label} aria-expanded={expanded} onClick={onClick}><Icon name={icon} /></button>
 }
 
 /** The recommended variable: Figma "Dropdown" over the group's candidates. */

@@ -86,7 +86,6 @@
   font-weight: var(--bb-type-weight-600);
   line-height: var(--bb-type-line-11);
   color: var(--bb-text-tertiary);
-  text-transform: uppercase;
 }
 
 /* Figma L "Results": Findings title + filter tabs above the stacked WCAG cards. */

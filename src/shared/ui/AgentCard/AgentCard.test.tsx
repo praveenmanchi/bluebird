@@ -10,7 +10,7 @@ describe('AgentCard', () => {
     expect(screen.getByText(/Reviews contrast, target size/)).toBeInTheDocument()
     expect(screen.getByText('WCAG 2.2 AA · 86 rules').closest('.bb-context-chip')).toHaveAttribute('data-type', 'citation')
     expect(screen.getByText('Last run 2h ago · 14 issues')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Run' })).toHaveAttribute('data-variant', 'primary')
+    expect(screen.getByRole('button', { name: 'Run' })).toHaveAttribute('data-variant', 'secondary')
   })
   it.each<[AgentCardState, string, string, string, string]>([
     ['ready', 'default', 'success', 'Ready', 'Run'],

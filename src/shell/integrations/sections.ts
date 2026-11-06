@@ -35,8 +35,8 @@ const LINKS_OFF = (what: string) => `When off, the agent will not surface ${what
 const provider = (id: ProviderSpec['provider'], name: string, placeholder: string): ProviderSpec => ({
   kind: 'provider',
   provider: id,
-  model: { kind: 'select', key: `${id}Model`, label: 'Default Model', icon: 'ai-model', options: MODEL_OPTIONS[id] },
-  apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API Key`, icon: 'api-key', placeholder, secret: true },
+  model: { kind: 'select', key: `${id}Model`, label: 'Default model', icon: 'ai-model', options: MODEL_OPTIONS[id] },
+  apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API key`, icon: 'api-key', placeholder, secret: true },
 })
 
 const LIBRARY_TOKEN = 'Personal access token: file_variables:read, library_content:read'
@@ -49,7 +49,7 @@ const dualFileRow = (n: 1 | 2): readonly ColumnSpec[] => [
   ],
   [
     {
-      kind: 'text', key: `file${n}Key`, label: `File ${n} API Key`, icon: 'api-key', placeholder: LIBRARY_TOKEN, secret: true,
+      kind: 'text', key: `file${n}Key`, label: `File ${n} API key`, icon: 'api-key', placeholder: LIBRARY_TOKEN, secret: true,
       helper: n === 1
         ? 'Variables need file_variables:read (Enterprise); components need library_content:read and must be published.'
         : 'Optional when File 1’s key can open this file too. Leave File 2 empty if File 1 holds both.',
@@ -59,7 +59,7 @@ const dualFileRow = (n: 1 | 2): readonly ColumnSpec[] => [
 
 export const SECTIONS: readonly SectionSpec[] = [
   {
-    id: 'github', logo: 'github', title: 'GitHub Output Configuration', columns: 'halves',
+    id: 'github', logo: 'github', title: 'GitHub output configuration', columns: 'halves',
     description: 'Configure the GitHub repository where extracted variables will be committed via Pull Request.',
     blocks: [
       [
@@ -73,12 +73,12 @@ export const SECTIONS: readonly SectionSpec[] = [
         ],
       ],
       { kind: 'text', key: 'baseUrl', label: 'Base URL - Enterprise (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: GITHUB_ENTERPRISE_HELPER },
-      { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Extract tab compares local variables against the last pushed version on GitHub, showing what changed.' },
+      { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Publish tab compares local variables against the last pushed version on GitHub, showing what changed.' },
     ],
   },
   {
     id: 'notifications', logo: 'teams', title: 'Notifications',
-    description: 'Configure Power Automate workflow URLs to receive Teams notifications when Pull Requests are created. Toggle notifications in the Extract tab.',
+    description: 'Configure Power Automate workflow URLs to receive Teams notifications when Pull Requests are created. Toggle notifications in the Publish tab.',
     blocks: [
       { kind: 'text', key: 'designSystemWebhook', label: 'Power Automate — Design System Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
       { kind: 'text', key: 'devTeamWebhook', label: 'Power Automate — Dev Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
@@ -87,24 +87,24 @@ export const SECTIONS: readonly SectionSpec[] = [
   },
   {
     id: 'storybook', logo: 'storybook', title: 'Storybook',
-    description: 'Used by Ask UXAI to link each component to its Storybook playground.',
+    description: 'Used by UXAI to link each component to its Storybook playground.',
     blocks: [
       { kind: 'text', key: 'baseUrl', label: 'Base URL', icon: 'url', placeholder: 'https://design-system.example.com/storybook', helper: 'Root URL of your Storybook deployment. Must be publicly accessible or reachable from your network.' },
       { kind: 'text', key: 'storyPathTemplate', label: 'Story path template', icon: 'file', placeholder: '?path=/story/components-{slug}--default', helper: 'Appended to Base URL. Use {slug} for kebab-cased name (PrimaryButton → primary-button) or {name} for the raw name.' },
       { kind: 'text', key: 'indexUrl', label: 'Discovery via index.json (optional)', icon: 'file', placeholder: 'https://design-system.example.com/storybook/index.json', helper: 'When set, the agent fetches the Storybook index to resolve real story IDs instead of relying on the template. Falls back to the template if unreachable.' },
-      { kind: 'switch', key: 'linksEnabled', title: 'Enable Storybook links in Ask UXAI', description: LINKS_OFF('Storybook URLs') },
+      { kind: 'switch', key: 'linksEnabled', title: 'Enable Storybook links in UXAI', description: LINKS_OFF('Storybook URLs') },
     ],
   },
   {
     id: 'zeroheight', logo: 'zeroheight', title: 'Zeroheight', columns: 'halves',
-    description: 'Used by Ask UXAI to link each component to its Zeroheight documentation. Requires Enterprise plan.',
+    description: 'Used by UXAI to link each component to its Zeroheight documentation. Requires Enterprise plan.',
     blocks: [
       [
-        { kind: 'text', key: 'apiKey', label: 'API Key', icon: 'api-key', placeholder: 'Bearer token from Zeroheight → Settings → API', secret: true },
+        { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'Bearer token from Zeroheight → Settings → API', secret: true },
         { kind: 'text', key: 'styleguideId', label: 'Styleguide ID', icon: 'file', placeholder: '12345' },
       ],
       { kind: 'text', key: 'publicBaseUrl', label: 'Public base URL (optional)', icon: 'url', placeholder: 'https://zeroheight.com/abc123/p', helper: 'Shown to designers when the agent surfaces docs links. Without it, links fall back to the styleguide root.' },
-      { kind: 'switch', key: 'linksEnabled', title: 'Enable Zeroheight links in Ask UXAI', description: LINKS_OFF('Zeroheight documentation links') },
+      { kind: 'switch', key: 'linksEnabled', title: 'Enable Zeroheight links in UXAI', description: LINKS_OFF('Zeroheight documentation links') },
     ],
   },
   {
@@ -113,7 +113,7 @@ export const SECTIONS: readonly SectionSpec[] = [
     blocks: [dualFileRow(1), dualFileRow(2), { kind: 'files', key: 'extraFiles', label: 'More library files' }],
   },
   {
-    id: 'ai', title: 'AI Agent Assistance (UXAI)', toggleKey: 'enabled',
+    id: 'ai', title: 'AI agent assistance (UXAI)', toggleKey: 'enabled',
     description: 'Configure the AI model and API keys for the UXAI assistant and the UX AI agents. Supports Claude (Anthropic), OpenAI, and Google Gemini: the provider you pick answers with its Default Model; the others are fallbacks when it has no key.',
     blocks: [
       { kind: 'select', key: 'provider', label: 'Answer with', icon: 'ai-model', options: PROVIDER_OPTIONS },
@@ -121,11 +121,11 @@ export const SECTIONS: readonly SectionSpec[] = [
       provider('openai', 'OpenAI', 'sk-proj-...'),
       provider('gemini', 'Gemini', 'AIzaSy...'),
       { kind: 'switch', key: 'managedAgents', title: 'Claude Managed Agents', description: 'Server-side agents with persistent memory, attached skills, and Dreams (auto-cleanup of memory). Adds a "Chat with agent" mode to the UXAI tab. Requires Anthropic API key with the managed-agents beta enabled.' },
-      { kind: 'textarea', key: 'instructions', label: 'Custom Instructions (optional)', placeholder: 'Add any custom instructions for the AI assistant, e.g. preferred naming conventions, brand guidelines, or specific design system rules...', helper: 'These instructions will be included in every AI analysis prompt to guide the assistant\'s behavior.' },
+      { kind: 'textarea', key: 'instructions', label: 'Custom instructions (optional)', placeholder: 'Add any custom instructions for the AI assistant, e.g. preferred naming conventions, brand guidelines, or specific design system rules...', helper: 'These instructions will be included in every AI analysis prompt to guide the assistant\'s behavior.' },
     ],
   },
   {
-    id: 'mcp', title: 'MCP + Code Sync', toggleKey: 'enabled', columns: 'halves',
+    id: 'mcp', title: 'MCP + code sync', toggleKey: 'enabled', columns: 'halves',
     description: 'Where the MCP tab pushes design-token JSON. The repo\'s existing CI/CD rebuilds Storybook on each push. When off, the push button stays disabled.',
     blocks: [
       [
@@ -146,13 +146,13 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'jira', title: 'Jira Integration', toggleKey: 'enabled', columns: 'halves',
-    description: 'Connect Jira to browse and pull tickets into the Workflow tab (UX persona). Tickets can be sent to UXAI for AI-assisted analysis.',
+    id: 'jira', title: 'Jira integration', toggleKey: 'enabled', columns: 'halves',
+    description: 'Connect Jira to browse and pull tickets into the Jira board tab. Tickets can be sent to UXAI for AI-assisted analysis.',
     blocks: [
       [
         [
-          { kind: 'text', key: 'projectKey', label: 'Project Key', icon: 'api-key', placeholder: 'PROJ' },
-          { kind: 'text', key: 'apiKey', label: 'Jira API Key', icon: 'api-key', placeholder: 'your-jira-api-token', secret: true },
+          { kind: 'text', key: 'projectKey', label: 'Project key', icon: 'api-key', placeholder: 'PROJ' },
+          { kind: 'text', key: 'apiKey', label: 'Jira API key', icon: 'api-key', placeholder: 'your-jira-api-token', secret: true },
         ],
         [
           { kind: 'text', key: 'email', label: 'Email ID', icon: 'message', placeholder: 'user@company.com' },

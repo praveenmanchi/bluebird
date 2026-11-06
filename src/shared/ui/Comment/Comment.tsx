@@ -40,7 +40,7 @@ export function Comment({
           <div class="bb-comment__actions">
             <LinkButton onClick={onReply}>Reply</LinkButton>
             <LinkButton onClick={onEdit}>Edit</LinkButton>
-            <LinkButton onClick={onDelete}>Delete</LinkButton>
+            <LinkButton class="bb-comment__delete" onClick={onDelete}>Delete</LinkButton>
           </div>
         )}
       </div>

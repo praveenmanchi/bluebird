@@ -40,7 +40,7 @@ describe('onboarding handlers', () => {
     expect(await call(createOnboardingHandlers(store, fixed), ONBOARDING_MSG.status)).toEqual({ completedAt: null, skipped: false })
   })
 
-  it('comes back after Reset all Settings', async () => {
+  it('comes back after Reset all settings', async () => {
     const store = memoryStore()
     const config = loadConfig({ brand: { active: 'a', brands: { a: { label: 'A', accessCodeHash: hashAccessCode('A-CODE'), source: { collection: 'Brand', mode: 'A' } } } }, activePersona: 'p', personas: { p: { label: 'P', tabs: [] } }, tabs: {} })
     const onboarding = createOnboardingHandlers(store, fixed)

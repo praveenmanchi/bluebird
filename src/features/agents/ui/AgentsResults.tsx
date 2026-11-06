@@ -58,7 +58,7 @@ export function scoreTone(score: number): ReadinessMeterTone {
 /** Figma "Agents body" on "AI Agents · Results" (40000299:6101): summary, severity filters, findings, bulk actions. */
 export function AgentsResults({
   agent = agentById('accessibility'), findings = SAMPLE_FINDINGS[agent.id], filter = 'all', score = 70,
-  caption = '14 issues in 3 frames across 5 brand modes · 6 can be fixed with tokens',
+  caption = '14 issues in 3 frames across 8 brand modes · 6 can be fixed with tokens',
   status = {}, notice = null, modelNote,
   onFilter, onFindingAction, onApplySafe, onExport, onAnnotate, onCreateJira, onRerun, onBack,
 }: AgentsResultsProps) {

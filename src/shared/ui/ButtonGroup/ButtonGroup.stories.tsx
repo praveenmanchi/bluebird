@@ -8,7 +8,7 @@ const meta = {
   title: 'Molecules/ButtonGroup',
   component: ButtonGroup,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { primaryLabel: 'Save Configuration', secondaryLabel: 'Test Connection' },
+  args: { primaryLabel: 'Save configuration', secondaryLabel: 'Test connection' },
 } satisfies Meta<typeof ButtonGroup>
 export default meta
 type Story = StoryObj<typeof meta>

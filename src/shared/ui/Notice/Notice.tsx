@@ -21,7 +21,7 @@ export interface NoticeProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 't
 const ICON: Record<NoticeTone, IconName> = { info: 'access', error: 'status-error' }
 const COPY: Record<NoticeTone, { title: string; body: string }> = {
   info: { title: 'Private plugin · HCLTech only', body: 'You need an access code or approval from your organisation’s design-system admin to sign in.' },
-  error: { title: 'Your account isn’t approved yet', body: 'Ask your design-system admin to add you to the Design studio group, or use an access code instead.' },
+  error: { title: 'Your account isn’t approved yet', body: 'Ask your design-system admin to add you to the Design Studio group, or use an access code instead.' },
 }
 
 /** Figma "Notice" (40000321:8423): an inline callout above a form — Info (access requirement) or Error (blocking problem). */
