@@ -1,59 +1,28 @@
-import { scaleGaps } from '../../brand/scaleGaps'
-const logo = 'Figma now draws the real provider logo here; code still draws the monochrome stand-ins in the 16px glyph. Port the logos to code, then read these.'
-const LOGO_TOKENS = [
-  '--bb-derived-sso-provider-button-frame-provider-google-state-default-height',
-  '--bb-derived-sso-provider-button-frame-provider-google-state-default-width',
-  '--bb-derived-sso-provider-button-frame-provider-google-state-hover-height',
-  '--bb-derived-sso-provider-button-frame-provider-google-state-hover-width',
-  '--bb-derived-sso-provider-button-frame-provider-microsoft-state-default-height',
-  '--bb-derived-sso-provider-button-frame-provider-microsoft-state-default-width',
-  '--bb-derived-sso-provider-button-frame-provider-microsoft-state-hover-height',
-  '--bb-derived-sso-provider-button-frame-provider-microsoft-state-hover-width',
-  '--bb-derived-sso-provider-button-frame-provider-okta-state-default-height',
-  '--bb-derived-sso-provider-button-frame-provider-okta-state-default-width',
-  '--bb-derived-sso-provider-button-frame-provider-okta-state-hover-height',
-  '--bb-derived-sso-provider-button-frame-provider-okta-state-hover-width',
-  '--bb-derived-sso-provider-button-group-height',
-  '--bb-derived-sso-provider-button-group-width',
-  '--bb-derived-sso-provider-button-vector--1-fill',
-  '--bb-derived-sso-provider-button-vector--1-height',
-  '--bb-derived-sso-provider-button-vector--1-width',
-  '--bb-derived-sso-provider-button-vector--2-fill',
-  '--bb-derived-sso-provider-button-vector--2-height',
-  '--bb-derived-sso-provider-button-vector--2-width',
-  '--bb-derived-sso-provider-button-vector--3-fill',
-  '--bb-derived-sso-provider-button-vector--3-height',
-  '--bb-derived-sso-provider-button-vector--3-width',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-default-fill',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-default-height',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-default-width',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-hover-fill',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-hover-height',
-  '--bb-derived-sso-provider-button-vector-provider-google-state-hover-width',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-default-fill',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-default-height',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-default-width',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-hover-fill',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-hover-height',
-  '--bb-derived-sso-provider-button-vector-provider-microsoft-state-hover-width',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-default-fill',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-default-height',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-default-width',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-hover-fill',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-hover-height',
-  '--bb-derived-sso-provider-button-vector-provider-okta-state-hover-width',
+/** Logo layers figma/logos/<provider>.svg draws; the frame around them sets the size (SsoProviderButton.css). */
+const artwork = (provider: string, parts: readonly string[], why: string) =>
+  parts.map((part) => [`--bb-derived-sso-provider-button-${part}`, `${provider} logo ${why}`] as const)
+const vector = (provider: string) => ['default', 'hover'].map((state) => `vector-provider-${provider}-state-${state}`)
+const sized = (layers: readonly string[]) => layers.flatMap((layer) => [`${layer}-width`, `${layer}-height`])
+const filled = (layers: readonly string[]) => layers.map((layer) => `${layer}-fill`)
 
-] as const
+const DRAWN = 'artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.'
+const COLOUR = 'artwork colour: colours live in figma/logos/google.svg, not in tokens.'
+const GOOGLE_PARTS = ['vector--1', 'vector--2', 'vector--3', ...vector('google')]
 
 /** Figma ↔ code contract for SsoProviderButton ("SSO Provider Button" 40000324:8451). */
 export const figma = {
   setId: '40000324:8451',
   name: 'SSO Provider Button',
   props: { Provider: 'provider (microsoft | okta | google)', State: ':hover (state forces it)', Label: 'children (defaults to "Continue with <Provider>")' },
-  figmaGaps: { ...scaleGaps('dimension/opacity/99') },
+  figmaGaps: { 'dimension/opacity/99': 'Bound on two Google logo vectors; figma/logos/google.svg draws the opacity.' },
   derivedGaps: {
-    ...Object.fromEntries(LOGO_TOKENS.map((token) => [token, logo])),
+    ...Object.fromEntries([
+      ...artwork('Microsoft', sized(vector('microsoft')), DRAWN),
+      ...artwork('Okta', sized(vector('okta')), DRAWN),
+      ...artwork('Google', sized(['group', ...GOOGLE_PARTS]), DRAWN),
+      ...artwork('Google', filled(GOOGLE_PARTS), COLOUR),
+    ]),
     '--bb-derived-sso-provider-button-root-width': 'The set frames are fixed at 344; instances fill the card, so code fills its container.',
   },
-  notes: '2026-11-06: the Figma set moved to real logo artwork; the code below is still the stand-in. Microsoft = four 7×7 tiles (dimension/space/7) pushed to the corners of the 16px glyph; Okta = a ring with innerRadius 0.5; Google = a bold "G" in login/provider/text. These are monochrome stand-ins drawn in Figma, not the providers\' brand assets.',
+  notes: 'Logos are the Figma artwork in figma/logos (microsoft, okta, google), rendered through BrandLogo; re-export the SVGs when the artwork changes. Each logo keeps its Figma frame (18, 34, 32), which is why the mark-to-label gap differs by provider. Microsoft and Okta are single-colour marks (MONO_LOGOS) bound to login/provider/glyph in Figma and code, so they stay visible on the white buttons of Ikea, Richemont, AkzoNobel and Adecco. Google keeps its four colours as raw artwork.',
 } as const

@@ -1,5 +1,7 @@
 /* SsoProviderButton — Figma "SSO Provider Button" (40000324:8451).
- * Glyph (16) · Label, centred. Glyphs are monochrome marks in login/provider/glyph. */
+ * Logo · Label, centred. Each logo keeps its Figma frame, so the visible mark and the label gap differ
+ * by provider. Microsoft and Okta are single-colour marks drawn in login/provider/glyph; Google keeps
+ * its colours (figma/logos/*.svg). */
 .bb-sso-provider {
   display: flex;
   align-items: center;
@@ -26,21 +28,28 @@
 .bb-sso-provider:focus-visible { outline: var(--bb-input-border-width) solid var(--bb-input-border-focus); outline-offset: var(--bb-input-border-width); }
 .bb-sso-provider:disabled { cursor: default; }
 .bb-sso-provider__label { font-weight: var(--bb-login-font-weight-medium); white-space: nowrap; }
-.bb-sso-provider__glyph {
-  display: flex;
-  flex: none;
-  flex-wrap: wrap;
-  align-content: space-between;
-  align-items: center;
-  justify-content: space-between;
-  width: var(--bb-login-icon-size-sm);
-  height: var(--bb-login-icon-size-sm);
+.bb-sso-provider__logo { color: var(--bb-login-provider-glyph); }
+.bb-sso-provider[data-provider='microsoft'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-default-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-default-height);
 }
-.bb-sso-provider[data-provider='google'] .bb-sso-provider__glyph { justify-content: center; }
-.bb-sso-provider__tile {
-  width: var(--bb-dimension-space-7);
-  height: var(--bb-dimension-space-7);
-  background: var(--bb-login-provider-glyph);
+.bb-sso-provider[data-provider='microsoft']:hover:not(:disabled) .bb-sso-provider__logo, .bb-sso-provider[data-provider='microsoft'][data-state='hover'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-hover-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-hover-height);
 }
-.bb-sso-provider__ring { display: block; width: 100%; height: 100%; stroke: var(--bb-login-provider-glyph); }
-.bb-sso-provider__letter { font-weight: var(--bb-login-font-title-weight); }
+.bb-sso-provider[data-provider='okta'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-okta-state-default-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-okta-state-default-height);
+}
+.bb-sso-provider[data-provider='okta']:hover:not(:disabled) .bb-sso-provider__logo, .bb-sso-provider[data-provider='okta'][data-state='hover'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-okta-state-hover-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-okta-state-hover-height);
+}
+.bb-sso-provider[data-provider='google'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-google-state-default-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-google-state-default-height);
+}
+.bb-sso-provider[data-provider='google']:hover:not(:disabled) .bb-sso-provider__logo, .bb-sso-provider[data-provider='google'][data-state='hover'] .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-google-state-hover-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-google-state-hover-height);
+}

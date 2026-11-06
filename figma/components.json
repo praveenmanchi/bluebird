@@ -27946,7 +27946,7 @@
       "id": "40000324:8451",
       "key": "835199bc6f7722626d5d446c8321de4dc4527021",
       "name": "SSO Provider Button",
-      "description": "One identity provider on the SSO screen. Opens the provider’s sign-in in the browser; while waiting the screen swaps to the Spinner (Accent). Glyphs are monochrome marks bound to login/provider/glyph.",
+      "description": "One identity provider on the SSO screen. Opens the provider’s sign-in in the browser; while waiting the screen swaps to the Spinner (Accent). Microsoft and Okta are single-colour logos bound to login/provider/glyph; Google keeps its brand colours.",
       "props": {
         "Provider": {
           "type": "VARIANT",
@@ -28014,9 +28014,10 @@
               "id": "40002560:25098",
               "p": "Provider=Microsoft, State=Default/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   15,
                   15
@@ -28087,9 +28088,10 @@
               "id": "40002560:25747",
               "p": "Provider=Microsoft, State=Hover/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   15,
                   15
@@ -28160,9 +28162,10 @@
               "id": "40002560:25659",
               "p": "Provider=Okta, State=Default/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   34,
                   11.2
@@ -28233,9 +28236,10 @@
               "id": "40002560:25750",
               "p": "Provider=Okta, State=Hover/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   34,
                   11.2
