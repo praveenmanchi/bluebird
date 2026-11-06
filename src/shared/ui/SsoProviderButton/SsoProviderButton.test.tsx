@@ -26,8 +26,8 @@ describe('SsoProviderButton', () => {
   it('keeps the logo out of the button name', () => {
     expect(logoOf('okta')).toHaveAttribute('aria-hidden', 'true')
   })
-  // Figma fills both marks raw white, which vanishes on the white buttons of Ikea, Richemont,
-  // AkzoNobel and Adecco, so they take login/provider/glyph from the button instead.
+  // Both marks are bound to login/provider/glyph: a fixed white would vanish on the white buttons
+  // of Ikea, Richemont, AkzoNobel and Adecco.
   it.each(['microsoft', 'okta'] as const)('draws the %s mark in the glyph colour', (provider) => {
     expect(new Set(fills(logoOf(provider)))).toEqual(new Set(['currentColor']))
     expect(css).toMatch(/\.bb-sso-provider__logo \{[^}]*color: var\(--bb-login-provider-glyph\)/)

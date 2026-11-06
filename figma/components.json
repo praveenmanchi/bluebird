@@ -28014,9 +28014,10 @@
               "id": "40002560:25098",
               "p": "Provider=Microsoft, State=Default/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   15,
                   15
@@ -28087,9 +28088,10 @@
               "id": "40002560:25747",
               "p": "Provider=Microsoft, State=Hover/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   15,
                   15
@@ -28160,9 +28162,10 @@
               "id": "40002560:25659",
               "p": "Provider=Okta, State=Default/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   34,
                   11.2
@@ -28233,9 +28236,10 @@
               "id": "40002560:25750",
               "p": "Provider=Okta, State=Hover/Frame/Vector",
               "t": "VECTOR",
-              "b": {},
+              "b": {
+                "fill": "login/provider/glyph"
+              },
               "r": {
-                "fill": "#ffffff",
                 "size": [
                   34,
                   11.2
