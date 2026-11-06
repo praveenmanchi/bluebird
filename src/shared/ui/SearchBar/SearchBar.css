@@ -10,7 +10,7 @@
   max-width: var(--bb-derived-search-bar-root-width);
   height: var(--bb-search-bar-height);
   padding-inline: var(--bb-search-bar-padding-x);
-  border: var(--bb-derived-search-bar-root-stroke-width) solid var(--bb-search-bar-border-default);
+  border: var(--bb-input-border-width) solid var(--bb-search-bar-border-default);
   border-radius: var(--bb-search-bar-radius);
   background: var(--bb-search-bar-bg-default);
   color: var(--bb-search-bar-fg-value);

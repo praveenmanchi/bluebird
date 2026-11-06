@@ -11,9 +11,9 @@
   box-sizing: border-box;
   width: var(--bb-derived-variable-card-expanded-root-width);
   max-width: 100%;
-  gap: var(--bb-derived-variable-card-expanded-root-gap);
-  padding: var(--bb-derived-variable-card-expanded-root-padding-top) var(--bb-derived-variable-card-expanded-root-padding-right) var(--bb-derived-variable-card-expanded-root-padding-bottom) var(--bb-derived-variable-card-expanded-root-padding-left);
-  border: var(--bb-derived-variable-card-expanded-root-stroke-width) solid var(--bb-card-variable-border-default);
+  gap: var(--bb-dimension-space-8);
+  padding: var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt);
+  border: var(--bb-input-border-width) solid var(--bb-card-variable-border-default);
   border-radius: var(--bb-card-variable-radius);
   background: var(--bb-surface-transparent);
   color: var(--bb-card-variable-title-fg);
@@ -24,13 +24,13 @@
   width: auto;
   align-items: center;
   gap: var(--bb-derived-variable-card-expanded-frame-1430102576-gap);
-  padding: 0 0 var(--bb-derived-variable-card-expanded-frame-1430102576-padding-bottom);
-  border-width: 0 0 var(--bb-derived-variable-card-expanded-root-stroke-width);
+  padding: 0 0 var(--bb-space-inset-lg-alt);
+  border-width: 0 0 var(--bb-input-border-width);
   border-color: var(--bb-card-variable-border-default);
   border-radius: 0;
 }
-.bb-variable-card-expanded__header .bb-variable-card__lead { gap: var(--bb-derived-variable-card-expanded-frame-1430102566-gap); }
-.bb-variable-card-expanded__header .bb-variable-card__stack { gap: var(--bb-derived-variable-card-expanded-frame-1430102565-gap); }
+.bb-variable-card-expanded__header .bb-variable-card__lead { gap: var(--bb-dimension-space-3); }
+.bb-variable-card-expanded__header .bb-variable-card__stack { gap: var(--bb-space-stack-xs); }
 .bb-variable-card-expanded__header .bb-variable-card__name {
   font-family: var(--bb-card-variable-title-font-family), ui-sans-serif, system-ui, sans-serif;
   font-weight: var(--bb-card-variable-title-font-weight);
@@ -39,7 +39,7 @@
   font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
   font-weight: var(--bb-font-weight-regular);
 }
-.bb-variable-card-expanded__header .bb-variable-card__trail { gap: var(--bb-derived-variable-card-expanded-frame-1430102568-gap); }
+.bb-variable-card-expanded__header .bb-variable-card__trail { gap: var(--bb-space-inline-lg); }
 
 /* Frame — section title + summary chips */
 .bb-variable-card-expanded__section {
@@ -62,10 +62,10 @@
   display: flex;
   align-items: center;
   flex: none;
-  gap: var(--bb-derived-variable-card-expanded-frame-1430102678-gap);
+  gap: var(--bb-dimension-space-12);
 }
 /* Figma rebinds every chip's caption and count text to card-variable/title/fg. */
-.bb-variable-card-expanded__chip.bb-change-status { gap: var(--bb-derived-variable-card-expanded-frame-1430102572-gap); color: var(--bb-card-variable-title-fg); }
+.bb-variable-card-expanded__chip.bb-change-status { gap: var(--bb-space-inline-md); color: var(--bb-card-variable-title-fg); }
 
 /* Frame 14301025xx — detail rows */
 .bb-variable-card-expanded__rows {
@@ -87,7 +87,7 @@
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  gap: var(--bb-derived-variable-card-expanded-frame-1430102559-gap);
+  gap: var(--bb-space-inline-md);
 }
 .bb-variable-card-expanded__glyph.bb-icon {
   width: var(--bb-card-variable-row-icon-size);
@@ -111,7 +111,7 @@
   align-items: center;
   justify-content: flex-end;
   flex: none;
-  gap: var(--bb-derived-variable-card-expanded-frame-1430102679-gap);
+  gap: var(--bb-dimension-space-12);
 }
 /* Tab Icons (layers show / show) as icon buttons */
 .bb-variable-card-expanded__action {
@@ -140,6 +140,6 @@
 /* Figma overrides the count square (Frame 1430102560) inside the change-status instance to the count-badge tokens. */
 .bb-variable-card-expanded__chip .bb-change-status__count {
   background: var(--bb-badge-count-bg-default);
-  border: var(--bb-derived-variable-card-expanded-frame-1430102560-stroke-width) solid var(--bb-badge-count-border-default);
+  border: var(--bb-border-width-default) solid var(--bb-badge-count-border-default);
   border-radius: var(--bb-badge-count-radius);
 }

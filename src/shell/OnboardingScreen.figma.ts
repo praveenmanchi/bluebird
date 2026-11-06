@@ -1,3 +1,4 @@
+import { scaleGaps } from '../shared/brand/scaleGaps'
 const composed = (what: string) => `Bound on the nested ${what} instance; the composed component consumes it.`
 const button = composed('Button (Button.css)')
 const sceneLayer = 'A layer of the Accessibility demo scene. Its resting value in Figma is the frame where the animation starts; code draws the scene from components and plays it with CSS keyframes (OnboardingScreen.css, onboarding/stage.tsx).'
@@ -19,6 +20,7 @@ export const figma = {
     'Skip / Back / Next': 'Skip finishes as skipped; Back is disabled on the first step; Next → “Get started” on the last step',
   },
   figmaGaps: {
+    ...scaleGaps('button/primary/border-width', 'border-width/default', 'button/secondary/border-width'),
     'button/primary/bg/default': button, 'button/primary/border/default': button, 'button/primary/radius': button, 'button/primary/gap': button,
     'button/primary/padding-x': button, 'button/primary/width-md': button, 'button/primary/height': button,
     'button/secondary/bg/default': button, 'button/secondary/border/default': button, 'button/secondary/radius': button, 'button/secondary/gap': button,
@@ -37,13 +39,7 @@ export const figma = {
     '--bb-derived-onboarding-screen-indicator-width': 'Absolute layer sized to the active tab in Figma; code insets it by onboarding/gap/xs on both sides so it follows any label.',
     '--bb-derived-onboarding-screen-dot-2-accessibility-width': 'The active dot’s width; code reads onboarding/dot/width-active (the same 18) for whichever dot is active.',
     '--bb-derived-onboarding-screen-back-width': hug, '--bb-derived-onboarding-screen-skip-width': hug, '--bb-derived-onboarding-screen-next-width': 'Next fills the nav row in Figma; code gives it flex 1.',
-    '--bb-derived-onboarding-screen-back-stroke-width': stroke, '--bb-derived-onboarding-screen-skip-stroke-width': stroke, '--bb-derived-onboarding-screen-next-stroke-width': stroke,
-    '--bb-derived-onboarding-screen-tab-list-stroke-width': 'Same 1 as onboarding/border-width, which the tab list reads.',
-    '--bb-derived-onboarding-screen-video-accessibility-stroke-width': 'Same 1 as onboarding/border-width, which the media frame reads.',
-    '--bb-derived-onboarding-screen-selected-frame-stroke-width': sceneLayer,
-    '--bb-derived-onboarding-screen-scan-button-stroke-width': sceneLayer, '--bb-derived-onboarding-screen-mock-button-stroke-width': sceneLayer,
     '--bb-derived-onboarding-screen-rating-width': sceneLayer, '--bb-derived-onboarding-screen-rating-height': sceneLayer,
-    '--bb-derived-onboarding-screen-rating-padding-left': sceneLayer, '--bb-derived-onboarding-screen-rating-padding-right': sceneLayer,
     '--bb-derived-onboarding-screen-scanner-width': sceneLayer, '--bb-derived-onboarding-screen-scan-line-width': sceneLayer,
     '--bb-derived-onboarding-screen-finding-fail-width': sceneLayer, '--bb-derived-onboarding-screen-finding-fail-height': sceneLayer,
     '--bb-derived-onboarding-screen-finding-fixed-width': sceneLayer, '--bb-derived-onboarding-screen-finding-fixed-height': sceneLayer,

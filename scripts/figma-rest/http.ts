@@ -44,6 +44,7 @@ export async function figmaGet<T>(path: string, { fetchImpl = fetch, sleep = (ms
       await sleep(retryDelayMs(res.headers.get('retry-after'), attempt))
       continue
     }
+    if (res.status === 404) throw new FigmaHttpError(404, `Figma API 404 for ${path}: this token's account cannot see this file, or it does not exist. Pull through the relay instead (npm run figma:pull), or set FIGMA_TOKEN from an account with access.`)
     if (!res.ok) throw new FigmaHttpError(res.status, `Figma API ${res.status} for ${path}: ${await res.text()}`)
     return res.json() as Promise<T>
   }

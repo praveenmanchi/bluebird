@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const composed = 'Bound on the nested BrandModeChip instance(s); rendered by the composed <BrandModeChip>, whose BrandModeChip.css consumes it. Nothing to read at BrandModes level.'
 
 /** Figma ↔ code contract for BrandModes ("Brand Modes" 40000159:7074). */
@@ -6,6 +7,7 @@ export const figma = {
   name: 'Brand Modes',
   props: { Label: 'label', 'Brand Mode Chip instances': 'modes' },
   figmaGaps: {
+    ...scaleGaps('font/weight-strong', 'border-width/default'),
     'feedback/danger': composed,
     'feedback/success': composed,
     'radius/pill': composed,

@@ -108,3 +108,53 @@ describe('brand overrides', () => {
   })
 })
 
+describe('brand persona features', () => {
+  it('gives a persona this brand’s tabs and leaves other brands and unlisted personas on the defaults', () => {
+    const config = loadConfig(withBrand({ personas: { 'design-system': ['a11y', 'jira'] } }))
+    const ids = (brand?: string) => Object.fromEntries(resolvePersonas(config, brand).map((p) => [p.id, p.tabs.map((t) => t.id)]))
+    expect(ids('bluebird')).toEqual({ 'product-designer': ['a11y', 'jira', 'mcp'], 'design-system': ['a11y', 'jira'] })
+    expect(ids()).toEqual({ 'product-designer': ['a11y', 'jira', 'mcp'], 'design-system': ['mcp'] })
+  })
+
+  it('drops a persona the brand gives nothing, so the picker doesn’t offer it', () => {
+    const config = loadConfig(withBrand({ personas: { 'design-system': [] } }))
+    expect(resolvePersonas(config, 'bluebird').map((p) => p.id)).toEqual(['product-designer'])
+  })
+
+  it('still applies the brand’s tab order and hidden tabs on top', () => {
+    const config = loadConfig(withBrand({ personas: { 'design-system': ['a11y', 'jira', 'mcp'] }, tabs: [{ id: 'mcp', enabled: true }, { id: 'jira', enabled: false }] }))
+    expect(resolvePersonas(config, 'bluebird').find((p) => p.id === 'design-system')?.tabs.map((t) => t.id)).toEqual(['mcp', 'a11y'])
+  })
+
+  it('rejects unknown personas, unknown tabs and repeats', () => {
+    expect(() => loadConfig(withBrand({ personas: { ghost: ['a11y'] } }))).toThrow(/brand "bluebird" sets unknown persona "ghost"/)
+    expect(() => loadConfig(withBrand({ personas: { 'design-system': ['ghost'] } }))).toThrow(/brand "bluebird" gives persona "design-system" unknown tab "ghost"/)
+    expect(() => loadConfig(withBrand({ personas: { 'design-system': ['mcp', 'mcp'] } }))).toThrow(/persona "design-system" a tab more than once/)
+  })
+
+  it('rejects a brand that leaves every persona empty', () => {
+    expect(() => loadConfig(withBrand({ personas: { 'product-designer': [], 'design-system': [] } }))).toThrow(/hides every tab/)
+  })
+
+  it('shows the brand’s personas per tab on the configuration page, without personas that are off', () => {
+    const spare = { ...withBrand({ personas: { 'design-system': ['a11y'] } }) }
+    const config = loadConfig({ ...spare, personas: { ...spare.personas, spare: { label: 'Spare', enabled: false, tabs: ['a11y'] } } })
+    const rows = new Map(brandTabRows(config, 'bluebird').map((r) => [r.id, r.personas]))
+    expect(rows.get('a11y')).toEqual(['Product Designer', 'Design System'])
+    expect(rows.get('mcp')).toEqual(['Product Designer'])
+  })
+})
+
+describe('turning a persona off', () => {
+  const twoPersonas = { ...valid, personas: { ...valid.personas, spare: { label: 'Spare', enabled: false, tabs: ['a11y'] } } }
+
+  it('keeps it in the config but out of the resolved personas', () => {
+    const config = loadConfig(twoPersonas)
+    expect(config.personas.spare?.enabled).toBe(false)
+    expect(resolvePersonas(config).map((p) => p.id)).not.toContain('spare')
+  })
+
+  it('refuses a default persona that is turned off', () => {
+    expect(() => loadConfig({ ...twoPersonas, activePersona: 'spare' })).toThrow('activePersona "spare" is turned off')
+  })
+})

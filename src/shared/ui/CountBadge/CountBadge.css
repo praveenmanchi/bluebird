@@ -7,11 +7,11 @@
 .bb-count-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--bb-derived-count-badge-root-gap);
+  gap: var(--bb-space-inline-md);
   color: var(--bb-badge-count-fg-default);
   font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-badge-count-font-size);
-  font-weight: var(--bb-derived-count-badge-updated-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-badge-count-line-height);
   white-space: nowrap;
 }
@@ -36,7 +36,7 @@
   justify-content: center;
   box-sizing: border-box;
   padding: var(--bb-badge-count-padding);
-  border: var(--bb-derived-count-badge-frame-1430102560-stroke-width) solid var(--bb-badge-count-border-default);
+  border: var(--bb-border-width-default) solid var(--bb-badge-count-border-default);
   border-radius: var(--bb-badge-count-radius);
   background: var(--bb-badge-count-bg-default);
   font-weight: var(--bb-badge-count-font-weight);

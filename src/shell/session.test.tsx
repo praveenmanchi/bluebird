@@ -2,17 +2,87 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen as dom, fireEvent, waitFor } from '@testing-library/preact'
 import { App } from './App'
 import { createRpcClient, createMockTransport } from '@shared/bridge'
-import { ONBOARDING_MSG } from '@shared/session'
+import { ONBOARDING_MSG, PERSONA_MSG } from '@shared/session'
 import { createMockHandlers } from '../../tests/mocks/handlers'
-import { screen, session } from './state'
+import { activePersonaId, changingPersona, screen, session, visibleTabs } from './state'
+import { changePersona, choosePersona } from './session'
 
-function mount(sessionBrand: string | null, onboarded = true) {
-  const transport = createMockTransport(createMockHandlers({ sessionBrand, onboarded }), 0)
+function mount(sessionBrand: string | null, onboarded = true, persona?: string | null) {
+  const transport = createMockTransport(createMockHandlers({ sessionBrand, onboarded, persona }), 0)
   const client = createRpcClient(transport)
   return render(<App client={client} transport={transport} />)
 }
 
 beforeEach(() => { screen.value = 'boot'; session.value = null; document.documentElement.dataset.brand = 'bridge' })
+
+describe('first-run persona', () => {
+  it('goes splash, persona, tour, and opens on the picked persona’s tabs', async () => {
+    mount('bridge', false, null)
+    fireEvent.click(await dom.findByRole('region', { name: 'Loading' }))
+    fireEvent.click(await dom.findByRole('radio', { name: 'Content' }, { timeout: 2000 }))
+    fireEvent.click(dom.getByRole('button', { name: 'Continue as Content' }))
+    await waitFor(() => expect(screen.value).toBe('onboarding'), { timeout: 3000 })
+    expect(activePersonaId.value).toBe('content')
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['agents', 'uxai', 'jira'])
+  })
+
+  it('skips both screens when a persona is stored, and applies it', async () => {
+    mount('bridge', true, 'developer')
+    await waitFor(() => expect(screen.value).toBe('app'))
+    expect(activePersonaId.value).toBe('developer')
+  })
+
+  it('opens the app on the default persona when the store cannot be read', async () => {
+    const handlers = { ...createMockHandlers({ sessionBrand: 'bridge', onboarded: true }), [PERSONA_MSG.status]: () => { throw new Error('storage down') } }
+    const transport = createMockTransport(handlers, 0)
+    render(<App client={createRpcClient(transport)} transport={transport} />)
+    await waitFor(() => expect(screen.value).toBe('app'))
+  })
+
+  it('changes persona from Settings and returns to the app without the intro or tour', async () => {
+    mount('bridge', false, 'developer')
+    await waitFor(() => expect(screen.value).toBe('onboarding'))
+    screen.value = 'app'
+    changePersona()
+    fireEvent.click(await dom.findByRole('button', { name: 'Change persona' }))
+    fireEvent.click(await dom.findByRole('radio', { name: 'UI/UX Designer' }))
+    fireEvent.click(dom.getByRole('button', { name: 'Continue as UI/UX Designer' }))
+    await waitFor(() => expect(screen.value).toBe('app'), { timeout: 3000 })
+    expect(activePersonaId.value).toBe('ui-designer')
+  })
+
+  it('keeps the Settings mode until the app opens, so the picker does not replay its intro during the save', async () => {
+    let release = () => undefined as void
+    const saving = new Promise<void>((resolve) => { release = resolve })
+    const handlers = createMockHandlers({ sessionBrand: 'bridge', onboarded: true, persona: 'developer' })
+    const transport = createMockTransport({ ...handlers, [PERSONA_MSG.select]: () => saving }, 0)
+    const client = createRpcClient(transport)
+    render(<App client={client} transport={transport} />)
+    await waitFor(() => expect(screen.value).toBe('app'))
+    changePersona()
+    const done = choosePersona(client, 'content')
+    expect(changingPersona.value).toBe(true)
+    release()
+    await done
+    expect(changingPersona.value).toBe(false)
+    expect(screen.value).toBe('app')
+  })
+
+  it('asks again when the stored persona has been turned off', async () => {
+    mount('bridge', true, 'ux-designer')
+    await waitFor(() => expect(screen.value).toBe('splash'))
+  })
+
+  it('goes back to Settings without changing anything', async () => {
+    mount('bridge', true, 'developer')
+    await waitFor(() => expect(screen.value).toBe('app'))
+    changePersona()
+    fireEvent.click(await dom.findByRole('button', { name: 'Change persona' }))
+    fireEvent.click(dom.getByRole('button', { name: 'Back' }))
+    expect(screen.value).toBe('settings')
+    expect(activePersonaId.value).toBe('developer')
+  })
+})
 
 describe('access-code session', () => {
   it('shows the login screen without a session and unlocks the brand for a valid code', async () => {

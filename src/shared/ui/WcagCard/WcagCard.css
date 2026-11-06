@@ -16,7 +16,7 @@
   min-width: 0;
   /* Narrow-card layout below follows the card's own width, wherever it is placed. */
   container: wcag-card / inline-size;
-  border: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-wcag-card-divider-color);
+  border: var(--bb-input-border-width) solid var(--bb-wcag-card-divider-color);
   border-radius: var(--bb-wcag-card-radius);
   background: var(--bb-wcag-card-bg-default);
   color: var(--bb-wcag-card-title-fg);
@@ -32,35 +32,35 @@
   justify-content: flex-end;
   box-sizing: border-box;
   min-height: var(--bb-derived-wcag-card-header-height);
-  padding: var(--bb-derived-wcag-card-header-padding-top) var(--bb-derived-wcag-card-header-padding-right) var(--bb-derived-wcag-card-header-padding-bottom) var(--bb-derived-wcag-card-header-padding-left);
+  padding: var(--bb-dimension-space-8) var(--bb-dimension-space-8) var(--bb-space-inset-xs) var(--bb-dimension-space-8);
 }
 .bb-wcag-card__rating {
-  padding-left: var(--bb-derived-wcag-card-rating-padding-left);
-  padding-right: var(--bb-derived-wcag-card-rating-padding-right);
+  padding-left: var(--bb-dimension-space-6);
+  padding-right: var(--bb-dimension-space-6);
 }
 .bb-wcag-card__principle {
   position: absolute;
   top: 0;
   left: 0;
-  gap: var(--bb-derived-wcag-card-principle-gap);
-  padding: var(--bb-derived-wcag-card-principle-padding-top) var(--bb-wcag-card-padding) var(--bb-derived-wcag-card-principle-padding-bottom) var(--bb-derived-wcag-card-principle-padding-left);
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-dimension-space-6) var(--bb-wcag-card-padding) var(--bb-dimension-space-6) var(--bb-dimension-space-10);
 }
 
 .bb-wcag-card__body {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-wcag-card-body-mode-colors-gap);
+  gap: var(--bb-dimension-space-6);
   box-sizing: border-box;
   padding: var(--bb-rating-padding) var(--bb-wcag-card-padding) var(--bb-dimension-space-8);
 }
 /* Figma 2026-09-23: the text mode sits tighter at the bottom and its sections hug closer. */
 .bb-wcag-card[data-mode='text'] .bb-wcag-card__body {
-  gap: var(--bb-derived-wcag-card-body-mode-text-gap);
+  gap: var(--bb-space-stack-xs);
   padding-bottom: var(--bb-dimension-space-6);
 }
 /* Figma 2026-10-11: Touch target and Vision are cut from Mode=colors and keep its 6px body rhythm. */
-.bb-wcag-card[data-mode='touch'] .bb-wcag-card__body { gap: var(--bb-derived-wcag-card-body-mode-touch-target-gap); }
-.bb-wcag-card[data-mode='vision'] .bb-wcag-card__body { gap: var(--bb-derived-wcag-card-body-mode-vision-gap); }
+.bb-wcag-card[data-mode='touch'] .bb-wcag-card__body { gap: var(--bb-dimension-space-6); }
+.bb-wcag-card[data-mode='vision'] .bb-wcag-card__body { gap: var(--bb-dimension-space-6); }
 
 /* Summary — criterion number + disability indicators, reference column right. */
 /* Summary row (Figma "Frame 1430102698"): criterion group, then the reference column. In Figma the
@@ -70,14 +70,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--bb-derived-wcag-card-frame-1430102698-gap);
+  gap: var(--bb-dimension-space-41);
 }
 /* Criterion group (Figma "Frame 1430102699", 2026-09-25): the SC code and the disability indicators.
  * Mode=Text was not regrouped and keeps its own "Criterion" frame spacing. */
 .bb-wcag-card__criterion {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-frame-1430102699-gap);
+  gap: var(--bb-dimension-space-19);
 }
 .bb-wcag-card__code {
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -89,14 +89,14 @@
 .bb-wcag-card__indicators {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-disabilities-gap);
+  gap: var(--bb-space-inline-md);
 }
 /* Reference column — the occurrences roll-up sits above the link (40000163:15844). */
 .bb-wcag-card__reference {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--bb-derived-wcag-card-frame-1430102697-gap);
+  gap: var(--bb-dimension-space-6);
   min-width: 0;
 }
 .bb-wcag-card__link {
@@ -118,21 +118,21 @@
 .bb-wcag-card__heading {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-wcag-card-heading-gap);
+  gap: var(--bb-dimension-space-2);
   padding-top: var(--bb-rating-padding);
 }
 .bb-wcag-card__title {
   margin: 0;
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-wcag-card-contrast-minimum-font-size);
+  font-size: var(--bb-font-size-body);
   font-weight: var(--bb-type-weight-700);
-  line-height: var(--bb-derived-wcag-card-contrast-minimum-line-height);
+  line-height: var(--bb-type-line-15-13);
   color: var(--bb-wcag-card-title-fg);
 }
 /* Each mode's title layer is named after its criterion in Figma, so each carries its own token. */
-.bb-wcag-card[data-mode='text'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-text-spacing-font-size); line-height: var(--bb-derived-wcag-card-text-spacing-line-height); }
-.bb-wcag-card[data-mode='touch'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-target-size-minimum-font-size); line-height: var(--bb-derived-wcag-card-target-size-minimum-line-height); }
-.bb-wcag-card[data-mode='vision'] .bb-wcag-card__title { font-size: var(--bb-derived-wcag-card-use-of-color-font-size); line-height: var(--bb-derived-wcag-card-use-of-color-line-height); }
+.bb-wcag-card[data-mode='text'] .bb-wcag-card__title { font-size: var(--bb-font-size-body); line-height: var(--bb-type-line-15-13); }
+.bb-wcag-card[data-mode='touch'] .bb-wcag-card__title { font-size: var(--bb-font-size-body); line-height: var(--bb-type-line-15-13); }
+.bb-wcag-card[data-mode='vision'] .bb-wcag-card__title { font-size: var(--bb-font-size-body); line-height: var(--bb-type-line-15-13); }
 .bb-wcag-card__description {
   margin: 0;
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -145,25 +145,25 @@
   width: 100%;
   margin: 0;
   border: 0;
-  border-top: var(--bb-derived-wcag-card-line-61-stroke-width) solid var(--bb-wcag-card-divider-color);
+  border-top: var(--bb-dimension-stroke-0-5) solid var(--bb-wcag-card-divider-color);
 }
 /* Line 62 — above the brand-mode matrix. */
-.bb-wcag-card__divider--brand-modes { border-top-width: var(--bb-derived-wcag-card-line-62-stroke-width); }
+.bb-wcag-card__divider--brand-modes { border-top-width: var(--bb-dimension-stroke-0-5); }
 /* Line 64 — the Body-level rule under the Fix row (Mode=colors only). */
-.bb-wcag-card__divider--fix { border-top-width: var(--bb-derived-wcag-card-line-64-stroke-width); }
+.bb-wcag-card__divider--fix { border-top-width: var(--bb-dimension-stroke-0-5); }
 
 /* Detail rows — an 80px label column and a value column. */
 .bb-wcag-card__details {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-wcag-card-details-gap);
-  padding-top: var(--bb-derived-wcag-card-details-padding-top);
-  padding-bottom: var(--bb-derived-wcag-card-details-padding-bottom);
+  gap: var(--bb-dimension-space-6);
+  padding-top: var(--bb-space-inset-xs);
+  padding-bottom: var(--bb-space-inset-xs);
 }
 .bb-wcag-card__row {
   display: flex;
   align-items: flex-start;
-  gap: var(--bb-derived-wcag-card-row-node-gap);
+  gap: var(--bb-space-inline-xs);
   padding-top: var(--bb-rating-padding);
 }
 .bb-wcag-card__row-label {
@@ -189,7 +189,7 @@
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-wcag-card-meta-font-size);
   font-weight: var(--bb-type-weight-400);
-  line-height: var(--bb-derived-wcag-card-0c8ce9-line-height);
+  line-height: var(--bb-type-line-12);
 }
 
 /* Colors row — swatch / hex / "on" / swatch / hex. The "on" separator rides
@@ -197,19 +197,19 @@
 .bb-wcag-card__row--colors .bb-wcag-card__row-value {
   display: flex;
   align-items: flex-start;
-  gap: var(--bb-derived-wcag-card-pair-gap);
+  gap: var(--bb-dimension-space-2);
   flex-wrap: wrap;
 }
 .bb-wcag-card__swatch-item {
   display: inline-flex;
   align-items: flex-start;
-  gap: var(--bb-derived-wcag-card-pair-gap);
+  gap: var(--bb-dimension-space-2);
 }
 .bb-wcag-card__swatch {
   width: var(--bb-derived-wcag-card-swatch-fg-width);
   height: var(--bb-derived-wcag-card-swatch-fg-height);
-  border: var(--bb-derived-wcag-card-swatch-fg-stroke-width) solid var(--bb-derived-wcag-card-swatch-fg-stroke);
-  border-radius: var(--bb-derived-wcag-card-swatch-fg-radius);
+  border: var(--bb-input-border-width) solid color-mix(in srgb, var(--bb-text-primary) calc(var(--bb-dimension-opacity-30) * 100%), transparent);
+  border-radius: var(--bb-radius-sm);
   box-sizing: border-box;
   flex: none;
 }
@@ -217,12 +217,12 @@
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-wcag-card-meta-font-size);
   font-weight: var(--bb-type-weight-400);
-  line-height: var(--bb-derived-wcag-card-on-line-height);
+  line-height: var(--bb-type-line-12);
 }
 .bb-wcag-card__row--themes .bb-wcag-card__row-value {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-theme-chips-gap);
+  gap: var(--bb-dimension-space-7);
   flex-wrap: wrap;
 }
 
@@ -298,11 +298,11 @@
 .bb-wcag-card__footer {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-footer-gap);
+  gap: var(--bb-space-inline-xs);
   box-sizing: border-box;
   margin-top: var(--bb-rating-padding);
-  padding: var(--bb-derived-wcag-card-footer-padding-top) var(--bb-derived-wcag-card-footer-padding-right) var(--bb-derived-wcag-card-footer-padding-bottom) var(--bb-derived-wcag-card-footer-padding-left);
-  border-top: var(--bb-derived-wcag-card-root-stroke-width) solid var(--bb-wcag-card-divider-color);
+  padding: var(--bb-dimension-space-8) var(--bb-dimension-space-10) var(--bb-dimension-space-8) var(--bb-dimension-space-10);
+  border-top: var(--bb-input-border-width) solid var(--bb-wcag-card-divider-color);
   background: var(--bb-wcag-card-bg-default);
   flex-wrap: wrap;
 }
@@ -316,12 +316,13 @@
 .bb-wcag-card__check-icons {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-wcag-card-check-icons-gap);
+  gap: var(--bb-dimension-space-8-42);
 }
+/* The Disability Indicator instance sits at 0.7 scale in Figma: its bound values are the full-size ones. */
 .bb-wcag-card__check {
-  padding: var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-top) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-right) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-bottom) var(--bb-derived-wcag-card-disability-indicator-mode-colors-padding-left);
-  border-radius: var(--bb-derived-wcag-card-disability-indicator-mode-colors-radius);
-  border-width: var(--bb-derived-wcag-card-disability-indicator-mode-colors-stroke-width);
+  padding: calc(var(--bb-dimension-space-2-57) * 0.7);
+  border-radius: calc(var(--bb-dimension-radius-3) * 0.7);
+  border-width: calc(var(--bb-dimension-stroke-0-64) * 0.7);
 }
 .bb-wcag-card__spacer { flex: 1 1 auto; }
 .bb-wcag-card__action {
@@ -331,9 +332,9 @@
   gap: var(--bb-derived-wcag-card-ignore-button-gap);
   box-sizing: border-box;
   height: var(--bb-derived-wcag-card-ignore-button-height);
-  padding: var(--bb-derived-wcag-card-ignore-button-padding-top) var(--bb-derived-wcag-card-ignore-button-padding-right) var(--bb-derived-wcag-card-ignore-button-padding-bottom) var(--bb-derived-wcag-card-ignore-button-padding-left);
-  border-radius: var(--bb-derived-wcag-card-ignore-button-radius);
-  border: var(--bb-derived-wcag-card-ignore-button-stroke-width) solid var(--bb-wcag-card-border-default);
+  padding: var(--bb-space-inset-xs) var(--bb-dimension-space-8) var(--bb-space-inset-xs) var(--bb-dimension-space-8);
+  border-radius: var(--bb-radius-md);
+  border: var(--bb-border-width-default) solid var(--bb-wcag-card-border-default);
   background: var(--bb-surface-transparent);
   color: var(--bb-text-secondary);
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -355,8 +356,8 @@
   color: var(--bb-text-on-accent);
 }
 .bb-wcag-card__action--select {
-  padding-left: var(--bb-derived-wcag-card-select-button-padding-left);
-  padding-right: var(--bb-derived-wcag-card-select-button-padding-right);
+  padding-left: var(--bb-dimension-space-6);
+  padding-right: var(--bb-dimension-space-6);
 }
 .bb-wcag-card__action--annotate:not(:disabled):not([data-state='placed']):hover,
 .bb-wcag-card__action--select:not(:disabled):hover {
@@ -426,7 +427,7 @@
  * its value so long values (Why it fails, How to fix) get the full width instead of a squeezed
  * column beside the fixed label. */
 @container wcag-card (max-width: 400px) { /* allow-raw: narrow-card breakpoint (the S window), not a Figma value */
-  .bb-wcag-card__row { flex-direction: column; gap: var(--bb-derived-wcag-card-heading-gap); }
+  .bb-wcag-card__row { flex-direction: column; gap: var(--bb-dimension-space-2); }
   .bb-wcag-card__row-label { flex: none; width: auto; }
   .bb-wcag-card__row-value { width: 100%; }
 }

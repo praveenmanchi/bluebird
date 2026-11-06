@@ -1,3 +1,4 @@
+import { scaleGaps } from '../shared/brand/scaleGaps'
 const composed = (what: string) => `Bound on the nested ${what} instance; the composed component consumes it.`
 const badge = composed('"Private badge" Meta Badge (MetaBadge.css)')
 const button = composed('"Submit button" Button (Button.css)')
@@ -15,6 +16,7 @@ export const figma = {
     'Login footer': 'LoginFooter view="access-code" → switches to the SSO card (LoginSso)',
   },
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'button/primary/border-width', 'dimension/opacity/55'),
     'border/accent': badge, 'radius/pill': badge, 'space/inline-xs': badge, 'space/inline-sm': badge, 'space/inset-xs': badge,
     'login/notice/radius': notice, 'login/notice/padding': notice, 'login/gap/sm': notice,
     'login/gap/xs': composed('Access code field (AccessCodeField.css)'),
@@ -26,13 +28,10 @@ export const figma = {
     '--bb-derived-login-screen-root-height': 'The frame is a 1074×868 desktop mock; the plugin window is 360–760 wide, so the page fills the window and scrolls.',
     '--bb-derived-login-screen-private-badge-width': 'Hug size of the Meta Badge instance.',
     '--bb-derived-login-screen-private-badge-height': 'Hug size of the Meta Badge instance.',
-    '--bb-derived-login-screen-private-badge-stroke-width': 'MetaBadge.css draws its stroke with border/width/default (1).',
     '--bb-derived-login-screen-notice-width': fill, '--bb-derived-login-screen-notice-height': fill,
     '--bb-derived-login-screen-access-code-field-width': fill, '--bb-derived-login-screen-access-code-field-height': fill,
     '--bb-derived-login-screen-login-footer-width': fill, '--bb-derived-login-screen-login-footer-height': fill,
     '--bb-derived-login-screen-submit-button-width': fill,
-    '--bb-derived-login-screen-submit-button-stroke-width': 'Button.css draws it with button/primary/border-width (1).',
-    '--bb-derived-login-screen-submit-button-opacity': 'The disabled Sign in button: Button.css applies --bb-derived-button-disabled-opacity (the same 0.55) to every disabled primary.',
   },
   codeOnly: {
     states: 'The card walks the Access code flow frames: Login Page (empty) · Typing (40000326:5336) · Submitting (40000326:5403) · Error (40000326:5469) · Success (40000326:5536).',

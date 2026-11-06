@@ -59,4 +59,4 @@
 }
 .bb-segment-tab[data-selected] .bb-segment-tab__icon { color: var(--bb-icon-glyph-on-accent); }
 .bb-segment-tab:disabled { cursor: not-allowed; color: var(--bb-icon-glyph-muted); }
-.bb-segment-tab:disabled .bb-segment-tab__icon { opacity: var(--bb-derived-segment-tab-icon-opacity); }
+.bb-segment-tab:disabled .bb-segment-tab__icon { opacity: var(--bb-dimension-opacity-40); }

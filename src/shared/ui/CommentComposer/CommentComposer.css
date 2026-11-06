@@ -21,7 +21,7 @@
   min-width: 0;
   box-sizing: border-box;
   padding: var(--bb-jira-space-row-y) var(--bb-jira-space-row-x);
-  border: var(--bb-derived-comment-composer-field-stroke-width) solid var(--bb-jira-surface-panel-border);
+  border: var(--bb-jira-border-width) solid var(--bb-jira-surface-panel-border);
   border-radius: var(--bb-jira-radius-control);
   background: var(--bb-jira-surface-field);
   overflow: hidden;

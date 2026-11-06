@@ -12,13 +12,13 @@
 .bb-app-subbar__note { flex: 1; min-width: 0; }
 
 /* Tab row of the Figma "accessibity UI" screen (40000003:5137): Tab instances
- * left, settings glyph right, space-between, `Boader` rule underneath. */
+ * left, settings glyph right, space-between, `Border` rule underneath. */
 .bb-tabbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-right: var(--bb-space-stack-md);
-  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-border);
 }
 .bb-tabbar__tabs {
   display: flex;

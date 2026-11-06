@@ -1,7 +1,8 @@
 {
   "$comment": "Source of truth for `npm run figma:pull`. Node ids come from the Figma file; code names are the exported component names in src/shared/ui.",
-  "fileKey": "JPZ7koqomjcjczGQuhIMVH",
-  "fileUrl": "https://www.figma.com/design/JPZ7koqomjcjczGQuhIMVH/Plugin-UI?node-id=40000008-9592&p=f&t=o6gSpj31PPc00DCJ-0",
+  "fileKey": "naqp6r4h5V4KUgTTmwe9U5",
+  "fileName": "Project Bluebird UI",
+  "fileUrl": "https://www.figma.com/design/naqp6r4h5V4KUgTTmwe9U5/Project-Bluebird-UI",
   "componentsPage": {
     "id": "40000008:9592",
     "name": "Components"

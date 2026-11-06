@@ -8,7 +8,14 @@ import type { IntegrationsApi } from './integrations/client'
 function fakeApi(settings: IntegrationSettings = DEFAULT_INTEGRATIONS, save: IntegrationsApi['save'] = async (_s, v) => v): IntegrationsApi & { save: ReturnType<typeof vi.fn> } {
   return { load: async () => settings, save: vi.fn(save) }
 }
-const section = async (name: string) => screen.findByRole('region', { name })
+/** Finds a section and opens it, as a person would before reaching its fields. */
+const section = async (name: string) => {
+  const region = await screen.findByRole('region', { name })
+  const arrow = within(region).getByRole('button', { name: new RegExp(`(Show|Hide) ${name.replace(/[()+]/g, '\\$&')} settings`) })
+  if (arrow.getAttribute('aria-expanded') === 'false') fireEvent.click(arrow)
+  await within(region).findByRole('button', { name: /Hide .* settings/ })
+  return region
+}
 
 describe('SettingsIntegrations', () => {
   it('renders the eight Figma sections in order once the settings load', async () => {
@@ -17,6 +24,50 @@ describe('SettingsIntegrations', () => {
     expect([...container.querySelectorAll('.bb-integrations__section')].map((s) => s.getAttribute('aria-label'))).toEqual([
       'GitHub Output Configuration', 'Notifications', 'Storybook', 'Zeroheight', 'Dual File Mode', 'AI Agent Assistance (UXAI)', 'MCP + Code Sync', 'Jira Integration',
     ])
+  })
+
+  it('starts collapsed, with each section’s status and an arrow', async () => {
+    render(<SettingsIntegrations api={fakeApi({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'k', repo: 'a/b' } })} />)
+    const github = await screen.findByRole('region', { name: 'GitHub Output Configuration' })
+    expect(within(github).getByText('Configured')).toBeInTheDocument()
+    expect(within(github).queryByLabelText('Repository (owner/repo)')).toBeNull()
+    expect(within(github).getByRole('button', { name: 'Show GitHub Output Configuration settings' })).toHaveAttribute('aria-expanded', 'false')
+    expect(within(screen.getByRole('region', { name: 'Storybook' })).getByText('Not configured')).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: 'Jira Integration' })).getByText('Off')).toBeInTheDocument()
+  })
+
+  it('opens and closes from the arrow or anywhere on the header', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const github = await screen.findByRole('region', { name: 'GitHub Output Configuration' })
+    fireEvent.click(within(github).getByRole('button', { name: 'Show GitHub Output Configuration settings' }))
+    expect(await within(github).findByLabelText('Repository (owner/repo)')).toBeInTheDocument()
+    fireEvent.click(within(github).getByRole('heading', { name: 'GitHub Output Configuration' }))
+    await waitFor(() => expect(within(github).queryByLabelText('Repository (owner/repo)')).toBeNull())
+  })
+
+  it('keeps what was typed when a section is closed and reopened', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const github = await section('GitHub Output Configuration')
+    fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'a/b' } })
+    fireEvent.click(within(github).getByRole('button', { name: 'Hide GitHub Output Configuration settings' }))
+    fireEvent.click(await within(github).findByRole('button', { name: 'Show GitHub Output Configuration settings' }))
+    expect((await within(github).findByLabelText('Repository (owner/repo)') as HTMLInputElement).value).toBe('a/b')
+  })
+
+  it('updates the status on save, not while typing', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const storybook = await section('Storybook')
+    fireEvent.input(within(storybook).getByLabelText(/Base URL/), { target: { value: 'https://sb.example.com' } })
+    expect(within(storybook).getByText('Not configured')).toBeInTheDocument()
+    fireEvent.click(within(storybook).getByRole('button', { name: 'Save Configuration' }))
+    expect(await within(storybook).findByText('Configured')).toBeInTheDocument()
+  })
+
+  it('does not close when the header switch is flipped', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const jira = await section('Jira Integration')
+    fireEvent.click(within(jira).getByRole('switch', { name: 'Jira Integration' }))
+    expect(within(jira).getByRole('button', { name: 'Hide Jira Integration settings' })).toBeInTheDocument()
   })
 
   it('shows stored values and the header switch state', async () => {

@@ -1,0 +1,248 @@
+/* Variable mapper tab — Figma "Variable mapper · 600" (page "Variable Mapper"). Same
+ * frame as Variable search: a bordered toolbar, then a scrolling content column. */
+.bb-varmapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-card-variable-title-fg);
+}
+
+.bb-varmapper__toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inline-md) var(--bb-space-inset-lg-alt);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-card-variable-divider-color);
+}
+.bb-filter-dropdown.bb-varmapper__source { flex: 0 1 auto; min-width: 0; max-width: 30%; }
+.bb-search-bar.bb-varmapper__search { flex: 1 1 0; min-width: 0; max-width: none; }
+
+.bb-varmapper__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  min-height: 0;
+  padding: var(--bb-card-variable-padding);
+  overflow-y: auto;
+}
+.bb-varmapper__content > * { flex: none; }
+.bb-empty-state.bb-varmapper__empty { flex: 1 1 auto; justify-content: center; }
+
+.bb-varmapper__status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+
+.bb-varmapper__status > .bb-progress-bar { width: 100%; }
+
+.bb-varmapper__selection { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); }
+.bb-varmapper__name {
+  margin: 0;
+  font-size: var(--bb-card-variable-title-font-size);
+  font-weight: var(--bb-card-variable-title-font-weight);
+  line-height: var(--bb-card-variable-title-line-height);
+}
+.bb-varmapper__meta {
+  margin: 0;
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+
+.bb-varmapper__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--bb-size-control-height), 1fr));
+  gap: var(--bb-card-variable-gap-row);
+}
+.bb-varmapper__tiles > .bb-kpi-tile { width: auto; max-width: none; min-width: 0; }
+.bb-varmapper__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-card-variable-gap-row);
+}
+
+.bb-varmapper__bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inline-md) var(--bb-card-variable-padding);
+  border-top: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  background: var(--bb-surface-raised);
+  font-size: var(--bb-card-variable-title-font-size);
+  font-weight: var(--bb-card-variable-title-font-weight);
+}
+
+.bb-notice.bb-varmapper__toast {
+  position: absolute;
+  z-index: 3;
+  right: var(--bb-space-inset-lg-alt);
+  bottom: var(--bb-space-inset-lg-alt);
+  left: var(--bb-space-inset-lg-alt);
+  width: auto;
+  box-sizing: border-box;
+}
+
+/* Figma "Mapper Row". */
+.bb-varmapper-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  padding: var(--bb-space-stack-md) var(--bb-card-variable-padding);
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  border-radius: var(--bb-card-variable-radius);
+}
+.bb-varmapper-row[data-state='selected'] {
+  border-color: var(--bb-border-accent);
+  background: var(--bb-surface-accent-subtle);
+}
+.bb-varmapper-row__header,
+.bb-varmapper-row__mapping,
+.bb-varmapper-row__layer {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-card-variable-gap-row);
+  min-width: 0;
+}
+.bb-varmapper-row__mapping { align-items: flex-end; }
+.bb-varmapper-row__bound { flex: none; color: var(--bb-feedback-success); }
+.bb-varmapper-row__preview {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: var(--bb-size-icon-lg);
+  height: var(--bb-size-icon-lg);
+  box-sizing: border-box;
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  border-radius: var(--bb-radius-md);
+  background: var(--bb-surface-sunken);
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-font-size-caption);
+}
+.bb-varmapper-row__swatch { display: block; width: 100%; height: 100%; }
+.bb-varmapper-row__text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-space-stack-xs);
+  min-width: 0;
+}
+.bb-varmapper-row__title,
+.bb-varmapper-row__where,
+.bb-varmapper-row__layer-name,
+.bb-varmapper-row__layer-path,
+.bb-varmapper-row__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-varmapper-row__title,
+.bb-varmapper-row__layer-name,
+.bb-varmapper-row__value {
+  font-size: var(--bb-card-variable-title-font-size);
+  font-weight: var(--bb-card-variable-title-font-weight);
+  line-height: var(--bb-card-variable-title-line-height);
+}
+.bb-varmapper-row__where,
+.bb-varmapper-row__layer-path {
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+.bb-varmapper-row__action {
+  display: inline-flex;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.bb-varmapper-row__action:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); }
+
+.bb-varmapper-row__current,
+.bb-varmapper-row__recommended {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-xs);
+  min-width: 0;
+}
+.bb-varmapper-row__current { flex: 0 1 26%; }
+.bb-varmapper-row__recommended { flex: 1 1 0; }
+.bb-varmapper-row__caption {
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-font-size-caption);
+  line-height: var(--bb-font-line-caption);
+}
+.bb-varmapper-row__value {
+  box-sizing: border-box;
+  height: var(--bb-size-control-height);
+  padding: 0 var(--bb-space-inline-md);
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  border-radius: var(--bb-radius-md);
+  background: var(--bb-surface-sunken);
+  line-height: var(--bb-size-control-height);
+}
+.bb-varmapper-row__to {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--bb-size-control-height);
+  color: var(--bb-card-variable-meta-fg);
+}
+.bb-varmapper-row__picker { position: relative; min-width: 0; }
+.bb-varmapper-row__picker .bb-dropdown { width: 100%; }
+.bb-dropdown-menu.bb-varmapper-row__menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + var(--bb-space-inline-xs));
+  left: 0;
+  width: 100%;
+}
+.bb-dropdown-menu.bb-varmapper-row__menu { overflow-y: auto; max-height: 40vh; }
+.bb-varmapper-row__group {
+  padding: var(--bb-space-stack-xs) var(--bb-menu-item-padding-x);
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-font-size-caption);
+}
+.bb-varmapper-row__more .bb-menu-item__icon { display: none; }
+.bb-varmapper-row__note {
+  margin: 0;
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+.bb-varmapper-row__note[data-tone='warning'] { color: var(--bb-feedback-warning); }
+.bb-varmapper-row__note[data-tone='success'] { color: var(--bb-feedback-success); }
+.bb-varmapper-row__match {
+  flex: none;
+  align-self: center;
+  margin-top: var(--bb-font-line-caption);
+}
+
+.bb-varmapper-row__layers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-xs);
+  margin: 0;
+  padding: var(--bb-card-variable-gap-row) 0 0;
+  border-top: var(--bb-border-width-default) solid var(--bb-card-variable-divider-color);
+  list-style: none;
+}
+.bb-varmapper-row__layer-name { flex: 0 1 auto; }
+.bb-varmapper-row__layer-path { flex: 1 1 0; min-width: 0; }

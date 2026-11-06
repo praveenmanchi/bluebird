@@ -50,6 +50,6 @@
   background: var(--bb-dropdown-bg-disabled);
   border-color: var(--bb-dropdown-border-disabled);
   color: var(--bb-dropdown-fg-disabled);
-  opacity: var(--bb-derived-dropdown-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-60);
   cursor: not-allowed;
 }

@@ -1,18 +1,19 @@
 // dev.html › Plugin configuration writes per-brand overrides (tab order and
-// visibility, brand-managed Settings) into plugin.config.json. The page sends
-// only those two keys per brand; everything else in the file is kept as is,
+// visibility, persona features, brand-managed Settings) into plugin.config.json. The page
+// sends only those three keys per brand; everything else in the file is kept as is,
 // and the result must pass the same loadConfig the build runs.
 import * as z from 'zod/mini'
-import { brandTabSchema, managedIntegrationsSchema } from '../../src/shared/config/schema'
+import { brandPersonasSchema, brandTabSchema, managedIntegrationsSchema } from '../../src/shared/config/schema'
 import { loadConfig } from '../../src/shared/config/load'
 
 export const CONFIG_ENDPOINT = '/__bluebird/config'
 
-/** Per brand: the full tab list and managed sections to store. null (or omitted) clears the override. */
+/** Per brand: the full tab list, persona features and managed sections to store. null (or omitted) clears the override. */
 export const brandPatchSchema = z.record(
   z.string(),
   z.object({
     tabs: z.optional(z.nullable(z.array(brandTabSchema))),
+    personas: z.optional(z.nullable(brandPersonasSchema)),
     integrations: z.optional(z.nullable(managedIntegrationsSchema)),
   }),
 )
@@ -21,6 +22,8 @@ export type BrandPatch = z.infer<typeof brandPatchSchema>
 export class ConfigPatchError extends Error {
   override readonly name = 'ConfigPatchError'
 }
+
+const PATCHED_KEYS: readonly string[] = ['tabs', 'personas', 'integrations']
 
 type RawConfig = { brand: { brands: Record<string, Record<string, unknown>> } } & Record<string, unknown>
 
@@ -48,11 +51,12 @@ export function applyBrandPatch(raw: unknown, patch: unknown): RawConfig {
   for (const [brandId, change] of Object.entries(parsed.data)) {
     const current = Object.prototype.hasOwnProperty.call(brands, brandId) ? brands[brandId] : undefined
     if (!current) throw new ConfigPatchError(`Brand "${brandId}" isn’t in plugin.config.json.`)
-    const rest = Object.fromEntries(Object.entries(current).filter(([key]) => key !== 'tabs' && key !== 'integrations'))
+    const rest = Object.fromEntries(Object.entries(current).filter(([key]) => !PATCHED_KEYS.includes(key)))
     const integrations = change.integrations ? compactIntegrations(change.integrations) : undefined
     brands[brandId] = {
       ...rest,
       ...(change.tabs ? { tabs: change.tabs } : {}),
+      ...(change.personas ? { personas: change.personas } : {}),
       ...(integrations ? { integrations } : {}),
     }
   }

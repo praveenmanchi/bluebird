@@ -9,9 +9,9 @@
   justify-content: flex-start;
   box-sizing: border-box;
   height: var(--bb-derived-connection-badge-root-height);
-  padding-left: var(--bb-derived-connection-badge-root-padding-left);
-  padding-right: var(--bb-derived-connection-badge-root-padding-right);
-  border: var(--bb-derived-connection-badge-root-stroke-width) solid var(--bb-connection-border-default);
+  padding-left: var(--bb-dimension-space-8);
+  padding-right: var(--bb-dimension-space-8);
+  border: var(--bb-input-border-width) solid var(--bb-connection-border-default);
   border-radius: var(--bb-connection-radius);
   background: var(--bb-connection-bg-default);
 }

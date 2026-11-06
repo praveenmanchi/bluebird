@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const chip = 'Bound on the nested Context Chip instances (Chips row); the composed <ContextChip> consumes it in ContextChip.css.'
 const badge = 'Bound on the nested Meta Badge ("Status") instance; the composed <MetaBadge> consumes it in MetaBadge.css.'
 
@@ -13,6 +14,7 @@ export const figma = {
     'Status (Meta Badge instance, Tone=Accent, Label=Running)': 'status + statusTone',
   },
   figmaGaps: {
+    ...scaleGaps('uxai/border-width', 'border-width/default'),
     'uxai/chip/bg': chip,
     'uxai/chip/border': chip,
     'uxai/radius/chip': chip,
@@ -25,9 +27,6 @@ export const figma = {
     'space/inline-sm': badge,
     'space/inset-xs': badge,
   },
-  derivedGaps: {
-    '--bb-derived-agent-header-context-chip-stroke-width': 'Stroke of the nested Context Chip instances; ContextChip.css reads its own --bb-derived-context-chip-root-stroke-width.',
-    '--bb-derived-agent-header-status-stroke-width': 'Stroke of the nested Meta Badge instance; MetaBadge.css draws it with --bb-border-width-default (same 1).',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the AI Agents tab. Composes BotAvatar, ContextChip and MetaBadge. The root is FIXED 640 × 60 in Figma but its Text frame is 83 high, so code uses 60 as min-height. The Bot instance binds agents/size/bot (40) on width/height yet renders 56 × 56 in Figma — code follows the render (1.4 × agents/size/bot); design should add an agents/size/bot-lg token or drop the resize. Name has no line-height binding (auto). The avatar is decorative here (the Name heading names the agent).',
 } as const

@@ -1,7 +1,9 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const scanned = 'Scanned size × zoom, set inline from width / height / minimum / enhanced / spacing. Figma pins the 18 × 18 (Fail) and 24 × 24 (Pass) example at 200%.'
 
 /** Figma ↔ code contract for TargetPreview ("Target Preview" 40000463:9175). */
 export const figma = {
+  figmaGaps: { ...scaleGaps('type/size/16_2', 'font/family-ui', 'type/line/18', 'type/size/21_6', 'type/line/24') },
   setId: '40000463:9175',
   name: 'Target Preview',
   props: {
@@ -26,13 +28,6 @@ export const figma = {
     '--bb-derived-target-preview-gap-marker-state-fail-width': scanned,
     '--bb-derived-target-preview-gap-marker-state-pass-width': scanned,
     '--bb-derived-target-preview-gap-marker-height': 'A zero-height Line in Figma; code draws it as a border-top.',
-    '--bb-derived-target-preview-glyph-state-fail-font-size': 'The glyph scales with the target in Figma (45% of its side); code keeps the inherited caption size.',
-    '--bb-derived-target-preview-glyph-state-fail-line-height': 'as glyph font-size.',
-    '--bb-derived-target-preview-glyph-state-pass-font-size': 'as glyph font-size.',
-    '--bb-derived-target-preview-glyph-state-pass-line-height': 'as glyph font-size.',
-    '--bb-derived-target-preview-glyph-font-family': 'Inherits the card font (wcag-card/font/family) from the root.',
-    '--bb-derived-target-preview-neighbour-glyph-font-family': 'Inherits the card font (wcag-card/font/family) from the root.',
-    '--bb-derived-target-preview-neighbour-glyph-font-weight': 'Shares the glyph weight (600) with the target glyph.',
   },
   notes: 'Created 2026-10-11 for the WCAG card Mode=Touch target preview. Fail draws an 18 × 18 target 4px from an "i" neighbour; Pass a 24 × 24 target 24px away. targetState() approximates the 2.5.8 spacing exception for a same-sized neighbour.',
 } as const

@@ -14,12 +14,10 @@ export const figma = {
   },
   derivedGaps: {
     '--bb-derived-uxai-sources-chat-input-height': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
-    '--bb-derived-uxai-sources-chat-input-stroke-width': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
     '--bb-derived-uxai-sources-prompt-chip--1-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-prompt-chip--2-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-prompt-chip--3-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-prompt-chip-height': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
-    '--bb-derived-uxai-sources-prompt-chip-stroke-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-prompt-chip-ux-ai-body-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-root-height': 'Desktop-mock height (724). The body fills the tab area of the 360–760 px plugin window instead, so its height is the window\'s.',
   },

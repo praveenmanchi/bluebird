@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for MetaBadge ("Meta Badge" 40000156:7214). */
 export const figma = {
   setId: '40000156:7214',
@@ -8,6 +9,6 @@ export const figma = {
     Meta: 'meta',
     'Show meta': 'meta !== undefined',
   },
-  figmaGaps: {},
+  figmaGaps: { ...scaleGaps('font/weight-strong') },
   notes: 'Created 2026-09-23 alongside the WCAG Card gap work. Severity uses Tone=Danger; the change badge uses Tone=Accent with Show meta on.',
 } as const

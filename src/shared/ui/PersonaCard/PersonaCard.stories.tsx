@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/preact-vite'
 import { PersonaCard } from './PersonaCard'
 import { figma } from './figma'
 import { BrandGrid } from '../../../../.storybook/helpers'
+import userpic from '../../../../figma/assets/persona-userpic-05.png'
 
 const DESCRIPTION = 'Choose your role to customize the toolset. Design Systems sees variable extraction, style guide and changelog tools. UX sees accessibility audits, mockup generation, variable mapping and Jira workflow.'
 const FOOTNOTE = 'Switching teams will replay the onboarding tour for your new role.'
@@ -10,7 +11,7 @@ const meta = {
   title: 'Organisms/PersonaCard',
   component: PersonaCard,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  args: { name: 'Design System', description: DESCRIPTION, footnote: FOOTNOTE, actionLabel: 'Change the persona' },
+  args: { name: 'Design System', description: DESCRIPTION, footnote: FOOTNOTE, actionLabel: 'Change the persona', image: userpic },
 } satisfies Meta<typeof PersonaCard>
 export default meta
 type Story = StoryObj<typeof meta>

@@ -15,7 +15,7 @@
   max-width: 100%;
   height: var(--bb-derived-connection-row-root-height);
   padding: var(--bb-mcp-space-row-y) var(--bb-mcp-space-row-x);
-  border: var(--bb-derived-connection-row-root-stroke-width) solid var(--bb-mcp-surface-panel-border);
+  border: var(--bb-mcp-border-width) solid var(--bb-mcp-surface-panel-border);
   border-radius: var(--bb-mcp-radius-control);
   background: var(--bb-mcp-surface-field);
   font-family: var(--bb-mcp-font-family), ui-sans-serif, system-ui, sans-serif;

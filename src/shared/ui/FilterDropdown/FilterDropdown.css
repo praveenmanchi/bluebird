@@ -8,9 +8,9 @@
   box-sizing: border-box;
   min-width: var(--bb-derived-filter-dropdown-root-width);
   height: var(--bb-derived-filter-dropdown-root-height);
-  padding: var(--bb-derived-filter-dropdown-root-padding-top) var(--bb-derived-filter-dropdown-root-padding-right) var(--bb-derived-filter-dropdown-root-padding-bottom) var(--bb-derived-filter-dropdown-root-padding-left);
+  padding: var(--bb-space-inset-sm) var(--bb-dimension-space-8) var(--bb-space-inset-sm) var(--bb-dimension-space-8);
   gap: var(--bb-chip-filter-gap);
-  border: var(--bb-derived-filter-dropdown-root-stroke-width) solid var(--bb-chip-filter-border-default);
+  border: var(--bb-input-border-width) solid var(--bb-chip-filter-border-default);
   border-radius: var(--bb-chip-filter-radius);
   background: var(--bb-chip-filter-bg-default);
   color: var(--bb-chip-filter-fg-default);
@@ -40,7 +40,7 @@
 .bb-filter-dropdown__chevron {
   display: inline-flex;
   flex: none;
-  padding: var(--bb-derived-filter-dropdown-svg-padding-top) var(--bb-derived-filter-dropdown-svg-padding-right) var(--bb-derived-filter-dropdown-svg-padding-bottom) var(--bb-derived-filter-dropdown-svg-padding-left);
+  padding: var(--bb-space-inset-sm) var(--bb-dimension-space-3) var(--bb-space-inset-sm) var(--bb-dimension-space-3);
   color: var(--bb-chip-filter-fg-default);
   transition: transform 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }

@@ -9,10 +9,10 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  gap: var(--bb-derived-theme-chip-root-gap);
-  padding: var(--bb-derived-theme-chip-root-padding-top) var(--bb-derived-theme-chip-root-padding-right) var(--bb-derived-theme-chip-root-padding-bottom) var(--bb-derived-theme-chip-root-padding-left);
-  border: var(--bb-derived-theme-chip-root-stroke-width) solid var(--bb-theme-card-border-default);
-  border-radius: var(--bb-derived-theme-chip-root-radius);
+  gap: var(--bb-dimension-space-2-79);
+  padding: var(--bb-dimension-space-2-79) var(--bb-dimension-space-5-57) var(--bb-dimension-space-2-79) var(--bb-dimension-space-5-57);
+  border: var(--bb-dimension-stroke-0-7) solid var(--bb-theme-card-border-default);
+  border-radius: var(--bb-dimension-radius-2-79);
   background: var(--bb-theme-card-bg-default);
   color: var(--bb-theme-card-label-fg);
   font-family: var(--bb-theme-card-font-family), ui-sans-serif, system-ui, sans-serif;

@@ -1,9 +1,13 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
+import { tabSubMenuDerived, tabSubMenuGaps } from '../../../shared/ui/SegmentedControl/gaps'
 /** Figma ↔ code contract for the UX AI Selection screen (frame "UX AI body", not a component set; screen 40000288:8344). */
 export const figma = {
   setId: '40000291:6087',
   name: 'UX AI body',
   props: {},
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'button/secondary/border-width', 'button/primary/border-width'),
+    ...tabSubMenuGaps(),
     'uxai/changed/bg': 'Bound on the composed VariableRow instance; VariableRow.css consumes it.',
     'uxai/changed/border': 'Bound on the composed VariableRow instance; VariableRow.css consumes it.',
     'uxai/radius/control': 'Bound on the composed VariableRow / ChatInput instances; VariableRow.css / ChatInput.css consume it.',
@@ -29,27 +33,13 @@ export const figma = {
     'uxai/space/row-y': 'Bound on the composed ChatInput instance; ChatInput.css consumes it.',
   },
   derivedGaps: {
+    ...tabSubMenuDerived('--bb-derived-uxai-selection-tab-sub-menu'),
     '--bb-derived-uxai-selection-artifact-header-height': 'Fixed height of the Artifact Header instance; ArtifactHeader.css owns it (its width is read as max-width).',
-    '--bb-derived-uxai-selection-button-stroke-width': 'Stroke of the composed Button instances; Button.css owns it.',
     '--bb-derived-uxai-selection-chat-input-height': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
-    '--bb-derived-uxai-selection-chat-input-stroke-width': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
     '--bb-derived-uxai-selection-gutter-height': 'The Gutter is a spacer: only its width (uxai/size/orb-sm) matters; its height follows the row.',
     '--bb-derived-uxai-selection-root-height': 'Desktop-mock height (724). The body fills the tab area of the 360–760 px plugin window instead, so its height is the window\'s.',
     '--bb-derived-uxai-selection-selection-preview-height': 'Hug height / stroke of the Selection Preview instance; SelectionPreview.css owns both (its width is read as max-width).',
-    '--bb-derived-uxai-selection-selection-preview-stroke-width': 'Hug height / stroke of the Selection Preview instance; SelectionPreview.css owns both (its width is read as max-width).',
-    '--bb-derived-uxai-selection-tab-selecters--1-width': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-fill': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-height': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-padding-bottom': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-padding-left': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-padding-right': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-padding-top': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-radius': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-stroke': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-stroke-width': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
-    '--bb-derived-uxai-selection-tab-selecters-ux-ai-body-width': 'Raw on the composed "Tab selecters" instance; SegmentTab.css reads the same values through --bb-derived-segment-tab-*.',
     '--bb-derived-uxai-selection-variable-row-height': 'Fixed height / Changed stroke of the Variable Row instances; VariableRow.css owns both (its width is read as max-width).',
-    '--bb-derived-uxai-selection-variable-row-stroke-width': 'Fixed height / Changed stroke of the Variable Row instances; VariableRow.css owns both (its width is read as max-width).',
   },
   notes: 'The Selection Preview replaces the Sources bar. The Variables panel is a plain frame (read here); each Variable Row swaps through its Dropdown menu and reads Changed (with "pending: <variable>" in Where) until Apply or Discard. The footer Mode tabs are SegmentTab ("Tab selecters") inside a tablist. The Chat Input shows the Selection chip.',
 } as const

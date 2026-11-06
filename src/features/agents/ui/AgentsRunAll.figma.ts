@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 // Figma ↔ code contract for the Run all screen (frame, not a component set).
 import { BUTTON_SECONDARY, META_BADGE, PROGRESS_BAR, ROOT_HEIGHT, composed, measured, ownedBy } from './figma-gaps'
 
@@ -12,6 +13,7 @@ export const figma = {
     'Voice Bar': 'VoiceBar Idle (onMic)',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width', 'border-width/default', 'button/primary/border-width', 'dimension/opacity/55'),
     ...composed('Button', [...BUTTON_SECONDARY, 'button/primary/bg/disabled', 'button/primary/border/disabled', 'button/primary/radius', 'button/primary/gap', 'button/primary/padding-x', 'button/primary/height']),
     ...composed('ProgressBar', PROGRESS_BAR),
     ...composed('MetaBadge', [...META_BADGE, 'feedback/success', 'border/accent', 'border/subtle']),
@@ -24,7 +26,6 @@ export const figma = {
       ...['1', '2', '3', '4', '6'].map((n) => `--bb-derived-agents-run-all-meta-badge--${n}-width`),
       '--bb-derived-agents-run-all-meta-badge-agents-body-width', '--bb-derived-agents-run-all-meta-badge-height',
     ], 'Button / Link Button / Meta Badge label box'),
-    '--bb-derived-agents-run-all-button-opacity': 'Disabled primary Button fade; Button.css fades :disabled with --bb-derived-button-disabled-opacity.',
     ...ownedBy('Button', ['--bb-derived-agents-run-all-button-stroke-width']),
     ...ownedBy('MetaBadge', ['--bb-derived-agents-run-all-meta-badge-stroke-width']),
     ...ownedBy('VoiceBar', ['--bb-derived-agents-run-all-voice-bar-height', '--bb-derived-agents-run-all-voice-bar-stroke-width']),

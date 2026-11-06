@@ -1,9 +1,10 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for PrincipleTag. */
 export const figma = {
   setId: '419:40149',
   name: 'Principle',
   props: { Principle: 'principle', Text: 'label' },
-  figmaGaps: {},
+  figmaGaps: { ...scaleGaps('font/weight-strong') },
   derivedGaps: {
     '--bb-derived-principle-tag-vector--1-width': 'Inner vector of the Principle=Perceivable icon (six layers are named "Vector"). Icon principle-perceivable draws the glyph; only its box (.bb-principle-tag__icon) is CSS.',
     '--bb-derived-principle-tag-vector--1-height': 'Inner vector of the Principle=Perceivable icon (six layers are named "Vector"). Icon principle-perceivable draws the glyph; only its box (.bb-principle-tag__icon) is CSS.',

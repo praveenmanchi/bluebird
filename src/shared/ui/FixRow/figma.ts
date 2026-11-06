@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const composed = 'Bound on the nested Button ("Apply") instance; rendered by the composed <Button>, whose Button.css consumes it. Nothing to read at FixRow level.'
 const sample = 'The Sample swatch is data-driven: FixRow paints it with the colour pair under review (`on` / `hex` props). Figma binds placeholder colours for the mock-up.'
 
@@ -15,6 +16,7 @@ export const figma = {
     'Button › width FIXED (button/primary/width-md)': 'width="fixed" (Apply is 120 wide in Figma, not hugging its label)',
   },
   figmaGaps: {
+    ...scaleGaps('font/weight-regular', 'font/weight-strong', 'button/primary/border-width'),
     'icon/glyph/default': 'consumed by the composed Icon (the icons "Fix" instance in Figma)',
     'button/primary/bg/default': composed,
     'button/primary/border/default': composed,

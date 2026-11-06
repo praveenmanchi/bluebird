@@ -19,7 +19,7 @@
 .bb-input__label {
   display: inline-flex;
   align-items: flex-end;
-  gap: var(--bb-derived-input-frame-1430102645-gap);
+  gap: var(--bb-space-inline-sm);
   color: var(--bb-input-fg-label);
   font-family: var(--bb-input-label-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-input-label-font-size);
@@ -114,9 +114,9 @@
   align-self: stretch;
   min-height: var(--bb-derived-input-frame-1430102649-height);
   margin: 0;
-  padding: var(--bb-derived-input-frame-1430102649-padding-top) var(--bb-derived-input-frame-1430102649-padding-right) var(--bb-derived-input-frame-1430102649-padding-bottom) var(--bb-derived-input-frame-1430102649-padding-left);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inset-xs) var(--bb-space-inset-xs) var(--bb-space-inset-xs);
   color: var(--bb-input-fg-helper);
   font-size: var(--bb-input-helper-font-size);
-  font-weight: var(--bb-derived-input-to-store-all-tokens-in-a-single-json-file-write-the-file-name-ex-tokens-json-pro-features-like-themes-require-a-multi-file-sync-with-tokens-stored-in-a-folder-by-writing-the-folder-path-ex-tokens-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-input-helper-line-height);
 }

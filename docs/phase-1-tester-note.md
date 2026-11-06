@@ -45,7 +45,7 @@ Test the live features against a real file. Look at the preview features for lay
 | Tab | Status | Notes |
 |---|---|---|
 | Accessibility | **Live** | Scans the selection or page. Contrast, target size, non-text contrast, text alternatives. Reads your brand palette from the Brand UI variables, local or via the enabled library. |
-| Design tokens | **Live** | Design System persona only. Audits variables and token usage in the open file. |
+| Audit | **Live** | Design System persona only. One run checks variables and components in the selection or chosen pages. Across files needs Figma Enterprise. |
 | Publish | **Live extract, local release** | Extracts tokens and release notes from the file and stores the release in the file. Pushing to GitHub needs a personal access token in Settings. Try it only if you have a test repository. |
 | UXAI | **Live, needs a key** | Chat grounded in the configured library files (variables, components, published text and colour styles). Needs a Claude, OpenAI or Gemini API key in **Settings → AI Agent Assistance**; pick the provider under **Answer with**. Without a key the tab answers from the libraries alone. |
 | Jira board | **Preview** | Shows sample tickets. The live connection needs a local proxy that testers do not have. |

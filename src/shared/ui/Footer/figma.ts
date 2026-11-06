@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for Footer ("footer" 133:1675). */
 export const figma = {
   setId: '133:1675',
@@ -12,6 +13,7 @@ export const figma = {
     'footer-chevron (glyph)': 'onExpand',
   },
   figmaGaps: {
+    ...scaleGaps('dimension/space/6', 'dimension/space/5', 'dimension/space/3', 'dimension/opacity/30'),
     'footer/segment/fg': 'the size expander step label, read by the composed SizeExpander',
   },
   derivedGaps: {

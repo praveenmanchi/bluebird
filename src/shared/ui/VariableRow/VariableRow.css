@@ -18,7 +18,7 @@
 }
 .bb-variable-row[data-state='changed'] {
   background: var(--bb-uxai-changed-bg);
-  border: var(--bb-derived-variable-row-root-stroke-width) solid var(--bb-uxai-changed-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-changed-border);
 }
 .bb-variable-row__amount {
   display: inline-flex;
@@ -30,7 +30,7 @@
   height: var(--bb-uxai-size-swatch);
   border-radius: var(--bb-uxai-radius-chip);
   background: var(--bb-uxai-surface-sunken);
-  border: var(--bb-derived-variable-row-preview-stroke-width) solid var(--bb-uxai-chip-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-chip-border);
   font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-uxai-font-size-caption);
   font-weight: var(--bb-uxai-font-weight-strong);

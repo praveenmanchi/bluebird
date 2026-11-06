@@ -7,7 +7,7 @@
 .bb-stat-tile {
   display: inline-flex;
   align-items: center;
-  gap: var(--bb-derived-stat-tile-root-gap);
+  gap: var(--bb-space-inline-xs);
   white-space: nowrap;
 }
 .bb-stat-tile__icon {
@@ -15,26 +15,26 @@
   flex: none;
   width: calc(var(--bb-icon-size-lg) + var(--bb-space-inline-sm));
   height: calc(var(--bb-icon-size-lg) + var(--bb-space-inline-sm));
-  color: var(--bb-derived-stat-tile-variables-color);
+  color: var(--bb-text-primary);
 }
 .bb-stat-tile__icon > .bb-icon { width: 100%; height: 100%; }
 .bb-stat-tile__body {
   display: inline-flex;
   align-items: flex-end;
   justify-content: center;
-  gap: var(--bb-derived-stat-tile-frame-1430102628-gap);
+  gap: var(--bb-dimension-space-5);
 }
 .bb-stat-tile__value {
-  color: var(--bb-derived-stat-tile-68-color);
-  font-family: var(--bb-derived-stat-tile-68-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-stat-tile-68-font-size);
-  font-weight: var(--bb-derived-stat-tile-68-font-weight);
-  line-height: var(--bb-derived-stat-tile-68-line-height);
+  color: var(--bb-text-primary);
+  font-family: var(--bb-font-family-ui), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-24);
+  font-weight: var(--bb-type-weight-300);
+  line-height: var(--bb-font-line-body);
 }
 .bb-stat-tile__label {
-  color: var(--bb-derived-stat-tile-variables-color);
-  font-family: var(--bb-derived-stat-tile-variables-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-stat-tile-variables-font-size);
-  font-weight: var(--bb-derived-stat-tile-variables-font-weight);
-  line-height: var(--bb-derived-stat-tile-variables-line-height);
+  color: var(--bb-text-primary);
+  font-family: var(--bb-font-family-ui), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-font-size-body);
+  font-weight: var(--bb-type-weight-300);
+  line-height: var(--bb-font-line-body);
 }

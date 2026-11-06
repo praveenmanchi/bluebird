@@ -6,7 +6,6 @@ export const figma = {
     'Dual logo': 'dualLogo (rule + title/tagline stack)', 'HCL Logo': 'showPoweredBy', 'brand logos (variable-bound instance)': 'brand / [data-brand]' },
   figmaGaps: {},
   derivedGaps: {
-    '--bb-derived-banner-vector-fill': 'Raw white fill on the brand-logo vector nested in the Banner; logo artwork is not tokenised (see BrandLogo).',
     '--bb-derived-banner-frame-1430102691-gap': 'A -2px negative gap on an unnamed frame; code lays the logo row out with its own flex gap.',
   },
   notes: [

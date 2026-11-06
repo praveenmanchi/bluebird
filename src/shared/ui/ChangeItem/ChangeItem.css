@@ -13,7 +13,7 @@
   align-items: stretch;
   box-sizing: border-box;
   width: 100%;
-  border: var(--bb-derived-change-item-root-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
   border-radius: var(--bb-publish-radius-control);
   background: var(--bb-publish-surface-field);
   font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;

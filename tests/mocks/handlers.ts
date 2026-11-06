@@ -3,7 +3,6 @@
 // generated sandbox registry).
 import type { HandlerMap } from '@shared/bridge'
 import { createMockHandlers as a11y, type MockScenario } from '@features/a11y/mock'
-import { createMockHandlers as tokens } from '@features/tokens/mock'
 import { createMockHandlers as jira } from '@features/jira/mock'
 import { createLiveMockHandlers as jiraLive } from '@features/jira/mock-live'
 import { createMockHandlers as mcp } from '@features/mcp/mock'
@@ -12,11 +11,14 @@ import { createAskHandlers } from '@features/uxai/sandbox/ask'
 import { createMockHandlers as agents } from '@features/agents/mock'
 import { createMockHandlers as publish } from '@features/publish/mock'
 import { createMockHandlers as varsearch } from '@features/varsearch/mock'
+import { createMockHandlers as varmapper } from '@features/varmapper/mock'
+import { createMockHandlers as audit } from '@features/audit/mock'
 import { config } from '@shared/config'
 import { readIntegrations } from '@shared/integrations/effective'
 import { createSessionHandlers, type SessionStore } from '../../src/sandbox/session'
 import { createIntegrationsHandlers } from '../../src/sandbox/integrations'
 import { createOnboardingHandlers, ONBOARDING_KEY } from '../../src/sandbox/onboarding'
+import { createPersonaHandlers, PERSONA_KEY } from '../../src/sandbox/persona'
 import { createLibrariesHandlers } from '@shared/libraries/handlers'
 import { LIBRARIES_MSG } from '@shared/libraries/types'
 import type { HttpFetch } from '@shared/libraries/rest'
@@ -33,6 +35,8 @@ export interface MockOptions {
   onResize?: (size: { width: number; height: number }) => void
   /** Whether the first-run tour is already done. Defaults to done in tests and to not-done in the persisted dev harness. */
   onboarded?: boolean
+  /** Stored persona: an id, or null for not picked yet (the first-run screens show). Defaults to picked in tests and to whatever is stored in the persisted dev harness. */
+  persona?: string | null
   /** Fetch for Dual File Mode's Figma REST calls. Defaults to the browser's in the dev harness; tests get none. */
   fetch?: HttpFetch
 }
@@ -53,9 +57,11 @@ export function mockSessionStore(persist = false): SessionStore {
   }
 }
 
-export function createMockHandlers({ scenario = 'default', brandId = 'bridge', sessionBrand, persist = false, onResize, onboarded = !persist, fetch }: MockOptions = {}): HandlerMap {
+export function createMockHandlers({ scenario = 'default', brandId = 'bridge', sessionBrand, persist = false, onResize, onboarded = !persist, persona = persist ? undefined : config.activePersona, fetch }: MockOptions = {}): HandlerMap {
   const store = mockSessionStore(persist)
   if (onboarded) void store.set(ONBOARDING_KEY, { completedAt: new Date().toISOString(), skipped: false })
+  if (persona) void store.set(PERSONA_KEY, persona)
+  else if (persona === null) void store.delete(PERSONA_KEY)
   if (sessionBrand !== undefined) {
     if (sessionBrand) void store.set('bluebird:session', { brandId: sessionBrand, since: new Date().toISOString() })
     else void store.delete('bluebird:session')
@@ -72,6 +78,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
     ...createSessionHandlers(config, store),
     ...createIntegrationsHandlers(store),
     ...createOnboardingHandlers(store),
+    ...createPersonaHandlers(config, store),
     // Dual File Mode reads the real Figma REST API from the dev harness (api.figma.com allows any origin).
     // Dev builds and tests only, so the plugin bundle doesn't ship a second REST loader (the sandbox has it).
     ...(import.meta.env.DEV
@@ -91,7 +98,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
   const uxaiHandlers = import.meta.env.DEV && persist
     ? { ...uxai(), ...createAskHandlers({ readSettings: async () => (await readIntegrations((k) => store.get(k))).ai, fetch: (url, init) => globalThis.fetch(url, init) }) }
     : uxai()
-  return { ...shell, ...a11y(scenario), ...tokens(), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario), ...varsearch(scenario) }
+  return { ...shell, ...a11y(scenario), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario), ...varsearch(scenario), ...(import.meta.env.DEV ? { ...varmapper(scenario), ...audit(scenario) } : {}) }
 }
 
 export const mockHandlers: HandlerMap = createMockHandlers()

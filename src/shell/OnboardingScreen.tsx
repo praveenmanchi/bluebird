@@ -7,18 +7,19 @@ import { usePrefersReducedMotion, useSceneLoop } from './onboarding/stage'
 import type { SceneProps, TourTabChip } from './onboarding/scenes/types'
 import { WelcomeScene } from './onboarding/scenes/WelcomeScene'
 import { A11yScene } from './onboarding/scenes/A11yScene'
-import { TokensScene } from './onboarding/scenes/TokensScene'
+import { AuditScene } from './onboarding/scenes/AuditScene'
 import { VarsearchScene } from './onboarding/scenes/VarsearchScene'
 import { PublishScene } from './onboarding/scenes/PublishScene'
 import { JiraScene } from './onboarding/scenes/JiraScene'
 import { McpScene } from './onboarding/scenes/McpScene'
+import { VarmapperScene } from './onboarding/scenes/VarmapperScene'
 import { UxaiScene } from './onboarding/scenes/UxaiScene'
 import { AgentsScene } from './onboarding/scenes/AgentsScene'
 import { SetupScene } from './onboarding/scenes/SetupScene'
 import './OnboardingScreen.css'
 
 const SCENES: Readonly<Record<SceneId, FunctionComponent<SceneProps>>> = {
-  welcome: WelcomeScene, a11y: A11yScene, tokens: TokensScene, varsearch: VarsearchScene, publish: PublishScene, jira: JiraScene,
+  welcome: WelcomeScene, a11y: A11yScene, audit: AuditScene, varsearch: VarsearchScene, varmapper: VarmapperScene, publish: PublishScene, jira: JiraScene,
   mcp: McpScene, uxai: UxaiScene, agents: AgentsScene, setup: SetupScene,
 }
 

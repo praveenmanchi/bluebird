@@ -35,9 +35,6 @@ export const figma = {
     'space/inline-sm': status,
     'space/inset-xs': status,
   },
-  derivedGaps: {
-    '--bb-derived-ticket-row-status-stroke-width': 'Stroke of the nested Meta Badge; MetaBadge.css draws it with --bb-border-width-default (same 1).',
-    '--bb-derived-ticket-row-story-points-stroke-width': 'Stroke of the nested Story Points; StoryPoints.css reads --bb-derived-story-points-root-stroke-width (same 1).',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the Jira tab. The row is a <button aria-pressed> so it is focusable and selectable; onSelect receives the issue key. Every variant uses the same nested instances (Story / IN PROGRESS accent / High / 5 / PM); the Figma description says to swap them per issue, so each is a prop. Only State=Selected carries a stroke, and Figma lays it out inside (Top is 374 wide instead of 376), which the border-box border reproduces.',
 } as const

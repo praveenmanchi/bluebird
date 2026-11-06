@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const button = 'Bound on the nested Secondary / Large Button instance; the composed <Button> (Button.css) consumes it.'
 
 /** Figma ↔ code contract for LoginFooter ("Login Footer" 40000324:8504). */
@@ -11,6 +12,7 @@ export const figma = {
     'Contact Row': 'contact',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width'),
     'button/secondary/bg/default': button,
     'button/secondary/border/default': button,
     'button/secondary/radius': button,
@@ -21,8 +23,6 @@ export const figma = {
     'login/gap/sm': 'Bound on the nested Contact Row instance; ContactRow.css consumes it.',
   },
   derivedGaps: {
-    '--bb-derived-login-footer-sso-button-stroke-width': 'Stroke of the nested Button; Button.css draws it with button/secondary/border-width (1).',
-    '--bb-derived-login-footer-access-code-button-stroke-width': 'Stroke of the nested Button; Button.css draws it with button/secondary/border-width (1).',
     '--bb-derived-login-footer-root-width': 'The set frames are fixed at 344; instances fill the card, so code fills its container.',
   },
   notes: 'The switch button\'s leading icon is overridden per view: "access" (lock) for SSO, "API key" for the access code.',

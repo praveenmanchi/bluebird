@@ -10,8 +10,8 @@
   box-sizing: border-box;
   width: 100%;
   max-width: var(--bb-derived-section-header-root-width);
-  gap: var(--bb-derived-section-header-root-gap);
-  padding-right: var(--bb-derived-section-header-root-padding-right);
+  gap: var(--bb-dimension-space-9);
+  padding-right: var(--bb-dimension-space-45);
   font-family: var(--bb-section-header-title-font-family), ui-sans-serif, system-ui, sans-serif;
 }
 .bb-section-header__logo {
@@ -41,7 +41,7 @@
   margin: 0;
   color: var(--bb-section-header-description-fg);
   font-size: var(--bb-section-header-description-font-size);
-  font-weight: var(--bb-derived-section-header-configure-the-github-repository-where-extracted-va-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-section-header-description-line-height);
 }
 /* Switch instance: bare Toggle, no title/description, hugging its track. */

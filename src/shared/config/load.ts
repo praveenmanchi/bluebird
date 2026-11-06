@@ -30,6 +30,8 @@ export function loadConfig(raw: unknown): PluginConfig {
   }
   if (!config.personas[config.activePersona]) {
     errors.push(`activePersona "${config.activePersona}" is not defined in personas`)
+  } else if (!config.personas[config.activePersona]!.enabled) {
+    errors.push(`activePersona "${config.activePersona}" is turned off`)
   }
   for (const [personaId, persona] of Object.entries(config.personas)) {
     for (const tabId of persona.tabs) {
@@ -43,7 +45,7 @@ export function loadConfig(raw: unknown): PluginConfig {
   return config
 }
 
-/** A brand's tab list names real tabs once each, and its managed Settings carry no keys or tokens. */
+/** A brand's tab and persona lists name real tabs once each, and its managed Settings carry no keys or tokens. */
 function brandErrors(brandId: string, b: BrandConfig, config: PluginConfig): string[] {
   const errors: string[] = []
   const ids = (b.tabs ?? []).map((t) => t.id)
@@ -51,7 +53,14 @@ function brandErrors(brandId: string, b: BrandConfig, config: PluginConfig): str
     if (!config.tabs[tabId]) errors.push(`brand "${brandId}" lists unknown tab "${tabId}"`)
   }
   if (new Set(ids).size !== ids.length) errors.push(`brand "${brandId}" lists a tab more than once`)
-  if (b.tabs && !errors.length && resolvePersonas(config, brandId).length === 0) errors.push(`brand "${brandId}" hides every tab: turn at least one on`)
+  for (const [personaId, tabs] of Object.entries(b.personas ?? {})) {
+    if (!config.personas[personaId]) errors.push(`brand "${brandId}" sets unknown persona "${personaId}"`)
+    for (const tabId of tabs) {
+      if (!config.tabs[tabId]) errors.push(`brand "${brandId}" gives persona "${personaId}" unknown tab "${tabId}"`)
+    }
+    if (new Set(tabs).size !== tabs.length) errors.push(`brand "${brandId}" gives persona "${personaId}" a tab more than once`)
+  }
+  if ((b.tabs || b.personas) && !errors.length && resolvePersonas(config, brandId).length === 0) errors.push(`brand "${brandId}" hides every tab: turn at least one on`)
   for (const section of INTEGRATION_IDS) {
     for (const key of Object.keys(b.integrations?.[section] ?? {})) {
       if (isSecretField(section, key)) errors.push(`brand "${brandId}" sets integrations.${section}.${key}: keys and tokens are entered in the plugin, never in plugin.config.json`)
@@ -72,9 +81,16 @@ export interface ResolvedPersona {
   tabs: readonly ResolvedTab[]
 }
 
+/** The tab ids a persona gets: the brand's own list when it sets one, else the persona's. */
+export function personaTabIds(config: PluginConfig, personaId: string, brandId?: string): readonly string[] {
+  const own = brandId ? config.brand.brands[brandId]?.personas?.[personaId] : undefined
+  return own ?? config.personas[personaId]?.tabs ?? []
+}
+
 /**
- * Personas that have at least one enabled tab, in config order. With a brand, its tab list
- * hides the tabs it turns off and sets the order; tabs it doesn't list keep persona order, after the listed ones.
+ * Personas that have at least one enabled tab, in config order. With a brand, its persona lists
+ * replace the default tabs, and its tab list hides the tabs it turns off and sets the order;
+ * tabs it doesn't list keep persona order, after the listed ones.
  */
 export function resolvePersonas(config: PluginConfig, brandId?: string): readonly ResolvedPersona[] {
   const brandTabs = brandId ? config.brand.brands[brandId]?.tabs : undefined
@@ -85,10 +101,11 @@ export function resolvePersonas(config: PluginConfig, brandId?: string): readonl
     .sort((a, b) => a.key - b.key)
     .map((t) => t.tabId)
   return Object.entries(config.personas)
+    .filter(([, persona]) => persona.enabled)
     .map(([id, persona]) => ({
       id,
       label: persona.label,
-      tabs: order(persona.tabs)
+      tabs: order(personaTabIds(config, id, brandId))
         .filter((tabId) => config.tabs[tabId]?.enabled && !hidden.has(tabId))
         .map((tabId) => ({ id: tabId, label: config.tabs[tabId]!.label, icon: config.tabs[tabId]!.icon })),
     }))
@@ -100,7 +117,7 @@ export interface BrandTabRow extends ResolvedTab {
   enabled: boolean
   /** tabs.<id>.enabled: off hides the tab for every brand. */
   available: boolean
-  /** Labels of the personas whose tab bar includes it. */
+  /** Labels of the enabled personas whose tab bar includes it in this brand. */
   personas: readonly string[]
 }
 
@@ -120,7 +137,9 @@ export function brandTabRows(config: PluginConfig, brandId: string): readonly Br
       icon: tab.icon,
       enabled,
       available: tab.enabled,
-      personas: Object.values(config.personas).filter((p) => p.tabs.includes(id)).map((p) => p.label),
+      personas: Object.entries(config.personas)
+        .filter(([personaId, p]) => p.enabled && personaTabIds(config, personaId, brandId).includes(id))
+        .map(([, p]) => p.label),
     }
   })
 }

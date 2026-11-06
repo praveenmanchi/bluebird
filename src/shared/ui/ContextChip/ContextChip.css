@@ -6,7 +6,7 @@
   align-items: center;
   gap: var(--bb-uxai-space-tight);
   padding: var(--bb-uxai-space-hair) var(--bb-uxai-space-inline);
-  border: var(--bb-derived-context-chip-root-stroke-width) solid var(--bb-uxai-chip-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-chip-border);
   border-radius: var(--bb-uxai-radius-chip);
   background: var(--bb-uxai-chip-bg);
   max-width: 100%;

@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const avatar = 'Bound on the nested Avatar (Size=Medium) instance; the composed <Avatar size="md"> (Avatar.css) consumes it.'
 const cancel = 'Bound on the nested "Cancel" Button (Type=Secondary) instance; the composed <Button variant="secondary"> (Button.css) consumes it.'
 const save = 'Bound on the nested "Save" Button (Type=Primary) instance; the composed <Button variant="primary"> (Button.css) consumes it.'
@@ -16,6 +17,7 @@ export const figma = {
     'Cancel / Save › width FIXED (button/*/width-md)': 'width="fixed" on both Buttons (120 wide in Figma, not hugging the label)',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width', 'button/primary/border-width'),
     'jira/avatar/bg': avatar,
     'jira/radius/pill': avatar,
     'jira/size/avatar': avatar,
@@ -34,9 +36,6 @@ export const figma = {
     'button/primary/height': save,
     'button/primary/width-md': `${save} Read under [data-width="fixed"], which CommentComposer sets.`,
   },
-  derivedGaps: {
-    '--bb-derived-comment-composer-cancel-stroke-width': 'Stroke of the nested Cancel Button; Button.css reads button/secondary/border-width.',
-    '--bb-derived-comment-composer-save-stroke-width': 'Stroke of the nested Save Button; Button.css reads button/primary/border-width.',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the Jira ticket detail. The Figma "Placeholder" text layer becomes a one-row auto-growing <textarea> (field-sizing: content) whose placeholder reads jira/text/placeholder; typed text reads jira/text/body, which Figma does not show. Controlled via value/onValueChange or uncontrolled via defaultValue; Save and ⌘/Ctrl+Enter call onSubmit and ignore a blank draft. The attach glyphs are Tab Icons URL / file at jira/size/icon with the Tab Icons colour (icon/glyph/default) — jira/icon/default exists but Figma does not bind it here. The field border turns border/focus while the textarea has focus (code-only).',
 } as const

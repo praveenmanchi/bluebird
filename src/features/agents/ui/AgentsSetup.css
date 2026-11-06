@@ -71,11 +71,11 @@
   box-sizing: border-box;
   min-width: 0;
   padding: var(--bb-agents-space-row-x);
-  border: var(--bb-derived-agents-setup-rule-pack-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-panel);
   background: var(--bb-agents-surface-panel);
 }
-.bb-agents-setup__panel + .bb-agents-setup__panel { border-width: var(--bb-derived-agents-setup-how-it-works-stroke-width); }
+.bb-agents-setup__panel + .bb-agents-setup__panel { border-width: var(--bb-agents-border-width); }
 .bb-agents-setup__head {
   display: flex;
   justify-content: space-between;

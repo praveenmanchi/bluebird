@@ -25,7 +25,7 @@
   box-sizing: border-box;
   width: var(--bb-publish-size-icon);
   height: var(--bb-publish-size-icon);
-  border: var(--bb-derived-value-diff-swatch-stroke-width) solid var(--bb-publish-swatch-border);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-swatch-border);
   border-radius: var(--bb-publish-radius-control);
   background: var(--value-diff-swatch);
 }

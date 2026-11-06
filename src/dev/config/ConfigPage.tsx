@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { BrandLogo, Button, Icon, Notice, Spinner } from '@shared/ui'
 import { BRANDS, type BrandId } from '@shared/brand'
-import { brandTabRows, config as bundledConfig, loadConfig, type PluginConfig } from '@shared/config'
+import { brandTabRows, config as bundledConfig, loadConfig, resolvePersonas, type PluginConfig } from '@shared/config'
 import { INTEGRATION_IDS, type IntegrationId } from '@shared/integrations'
 import { SECTIONS } from '@shell/integrations/sections'
 import { TabOrderList } from './TabOrderList'
+import { PersonaMatrix } from './PersonaMatrix'
 import { IntegrationModes } from './IntegrationModes'
-import { dirtyBrands, draftsFrom, invalidSections, patchFor, tabRows, type BrandDraft, type Drafts, type FieldValues } from './draft'
+import { dirtyBrands, draftsFrom, invalidSections, patchFor, setPersonaTab, tabRows, withDraft, type BrandDraft, type Drafts, type FieldValues } from './draft'
 import { loadPluginConfig, savePluginConfig } from './api'
 import { BuildPrompt, isBuildPending, markBuildPending } from './BuildPrompt'
 import '@shell/SettingsIntegrations.css'
@@ -25,8 +26,8 @@ type Save = { kind: 'idle' } | { kind: 'saving' } | { kind: 'saved' } | { kind: 
 const sectionTitle = (id: IntegrationId) => SECTIONS.find((s) => s.id === id)?.title ?? id
 
 /**
- * dev.html › Plugin configuration: per brand, which tabs show and in what order, and which
- * Settings sections this page sets for everyone instead of each person in the plugin.
+ * dev.html › Plugin configuration: per brand, which tabs show and in what order, which features
+ * each persona gets, and which Settings sections this page sets for everyone instead of each person in the plugin.
  * Saving writes plugin.config.json through the dev server; the next build ships it.
  */
 export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
@@ -57,8 +58,10 @@ export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
   const dirty = dirtyBrands(drafts, saved)
   const invalid = invalidSections(drafts)
   // loadConfig refuses a brand with no tab left in any persona; say so before Save does.
-  const tabless = Object.keys(drafts).filter((id) => drafts[id]!.tabs !== null && !tabRows(config, id, drafts[id]!).some((r) => r.enabled && config.tabs[r.id]?.enabled && Object.values(config.personas).some((p) => p.tabs.includes(r.id))))
-  const info = useMemo(() => new Map(brandTabRows(config, current).map((row) => [row.id, row])), [config, current])
+  const tabless = Object.keys(drafts).filter((id) => resolvePersonas(withDraft(config, id, drafts[id]!), id).length === 0)
+  // The draft, not the saved file, so "Shown to" follows the persona ticks as they change.
+  const preview = useMemo(() => (draft ? withDraft(config, current, draft) : config), [config, current, draft])
+  const info = useMemo(() => new Map(brandTabRows(preview, current).map((row) => [row.id, row])), [preview, current])
 
   const update = (next: Partial<BrandDraft>) => {
     setDrafts((d) => ({ ...d, [current]: { ...d[current]!, ...next } }))
@@ -152,6 +155,17 @@ export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
                   {draft.tabs !== null && <button type="button" class="dh-btn" data-variant="quiet" onClick={() => update({ tabs: null })}>Use persona order</button>}
                 </div>
                 <TabOrderList rows={tabRows(config, current, draft)} info={info} onChange={(tabs) => update({ tabs })} />
+              </section>
+
+              <section class="dh-section" aria-labelledby="cfg-personas-title">
+                <div class="dh-section__head">
+                  <div>
+                    <h2 id="cfg-personas-title" class="dh-section__title">Personas</h2>
+                    <p class="dh-section__desc">Tick the features each persona gets in this brand. A persona with none isn't offered in the picker.{draft.personas === null && ' Not customised: every persona uses the defaults.'}</p>
+                  </div>
+                  {draft.personas !== null && <button type="button" class="dh-btn" data-variant="quiet" onClick={() => update({ personas: null })}>Use default personas</button>}
+                </div>
+                <PersonaMatrix config={preview} brandId={current} rows={tabRows(config, current, draft)} info={info} onToggle={(personaId, tabId, on) => update({ personas: setPersonaTab(config, current, draft, personaId, tabId, on) })} />
               </section>
 
               <section class="dh-section" aria-labelledby="cfg-settings-title">

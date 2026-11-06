@@ -29,24 +29,29 @@ describe('SettingsScreen', () => {
     expect(description()).not.toContain('Using fallback tokens')
   })
 
-  it('offers the persona switch when more than one persona is configured, listing the active persona’s tabs', () => {
-    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="product-designer" onPersonaChange={() => undefined} />)
-    const group = screen.getByRole('tablist', { name: 'Persona' })
-    expect(group.querySelectorAll('[role="tab"]')).toHaveLength(2)
-    expect(screen.getByRole('tab', { name: 'Product Designer' }).getAttribute('aria-selected')).toBe('true')
-    expect(screen.getByText(/Accessibility, Jira board/)).toBeTruthy()
+  it('shows the persona card when more than one persona is configured, with the active persona’s tabs', () => {
+    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="product-designer" onChangePersona={() => undefined} />)
+    expect(screen.getByRole('heading', { name: 'Product Designer' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Jira board' })).toBeTruthy()
   })
 
-  it('reports the chosen persona by id', () => {
-    const onPersonaChange = vi.fn()
-    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="product-designer" onPersonaChange={onPersonaChange} />)
-    fireEvent.click(screen.getByRole('tab', { name: 'Design System' }))
-    expect(onPersonaChange).toHaveBeenCalledWith('design-system')
+  it('shows the active persona’s live bird, not a static picture', () => {
+    const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onChangePersona={() => undefined} />)
+    expect(container.querySelector('.bb-persona-card .bb-bird--design-system')).not.toBeNull()
+    expect(container.querySelector('.bb-persona-card img')).toBeNull()
   })
 
-  it('hides the persona switch when there is only one persona', () => {
-    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas.slice(0, 1)} personaId="product-designer" onPersonaChange={() => undefined} />)
-    expect(screen.queryByRole('tablist', { name: 'Persona' })).toBeNull()
+  it('changes persona from the card, the only control for it', () => {
+    const onChangePersona = vi.fn()
+    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="product-designer" onChangePersona={onChangePersona} />)
+    expect(screen.getAllByRole('button', { name: /persona/i })).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Change the persona' }))
+    expect(onChangePersona).toHaveBeenCalledOnce()
+  })
+
+  it('hides the persona card when there is only one persona', () => {
+    render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas.slice(0, 1)} personaId="product-designer" onChangePersona={() => undefined} />)
+    expect(screen.queryByRole('button', { name: 'Change the persona' })).toBeNull()
   })
 
   it('ends with the Team Banner, after the actions', () => {
@@ -58,14 +63,15 @@ describe('SettingsScreen', () => {
 
   it('with the integrations store, opens on the persona card and lists the integration sections before the Team Banner', async () => {
     const api = { load: async () => DEFAULT_INTEGRATIONS, save: async (_s: string, v: unknown) => v as never }
-    const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onPersonaChange={() => undefined} integrations={api} />)
+    const onChangePersona = vi.fn()
+    const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onChangePersona={onChangePersona} integrations={api} />)
     await screen.findByRole('region', { name: 'Jira Integration' })
     const settings = container.querySelector('.bb-settings')!
     expect(settings.firstElementChild?.classList.contains('bb-persona-card')).toBe(true)
     expect(settings.querySelector('.bb-persona-card')?.textContent).toContain('Design System')
     expect(settings.lastElementChild?.previousElementSibling?.classList.contains('bb-integrations')).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: 'Change the persona' }))
-    expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Design System' }))
+    expect(onChangePersona).toHaveBeenCalledOnce()
   })
 
   it('leaves the integration sections out without a store', () => {

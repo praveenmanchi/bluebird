@@ -9,16 +9,40 @@
   container-type: inline-size;
 }
 
-/* "GitHub", "Notifications", … — top rule, padded stack. */
+/* "GitHub", "Notifications", … — top rule, padded stack. No side padding: the sections line up with
+ * the persona card and session rows above them, which sit on the Settings page's own inset. */
 .bb-integrations__section {
   display: flex;
   flex-direction: column;
   gap: var(--bb-settings-space-section);
-  padding: var(--bb-settings-space-section);
+  padding: var(--bb-settings-space-section) 0;
   border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
 }
+/* The whole header row opens the section; the arrow is its keyboard control. */
+.bb-integrations__header { padding-right: 0; cursor: pointer; }
+.bb-integrations__trailing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+}
+.bb-integrations__trailing .bb-section-header__toggle { width: auto; }
+.bb-integrations__arrow {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bb-icon-default);
+  cursor: pointer;
+}
+.bb-integrations__arrow:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); }
+.bb-integrations__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+}
 /* Direct children only: the section header's own Switch is a .bb-toggle that must keep hugging its track. */
-:is(.bb-integrations__section, .bb-integrations__column, .bb-integrations__select, .bb-integrations__provider-model, .bb-integrations__provider-key) > :is(.bb-section-header, .bb-input, .bb-toggle, .bb-select-field, .bb-text-area, .bb-button-group) {
+:is(.bb-integrations__section, .bb-integrations__body, .bb-integrations__column, .bb-integrations__select, .bb-integrations__provider-model, .bb-integrations__provider-key) > :is(.bb-section-header, .bb-input, .bb-toggle, .bb-select-field, .bb-text-area, .bb-button-group) {
   width: 100%;
   max-width: none;
 }

@@ -19,6 +19,7 @@ export const figma = {
     '--bb-derived-team-banner-vector-height': 'The version-pill glyph\'s vector (204:7263, 9.4 × 7.5) inside its 10 × 10 "Frame"; the Icon draws the `version` glyph from its own viewBox at the Frame size (frame-width/height).',
   },
   notes: [
+    '2026-11-06: the fill, text and version glyph were raw (#0048b7 and white on every brand). They are now bound to Banner/bg and Banner/Text, the app Banner\'s pair. surface/brand-banner was rejected: white text on it is 2.3:1 on Fiskars.',
     '2026-10-28: the version pill sits in a right-aligned "Release" stack (2 gap) with an "Updated <date>" line under it, Noto Sans Light 10/12 on font/family-ui at 0.72 opacity (Museo Sans is not installed for the Figma plugin API). The Figma copy is sample text; code reads build-info.json, which scripts/bump-build.ts stamps on every build (patch + 1, ISO date).',
     'The set has no component properties; every text is a plain layer, so the code props mirror the layers.',
     '2026-10-11 redesign (accepted by figma:pull --rest): the Fabric logo, "Line 60" and the "SVG" team-mark frame are gone. The top-left is now the app Banner\'s lockup — a "brand logos" instance (Brand=bridge, its Brand property bound to the brand variable) → BrandLogo, then "Line 62" and the "Design Studio" / "Connecting Gap between design workflow" texts. The `showFabric` prop became `showProduct`.',

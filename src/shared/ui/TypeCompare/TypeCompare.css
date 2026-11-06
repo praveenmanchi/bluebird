@@ -29,6 +29,6 @@
 }
 .bb-type-compare__sample {
   margin: 0;
-  font-weight: var(--bb-derived-type-compare-sample-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   color: var(--bb-derived-type-compare-sample-color);
 }

@@ -53,12 +53,12 @@
 .bb-checkbox__dash {
   width: var(--bb-derived-checkbox-dash-width);
   height: var(--bb-derived-checkbox-dash-height);
-  border-radius: var(--bb-derived-checkbox-dash-radius);
+  border-radius: var(--bb-dimension-radius-1);
 }
 .bb-checkbox[data-disabled] {
   cursor: not-allowed;
   color: var(--bb-checkbox-label-fg-disabled);
-  opacity: var(--bb-derived-checkbox-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-60);
 }
 .bb-checkbox[data-disabled] .bb-checkbox__box {
   background: var(--bb-checkbox-box-bg-disabled);

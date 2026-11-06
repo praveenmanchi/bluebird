@@ -38,13 +38,13 @@
 .bb-footer__segment {
   display: inline-flex;
   align-items: center;
-  gap: var(--bb-derived-footer-frame-1430102682-gap);
+  gap: var(--bb-space-inline-sm);
 }
 .bb-footer__segment[data-last] { flex: 1 1 auto; }
 .bb-footer__segment[data-last] .bb-footer__pill { flex: 1 1 auto; }
 .bb-footer__divider {
   flex: none;
-  width: var(--bb-derived-footer-line-57-stroke-width);
+  width: var(--bb-dimension-stroke-0-5);
   height: var(--bb-derived-footer-line-57-width);
   background: var(--bb-icon-glyph-default);
 }
@@ -59,17 +59,17 @@
 .bb-footer__size-group {
   display: flex;
   align-items: flex-end;
-  gap: var(--bb-derived-footer-frame-1430102622-gap);
+  gap: var(--bb-dimension-space-18);
 }
 /* The size expander instance is overridden in the footer (Figma 133:1629):
- * `Background` fill with a half-pixel `Boader` stroke and footer/segment/radius
+ * `Background` fill with a half-pixel `Border` stroke and footer/segment/radius
  * corners. The steps keep the size expander's own colours (transparent / brand accent). */
 .bb-footer__size {
   border-radius: var(--bb-footer-segment-radius);
   padding-left: var(--bb-footer-padding-x);
   padding-right: var(--bb-footer-padding-x);
   background: var(--bb-background);
-  box-shadow: inset 0 0 0 var(--bb-derived-footer-frame-1430102618-stroke-width) var(--bb-boader);
+  box-shadow: inset 0 0 0 var(--bb-derived-footer-frame-1430102618-stroke-width) var(--bb-border);
 }
 .bb-footer__size .bb-size-expander__step {
   border-radius: var(--bb-footer-segment-radius);

@@ -16,12 +16,12 @@
   max-width: var(--bb-derived-disability-indicator-root-width);
   max-height: var(--bb-derived-disability-indicator-root-height);
   gap: var(--bb-disability-indicator-gap);
-  padding-top: max(var(--bb-derived-disability-indicator-root-padding-top), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
-  padding-right: max(var(--bb-derived-disability-indicator-root-padding-right), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
-  padding-bottom: max(var(--bb-derived-disability-indicator-root-padding-bottom), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
-  padding-left: max(var(--bb-derived-disability-indicator-root-padding-left), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
-  border: var(--bb-derived-disability-indicator-root-stroke-width) solid var(--bb-disability-indicator-border-default);
-  border-radius: var(--bb-derived-disability-indicator-root-radius);
+  padding-top: max(var(--bb-dimension-space-2-57), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-right: max(var(--bb-dimension-space-2-57), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-bottom: max(var(--bb-dimension-space-2-57), calc((var(--bb-derived-disability-indicator-root-height) - var(--bb-disability-indicator-icon-size)) / 2));
+  padding-left: max(var(--bb-dimension-space-2-57), calc((var(--bb-derived-disability-indicator-root-width) - var(--bb-disability-indicator-icon-size)) / 2));
+  border: var(--bb-dimension-stroke-0-64) solid var(--bb-disability-indicator-border-default);
+  border-radius: var(--bb-dimension-radius-3);
   background: var(--bb-disability-indicator-bg-default);
   color: var(--bb-disability-indicator-icon-color);
 }

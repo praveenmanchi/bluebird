@@ -1,0 +1,109 @@
+/* Bird — Figma "Flock Bird" (40002517:6822). Colours are persona/bird/*, so each bird re-skins per
+ * brand. They follow what Figma binds on each part, not the class names: .gear-alt is mostly ink,
+ * and the UI/UX beret (.gear here) is Figma's gear-alt. The body takes currentColor. Motion lives
+ * here for the parts of a bird; PersonaScreen.css decides when. */
+.bb-bird {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: var(--bb-persona-bird-plain);
+}
+.bb-bird--design-system { color: var(--bb-persona-bird-design-system); }
+.bb-bird--ui-designer { color: var(--bb-persona-bird-ui-designer); }
+.bb-bird--ux-designer { color: var(--bb-persona-bird-ux-designer); }
+.bb-bird--content { color: var(--bb-persona-bird-content); }
+.bb-bird--developer { color: var(--bb-persona-bird-developer); }
+
+.bb-bird__body, .bb-bird__wing, .bb-bird__crest { fill: currentColor; }
+.bb-bird__wing { filter: brightness(0.86); transform-box: fill-box; }
+.bb-bird__wing--left { transform-origin: 90% 10%; }
+.bb-bird__wing--right { transform-origin: 10% 10%; }
+.bb-bird__belly { fill: var(--bb-persona-bird-eye); opacity: 0.88; }
+.bb-bird__eye { fill: var(--bb-persona-bird-eye); }
+.bb-bird__eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bb-bird-blink 5s var(--pp-blink, 0s) infinite;
+}
+.bb-bird__pupils {
+  fill: var(--bb-persona-bird-pupil);
+  transform-box: fill-box;
+  transform: translateX(calc(var(--pp-look, 0) * 12%));
+  transition: transform 240ms ease;
+}
+.bb-bird__beak { fill: var(--bb-persona-bird-beak); }
+.bb-bird--content .bb-bird__beak, .bb-bird--plain .bb-bird__beak { fill: var(--bb-persona-bird-beak-alt); }
+.bb-bird__feet {
+  fill: none;
+  stroke: var(--bb-persona-bird-beak);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Gear and props. */
+.bb-bird__gear { fill: var(--bb-persona-bird-gear); }
+.bb-bird__gear-alt { fill: var(--bb-persona-bird-ink); }
+.bb-bird--design-system .bb-bird__gear-alt { fill: var(--bb-persona-bird-eye); }
+.bb-bird--ui-designer .bb-bird__gear { fill: var(--bb-persona-bird-gear-alt); }
+.bb-bird--content .bb-bird__gear-alt { fill: var(--bb-persona-bird-ui-designer); }
+.bb-bird--developer .bb-bird__gear { fill: var(--bb-persona-bird-ink); }
+.bb-bird--ux-designer .bb-bird__prop { transform-box: fill-box; transform-origin: 20% 90%; }
+.bb-bird__line, .bb-bird__glasses, .bb-bird__lens, .bb-bird__text, .bb-bird__prompt, .bb-bird__cursor {
+  fill: none;
+  stroke: var(--bb-persona-bird-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bb-bird__line--thick { stroke-width: 5; }
+.bb-bird__lens { fill: var(--bb-surface-translucent); stroke-width: 4; }
+.bb-bird__block { fill: var(--bb-persona-bird-content); transform-box: fill-box; }
+.bb-bird__block--2 { fill: var(--bb-persona-bird-developer); }
+.bb-bird__block--3 { fill: var(--bb-persona-bird-ux-designer); }
+.bb-bird__node { fill: var(--bb-persona-bird-ink); }
+.bb-bird__bubble { fill: var(--bb-persona-bird-eye); stroke: var(--bb-persona-bird-ink); stroke-width: 2.5; }
+.bb-bird__text { stroke: var(--bb-persona-bird-pupil); stroke-dasharray: 1; }
+.bb-bird__screen { fill: var(--bb-persona-bird-screen); stroke: var(--bb-persona-bird-ink); stroke-width: 2.5; }
+.bb-bird__curve { stroke-dasharray: 1; }
+
+@keyframes bb-bird-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+@keyframes bb-bird-flap-left {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(38deg); }
+}
+@keyframes bb-bird-flap-right {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-38deg); }
+}
+@keyframes bb-bird-block-drop {
+  0% { transform: translateY(-160%); opacity: 0; }
+  60% { transform: translateY(0); opacity: 1; }
+  75% { transform: translateY(-12%); }
+  100% { transform: translateY(0); }
+}
+@keyframes bb-bird-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes bb-bird-sweep {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(14deg); }
+}
+@keyframes bb-bird-cursor { 50% { opacity: 0; } }
+
+/* Flapping and prop loops switch on with these two classes. */
+.bb-bird.is-flapping .bb-bird__wing--left { animation: bb-bird-flap-left 200ms ease-in-out infinite; }
+.bb-bird.is-flapping .bb-bird__wing--right { animation: bb-bird-flap-right 200ms ease-in-out infinite; }
+.bb-bird.is-playing .bb-bird__block { animation: bb-bird-block-drop 600ms ease-out backwards; }
+.bb-bird.is-playing .bb-bird__block--2 { animation-delay: 200ms; }
+.bb-bird.is-playing .bb-bird__block--3 { animation-delay: 400ms; }
+.bb-bird.is-playing .bb-bird__curve { animation: bb-bird-draw 900ms ease-out backwards; }
+.bb-bird.is-playing .bb-bird__text { animation: bb-bird-draw 900ms 200ms linear backwards; }
+.bb-bird.is-playing.bb-bird--ux-designer .bb-bird__prop { animation: bb-bird-sweep 1.6s ease-in-out infinite; }
+.bb-bird.is-playing .bb-bird__cursor { animation: bb-bird-cursor 900ms steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-bird *, .bb-bird.is-playing *, .bb-bird.is-flapping * { animation: none; transition: none; }
+}

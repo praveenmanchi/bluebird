@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 // Figma ↔ code contract for the Agent voice screen (frame, not a component set).
 import { ROOT_HEIGHT, VOICE_BAR, composed, measured, ownedBy } from './figma-gaps'
 
@@ -10,6 +11,7 @@ export const figma = {
     'Voice Bar': 'VoiceBar Listening → Speaking → Idle (phase, onMic)',
   },
   figmaGaps: {
+    ...scaleGaps('uxai/border-width', 'agents/face-stroke'),
     ...composed('PromptChip', ['uxai/chip/bg', 'uxai/chip/border', 'uxai/radius/pill', 'uxai/space/row-x', 'uxai/space/row-y']),
     ...composed('Message / ThinkingStep / PromptChip', ['uxai/space/inline']),
     ...composed('VoiceBar', [...VOICE_BAR, 'agents/space/row-x']),

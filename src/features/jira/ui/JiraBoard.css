@@ -41,11 +41,11 @@
 }
 .bb-jira-board__list {
   padding: var(--bb-jira-space-section);
-  border-width: var(--bb-derived-jira-board-ticket-list-stroke-width);
+  border-width: var(--bb-jira-border-width);
 }
 .bb-jira-board__detail {
   padding: var(--bb-jira-space-panel);
-  border-width: var(--bb-derived-jira-board-ticket-detail-stroke-width);
+  border-width: var(--bb-jira-border-width);
 }
 .bb-jira-board__detail--empty { justify-content: center; align-items: center; }
 

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/preact'
 import { TeamBanner } from './TeamBanner'
@@ -71,5 +73,18 @@ describe('TeamBanner', () => {
     expect(container.querySelector('.bb-team-banner')?.getAttribute('data-tagline')).toBe('md')
     rerender(<TeamBanner taglineSize="auto" />)
     expect(container.querySelector('.bb-team-banner')?.getAttribute('data-tagline')).toBe('auto')
+  })
+})
+
+describe('TeamBanner brand colours', () => {
+  const css = readFileSync(resolve(process.cwd(), 'src/shared/ui/TeamBanner/TeamBanner.css'), 'utf8')
+
+  it('paints the banner with the brand variables, so it follows every brand', () => {
+    expect(css).toMatch(/\.bb-team-banner \{[^}]*background: var\(--bb-banner-bg\)/)
+    expect(css).toMatch(/\.bb-team-banner \{[^}]*color: var\(--bb-banner-text\)/)
+  })
+
+  it('reads no raw Figma colour', () => {
+    expect(css.match(/var\(--bb-derived-team-banner-[a-z0-9-]*(?:-fill|-color)\)/g) ?? []).toEqual([])
   })
 })

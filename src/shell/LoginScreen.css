@@ -41,7 +41,7 @@
   width: 100%;
   max-width: var(--bb-login-card-width);
   padding: var(--bb-login-card-padding);
-  border: var(--bb-derived-login-screen-card-stroke-width) solid var(--bb-login-border-card);
+  border: var(--bb-input-border-width) solid var(--bb-login-border-card);
   border-radius: var(--bb-login-card-radius);
   background: var(--bb-login-surface-card);
 }

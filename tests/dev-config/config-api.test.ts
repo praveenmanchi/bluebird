@@ -27,6 +27,14 @@ describe('applyBrandPatch', () => {
     expect(cleared.brand.brands.disney).not.toHaveProperty('integrations')
   })
 
+  it('writes and clears a brand’s persona features, and refuses ones the config doesn’t have', () => {
+    const once = applyBrandPatch(raw(), { ikea: { personas: { content: ['a11y', 'jira'] } } })
+    expect(once.brand.brands.ikea).toMatchObject({ personas: { content: ['a11y', 'jira'] } })
+    expect(applyBrandPatch(once, { ikea: { personas: null } }).brand.brands.ikea).not.toHaveProperty('personas')
+    expect(() => applyBrandPatch(raw(), { ikea: { personas: { content: 'all' } } })).toThrow(/malformed/)
+    expect(() => applyBrandPatch(raw(), { ikea: { personas: { ghost: ['a11y'] } } })).toThrow(ConfigError)
+  })
+
   it('refuses an unknown brand, a malformed patch, a key and a tab the config doesn’t have', () => {
     expect(() => applyBrandPatch(raw(), { nope: { tabs: null } })).toThrow(ConfigPatchError)
     expect(() => applyBrandPatch(raw(), { ikea: { tabs: 'all' } })).toThrow(/malformed/)

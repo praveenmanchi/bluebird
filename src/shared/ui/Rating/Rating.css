@@ -8,15 +8,15 @@
   box-sizing: border-box;
   min-width: var(--bb-derived-rating-root-width);
   height: var(--bb-derived-rating-root-height);
-  padding-left: var(--bb-derived-rating-root-padding-left);
-  padding-right: var(--bb-derived-rating-root-padding-right);
+  padding-left: var(--bb-dimension-space-6);
+  padding-right: var(--bb-dimension-space-6);
   border-radius: var(--bb-rating-radius);
   background: var(--bb-rating-bg-default);
   color: var(--bb-rating-fg-default);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-rating-font-weight);
-  line-height: var(--bb-derived-rating-a-line-height);
+  line-height: var(--bb-type-line-10);
   white-space: nowrap;
   user-select: none;
 }

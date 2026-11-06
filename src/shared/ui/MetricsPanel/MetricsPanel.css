@@ -3,7 +3,7 @@
 .bb-metrics-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--bb-size-control-width-md), 1fr));
-  gap: var(--bb-space-inline-sm) var(--bb-derived-metrics-panel-root-gap);
+  gap: var(--bb-space-inline-sm) var(--bb-dimension-space-28);
   padding: var(--bb-space-inset-md) 0;
   border-radius: var(--bb-radius-lg);
 }

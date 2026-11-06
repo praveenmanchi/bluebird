@@ -1,6 +1,6 @@
 /* Navbar — Figma "Navbar" set (7:44400): a horizontal row of Tab instances.
  * The Tab instances bind tab/gap and tab/padding-x|y, consumed by the composed
- * Tab. The row gap is raw in Figma → --bb-derived-navbar-root-gap. */
+ * Tab. The row gap is raw in Figma → --bb-dimension-space-12. */
 .bb-navbar {
   display: block;
   min-width: 0;
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--bb-derived-navbar-root-gap);
+  gap: var(--bb-dimension-space-12);
   overflow-x: auto;
   scrollbar-width: none;
 }

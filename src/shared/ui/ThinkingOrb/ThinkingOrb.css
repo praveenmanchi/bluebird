@@ -38,7 +38,7 @@
 .bb-thinking-orb__blob[data-tone='c'] { background: var(--bb-uxai-orb-c); }
 .bb-thinking-orb__highlight {
   background: var(--bb-uxai-text-title);
-  opacity: var(--bb-derived-thinking-orb-ellipse-opacity);
+  opacity: var(--bb-dimension-opacity-35);
 }
 .bb-thinking-orb[data-size='20'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.09)); }
 .bb-thinking-orb[data-size='40'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.09)); }

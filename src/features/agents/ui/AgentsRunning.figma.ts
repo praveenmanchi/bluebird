@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 // Figma ↔ code contract for the Agent running screen (frame, not a component set).
 import { BUTTON_SECONDARY, PROGRESS_BAR, ROOT_HEIGHT, composed, measured, ownedBy } from './figma-gaps'
 
@@ -11,6 +12,7 @@ export const figma = {
     Footer: 'note + Button secondary "Stop agent" (onStop)',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width'),
     ...composed('Button', BUTTON_SECONDARY),
     ...composed('ProgressBar', PROGRESS_BAR),
     ...composed('ThinkingStep', ['uxai/space/inline']),

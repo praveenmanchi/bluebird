@@ -9,9 +9,9 @@
   justify-content: center;
   box-sizing: border-box;
   height: var(--bb-derived-chip-root-height);
-  padding: var(--bb-derived-chip-root-padding-top) var(--bb-chip-filter-padding-x) var(--bb-derived-chip-root-padding-bottom);
-  border: var(--bb-derived-chip-root-stroke-width) solid var(--bb-chip-filter-border-default);
-  border-radius: var(--bb-derived-chip-root-radius);
+  padding: var(--bb-dimension-space-1) var(--bb-chip-filter-padding-x) var(--bb-dimension-space-1);
+  border: var(--bb-input-border-width) solid var(--bb-chip-filter-border-default);
+  border-radius: var(--bb-radius-md);
   background: var(--bb-chip-filter-bg-default);
   color: var(--bb-chip-filter-fg-default);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
@@ -40,7 +40,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--bb-chip-filter-gap);
-  padding-inline: var(--bb-derived-chip-container-padding-left) var(--bb-derived-chip-container-padding-right);
+  padding-inline: var(--bb-space-inset-xs) var(--bb-space-inset-xs);
 }
 .bb-chip__label { display: inline-block; }
 .bb-chip:not(:disabled):is(:hover, [data-state="hover"]) {
@@ -54,5 +54,5 @@
 .bb-chip[data-selected] .bb-chip__icon { color: var(--bb-chip-filter-fg-selected); }
 .bb-chip:disabled {
   cursor: not-allowed;
-  opacity: var(--bb-derived-button-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-55);
 }

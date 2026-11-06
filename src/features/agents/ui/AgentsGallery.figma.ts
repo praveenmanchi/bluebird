@@ -1,5 +1,7 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 // Figma ↔ code contract for the Agents gallery screen (frame, not a component set).
 import { BUTTON_PRIMARY, ROOT_HEIGHT, VOICE_BAR, composed, measured, ownedBy, segmentTabs } from './figma-gaps'
+import { tabSubMenuDerived, tabSubMenuGaps } from '../../../shared/ui/SegmentedControl/gaps'
 
 export const figma = {
   setId: '40000297:8491',
@@ -12,11 +14,14 @@ export const figma = {
     'Voice Bar': 'VoiceBar Idle (onMic)',
   },
   figmaGaps: {
+    ...scaleGaps('button/primary/border-width', 'border-width/default', 'agents/border-width'),
+    ...tabSubMenuGaps(),
     ...composed('Button', BUTTON_PRIMARY),
     ...composed('AgentCard', ['agents/surface/panel', 'agents/surface/panel-border', 'agents/radius/panel', 'agents/space/row-x', 'agents/surface/running', 'agents/border/running']),
     ...composed('VoiceBar', VOICE_BAR),
   },
   derivedGaps: {
+    ...tabSubMenuDerived('--bb-derived-agents-gallery-tab-sub-menu'),
     '--bb-derived-agents-gallery-root-height': ROOT_HEIGHT,
     ...segmentTabs('gallery', ['selection', 'current-frame', 'section', 'whole-page'], ['selection']),
     ...measured(['--bb-derived-agents-gallery-button-width', '--bb-derived-agents-gallery-link-button-width', '--bb-derived-agents-gallery-link-button-height'], 'Button / Link Button label box'),

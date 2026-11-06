@@ -34,7 +34,7 @@
 .bb-step[data-state='current'] .bb-step__index { background: var(--bb-mcp-step-current-bg); }
 .bb-step[data-state='upcoming'] .bb-step__index {
   background: var(--bb-mcp-step-upcoming-bg);
-  border: var(--bb-derived-step-index-stroke-width) solid var(--bb-mcp-step-upcoming-border);
+  border: var(--bb-mcp-border-width) solid var(--bb-mcp-step-upcoming-border);
   color: var(--bb-mcp-step-fg-muted);
 }
 .bb-step__label {

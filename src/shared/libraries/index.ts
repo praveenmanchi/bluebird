@@ -5,8 +5,8 @@ export type {
   LibraryComponent, LibraryCollection, LibraryColorStyle, LibraryFile, LibraryIndex, LibraryLoadResult, LibraryRole, LibraryStyle, LibraryTextStyle, LibraryVariable,
   LoadRequest, ModeValue, VariableType,
 } from './types'
-export { createLibrariesHandlers } from './handlers'
-export type { LibrariesDeps } from './handlers'
+export { createLibrariesHandlers, librariesRuntime } from './handlers'
+export type { LibrariesDeps, LibrariesRuntime } from './handlers'
 export { describeFile, filesFromSettings, loadLibraries, rolesOf, settingsProblem, testDualFile } from './load'
 export type { FileSpec } from './load'
 export { FIGMA_API, LibraryError } from './rest'

@@ -1,6 +1,6 @@
 /* Accessibility Checker screen (Figma "accessibity UI", 40000003:5133). The
  * toolbar frame (40000087:10845) sits on the `Background` fill with a
- * `Boader` rule; below it the results list. Tokens only. */
+ * `Border` rule; below it the results list. Tokens only. */
 .bb-a11y { display: flex; flex-direction: column; min-height: 100%; }
 .bb-a11y__toolbar {
   display: flex;
@@ -8,7 +8,7 @@
   justify-content: space-between;
   gap: var(--bb-space-inline-md);
   padding: var(--bb-space-inline-md) var(--bb-space-inset-md) var(--bb-space-inset-md);
-  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-border);
 }
 /* One row at every plugin size (Figma: three FILL dropdowns + Scan). The dropdowns share
  * what is left after the Scan button and truncate their value before anything wraps. */

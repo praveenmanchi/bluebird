@@ -1,9 +1,11 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 /** Figma ↔ code contract for the UX AI Component screen (frame "UX AI body", not a component set; screen 40000289:5730). */
 export const figma = {
   setId: '40000289:5737',
   name: 'UX AI body',
   props: {},
   figmaGaps: {
+    ...scaleGaps('uxai/border-width'),
     'uxai/chip/bg': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
     'uxai/chip/border': 'Bound on the composed ContextChip / ChatInput instances; ContextChip.css / ChatInput.css consume it.',
     'uxai/radius/chip': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
@@ -17,15 +19,12 @@ export const figma = {
   },
   derivedGaps: {
     '--bb-derived-uxai-component-chat-input-height': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
-    '--bb-derived-uxai-component-chat-input-stroke-width': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
     '--bb-derived-uxai-component-component-artifact-height': 'Hug height / stroke of the Component Artifact instance; ComponentArtifact.css owns both (its width is read as the artifact max-width).',
-    '--bb-derived-uxai-component-component-artifact-stroke-width': 'Hug height / stroke of the Component Artifact instance; ComponentArtifact.css owns both (its width is read as the artifact max-width).',
     '--bb-derived-uxai-component-context-chip--1-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-context-chip--2-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-context-chip--3-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-context-chip--4-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-context-chip-height': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
-    '--bb-derived-uxai-component-context-chip-stroke-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-context-chip-ux-ai-body-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-component-gutter-height': 'The Gutter is a spacer: only its width (uxai/size/orb-sm) matters; its height follows the row.',
     '--bb-derived-uxai-component-link-button-height': 'Hug size of the Link Button instance; LinkButton.css sizes it from its label.',

@@ -17,16 +17,16 @@
   max-width: 100%;
   height: var(--bb-derived-voice-bar-root-height);
   padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
-  border: var(--bb-derived-voice-bar-root-state-idle-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-control);
   background: var(--bb-agents-surface-field);
 }
-.bb-voice-bar[data-state='speaking'] { border-width: var(--bb-derived-voice-bar-root-state-speaking-stroke-width); }
+.bb-voice-bar[data-state='speaking'] { border-width: var(--bb-agents-border-width); }
 .bb-voice-bar[data-state='listening'] {
-  border-width: var(--bb-derived-voice-bar-root-state-listening-stroke-width);
+  border-width: var(--bb-agents-face-stroke);
   border-color: var(--bb-surface-transparent);
   background:
-    linear-gradient(var(--bb-agents-surface-field), var(--bb-agents-surface-field)) padding-box,
+    linear-gradient(var(--bb-agents-surface-field)) padding-box,
     conic-gradient(
       from var(--voice-bar-beam-angle),
       var(--bb-uxai-beam-1),

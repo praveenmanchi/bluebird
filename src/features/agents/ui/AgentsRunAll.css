@@ -56,7 +56,7 @@
   flex-direction: column;
   gap: var(--bb-agents-space-inline);
   padding: var(--bb-agents-space-row-x);
-  border: var(--bb-derived-agents-run-all-overall-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-panel);
   background: var(--bb-agents-surface-panel);
 }
@@ -89,21 +89,21 @@
   align-items: center;
   gap: var(--bb-agents-space-section);
   padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
-  border: var(--bb-derived-agents-run-all-accessibility-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-control);
   background: var(--bb-agents-surface-field);
 }
 /* Each row is its own layer in Figma; the stroke widths are read per row. */
-.bb-agents-run-all__row[data-agent='spelling'] { border-width: var(--bb-derived-agents-run-all-spelling-grammar-stroke-width); }
-.bb-agents-run-all__row[data-agent='writing'] { border-width: var(--bb-derived-agents-run-all-ux-writing-stroke-width); }
-.bb-agents-run-all__row[data-agent='content'] { border-width: var(--bb-derived-agents-run-all-content-stroke-width); }
-.bb-agents-run-all__row[data-agent='design-system'] { border-width: var(--bb-derived-agents-run-all-design-system-stroke-width); }
-.bb-agents-run-all__row[data-agent='localization'] { border-width: var(--bb-derived-agents-run-all-localization-stroke-width); }
+.bb-agents-run-all__row[data-agent='spelling'] { border-width: var(--bb-agents-border-width); }
+.bb-agents-run-all__row[data-agent='writing'] { border-width: var(--bb-agents-border-width); }
+.bb-agents-run-all__row[data-agent='content'] { border-width: var(--bb-agents-border-width); }
+.bb-agents-run-all__row[data-agent='design-system'] { border-width: var(--bb-agents-border-width); }
+.bb-agents-run-all__row[data-agent='localization'] { border-width: var(--bb-agents-border-width); }
 .bb-agents-run-all__row[data-state='running'] {
   background: var(--bb-agents-surface-running);
   border-color: var(--bb-agents-border-running);
 }
-.bb-agents-run-all__row[data-state='skipped'] { opacity: var(--bb-derived-agents-run-all-localization-opacity); }
+.bb-agents-run-all__row[data-state='skipped'] { opacity: var(--bb-dimension-opacity-60); }
 .bb-agents-run-all__bot {
   flex: none;
   width: var(--bb-agents-size-bot);

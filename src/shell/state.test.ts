@@ -6,8 +6,8 @@ vi.mock('@config', async () => {
   return {
     default: {
       ...real,
-      activePersona: 'product-designer',
-      brand: { ...real.brand, brands: { ...real.brand.brands, ikea: { ...real.brand.brands.ikea, tabs: [{ id: 'publish', enabled: true }, { id: 'jira', enabled: false }] } } },
+      activePersona: 'ui-designer',
+      brand: { ...real.brand, brands: { ...real.brand.brands, ikea: { ...real.brand.brands.ikea, tabs: [{ id: 'uxai', enabled: true }, { id: 'jira', enabled: false }] } } },
     },
   }
 })
@@ -20,21 +20,21 @@ describe('brand-aware tabs', () => {
   beforeEach(() => signIn(null))
 
   it('uses the persona order until a brand is signed in', () => {
-    expect(visibleTabs.value.map((t) => t.id)).toEqual(['a11y', 'varsearch', 'jira', 'mcp', 'publish', 'uxai', 'agents'])
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['a11y', 'varsearch', 'varmapper', 'jira', 'mcp', 'uxai', 'agents'])
   })
 
   it('applies the signed-in brand’s order and hidden tabs', () => {
     signIn('ikea')
-    expect(visibleTabs.value.map((t) => t.id)).toEqual(['publish', 'a11y', 'varsearch', 'mcp', 'uxai', 'agents'])
-    expect(brandPersonas.value.find((p) => p.id === 'design-system')?.tabs[0]?.id).toBe('publish')
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['uxai', 'a11y', 'varsearch', 'varmapper', 'mcp', 'agents'])
+    expect(brandPersonas.value.find((p) => p.id === 'design-system')?.tabs[0]?.id).toBe('uxai')
   })
 
   it('moves off a tab the new brand hides, and keeps one it still shows', () => {
     selectTab('jira')
     signIn('ikea')
-    expect(activeTabId.value).toBe('publish')
-    selectTab('mcp')
+    expect(activeTabId.value).toBe('uxai')
+    selectTab('agents')
     signIn('bridge')
-    expect(activeTabId.value).toBe('mcp')
+    expect(activeTabId.value).toBe('agents')
   })
 })

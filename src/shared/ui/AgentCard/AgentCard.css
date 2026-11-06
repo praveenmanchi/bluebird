@@ -13,7 +13,7 @@
   width: var(--bb-derived-agent-card-root-width);
   max-width: 100%;
   padding: var(--bb-agents-space-row-x);
-  border: var(--bb-derived-agent-card-root-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-panel);
   background: var(--bb-agents-surface-panel);
   font-family: var(--bb-agents-font-family), ui-sans-serif, system-ui, sans-serif;
@@ -43,8 +43,8 @@
   line-height: var(--bb-agents-font-line-caption);
   color: var(--bb-agents-text-meta);
 }
-.bb-agent-card[data-state='coming-soon'] .bb-agent-card__name { opacity: var(--bb-derived-agent-card-name-opacity); }
-.bb-agent-card[data-state='coming-soon'] .bb-agent-card__purpose { opacity: var(--bb-derived-agent-card-purpose-opacity); }
+.bb-agent-card[data-state='coming-soon'] .bb-agent-card__name { opacity: var(--bb-dimension-opacity-60); }
+.bb-agent-card[data-state='coming-soon'] .bb-agent-card__purpose { opacity: var(--bb-dimension-opacity-60); }
 .bb-agent-card__rules { max-width: 100%; }
 .bb-agent-card__footer {
   display: flex;

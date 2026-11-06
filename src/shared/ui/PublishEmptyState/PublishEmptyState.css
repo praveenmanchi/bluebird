@@ -22,7 +22,7 @@
   justify-content: center;
   flex: none;
   padding: var(--bb-publish-space-row-x);
-  border: var(--bb-derived-publish-empty-state-icon-box-stroke-width) solid var(--bb-publish-surface-panel-border);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
   border-radius: var(--bb-publish-radius-pill);
   background: var(--bb-publish-surface-field);
 }

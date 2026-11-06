@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for Input. */
 export const figma = {
   setId: '204:9667',
@@ -11,7 +12,7 @@ export const figma = {
     'Buttom Text ': 'helperText',
     'Buttom Text': 'helperText !== undefined',
   },
-  figmaGaps: {},
+  figmaGaps: { ...scaleGaps('space/inset-lg-alt', 'font/family-ui', 'font/size-caption', 'font/line-caption') },
   notes: [
     'input/label/font-weight resolves to "500px" in the generated CSS (a length, not a weight) — the browser ignores it. Fix the Figma variable type.',
     'The field padding (12) and value font (Inter 400) are raw in Figma; code reads input/padding-x and input/font/* instead, which is where they should be bound.',

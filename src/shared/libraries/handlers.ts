@@ -14,6 +14,21 @@ export interface LibrariesDeps {
   now?: () => number
 }
 
+/** What a tab's sandbox handlers use to reach the configured libraries. */
+export interface LibrariesRuntime {
+  load: () => Promise<LibraryLoadResult>
+  readSettings: LibrariesDeps['readSettings']
+  fetch: HttpFetch
+}
+
+let runtime: LibrariesRuntime | null = null
+
+/** The loader the sandbox wired up, so a tab shares its cache instead of reading the files again. */
+export function librariesRuntime(): LibrariesRuntime {
+  if (!runtime) throw new Error('Dual File Mode isn’t available here.')
+  return runtime
+}
+
 export function createLibrariesHandlers(deps: LibrariesDeps): HandlerMap {
   const now = deps.now ?? Date.now
   // One read per distinct configuration until Refresh; concurrent callers share the request in flight.
@@ -35,6 +50,8 @@ export function createLibrariesHandlers(deps: LibrariesDeps): HandlerMap {
     }
     return cached!.result
   }
+
+  runtime = { load: () => load(undefined), readSettings: deps.readSettings, fetch: deps.fetch }
 
   return {
     [LIBRARIES_MSG.load]: load,

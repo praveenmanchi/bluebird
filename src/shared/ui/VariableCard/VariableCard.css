@@ -12,9 +12,9 @@
   box-sizing: border-box;
   width: var(--bb-derived-variable-card-root-width);
   max-width: 100%;
-  gap: var(--bb-derived-variable-card-root-gap);
-  padding: var(--bb-derived-variable-card-root-padding-top) var(--bb-card-variable-padding) var(--bb-derived-variable-card-root-padding-bottom);
-  border: var(--bb-derived-variable-card-root-stroke-width) solid var(--bb-card-variable-border-default);
+  gap: var(--bb-dimension-space-16);
+  padding: var(--bb-space-inset-lg-alt) var(--bb-card-variable-padding) var(--bb-space-inset-lg-alt);
+  border: var(--bb-input-border-width) solid var(--bb-card-variable-border-default);
   border-radius: var(--bb-card-variable-radius);
   background: var(--bb-surface-transparent);
   color: var(--bb-card-variable-title-fg);
@@ -25,7 +25,7 @@
   align-items: flex-start;
   flex: 1;
   min-width: 0;
-  gap: var(--bb-derived-variable-card-frame-1430102566-gap);
+  gap: var(--bb-dimension-space-3);
 }
 /* Tab Icons (Variables / text) */
 .bb-variable-card__glyph.bb-icon {
@@ -39,7 +39,7 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  gap: var(--bb-derived-variable-card-frame-1430102565-gap);
+  gap: var(--bb-space-stack-xs);
 }
 /* "Color/Border/Black" */
 .bb-variable-card__name {
@@ -69,7 +69,7 @@
   align-items: center;
   justify-content: flex-end;
   flex: none;
-  gap: var(--bb-derived-variable-card-frame-1430102567-gap);
+  gap: var(--bb-space-inline-lg);
 }
 /* "12 Days ago" */
 .bb-variable-card__updated {
@@ -79,10 +79,10 @@
   font-size: var(--bb-card-variable-meta-font-size);
   font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-card-variable-meta-line-height);
-  opacity: var(--bb-derived-variable-card-12-days-ago-opacity);
+  opacity: var(--bb-dimension-opacity-50);
 }
 /* Frame 1430102562 — the composed change-status chip. Figma rebinds its caption and count text to card-variable/title/fg. */
-.bb-variable-card__status.bb-change-status { gap: var(--bb-derived-variable-card-frame-1430102562-gap); color: var(--bb-card-variable-title-fg); }
+.bb-variable-card__status.bb-change-status { gap: var(--bb-space-inline-md); color: var(--bb-card-variable-title-fg); }
 /* Tab Icons (Research / Dropdown- down) as icon buttons */
 .bb-variable-card__action {
   display: inline-flex;
@@ -110,6 +110,6 @@
 /* Figma overrides the count square (Frame 1430102560) inside the change-status instance to the count-badge tokens. */
 .bb-variable-card__status .bb-change-status__count {
   background: var(--bb-badge-count-bg-default);
-  border: var(--bb-derived-variable-card-frame-1430102560-stroke-width) solid var(--bb-badge-count-border-default);
+  border: var(--bb-border-width-default) solid var(--bb-badge-count-border-default);
   border-radius: var(--bb-badge-count-radius);
 }

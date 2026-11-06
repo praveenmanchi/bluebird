@@ -12,7 +12,7 @@
   max-width: 100%;
   height: var(--bb-derived-source-card-root-height);
   padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
-  border: var(--bb-derived-source-card-root-stroke-width) solid var(--bb-uxai-chip-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-chip-border);
   border-radius: var(--bb-uxai-radius-control);
   background: var(--bb-uxai-surface-field);
 }

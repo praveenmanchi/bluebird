@@ -12,7 +12,7 @@
   max-width: 100%;
   min-height: var(--bb-derived-finding-row-root-height);
   padding: var(--bb-agents-space-row-y) var(--bb-agents-space-row-x);
-  border: var(--bb-derived-finding-row-root-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-control);
   background: var(--bb-agents-surface-field);
 }

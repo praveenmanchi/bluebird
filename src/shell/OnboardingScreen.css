@@ -118,10 +118,10 @@
   border-radius: var(--bb-onboarding-counter-radius);
   background: var(--bb-onboarding-surface-counter);
   color: var(--bb-onboarding-text-meta);
-  font-family: var(--bb-derived-onboarding-screen-count-font-family), ui-monospace, monospace;
-  font-size: var(--bb-derived-onboarding-screen-count-font-size);
-  font-weight: var(--bb-derived-onboarding-screen-count-font-weight);
-  line-height: var(--bb-derived-onboarding-screen-count-line-height);
+  font-family: var(--bb-font-family-mono), ui-monospace, monospace;
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-font-weight-regular);
+  line-height: var(--bb-font-line-caption);
   animation: bb-ob-up var(--ob-dur) var(--ob-ease) 200ms both;
 }
 .bb-onboarding__title {
@@ -349,9 +349,9 @@
 .bb-ob-field { position: relative; min-height: var(--bb-onboarding-tile-size); }
 .bb-ob-field__key {
   color: var(--bb-onboarding-text-title);
-  font-family: var(--bb-derived-onboarding-screen-count-font-family), ui-monospace, monospace;
-  font-size: var(--bb-derived-onboarding-screen-count-font-size);
-  line-height: var(--bb-derived-onboarding-screen-count-line-height);
+  font-family: var(--bb-font-family-mono), ui-monospace, monospace;
+  font-size: var(--bb-font-size-caption);
+  line-height: var(--bb-font-line-caption);
   white-space: nowrap;
 }
 .bb-ob-field__ring {

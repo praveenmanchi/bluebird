@@ -51,6 +51,18 @@ Sandbox changes still need a plugin re-run in Figma (`Cmd+Opt+P`). UI changes ho
 Run `npm run build` (or `npm run dev:sandbox`) before using or publishing the plugin normally again: the
 live build is never what you publish.
 
+## Syncing from Figma
+
+The source is **Project Bluebird UI** (`fileKey` and `fileName` in `figma/manifest.json`). It sits on a Pro team, so REST
+cannot read its variables: pull through the relay, which works on every plan.
+
+1. `npm run dev:relay`, then `BB_LIVE=1 npx tsx scripts/build-sandbox.ts` (a one-off live build).
+2. In Figma desktop, with that file open: **Plugins → Development → Design Studio (Beta 2.0)**. Wait for a green **connected**.
+3. `npm run figma:diff` to see what changed, then `npm run figma:pull`. The pull accepts the changes as the new baseline.
+4. `npm run gen:tokens && npm run tokens:check`, then `npm run verify`, which also restores the normal `dist/code.js`.
+
+A pull from any other open file is refused. `figma:visual` and `--rest` need a `FIGMA_TOKEN` from an account that can open the file.
+
 ## AI providers (Settings › AI Agent Assistance)
 
 UX AI and the UX AI agents call the model the user picks under **Answer with**: Claude

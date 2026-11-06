@@ -7,8 +7,8 @@
   justify-content: flex-start;
   box-sizing: border-box;
   gap: var(--bb-status-pill-gap);
-  padding-left: var(--bb-derived-status-pill-root-padding-left);
-  padding-right: var(--bb-derived-status-pill-root-padding-right);
+  padding-left: var(--bb-dimension-space-6);
+  padding-right: var(--bb-dimension-space-6);
   color: var(--bb-status-pill-fg-default);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-status-pill-font-size);

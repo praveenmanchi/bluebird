@@ -24,7 +24,7 @@
   justify-content: center;
   flex: none;
   padding: var(--bb-publish-space-inline);
-  border: var(--bb-derived-pipeline-node-icon-box-stroke-width) solid var(--bb-publish-pipeline-node-border);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-pipeline-node-border);
   border-radius: var(--bb-publish-radius-pill);
   background: var(--bb-publish-pipeline-node);
 }

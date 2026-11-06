@@ -166,12 +166,14 @@ export function brandIdFromMode(mode: string): string {
   return mode.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')
 }
 
-const UNITLESS = /(^|\/|-)(font\/)?weight(\/|-|$)|opacity/
+const UNITLESS = /(^|\/|-)(font\/)?weight(\/|-|$)/
+const OPACITY = /opacity/
 const FONT_FAMILY = /family/
 
 /**
  * Format a resolved variable value as a CSS custom property value.
- * FLOATs are px unless the variable is a weight or an opacity.
+ * FLOATs are px unless the variable is a weight (unitless) or an opacity
+ * (Figma stores those as 0-100, CSS wants 0-1).
  * Font families are quoted so multi-word names survive.
  */
 export function cssValueFor(name: string, type: VariableType, value: ResolvedValue): string | null {
@@ -181,6 +183,7 @@ export function cssValueFor(name: string, type: VariableType, value: ResolvedVal
       return typeof value === 'string' ? value : null
     case 'FLOAT': {
       if (typeof value !== 'number') return null
+      if (OPACITY.test(name)) return String(Math.round(value * 10) / 1000)
       const rounded = Math.round(value * 1000) / 1000
       return UNITLESS.test(name) ? String(rounded) : `${rounded}px`
     }

@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const chip = 'Bound on the nested "Rules" Context Chip instance; the composed <ContextChip> consumes it in ContextChip.css.'
 const badge = 'Bound on the nested "Status" Meta Badge instance; the composed <MetaBadge> consumes it in MetaBadge.css (per tone).'
 const button = 'Bound on the nested "Action" Button instance; the composed <Button> consumes it in Button.css (variant / disabled).'
@@ -17,6 +18,7 @@ export const figma = {
     'Action (Button instance: Ready → Primary "Run", Running → Secondary "Stop", Idle → Secondary "Run", Coming soon → Secondary Disabled "Notify me")': 'actionLabel + onRun / onStop',
   },
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'uxai/border-width', 'button/primary/border-width', 'button/secondary/border-width', 'dimension/opacity/55'),
     'agents/size/bot': 'Bound on the nested "Bot" Bot Avatar instance (40 × 40, its own size); the composed <BotAvatar> consumes it in BotAvatar.css.',
     'feedback/success': badge,
     'border/accent': badge,
@@ -46,11 +48,6 @@ export const figma = {
     'button/secondary/padding-x': button,
     'button/secondary/height': button,
   },
-  derivedGaps: {
-    '--bb-derived-agent-card-action-opacity': 'Opacity of the disabled Action Button (Coming soon); the composed <Button disabled> applies the same 0.55 via --bb-derived-button-disabled-opacity, so reading it here would fade the button twice.',
-    '--bb-derived-agent-card-action-stroke-width': 'Stroke of the nested Action Button; Button.css reads its own border width token.',
-    '--bb-derived-agent-card-rules-stroke-width': 'Stroke of the nested Rules Context Chip; ContextChip.css reads its own --bb-derived-context-chip-root-stroke-width.',
-    '--bb-derived-agent-card-status-stroke-width': 'Stroke of the nested Status Meta Badge; MetaBadge.css draws it with --bb-border-width-default (same 1).',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the AI Agents tab (gallery). Composes BotAvatar, MetaBadge, ContextChip and Button — no Progress Bar instance in this set (the "Running 64%" progress is the Meta Badge label). Coming soon disables the Action Button (Figma: Secondary, State=Disabled) and fades Name/Purpose by the raw 0.6 Figma sets. Ready renders a Primary button; the others Secondary. In Figma the Purpose text of State=Ready overlaps the Rules chip (183 tall frame vs 197 for the others), a canvas artefact the code does not reproduce.',
 } as const

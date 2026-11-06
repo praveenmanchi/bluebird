@@ -7,3 +7,10 @@ export const OPEN_SETTINGS_EVENT = 'bb:open-settings'
 export function requestSettings(): void {
   window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_EVENT))
 }
+
+export const OPEN_TAB_EVENT = 'bb:open-tab'
+
+/** Ask the shell to switch tab (e.g. Audit's "Fix these in Variable mapper"). Ignored if this persona or brand doesn't show that tab. */
+export function requestTab(tabId: string): void {
+  window.dispatchEvent(new CustomEvent<string>(OPEN_TAB_EVENT, { detail: tabId }))
+}

@@ -13,7 +13,7 @@ export interface TabBarProps {
   onTab?: (id: string) => void
 }
 
-/** Tab row from the Figma screen: Tab instances (Active / Default) left, the settings icon right, `Boader` rule below. */
+/** Tab row from the Figma screen: Tab instances (Active / Default) left, the settings icon right, `Border` rule below. */
 export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProps) {
   const tabs = visibleTabs.value
   const active = activeTabId.value

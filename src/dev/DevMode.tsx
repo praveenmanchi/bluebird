@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks'
 import { Icon } from '@shared/ui'
 import { BRANDS, BRAND_LABELS, type BrandId } from '@shared/brand'
 import { brand as activeBrand, personas, WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
-import { readDevParams, SCENARIOS, SCENARIO_LABELS, type Scenario } from '../ui/dev-params'
+import { ASK_PERSONA, readDevParams, SCENARIOS, SCENARIO_LABELS, type Scenario } from '../ui/dev-params'
 import type { TransportStatus } from '@shared/bridge'
 
 const STATUSES: readonly TransportStatus[] = ['connected', 'connecting', 'disconnected']
@@ -17,7 +17,7 @@ export function DevMode() {
   const [brand, setBrand] = useState<BrandId>(initial.brand ?? (initial.session && initial.session !== 'none' ? (initial.session as BrandId) : (activeBrand.id as BrandId)))
   const [loggedIn, setLoggedIn] = useState(initial.session !== 'none')
   const [scenario, setScenario] = useState<Scenario>(initial.scenario)
-  const [persona, setPersona] = useState(initial.persona ?? personas[0]?.id ?? '')
+  const [persona, setPersona] = useState(initial.persona ?? ASK_PERSONA)
   const [status, setStatus] = useState<TransportStatus>(initial.status)
   const [size, setSize] = useState<WindowSize>(WINDOW_PRESETS[WINDOW_DEFAULT])
   const [reloadKey, setReloadKey] = useState(0)
@@ -62,6 +62,7 @@ export function DevMode() {
             <label class="dh-row__label" for="dm-persona">Persona</label>
             <div class="dh-row__control">
               <select id="dm-persona" class="dh-control" value={persona} onChange={(e) => { setPersona((e.currentTarget as HTMLSelectElement).value); reload() }}>
+                <option value={ASK_PERSONA}>Not picked yet</option>
                 {personas.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
               </select>
             </div>

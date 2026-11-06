@@ -13,6 +13,9 @@ export const SCENARIO_LABELS: Record<Scenario, string> = {
   error: 'Scan fails',
 }
 
+/** Harness persona value that clears the stored one, so the first-run splash and persona screen show. */
+export const ASK_PERSONA = 'ask'
+
 export interface DevParams {
   brand?: BrandId
   scenario: Scenario

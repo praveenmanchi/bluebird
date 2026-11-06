@@ -9,14 +9,14 @@
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
-  gap: var(--bb-derived-principle-tag-root-gap);
-  padding: var(--bb-derived-principle-tag-root-padding-top) var(--bb-derived-principle-tag-root-padding-right) var(--bb-derived-principle-tag-root-padding-bottom) var(--bb-derived-principle-tag-root-padding-left);
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-dimension-space-6) var(--bb-space-inset-lg-alt) var(--bb-dimension-space-6) var(--bb-dimension-space-10);
   border-radius: var(--bb-derived-principle-tag-root-radius);
   color: var(--bb-principle-fg);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-type-weight-600);
-  line-height: var(--bb-derived-principle-tag-perceivable-line-height);
+  line-height: var(--bb-type-line-10);
   white-space: nowrap;
   user-select: none;
 }

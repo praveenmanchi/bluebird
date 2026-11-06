@@ -33,7 +33,7 @@
   background: var(--bb-jira-row-bg-hover);
 }
 .bb-ticket-row[data-state='selected'] {
-  border-width: var(--bb-derived-ticket-row-root-stroke-width);
+  border-width: var(--bb-jira-border-width);
   background: var(--bb-jira-row-bg-selected);
 }
 @media (prefers-reduced-motion: reduce) {

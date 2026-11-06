@@ -30,12 +30,14 @@ connectEl.addEventListener('click', () => {
   connectEl.disabled = true
 })
 
-// Ask the sandbox for a previously saved token, then auto-connect.
-window.addEventListener('message', (event: MessageEvent) => {
+// Ask the sandbox for a previously saved token, then auto-connect. Other messages can arrive first
+// (a selection change, anything else posted to this window), so only the token ends the wait.
+function onToken(event: MessageEvent) {
   const msg = event.data?.pluginMessage
-  if (msg?.kind === 'event' && msg.type === 'bridge:token') {
-    tokenEl.value = typeof msg.payload === 'string' ? msg.payload : ''
-    connectEl.click()
-  }
-}, { once: true })
+  if (msg?.kind !== 'event' || msg.type !== 'bridge:token') return
+  window.removeEventListener('message', onToken)
+  tokenEl.value = typeof msg.payload === 'string' ? msg.payload : ''
+  connectEl.click()
+}
+window.addEventListener('message', onToken)
 window.parent.postMessage({ pluginMessage: { kind: 'event', type: 'bridge:load-token', payload: null } }, '*')

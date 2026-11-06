@@ -22,6 +22,24 @@ function logoFixture(variants: { name: string; layers: FixtureLayer[] }[]): Comp
   } as ComponentsSnapshot
 }
 
+describe('derived tokens for bound text weight', () => {
+  const textSet = (b: Record<string, string>): ComponentsSnapshot => ({
+    fileKey: 'test', page: { id: '0:1', name: 'Components' }, pulledAt: '2026-11-06', coverage: [],
+    sets: [{ code: 'Label', id: '9:9', name: 'Label', description: '', props: {}, status: 'built', variants: [{ id: '9:1', name: 'Default', props: {}, nodes: [
+      { id: '9:1', p: 'Default', t: 'COMPONENT', b: {} },
+      { id: '9:2', p: 'Default/Text', t: 'TEXT', b, r: { font: 'Inter', style: 'Semi Bold' } },
+    ] }] }],
+  } as ComponentsSnapshot)
+  const names = (b: Record<string, string>) => derivedDeclarations(textSet(b)).map((d) => d.name)
+
+  it('keeps a raw weight as a derived token', () => {
+    expect(names({})).toContain('--bb-derived-label-text-font-weight')
+  })
+  it('drops the derived weight once Figma binds fontWeight', () => {
+    expect(names({ fontWeight: 'font/weight-strong' })).not.toContain('--bb-derived-label-text-font-weight')
+  })
+})
+
 describe('snapshot helpers', () => {
   it('names css variables from Figma variable names', () => {
     expect(cssVarName('button/primary/bg/default')).toBe('--bb-button-primary-bg-default')
@@ -32,6 +50,8 @@ describe('snapshot helpers', () => {
     expect(cssValueFor('button/primary/height', 'FLOAT', 32)).toBe('32px')
     expect(cssValueFor('button/primary/font/weight', 'FLOAT', 600)).toBe('600')
     expect(cssValueFor('font/weight-medium', 'FLOAT', 500)).toBe('500')
+    // Figma stores opacity variables as 0-100; CSS wants 0-1.
+    expect(cssValueFor('dimension/opacity/55', 'FLOAT', 55)).toBe('0.55')
     expect(cssValueFor('font/line-body', 'FLOAT', 15.399999618530273)).toBe('15.4px')
     expect(cssValueFor('button/primary/font/family', 'STRING', 'Noto Sans')).toBe('"Noto Sans"')
     expect(cssValueFor('flag', 'BOOLEAN', true)).toBe('true')
@@ -82,11 +102,15 @@ describe('generate()', () => {
   })
   it('promotes raw Figma values to derived tokens', () => {
     const derived = files['src/shared/brand/generated/derived.css']!
-    expect(derived).toContain('--bb-derived-button-disabled-opacity: 0.55;')
-    expect(derived).toContain('--bb-derived-checkbox-disabled-opacity: 0.6;')
-    expect(derived).toContain('--bb-derived-menu-item-disabled-opacity: 0.5;')
     expect(derived).toContain('--bb-derived-checkbox-vector-width: 10.7px;')
-    expect(derived).toContain('--bb-derived-checkbox-dash-radius: 1px;')
+    expect(derived).not.toContain('-disabled-opacity')
+  })
+  it('emits opacity variables as CSS 0-1 values', () => {
+    const base = files['src/shared/brand/generated/base.css']!
+    expect(base).toContain('--bb-dimension-opacity-55: 0.55;')
+    expect(base).toContain('--bb-dimension-opacity-60: 0.6;')
+    expect(base).toContain('--bb-dimension-opacity-50: 0.5;')
+    expect(base).toContain('--bb-dimension-radius-1: 1px;')
   })
   it('lists per-component Figma bindings in tokens.ts', () => {
     const ts = files['src/shared/brand/generated/tokens.ts']!

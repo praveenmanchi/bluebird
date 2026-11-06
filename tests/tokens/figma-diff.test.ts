@@ -28,7 +28,11 @@ describe('diffSnapshots', () => {
   })
 
   it('reports a geometry change, a new property and a rebound fill', () => {
-    const before = readCommitted()
+    // The committed Header padding is bound now, so start from a raw one: the case under test is a raw value moving.
+    const before = clone(readCommitted())
+    const rawHeader = before.components.sets.find((s) => s.code === 'WcagCard')!.variants[0]!.nodes.find((n) => n.p === 'Mode=colors/Header')!
+    delete rawHeader.b.paddingBottom
+    rawHeader.r = { ...rawHeader.r, paddingBottom: 2 }
     const after = mergeCommitted(clone(before))
     const set = after.components.sets.find((s) => s.code === 'WcagCard')!
     const variant = set.variants[0]!

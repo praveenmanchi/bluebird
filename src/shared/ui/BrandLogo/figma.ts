@@ -3,7 +3,10 @@ export const figma = {
   setId: '40000064:9865',
   name: 'brand logos',
   props: { Brand: 'brand (or the nearest surrounding data-brand, mirroring the `brand logos` variable binding)' },
-  figmaGaps: {},
+  figmaGaps: {
+    'opacity/100': 'Bound on the Bridge wordmark vector to a variable outside this file; artwork opacity, figma/logos/bridge.svg draws it.',
+    'color/white/solid': 'Bound on the Bridge wordmark vector to a variable outside this file\'s collections. Artwork colour: figma/logos/bridge.svg draws it.',
+  },
   derivedGaps: {
     '--bb-derived-brand-logo-vector-brand-fiskars-fill': 'Logo artwork colour (Fiskars wordmark, #de8a2e since 2026-09-23). Colours live in figma/logos/fiskars.svg, not in tokens; re-export the SVG when the artwork changes.',
     '--bb-derived-brand-logo-vector-brand-ikea-width': 'Both Brand=ikea vectors are named "Vector" and the plain name keeps the later one: this is the 82.1 wordmark, drawn by ikea.svg. The ikea box reads the 106.3 oval as vector--1 (notes).',

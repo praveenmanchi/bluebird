@@ -11,13 +11,13 @@
   box-sizing: border-box;
   width: var(--bb-derived-size-step-root-width);
   gap: var(--bb-derived-size-step-root-gap);
-  padding: var(--bb-derived-size-step-root-padding-top) var(--bb-derived-size-step-root-padding-right) var(--bb-derived-size-step-root-padding-bottom) var(--bb-derived-size-step-root-padding-left);
-  border-radius: var(--bb-derived-size-step-root-radius);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inset-xs) var(--bb-space-inset-xs) var(--bb-space-inset-xs);
+  border-radius: var(--bb-radius-sm);
   background: var(--bb-surface-transparent);
   color: var(--bb-footer-segment-fg);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-size-step-l-font-size);
-  font-weight: var(--bb-derived-size-step-l-font-weight);
+  font-size: var(--bb-font-size-body);
+  font-weight: var(--bb-font-weight-regular);
   line-height: 1;
   user-select: none;
   transition: background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */

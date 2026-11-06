@@ -9,7 +9,7 @@
   height: var(--bb-uxai-size-swatch);
   border-radius: var(--bb-uxai-radius-chip);
   background: var(--bb-uxai-beam-5);
-  border: var(--bb-derived-color-swatch-root-stroke-width) solid var(--bb-uxai-swatch-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-swatch-border);
 }
 .bb-color-swatch[data-size='large'] {
   width: var(--bb-uxai-size-swatch-lg);

@@ -40,7 +40,7 @@
   box-sizing: border-box;
   min-width: 0;
   padding: var(--bb-uxai-space-row-x);
-  border: var(--bb-derived-uxai-selection-variables-panel-stroke-width) solid var(--bb-uxai-surface-panel-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-surface-panel-border);
   border-radius: var(--bb-uxai-radius-panel);
   background: var(--bb-uxai-surface-panel);
 }

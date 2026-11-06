@@ -60,6 +60,6 @@
 }
 .bb-menu-item[aria-disabled="true"] {
   color: var(--bb-menu-item-fg-disabled);
-  opacity: var(--bb-derived-menu-item-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-50);
   cursor: not-allowed;
 }

@@ -10,7 +10,7 @@
   padding: var(--bb-a11y-space-inline);
   border-radius: var(--bb-a11y-radius-control);
   background: var(--bb-a11y-surface-sunken);
-  box-shadow: inset 0 0 0 var(--bb-derived-kpi-tile-root-stroke-width) var(--bb-a11y-surface-panel-border);
+  box-shadow: inset 0 0 0 var(--bb-a11y-border-width) var(--bb-a11y-surface-panel-border);
   font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
 }
 .bb-kpi-tile__row {

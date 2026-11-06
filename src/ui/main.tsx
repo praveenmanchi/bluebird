@@ -4,7 +4,7 @@ import { createRpcClient, createPostMessageTransport, createWebSocketTransport, 
 import { brand, personas } from '@shared/config'
 import type { Transport } from '@shared/bridge'
 import { createMockHandlers } from '../../tests/mocks/handlers'
-import { readDevParams } from './dev-params'
+import { ASK_PERSONA, readDevParams } from './dev-params'
 import { connection, selectPersona, windowSize } from '@shell/state'
 import { clampWindow } from '@shared/config'
 import './index.css'
@@ -41,6 +41,7 @@ function createTransport(): Transport {
     scenario: dev?.scenario,
     brandId: dev?.brand ?? brand.id,
     sessionBrand: dev?.session === 'none' ? null : dev?.session,
+    persona: dev?.persona === ASK_PERSONA ? null : dev?.persona,
     persist: true,
     onResize: (size) => window.parent.postMessage({ type: 'bb:resize', ...size }, '*'),
   }))

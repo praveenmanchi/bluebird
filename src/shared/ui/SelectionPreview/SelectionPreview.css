@@ -11,7 +11,7 @@
   width: var(--bb-derived-selection-preview-root-width);
   max-width: 100%;
   padding: var(--bb-uxai-space-row-x);
-  border: var(--bb-derived-selection-preview-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-surface-panel-border);
   border-radius: var(--bb-uxai-radius-panel);
   background: var(--bb-uxai-surface-panel);
 }

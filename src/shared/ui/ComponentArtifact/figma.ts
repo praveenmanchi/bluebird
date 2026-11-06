@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const header = 'Bound on the nested Artifact Header instance; the composed <ArtifactHeader> consumes it in ArtifactHeader.css.'
 const button = 'Bound on the nested Button instances of the Preview; the composed <Button> consumes it in Button.css (the preview is a live render, not a drawing).'
 const badge = 'Bound on the nested Meta Badge (Tone=Neutral) instances of the Props row; the composed <MetaBadge> consumes it in MetaBadge.css.'
@@ -14,6 +15,7 @@ export const figma = {
     'Code › Context Chip (Type=Citation, Label override)': 'code',
   },
   figmaGaps: {
+    ...scaleGaps('button/primary/border-width', 'button/secondary/border-width', 'dimension/opacity/55', 'border-width/default'),
     'uxai/space/inline': header,
     'button/primary/bg/default': button,
     'button/primary/border/default': button,
@@ -41,11 +43,6 @@ export const figma = {
     'uxai/radius/chip': chip,
     'uxai/space/hair': chip,
   },
-  derivedGaps: {
-    '--bb-derived-component-artifact-button-opacity': 'Opacity of the State=Disabled Button instance; the composed <Button disabled> applies it from --bb-derived-button-disabled-opacity (same 0.55).',
-    '--bb-derived-component-artifact-button-stroke-width': 'Stroke weight of the nested Button instances; Button.css draws it from button/primary|secondary/border-width (same 1px).',
-    '--bb-derived-component-artifact-context-chip-stroke-width': 'Stroke weight of the nested Context Chip instance; ContextChip.css draws it from --bb-derived-context-chip-root-stroke-width (same 1px).',
-    '--bb-derived-component-artifact-meta-badge-stroke-width': 'Stroke weight of the nested Meta Badge instances; MetaBadge.css draws it from border/width/default (same 1px).',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the UX AI chat. No component properties; the header text, preview, prop names and code path are data. The Preview is a slot (`children`) so the chat can render the real component; its default reproduces the Figma Preview with the shared <Button> (Primary / Secondary / Primary disabled, Medium, width="fixed", leading Variables glyph 91:1958, no trailing icon). The header Type icon is swapped to the component glyph and the Open link label overridden to "Go to component ↗".',
 } as const

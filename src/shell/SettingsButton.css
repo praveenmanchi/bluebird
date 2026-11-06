@@ -8,9 +8,9 @@
   box-sizing: border-box;
   height: var(--bb-derived-settings-button-root-height); /* the tab row height, so the indicator sits on the row's edge like the Tab's */
   gap: var(--bb-derived-settings-button-root-gap);
-  padding: var(--bb-derived-settings-button-root-padding-top) var(--bb-derived-settings-button-root-padding-right) var(--bb-derived-settings-button-root-property-1-default-padding-bottom) var(--bb-derived-settings-button-root-padding-left);
+  padding: var(--bb-dimension-space-6) var(--bb-dimension-space-6) var(--bb-dimension-space-6) var(--bb-dimension-space-6);
   border: 0;
-  border-bottom: var(--bb-derived-tab-root-stroke-width) solid var(--bb-surface-transparent);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-surface-transparent);
   background: var(--bb-surface-transparent);
   color: var(--bb-icon-glyph-default);
   cursor: pointer;
@@ -18,7 +18,7 @@
 }
 .bb-settings-button__glyph.bb-icon { width: var(--bb-derived-settings-button-vector-width); height: var(--bb-derived-settings-button-vector-height); }
 .bb-settings-button[data-active] {
-  padding-bottom: var(--bb-derived-settings-button-root-property-1-variant2-padding-bottom);
+  padding-bottom: var(--bb-dimension-space-8);
   border-bottom-color: var(--bb-tab-indicator-color);
 }
 .bb-settings-button:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); outline-offset: var(--bb-space-inset-xs); }

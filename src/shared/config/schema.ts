@@ -23,6 +23,9 @@ export const brandTabSchema = z.object({
   enabled: z.boolean(),
 })
 
+/** Which tabs each persona gets in a brand, by persona id. Persona order unless the brand sets a tab order. */
+export const brandPersonasSchema = z.record(id(), z.array(id()))
+
 const managed = <S extends z.ZodMiniObject>(section: S) => z.optional(z.partial(section))
 
 /** Settings sections the brand sets for everyone (dev.html › Plugin configuration). Strict, so a misspelt section fails the build. */
@@ -45,12 +48,16 @@ export const brandSchema = z.object({
   fallbackTokens: z._default(z.record(z.string().check(z.regex(TOKEN_KEY)), nonEmpty()), {}),
   /** Tab order and visibility for this brand. Omitted: every enabled tab, in persona order. */
   tabs: z.optional(z.array(brandTabSchema)),
+  /** Tabs per persona for this brand. A persona not listed keeps personas.<id>.tabs; an empty list drops it from this brand. */
+  personas: z.optional(brandPersonasSchema),
   /** Settings sections this brand manages. Omitted: each person fills every section in the plugin. */
   integrations: z.optional(managedIntegrationsSchema),
 })
 
 export const personaSchema = z.object({
   label: nonEmpty(),
+  /** Off keeps the persona in the file but out of the picker, Settings and every brand. */
+  enabled: z._default(z.boolean(), true),
   tabs: z._default(z.array(id()), []),
 })
 

@@ -1,6 +1,6 @@
-/* TeamBanner — Figma "team Banner" set (204:7270), single variant. Only the
- * product rule's stroke is bound (Banner/powered by): the blue fill, radius,
- * paddings, gaps, rule size, type and opacity are raw → the
+/* TeamBanner — Figma "team Banner" set (204:7270), single variant. Colours are bound: Banner/bg,
+ * Banner/Text and Banner/powered by, the same pair as the app Banner, so it follows the brand.
+ * Radius, paddings, gaps, rule size, type and opacity are raw → the
  * --bb-derived-team-banner-* tokens. Since the 2026-10-11 pull the top-left is
  * the same lockup as the app Banner: a "brand logos" instance (BrandLogo, sized
  * by BrandLogo.css), a rule and the "Design Studio" name + tagline.
@@ -12,11 +12,11 @@
   box-sizing: border-box;
   width: var(--bb-derived-team-banner-root-width);
   max-width: 100%;
-  padding: var(--bb-derived-team-banner-root-padding-top) var(--bb-derived-team-banner-root-padding-right) var(--bb-derived-team-banner-root-padding-bottom) var(--bb-derived-team-banner-root-padding-left);
-  border-radius: var(--bb-derived-team-banner-root-radius);
-  background: var(--bb-derived-team-banner-root-fill);
-  color: var(--bb-derived-team-banner-version-1-3-3-color);
-  font-family: var(--bb-derived-team-banner-version-1-3-3-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  padding: var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt);
+  border-radius: var(--bb-dimension-radius-12);
+  background: var(--bb-banner-bg);
+  color: var(--bb-banner-text);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
 /* Frame 1430102643 */
 .bb-team-banner__stack {
@@ -24,7 +24,7 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  gap: var(--bb-derived-team-banner-frame-1430102643-gap);
+  gap: var(--bb-dimension-space-16);
 }
 /* Frame 1430102640 */
 .bb-team-banner__top {
@@ -37,7 +37,7 @@
 .bb-team-banner__brand {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-team-banner-frame-1430102692-gap);
+  gap: var(--bb-space-inline-sm);
   min-width: 0;
 }
 /* brand logos — the instance's Brand property is bound to the brand variable,
@@ -50,7 +50,7 @@
 .bb-team-banner__product {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-team-banner-frame-1430102695-gap);
+  gap: var(--bb-space-inline-sm);
   min-width: 0;
 }
 /* Line 62 — a VERTICAL rule: the line is rotated 90° in Figma, so its snapshot
@@ -62,7 +62,7 @@
   box-sizing: content-box;
   width: var(--bb-derived-team-banner-line-62-height);
   height: var(--bb-derived-team-banner-line-62-width);
-  border-left: var(--bb-derived-team-banner-line-62-stroke-width) solid var(--bb-banner-powered-by);
+  border-left: var(--bb-border-width-default) solid var(--bb-banner-powered-by);
 }
 /* Frame 1430102687 — fixed 133.4 wide; its −3 item spacing pulls the tagline up
  * under the name (CSS gap cannot be negative, so it is a margin). */
@@ -75,19 +75,19 @@
 .bb-team-banner__product-text > * + * { margin-top: var(--bb-derived-team-banner-frame-1430102687-gap); }
 /* "Design Studio" — MuseoModerno ExtraBold, AUTO line height. */
 .bb-team-banner__product-name {
-  color: var(--bb-derived-team-banner-design-studio-color);
-  font-family: var(--bb-derived-team-banner-design-studio-font-family), var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-team-banner-design-studio-font-size);
-  font-weight: var(--bb-derived-team-banner-design-studio-font-weight);
+  color: var(--bb-banner-text);
+  font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-18-69);
+  font-weight: var(--bb-type-weight-800);
   line-height: normal;
   white-space: nowrap;
 }
 /* "Connecting Gap between design workflow" — IBM Plex Sans, 130% line height. */
 .bb-team-banner__product-tagline {
-  color: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-color);
-  font-family: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-font-size);
-  font-weight: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-font-weight);
+  color: var(--bb-banner-text);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-6-03);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-line-height);
   white-space: nowrap;
 }
@@ -97,16 +97,15 @@
   flex-direction: column;
   align-items: flex-end;
   flex: none;
-  gap: var(--bb-derived-team-banner-release-gap);
+  gap: var(--bb-dimension-space-2);
 }
-/* "Updated 28 Oct 2026" — Noto Sans Light (font/family-ui), 10/12, faded like the tagline. */
+/* "Updated 28 Oct 2026" — Museo Sans Light, 10/12. Museo Sans has no web font, so it falls back to the UI sans. */
 .bb-team-banner__updated {
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-team-banner-updated-font-size);
-  font-weight: var(--bb-derived-team-banner-version-1-3-3-font-weight); /* Light = 300, the version pill weight; Figma emits no weight token for "Light" */
-  line-height: var(--bb-derived-team-banner-updated-line-height);
-  color: var(--bb-derived-team-banner-updated-color);
-  opacity: var(--bb-derived-team-banner-updated-opacity);
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-type-weight-300);
+  line-height: var(--bb-type-line-12);
+  color: var(--bb-banner-text);
   white-space: nowrap;
 }
 /* Frame 1430102641 — version pill */
@@ -115,18 +114,18 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  gap: var(--bb-derived-team-banner-frame-1430102641-gap);
-  color: var(--bb-derived-team-banner-version-1-3-3-color);
-  font-family: var(--bb-derived-team-banner-version-1-3-3-font-family), var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-team-banner-version-1-3-3-font-size);
-  font-weight: var(--bb-derived-team-banner-version-1-3-3-font-weight);
+  gap: var(--bb-dimension-space-2);
+  color: var(--bb-banner-text);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-type-weight-300);
   line-height: var(--bb-type-line-12);
   white-space: nowrap;
 }
 .bb-team-banner__version-glyph.bb-icon {
   width: var(--bb-derived-team-banner-frame-width);
   height: var(--bb-derived-team-banner-frame-height);
-  color: var(--bb-derived-team-banner-vector-fill);
+  color: var(--bb-banner-text);
 }
 /* Frame 1430102657 — no item spacing; the tagline and the credit frame are both
  * FILL, so each takes half the row (288 of 576) and the tagline wraps to 3 lines. */
@@ -140,14 +139,14 @@
   flex: 1;
   min-width: 0;
   white-space: pre-line;
-  color: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-color);
-  font-family: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-family), var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-size);
-  font-weight: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-weight);
+  color: var(--bb-banner-text);
+  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-font-size-title);
+  font-weight: var(--bb-font-weight-regular);
   /* Figma AUTO line height for Archivo Black = size + 1 at 16 (17 per line, 51 for
    * three); the browser's "normal" is 24, so it is spelled out from tokens. */
   line-height: calc(var(--bb-type-size-16) + var(--bb-dimension-stroke-1));
-  opacity: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-opacity);
+  opacity: var(--bb-dimension-opacity-20);
 }
 /* Large tagline — the Settings Layout instances override the tagline to 24
  * (AUTO = 26 per line, 78 for three; banner 149 tall). */
@@ -174,11 +173,11 @@
   margin: 0;
   gap: var(--bb-derived-team-banner-frame-1430102644-gap);
   text-align: right;
-  color: var(--bb-derived-team-banner-built-with-care-by-the-hcl-design-system-team-color);
+  color: var(--bb-banner-text);
   font-size: var(--bb-derived-team-banner-built-with-care-by-the-hcl-design-system-team-font-size);
   /* The text's base style is Museo Sans 300, the same as the version pill (its runs are
    * mixed, so the credit itself generates no weight token). */
-  font-weight: var(--bb-derived-team-banner-version-1-3-3-font-weight);
+  font-weight: var(--bb-type-weight-300);
   line-height: var(--bb-type-line-12);
 }
 .bb-team-banner__credit strong { font-weight: var(--bb-type-weight-700); }

@@ -86,6 +86,21 @@
                   "additionalProperties": false
                 }
               },
+              "personas": {
+                "type": "object",
+                "description": "Which tabs each persona gets in this brand, by persona id. A persona not listed keeps personas.<id>.tabs; an empty list drops it from this brand. Edit in dev.html \u203a Plugin configuration.",
+                "propertyNames": {
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "additionalProperties": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  }
+                }
+              },
               "integrations": {
                 "type": "object",
                 "description": "Settings sections this brand sets for everyone; the plugin shows these fields locked. API keys and tokens are not allowed here: each person enters them in the plugin.",
@@ -184,6 +199,11 @@
         "properties": {
           "label": {
             "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Off keeps the persona in the file but out of the picker and Settings."
           },
           "tabs": {
             "type": "array",

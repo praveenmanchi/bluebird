@@ -1,0 +1,118 @@
+/* Audit tab — Figma "Audit · 600" (page "Audit"). Same frame as Variable search: a
+ * bordered toolbar, then a scrolling content column. */
+.bb-audit {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--bb-card-variable-meta-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-card-variable-title-fg);
+}
+
+.bb-audit__toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inline-md) var(--bb-space-inset-lg-alt);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-card-variable-divider-color);
+  container: audit-toolbar / inline-size;
+}
+/* S / M windows: the source is in the footer anyway, and the filter field needs the room. */
+@container audit-toolbar (max-width: 520px) { /* allow-raw: S/M-window breakpoint (480 wide), not a Figma value */
+  .bb-filter-dropdown.bb-audit__source { display: none; }
+}
+.bb-audit__filter { position: relative; flex: 0 1 auto; min-width: 0; max-width: 30%; }
+.bb-audit__filter .bb-page-filter { width: auto; max-width: 100%; }
+.bb-audit__filter .bb-page-filter__container { width: auto; gap: var(--bb-space-inline-sm); }
+.bb-filter-dropdown.bb-audit__source { flex: 0 1 auto; min-width: 0; max-width: 30%; }
+.bb-search-bar.bb-audit__search { flex: 1 1 0; min-width: 0; max-width: none; }
+.bb-dropdown-menu.bb-audit__menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + var(--bb-space-inline-xs));
+  left: 0;
+  width: max-content;
+  min-width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.bb-audit__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  min-height: 0;
+  padding: var(--bb-card-variable-padding);
+  overflow-y: auto;
+}
+.bb-audit__content > * { flex: none; }
+.bb-audit__content > .bb-variable-card,
+.bb-audit__content > .bb-variable-card-expanded { width: 100%; }
+.bb-empty-state.bb-audit__empty { flex: 1 1 auto; justify-content: center; }
+.bb-empty-state.bb-audit__block { padding-block: var(--bb-space-stack-md); }
+.bb-audit__heading { width: 100%; }
+.bb-audit__counted-group { display: flex; flex-direction: column; gap: var(--bb-card-variable-gap-row); }
+.bb-audit__actions { display: flex; justify-content: flex-end; }
+
+.bb-audit__counted { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); margin: 0; }
+.bb-audit__counted dt,
+.bb-audit__title {
+  font-size: var(--bb-card-variable-title-font-size);
+  font-weight: var(--bb-card-variable-title-font-weight);
+  line-height: var(--bb-card-variable-title-line-height);
+}
+.bb-audit__counted dd,
+.bb-audit__status {
+  margin: 0;
+  color: var(--bb-card-variable-meta-fg);
+  font-size: var(--bb-card-variable-meta-font-size);
+  line-height: var(--bb-card-variable-meta-line-height);
+}
+
+.bb-audit__progress { display: flex; flex-direction: column; gap: var(--bb-card-variable-gap-row); }
+.bb-audit__progress > .bb-progress-bar { width: 100%; }
+.bb-audit__segments { align-self: flex-start; max-width: 100%; }
+
+.bb-audit__summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-card-variable-gap-row);
+  padding: var(--bb-space-stack-md) var(--bb-card-variable-padding);
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  border-radius: var(--bb-card-variable-radius);
+}
+.bb-audit__scores { display: flex; align-items: center; gap: var(--bb-space-stack-md); min-width: 0; }
+.bb-audit__scores > .bb-metric-cell { flex: none; }
+.bb-score-row.bb-audit__score { flex: 1 1 auto; min-width: 0; }
+.bb-audit__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--bb-size-control-height), 1fr));
+  gap: var(--bb-card-variable-gap-row);
+}
+.bb-audit__tiles > .bb-kpi-tile { width: auto; max-width: none; min-width: 0; }
+
+/* Level Row is sized for pass counts; organisation-wide uses run to five digits. */
+.bb-level-row.bb-audit__usage { grid-template-columns: minmax(0, var(--bb-derived-level-row-name-width)) calc(var(--bb-a11y-size-icon-box) * 4) minmax(0, 1fr) calc(var(--bb-a11y-size-icon-box) * 1.5); }
+
+.bb-audit__unused {
+  margin: 0;
+  padding: var(--bb-space-inline-md) var(--bb-card-variable-padding);
+  border: var(--bb-border-width-default) solid var(--bb-card-variable-border-default);
+  border-radius: var(--bb-card-variable-radius);
+  font-size: var(--bb-card-variable-title-font-size);
+  line-height: var(--bb-card-variable-title-line-height);
+}
+
+.bb-notice.bb-audit__toast {
+  position: absolute;
+  z-index: 3;
+  right: var(--bb-space-inset-lg-alt);
+  bottom: var(--bb-space-inset-lg-alt);
+  left: var(--bb-space-inset-lg-alt);
+  width: auto;
+  box-sizing: border-box;
+}

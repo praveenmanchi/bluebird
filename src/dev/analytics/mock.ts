@@ -53,8 +53,8 @@ const DESIGNERS = [
   'Gustav Lind', 'Hana Sato', 'Ivan Petrov', 'Jade Okafor', 'Kai Weber', 'Lena Novak',
   'Mateo Silva', 'Nora Berg', 'Omar Aziz', 'Priya Nair',
 ]
-/** Relative weight of each tab in sessions: Accessibility and UX AI lead, Design tokens trails. */
-const FEATURE_WEIGHT: Record<string, number> = { a11y: 1, uxai: 0.86, jira: 0.71, agents: 0.52, mcp: 0.44, publish: 0.31, tokens: 0.22 }
+/** Relative weight of each tab in sessions: Accessibility and UX AI lead, Audit trails. */
+const FEATURE_WEIGHT: Record<string, number> = { a11y: 1, uxai: 0.86, jira: 0.71, agents: 0.52, mcp: 0.44, publish: 0.31, audit: 0.22 }
 const TICKET_TITLES = [
   'Checkout: contrast fixes on promo banner', 'Nav drawer focus order', 'Tokenise card elevation', 'Search results empty state',
   'Product tile hover spec', 'Dark mode for settings', 'Form error messaging pass', 'Icon set audit (24px)',

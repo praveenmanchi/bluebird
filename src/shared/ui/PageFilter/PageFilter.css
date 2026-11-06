@@ -9,8 +9,8 @@
   box-sizing: border-box;
   width: var(--bb-derived-page-filter-button-width);
   height: var(--bb-derived-page-filter-button-height);
-  padding-inline: var(--bb-derived-page-filter-button-padding-left) var(--bb-derived-page-filter-button-padding-right);
-  border: var(--bb-derived-page-filter-button-stroke-width) solid var(--bb-chip-filter-border-default);
+  padding-inline: var(--bb-dimension-space-8) var(--bb-dimension-space-8);
+  border: var(--bb-input-border-width) solid var(--bb-chip-filter-border-default);
   border-radius: var(--bb-chip-filter-radius);
   background: var(--bb-surface-transparent);
   color: var(--bb-chip-filter-fg-default);
@@ -45,8 +45,8 @@
   flex: 1;
   min-width: 0;
   width: var(--bb-derived-page-filter-container-width);
-  gap: var(--bb-derived-page-filter-container-pages-gap);
-  padding-inline: var(--bb-derived-page-filter-container-padding-left) var(--bb-derived-page-filter-container-padding-right);
+  gap: var(--bb-dimension-space-28);
+  padding-inline: var(--bb-space-inset-sm) var(--bb-space-inset-sm);
 }
 .bb-page-filter__label {
   flex: 1;
@@ -74,5 +74,5 @@
 }
 .bb-page-filter:disabled {
   cursor: not-allowed;
-  opacity: var(--bb-derived-button-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-55);
 }

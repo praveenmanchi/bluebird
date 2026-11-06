@@ -10,6 +10,7 @@ export const figma = {
     Kind: 'kind (Color / Number)',
   },
   figmaGaps: {
+    'surface/accent': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.', 'surface/accent-strong': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.',
     'bridge/color/primary/400-brand': sample,
     'bridge/color/primary/600': sample,
   },

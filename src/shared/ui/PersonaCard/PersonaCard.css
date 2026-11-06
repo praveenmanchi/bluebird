@@ -11,8 +11,8 @@
   box-sizing: border-box;
   width: var(--bb-derived-persona-card-root-width);
   max-width: 100%;
-  gap: var(--bb-derived-persona-card-root-gap);
-  padding: var(--bb-derived-persona-card-root-padding-top) var(--bb-derived-persona-card-root-padding-right) var(--bb-derived-persona-card-root-padding-bottom) var(--bb-derived-persona-card-root-padding-left);
+  gap: var(--bb-space-stack-xs);
+  padding: var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt);
   color: var(--bb-text-primary);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
 }
@@ -20,9 +20,9 @@
 .bb-persona-card__body {
   display: flex;
   align-items: flex-start;
-  gap: var(--bb-derived-persona-card-frame-1430102662-gap);
-  padding-top: var(--bb-derived-persona-card-frame-1430102662-padding-top);
-  padding-bottom: var(--bb-derived-persona-card-frame-1430102662-padding-bottom);
+  gap: var(--bb-dimension-space-18);
+  padding-top: var(--bb-space-inset-lg-alt);
+  padding-bottom: var(--bb-space-inset-lg-alt);
 }
 /* Delivery boy (Userpic 05) */
 .bb-persona-card__image {
@@ -39,43 +39,42 @@
   justify-content: center;
   flex: 1;
   min-width: 0;
-  gap: var(--bb-derived-persona-card-frame-1430102661-gap);
+  gap: var(--bb-dimension-space-16);
 }
 /* Frame 1430102660 */
 .bb-persona-card__heading {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-derived-persona-card-frame-1430102660-gap);
+  gap: var(--bb-dimension-space-9);
 }
 /* "Design System" */
 .bb-persona-card__name {
   margin: 0;
   color: var(--bb-text-primary);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-persona-card-design-system-font-size);
+  font-size: var(--bb-font-size-title);
   font-weight: var(--bb-font-weight-medium); /* Figma style Medium; weight is not variable-bound */
-  line-height: var(--bb-derived-persona-card-design-system-line-height);
+  line-height: var(--bb-font-line-label);
 }
 /* "Choose your role to customize the toolset…" (10px, in the heading stack) */
 .bb-persona-card__description {
   margin: 0;
   color: var(--bb-text-secondary);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  /* The footnote layer carries the same name (its copy), so this layer's size is the position-indexed `--1`. */
-  font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-font-size);
+  font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-font-weight-regular);
-  line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design--1-line-height);
+  line-height: var(--bb-type-line-12);
 }
 /* Frame 1430102659 — the compact tool tabs */
 .bb-persona-card__tabs {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--bb-derived-persona-card-frame-1430102659-gap);
+  gap: var(--bb-dimension-space-10);
 }
 .bb-persona-card__tabs .bb-tab[data-variant="variant3"] {
-  border-width: var(--bb-derived-persona-card-tab-stroke-width);
-  border-radius: var(--bb-derived-persona-card-tab-radius);
+  border-width: var(--bb-border-width-default);
+  border-radius: var(--bb-radius-md);
 }
 /* Frame 1430102663 — footer */
 .bb-persona-card__footer {
@@ -91,9 +90,9 @@
   margin: 0;
   color: var(--bb-text-secondary);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-font-size);
+  font-size: var(--bb-font-size-body);
   font-weight: var(--bb-font-weight-regular);
-  line-height: var(--bb-derived-persona-card-choose-your-role-to-customize-the-toolset-design-frame-1430102664-line-height);
+  line-height: var(--bb-type-line-17-6);
 }
 /* variable button — the composed primary Button; radius is button/primary/radius. */
 .bb-persona-card__action.bb-button {

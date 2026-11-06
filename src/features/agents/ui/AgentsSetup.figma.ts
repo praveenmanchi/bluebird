@@ -1,5 +1,7 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 // Figma ↔ code contract for the Agent setup screen (frame, not a component set).
 import { ROOT_HEIGHT, VOICE_BAR, composed, measured, ownedBy, segmentTabs } from './figma-gaps'
+import { tabSubMenuDerived, tabSubMenuGaps } from '../../../shared/ui/SegmentedControl/gaps'
 
 export const figma = {
   setId: '40000298:5805',
@@ -12,11 +14,14 @@ export const figma = {
     Run: 'VoiceBar Idle (onMic) + Button primary Large (onRun)',
   },
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'button/primary/border-width'),
+    ...tabSubMenuGaps(),
     ...composed('Button', ['button/primary/bg/default', 'button/primary/border/default', 'button/primary/radius', 'button/primary/gap', 'button/primary/padding-x-lg', 'button/primary/height-lg']),
     ...composed('Checkbox', ['checkbox/gap']),
     ...composed('VoiceBar', VOICE_BAR),
   },
   derivedGaps: {
+    ...tabSubMenuDerived('--bb-derived-agents-setup-tab-sub-menu', ['height', 'stroke-width', 'agents-body-width', '-1-width']),
     '--bb-derived-agents-setup-root-height': ROOT_HEIGHT,
     ...segmentTabs('setup', ['selection', 'current-frame', 'section', 'whole-page'], ['selection']),
     ...segmentTabs('setup', ['tab-selecters'], ['tab-selecters'], ['tab-selecters--1', 'tab-selecters--2', 'tab-selecters-agents-body']),

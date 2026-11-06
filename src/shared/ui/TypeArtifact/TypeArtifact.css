@@ -12,7 +12,7 @@
   padding: var(--bb-uxai-space-row-x);
   border-radius: var(--bb-uxai-radius-panel);
   background: var(--bb-uxai-surface-panel);
-  border: var(--bb-derived-type-artifact-root-stroke-width) solid var(--bb-uxai-surface-panel-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-surface-panel-border);
 }
 .bb-type-artifact > .bb-type-artifact__header,
 .bb-type-artifact > .bb-type-artifact__specimen { width: auto; }

@@ -1,3 +1,4 @@
+import { scaleGaps } from '../shared/brand/scaleGaps'
 /** Figma ↔ code contract for the Settings screen (frame, not a component set). */
 export const figma = {
   setId: '40000350:19914',
@@ -9,8 +10,9 @@ export const figma = {
     '--bb-derived-settings-screen-settings-height': 'The settings button grew 33px → 40px in Figma on 2026-09-23; the shell renders the composed <SettingsButton>, which already sizes itself from --bb-derived-settings-button-root-height (40px). Reading it here would pin the row twice.',
   },
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'dimension/space/10', 'space/inset-sm', 'space/inset-xs', 'space/inset-lg-alt', 'dimension/space/6', 'dimension/space/8'),
     'footer/bg/default': 'consumed by the shell Footer', 'footer/border/top': 'consumed by the shell Footer', 'footer/padding-x': 'consumed by the shell Footer', 'footer/padding-y': 'consumed by the shell Footer',
-    'Banner/bg': 'consumed by the shell Banner', 'Boader': 'consumed by the shell tab row (shell.css)',
+    'Banner/bg': 'consumed by the shell Banner', 'Border': 'consumed by the shell tab row (shell.css)',
     'tab/indicator/color': 'consumed by the composed SettingsButton (Variant2 stroke)',
     'tab/gap': 'consumed by the composed Tab', 'tab/padding-x': 'consumed by the composed Tab', 'tab/padding-y': 'consumed by the composed Tab', 'tab/icon/default': 'consumed by the composed Tab',
     'button/secondary/padding-x': 'consumed by the composed ButtonGroup (its gap)', 'toggle/gap': 'consumed by the composed Toggle',

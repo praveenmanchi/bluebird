@@ -70,29 +70,56 @@
       }
     }
   },
-  "activePersona": "product-designer",
+  "activePersona": "ui-designer",
   "personas": {
-    "product-designer": {
-      "label": "Product Designer",
+    "design-system": {
+      "label": "Design System",
       "tabs": [
-        "a11y",
+        "audit",
         "varsearch",
-        "jira",
-        "mcp",
+        "varmapper",
         "publish",
+        "a11y",
         "uxai",
         "agents"
       ]
     },
-    "design-system": {
-      "label": "Design System",
+    "ui-designer": {
+      "label": "UI/UX Designer",
       "tabs": [
-        "tokens",
-        "varsearch",
-        "publish",
         "a11y",
+        "varsearch",
+        "varmapper",
+        "jira",
+        "mcp",
         "uxai",
         "agents"
+      ]
+    },
+    "ux-designer": {
+      "label": "UX Designer",
+      "enabled": false,
+      "tabs": [
+        "a11y",
+        "jira",
+        "uxai",
+        "agents"
+      ]
+    },
+    "content": {
+      "label": "Content",
+      "tabs": [
+        "agents",
+        "uxai",
+        "jira"
+      ]
+    },
+    "developer": {
+      "label": "Developer",
+      "tabs": [
+        "mcp",
+        "varsearch",
+        "jira"
       ]
     }
   },
@@ -102,15 +129,20 @@
       "label": "Accessibility",
       "icon": "accessibility"
     },
-    "tokens": {
+    "audit": {
       "enabled": true,
-      "label": "Design tokens",
-      "icon": "variables"
+      "label": "Audit",
+      "icon": "component-audit"
     },
     "varsearch": {
       "enabled": true,
       "label": "Variable search",
       "icon": "research"
+    },
+    "varmapper": {
+      "enabled": true,
+      "label": "Variable mapper",
+      "icon": "variable-mapper"
     },
     "jira": {
       "enabled": true,

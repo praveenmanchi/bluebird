@@ -18,15 +18,15 @@
   align-self: stretch;
   justify-content: center;
   align-items: center;
-  gap: var(--bb-derived-vision-sim-tile-sample-gap);
-  padding: var(--bb-derived-vision-sim-tile-sample-padding-top) 0 var(--bb-derived-vision-sim-tile-sample-padding-bottom);
-  border-radius: var(--bb-derived-vision-sim-tile-sample-radius);
+  gap: var(--bb-space-inline-sm);
+  padding: var(--bb-space-inset-lg-alt) 0 var(--bb-space-inset-lg-alt);
+  border-radius: var(--bb-radius-md);
 }
 .bb-vision-sim-tile__pill {
-  padding: var(--bb-derived-vision-sim-tile-pill-error-padding-top) var(--bb-derived-vision-sim-tile-pill-error-padding-right) var(--bb-derived-vision-sim-tile-pill-error-padding-bottom) var(--bb-derived-vision-sim-tile-pill-error-padding-left);
-  border-radius: var(--bb-derived-vision-sim-tile-pill-error-radius);
+  padding: var(--bb-dimension-space-3) var(--bb-dimension-space-8) var(--bb-dimension-space-3) var(--bb-dimension-space-8);
+  border-radius: var(--bb-dimension-radius-10);
   color: var(--bb-derived-vision-sim-tile-label-color);
-  font-weight: var(--bb-derived-vision-sim-tile-label-font-weight);
+  font-weight: var(--bb-font-weight-strong);
 }
 .bb-vision-sim-tile__name {
   font-weight: var(--bb-a11y-font-weight-strong);

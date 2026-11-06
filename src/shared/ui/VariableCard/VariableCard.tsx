@@ -3,10 +3,10 @@ import { ChangeStatus, type ChangeStatusKind } from '../ChangeStatus/ChangeStatu
 import { Icon } from '../Icon/Icon'
 import './VariableCard.css'
 
-export type VariableCardKind = 'variable' | 'text-style'
+export type VariableCardKind = 'variable' | 'text-style' | 'component'
 
 export interface VariableCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'name' | 'onToggle'> {
-  /** Figma "Property 1": variable (Variables glyph) / text style (text glyph). */
+  /** Figma "Property 1": variable (Variables glyph) / text style (text glyph). Component is the Component audit screens' icon override. */
   kind?: VariableCardKind
   /** The variable / style name (Figma text "Color/Border/Black"). */
   name: ComponentChildren
@@ -31,7 +31,7 @@ export interface VariableCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>,
   trailing?: ComponentChildren
 }
 
-const GLYPH: Record<VariableCardKind, 'ui-variable-color' | 'text'> = { variable: 'ui-variable-color', 'text-style': 'text' }
+const GLYPH: Record<VariableCardKind, 'ui-variable-color' | 'text' | 'component'> = { variable: 'ui-variable-color', 'text-style': 'text', component: 'component' }
 
 /**
  * Figma "Variable search card" (83:940): a collapsed search-result row —

@@ -8,8 +8,8 @@
   flex-direction: column;
   box-sizing: border-box;
   width: 100%;
-  gap: var(--bb-derived-banner-root-gap);
-  padding: var(--bb-derived-banner-root-padding-top) var(--bb-derived-banner-root-padding-right) var(--bb-derived-banner-root-padding-bottom) var(--bb-derived-banner-root-padding-left);
+  gap: var(--bb-dimension-space-10);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inset-sm) var(--bb-space-inset-xs) var(--bb-space-inset-sm);
   background: var(--bb-banner-bg);
   color: var(--bb-banner-text);
   overflow: hidden;
@@ -18,18 +18,18 @@
   display: flex;
   align-items: center;
   gap: var(--bb-derived-banner-frame-1430102689-gap);
-  padding-block: var(--bb-derived-banner-frame-1430102689-padding-top) var(--bb-derived-banner-frame-1430102689-padding-bottom);
+  padding-block: var(--bb-dimension-space-8) var(--bb-dimension-space-8);
 }
 .bb-banner__group {
   display: flex;
   align-items: center;
-  gap: var(--bb-derived-banner-frame-1430102692-gap);
+  gap: var(--bb-space-inline-sm);
   min-width: 0;
 }
 /* Figma "Line 62": a 30px line rotated -90°, stroked with Banner/powered by. */
 .bb-banner__rule {
   flex: none;
-  width: var(--bb-derived-banner-line-62-stroke-width);
+  width: var(--bb-border-width-default);
   height: var(--bb-derived-banner-line-62-width);
   background: var(--bb-banner-powered-by);
 }
@@ -41,17 +41,17 @@
 }
 .bb-banner__stack > * + * { margin-top: var(--bb-derived-banner-frame-1430102687-gap); }
 .bb-banner__title {
-  font-family: var(--bb-derived-banner-design-studio-font-family), var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-banner-design-studio-font-size);
-  font-weight: var(--bb-derived-banner-design-studio-font-weight);
+  font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-18-69);
+  font-weight: var(--bb-type-weight-800);
   line-height: normal;
   color: var(--bb-banner-text);
   white-space: nowrap;
 }
 .bb-banner__tagline {
-  font-family: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-size);
-  font-weight: var(--bb-derived-banner-connecting-gap-between-design-workflow-font-weight);
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-6-03);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-derived-banner-connecting-gap-between-design-workflow-line-height);
   color: var(--bb-banner-text);
   white-space: nowrap;
@@ -60,20 +60,20 @@
 .bb-banner__powered {
   position: absolute;
   right: 0;
-  bottom: var(--bb-derived-banner-root-padding-bottom);
+  bottom: var(--bb-space-inset-xs);
   display: flex;
   flex-direction: column;
   gap: var(--bb-derived-banner-frame-1430102690-gap);
-  padding: var(--bb-derived-banner-frame-1430102690-padding-top) var(--bb-derived-banner-frame-1430102690-padding-right) var(--bb-derived-banner-frame-1430102690-padding-bottom) var(--bb-derived-banner-frame-1430102690-padding-left);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inset-sm) var(--bb-space-inset-xs) var(--bb-space-inset-sm);
 }
 .bb-banner__powered-inner {
   display: flex;
   flex-direction: column;
 }
 .bb-banner__powered-label {
-  font-family: var(--bb-derived-banner-powered-by-font-family), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-derived-banner-powered-by-font-size);
-  font-weight: var(--bb-derived-banner-powered-by-font-weight);
+  font-family: var(--bb-font-family-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-4);
+  font-weight: var(--bb-font-weight-regular);
   line-height: normal;
   /* Bound to Banner/Text since 2026-10-27 (was raw white); keeps "Powered By" legible on any brand's banner colour. */
   color: var(--bb-banner-text);

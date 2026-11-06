@@ -41,7 +41,7 @@
   flex: none;
   width: var(--bb-derived-publish-step-queued-ring-width);
   height: var(--bb-derived-publish-step-queued-ring-height);
-  border: var(--bb-derived-publish-step-queued-ring-stroke-width) solid var(--bb-publish-step-queued-border);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-step-queued-border);
   border-radius: var(--bb-publish-radius-pill);
 }
 .bb-publish-step__text {

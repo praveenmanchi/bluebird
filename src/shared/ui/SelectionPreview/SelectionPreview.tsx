@@ -34,8 +34,8 @@ const DEFAULT_STATS: readonly SelectionStat[] = [
  *  (selection-preview ticket-row stroke ÷ the Ticket Row's own stroke), so read it from there. */
 function figmaScale(el: HTMLElement): number {
   const style = getComputedStyle(el)
-  const scaled = parseFloat(style.getPropertyValue('--bb-derived-selection-preview-ticket-row-stroke-width'))
-  const natural = parseFloat(style.getPropertyValue('--bb-derived-ticket-row-root-stroke-width'))
+  const scaled = parseFloat(style.getPropertyValue('--bb-jira-border-width'))
+  const natural = parseFloat(style.getPropertyValue('--bb-jira-border-width'))
   return scaled > 0 && natural > 0 ? scaled / natural : 1
 }
 

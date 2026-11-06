@@ -1,3 +1,4 @@
+import { scaleGaps } from '../shared/brand/scaleGaps'
 const chrome = 'Page chrome, card and heading are shared with the Login Page and drawn once by LoginScreen.css (bb-login, bb-login__card, bb-login__heading).'
 const badge = 'Bound on the "Private badge" Meta Badge instance; MetaBadge.css consumes it.'
 const provider = 'Bound on the provider instances; the composed SsoProviderButton (SsoProviderButton.css) consumes it.'
@@ -23,6 +24,7 @@ export const figma = {
     'Login footer': 'LoginFooter view="sso" → back to the access-code card',
   },
   figmaGaps: {
+    ...scaleGaps('border-width/default', 'input/border-width'),
     ...Object.fromEntries(chromeTokens.map((t) => [t, chrome])),
     'border/accent': badge, 'radius/pill': badge, 'space/inline-xs': badge, 'space/inline-sm': badge, 'space/inset-xs': badge,
     'login/provider/bg/default': provider, 'login/provider/border/default': provider, 'login/provider/radius': provider, 'login/provider/height': provider,
@@ -31,14 +33,9 @@ export const figma = {
     '--bb-derived-login-sso-root-width': mock, '--bb-derived-login-sso-root-height': mock,
     '--bb-derived-login-sso-brand-logos-width': `${chrome} Same 126×37.2 as --bb-derived-login-screen-brand-logos-*.`,
     '--bb-derived-login-sso-brand-logos-height': `${chrome} Same 126×37.2 as --bb-derived-login-screen-brand-logos-*.`,
-    '--bb-derived-login-sso-card-stroke-width': `${chrome} Same 1px as --bb-derived-login-screen-card-stroke-width.`,
     '--bb-derived-login-sso-private-badge-width': 'Hug size of the Meta Badge instance.',
     '--bb-derived-login-sso-private-badge-height': 'Hug size of the Meta Badge instance.',
-    '--bb-derived-login-sso-private-badge-stroke-width': 'MetaBadge.css draws its stroke with border/width/default (1).',
     '--bb-derived-login-sso-microsoft-provider-width': fill, '--bb-derived-login-sso-okta-provider-width': fill, '--bb-derived-login-sso-google-provider-width': fill,
-    '--bb-derived-login-sso-microsoft-provider-stroke-width': 'SsoProviderButton.css draws it with input/border-width (1).',
-    '--bb-derived-login-sso-okta-provider-stroke-width': 'SsoProviderButton.css draws it with input/border-width (1).',
-    '--bb-derived-login-sso-google-provider-stroke-width': 'SsoProviderButton.css draws it with input/border-width (1).',
     '--bb-derived-login-sso-login-footer-width': fill, '--bb-derived-login-sso-login-footer-height': fill,
   },
   codeOnly: {

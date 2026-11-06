@@ -1,8 +1,9 @@
-import { useState } from 'preact/hooks'
-import { ButtonGroup, Notice, SectionHeader } from '@shared/ui'
+import { useId, useState } from 'preact/hooks'
+import { ButtonGroup, Icon, MetaBadge, Notice, SectionHeader, Toggle, type MetaBadgeTone } from '@shared/ui'
 import { normalizeIntegration, validateIntegration, type ConnectionTestResult, type FieldErrors, type IntegrationId, type IntegrationValues } from '@shared/integrations'
 import { IntegrationColumn, IntegrationField, type FieldValues } from './IntegrationField'
 import { sectionFieldKeys, type ColumnSpec, type FieldSpec, type SectionSpec } from './sections'
+import { sectionStatus, type SectionStatus } from './status'
 
 export type SaveIntegration = (section: IntegrationId, values: IntegrationValues) => Promise<IntegrationValues>
 export type TestIntegration = (section: IntegrationId, values: IntegrationValues) => Promise<ConnectionTestResult>
@@ -32,11 +33,21 @@ type Status =
 
 export const TEST_UNAVAILABLE = 'Connection tests aren’t wired up yet, so nothing was sent. Save stores these values on this device for your Figma account only.'
 
-/** One bordered settings section: header (logo, title, description, optional switch), fields, Test / Save actions. */
+const STATUS: Readonly<Record<SectionStatus, { label: string; tone: MetaBadgeTone }>> = {
+  configured: { label: 'Configured', tone: 'success' },
+  missing: { label: 'Not configured', tone: 'warning' },
+  off: { label: 'Off', tone: 'neutral' },
+}
+
+/** One bordered settings section: a header row (logo, title, description, status, arrow) that opens the fields and Test / Save actions. */
 export function IntegrationSection({ spec, initial, onSave, onTest, locked = [], lockedBy = 'your brand' }: IntegrationSectionProps) {
   const [values, setValues] = useState<FieldValues>(initial as FieldValues)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  const [open, setOpen] = useState(false)
+  /** What is stored, which is what the header's status reports; typing doesn't change it until Save. */
+  const [saved, setSaved] = useState<IntegrationValues>(initial)
+  const bodyId = useId()
   const saving = status.kind === 'saving'
   const testing = status.kind === 'testing'
 
@@ -71,7 +82,9 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
     if (Object.keys(found).length) { setStatus({ kind: 'invalid' }); return }
     setStatus({ kind: 'saving' })
     try {
-      setValues(await onSave(spec.id, next) as FieldValues)
+      const stored = await onSave(spec.id, next)
+      setValues(stored as FieldValues)
+      setSaved(stored)
       setStatus({ kind: 'saved' })
     } catch (error: unknown) {
       setStatus({ kind: 'failed', message: error instanceof Error ? error.message : 'Saving failed. Try again.' })
@@ -82,36 +95,54 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
   // Nothing left for the person to fill (a managed section without keys): no Save / Test to offer.
   const editable = sectionFieldKeys(spec).some((key) => !lockedKeys.has(key))
   const ctx = { values, errors, disabled: saving || testing, locked: lockedKeys, onChange }
+  const badge = STATUS[sectionStatus(spec.id, saved)]
   return (
     <section class="bb-integrations__section" aria-label={spec.title} data-section={spec.id} data-columns={spec.columns}>
       <SectionHeader
+        class="bb-integrations__header"
         as="h3"
         title={spec.title}
         description={spec.description}
         logo={spec.logo}
-        toggle={spec.toggleKey !== undefined}
-        checked={spec.toggleKey ? values[spec.toggleKey] === true : false}
-        toggleDisabled={saving || testing || (spec.toggleKey !== undefined && lockedKeys.has(spec.toggleKey))}
-        onToggle={spec.toggleKey ? (checked) => onChange(spec.toggleKey!, checked) : undefined}
+        onClick={() => setOpen((o) => !o)}
+        trailing={
+          <div class="bb-integrations__trailing">
+            <MetaBadge tone={badge.tone}>{badge.label}</MetaBadge>
+            {/* The switch only takes effect on Save, so it shows with the Save button. */}
+            {open && spec.toggleKey && (
+              <Toggle class="bb-section-header__toggle" label={spec.title} checked={values[spec.toggleKey] === true}
+                disabled={saving || testing || lockedKeys.has(spec.toggleKey)} onChange={(checked) => onChange(spec.toggleKey!, checked)}
+                onClick={(event) => event.stopPropagation()} />
+            )}
+            {/* The click reaches the header above, so the row and the arrow share one handler. */}
+            <button type="button" class="bb-integrations__arrow" aria-expanded={open} aria-controls={bodyId} aria-label={`${open ? 'Hide' : 'Show'} ${spec.title} settings`}>
+              <Icon name={open ? 'dropdown-up' : 'dropdown-down'} />
+            </button>
+          </div>
+        }
       />
-      {lockedKeys.size > 0 && (
-        <Notice class="bb-integrations__managed" tone="info" title={`Set by ${lockedBy}`}>
-          {editable ? 'Your design-system team set the locked fields for everyone. Add your own keys below and save.' : 'Your design-system team set this section for everyone. Nothing to fill in.'}
-        </Notice>
+      {open && (
+        <div id={bodyId} class="bb-integrations__body">
+          {lockedKeys.size > 0 && (
+            <Notice class="bb-integrations__managed" tone="info" title={`Set by ${lockedBy}`}>
+              {editable ? 'Your design-system team set the locked fields for everyone. Add your own keys below and save.' : 'Your design-system team set this section for everyone. Nothing to fill in.'}
+            </Notice>
+          )}
+          {spec.blocks.map((block, i) => Array.isArray(block)
+            ? <div key={i} class="bb-integrations__row">{(block as readonly ColumnSpec[]).map((column, j) => <IntegrationColumn key={j} spec={column} ctx={ctx} />)}</div>
+            : <IntegrationField key={i} spec={block as FieldSpec} ctx={ctx} />)}
+          {editable && <ButtonGroup
+            class="bb-integrations__actions"
+            onSecondary={() => { void test() }}
+            onPrimary={() => { void save() }}
+            primaryLoading={saving}
+            primaryDisabled={testing}
+            secondaryLoading={testing}
+            secondaryDisabled={saving}
+          />}
+          <div class="bb-integrations__status" aria-live="polite"><StatusNotice status={status} title={spec.title} /></div>
+        </div>
       )}
-      {spec.blocks.map((block, i) => Array.isArray(block)
-        ? <div key={i} class="bb-integrations__row">{(block as readonly ColumnSpec[]).map((column, j) => <IntegrationColumn key={j} spec={column} ctx={ctx} />)}</div>
-        : <IntegrationField key={i} spec={block as FieldSpec} ctx={ctx} />)}
-      {editable && <ButtonGroup
-        class="bb-integrations__actions"
-        onSecondary={() => { void test() }}
-        onPrimary={() => { void save() }}
-        primaryLoading={saving}
-        primaryDisabled={testing}
-        secondaryLoading={testing}
-        secondaryDisabled={saving}
-      />}
-      <div class="bb-integrations__status" aria-live="polite"><StatusNotice status={status} title={spec.title} /></div>
     </section>
   )
 }

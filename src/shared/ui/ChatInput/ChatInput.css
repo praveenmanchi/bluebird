@@ -22,22 +22,22 @@
   width: var(--bb-derived-chat-input-root-width);
   max-width: 100%;
   padding: var(--bb-uxai-space-row-y) var(--bb-uxai-space-row-x);
-  border: var(--bb-derived-chat-input-root-state-idle-stroke-width) solid var(--bb-uxai-chip-border);
+  border: var(--bb-uxai-border-width) solid var(--bb-uxai-chip-border);
   border-radius: var(--bb-uxai-radius-control);
   background: var(--bb-uxai-surface-field);
 }
-.bb-chat-input[data-state='sources'] { border-width: var(--bb-derived-chat-input-root-state-source-expend-stroke-width); }
+.bb-chat-input[data-state='sources'] { border-width: var(--bb-uxai-border-width); }
 .bb-chat-input[data-state='active'],
 .bb-chat-input[data-state='idle']:focus-within,
 .bb-chat-input[data-state='sources']:focus-within,
 .bb-chat-input[data-state='generating'] {
-  border: var(--bb-derived-chat-input-root-state-active-stroke-width) solid transparent;
+  border: var(--bb-uxai-beam-width) solid transparent;
   background:
-    linear-gradient(var(--bb-uxai-surface-field), var(--bb-uxai-surface-field)) padding-box,
+    linear-gradient(var(--bb-uxai-surface-field)) padding-box,
     conic-gradient(from var(--chat-input-beam-angle), var(--bb-uxai-beam-1), var(--bb-uxai-beam-2), var(--bb-uxai-beam-3), var(--bb-uxai-beam-4), var(--bb-uxai-beam-5), var(--bb-uxai-beam-1)) border-box; /* allow-raw: animated angle (motion) */
   box-shadow: 0 0 calc(var(--bb-uxai-beam-width) * 5) var(--bb-uxai-beam-2);
 }
-.bb-chat-input[data-state='generating'] { border-width: var(--bb-derived-chat-input-root-state-generating-stroke-width); }
+.bb-chat-input[data-state='generating'] { border-width: var(--bb-uxai-beam-width); }
 
 /* Context — the Selection / Sources chips (Show context). */
 .bb-chat-input__context {

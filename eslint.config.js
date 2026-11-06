@@ -23,6 +23,18 @@ export default tseslint.config(
     rules: { ...figmaPlugin.configs.recommended.rules },
   },
   {
+    // This rule needs type information, which this config doesn't load, and crashes on any
+    // setBoundVariable call. The call here passes a Variable, the form the rule asks for.
+    files: ['src/features/varmapper/sandbox/apply.ts'],
+    rules: { '@figma/figma-plugins/ban-deprecated-id-params': 'off' },
+  },
+  {
+    // Same missing type information, on any find call. This one searches a single main
+    // component, not a page, so the advice about loading pages doesn't apply.
+    files: ['src/features/audit/sandbox/scan.ts'],
+    rules: { '@figma/figma-plugins/dynamic-page-find-method-advice': 'off' },
+  },
+  {
     files: ['scripts/**', 'tools/**', 'tests/**', '*.config.{js,ts}'],
     rules: { 'no-console': 'off' },
   },

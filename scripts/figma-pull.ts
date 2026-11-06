@@ -62,7 +62,14 @@ export interface Snapshot {
   unknownVariableIds?: string[]
 }
 
-type Manifest = ExtractManifest & { iconSet: ExtractManifest['iconSet'] }
+type Manifest = ExtractManifest & { iconSet: ExtractManifest['iconSet']; fileName?: string }
+
+/** The relay reads whichever file has the bridge open and stamps the manifest's key on the result,
+ *  so without this a pull from the wrong tab would overwrite the snapshot with another file. */
+export function assertExpectedFile(manifest: { fileName?: string }, openFile: string | undefined): void {
+  if (!manifest.fileName || openFile === manifest.fileName) return
+  throw new Error(`The bridge is open in "${openFile ?? 'an unnamed file'}", but figma/manifest.json expects "${manifest.fileName}". Run the plugin in that file, or update fileName and fileKey in the manifest if the source really moved.`)
+}
 
 const TIERS: readonly Tier[] = ['auto', 'enterprise', 'professional']
 
@@ -191,8 +198,11 @@ function pullPlugin(manifest: Manifest, options: PullOptions): Promise<Snapshot>
       if (message.kind !== 'response' || message.id !== id) return
       clearTimeout(timer)
       ws.close()
-      if (message.ok && message.data) resolvePromise({ ...message.data, source: 'figma-plugin' })
-      else reject(new Error(message.error ?? 'figma:snapshot failed'))
+      if (!message.ok || !message.data) { reject(new Error(message.error ?? 'figma:snapshot failed')); return }
+      try {
+        assertExpectedFile(manifest, message.data.tokens.fileName)
+        resolvePromise({ ...message.data, source: 'figma-plugin' })
+      } catch (error) { reject(error) }
     })
     ws.on('error', (error) => { clearTimeout(timer); reject(error) })
   })

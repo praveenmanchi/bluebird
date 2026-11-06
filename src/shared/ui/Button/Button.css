@@ -54,7 +54,7 @@
   background: var(--bb-button-primary-bg-disabled);
   border-color: var(--bb-button-primary-border-disabled);
   color: var(--bb-button-primary-fg-disabled);
-  opacity: var(--bb-derived-button-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-55);
   cursor: not-allowed;
 }
 .bb-button[data-variant="primary"]:disabled .bb-button__icon { color: var(--bb-button-primary-icon-color-disabled); }
@@ -96,7 +96,7 @@
   background: var(--bb-button-secondary-bg-disabled);
   border-color: var(--bb-button-secondary-border-disabled);
   color: var(--bb-button-secondary-fg-disabled);
-  opacity: var(--bb-derived-button-disabled-opacity);
+  opacity: var(--bb-dimension-opacity-55);
   cursor: not-allowed;
 }
 .bb-button[data-variant="secondary"]:disabled .bb-button__icon { color: var(--bb-button-secondary-icon-color-disabled); }

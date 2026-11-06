@@ -12,7 +12,7 @@ const isIcon = (name: string): name is IconName => name in ICONS
 const tabsOf = (personaId: string): TourTabChip[] =>
   (personas.find((p) => p.id === personaId)?.tabs ?? []).map((t) => ({ id: t.id, label: t.label, icon: isIcon(t.icon) ? t.icon : 'variables' }))
 
-const designer = tabsOf('product-designer')
+const designer = tabsOf('ui-designer')
 const system = tabsOf('design-system')
 const stepIndex = (tabs: readonly TourTabChip[], id: string) => Math.max(0, buildTour(tabs).findIndex((s) => s.id === id))
 
@@ -40,8 +40,8 @@ export const UxAi: Story = { render: screen({ initialStep: stepIndex(designer, '
 export const AiAgents: Story = { render: screen({ initialStep: stepIndex(designer, 'agents'), still: true }) }
 export const Setup: Story = { render: screen({ initialStep: buildTour(designer).length - 1, still: true }) }
 
-/** Design System persona: Tokens comes first, Jira and MCP aren’t in its tour. */
-export const DesignTokens: Story = { render: screen({ tabs: system, initialStep: stepIndex(system, 'tokens'), still: true }) }
+/** Design System persona: Audit comes first, Jira and MCP aren’t in its tour. */
+export const Audit: Story = { render: screen({ tabs: system, initialStep: stepIndex(system, 'audit'), still: true }) }
 
 /** Window size S (360 × 480): the demo scales down to fit. */
 export const SmallWindow: Story = {

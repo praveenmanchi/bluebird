@@ -5,15 +5,17 @@ import type { RpcClient, Transport } from '@shared/bridge'
 import { features } from './registry.generated'
 import { Banner } from './Banner'
 import { TabBar } from './TabBar'
-import { activePersonaId, activeTabId, brandPersonas, brandStatus, connection, screen, selectPersona, session, visibleTabs, windowSize } from './state'
+import { activePersonaId, activeTabId, brandPersonas, brandStatus, changingPersona, connection, screen, selectTab, session, visibleTabs, windowSize } from './state'
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
 import { OnboardingScreen } from './OnboardingScreen'
-import { bootSession, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
+import { SplashScreen } from './SplashScreen'
+import { PersonaScreen } from './PersonaScreen'
+import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
 import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
 import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
-import { OPEN_SETTINGS_EVENT } from '@shared/navigation'
+import { OPEN_SETTINGS_EVENT, OPEN_TAB_EVENT } from '@shared/navigation'
 import { ensureLibraryState, libraryPill, libraryState, loadLibraryState } from '@shared/libraries/status'
 import { gitPill, integrationSettings, mcpPill, uxaiPill } from './footerStatus'
 
@@ -33,6 +35,13 @@ export function App({ client, transport }: AppProps) {
     const open = () => { if (screen.value === 'app') screen.value = 'settings' }
     window.addEventListener(OPEN_SETTINGS_EVENT, open)
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open)
+  }, [])
+
+  // A tab sent the person to another tab (e.g. Audit's "Fix these in Variable mapper").
+  useEffect(() => {
+    const open = (e: Event) => { selectTab((e as CustomEvent<string>).detail) }
+    window.addEventListener(OPEN_TAB_EVENT, open)
+    return () => window.removeEventListener(OPEN_TAB_EVENT, open)
   }, [])
 
   // The footer's Dual File pill reports the library connection: read once signed in, again after a Dual File save.
@@ -99,6 +108,17 @@ export function App({ client, transport }: AppProps) {
       </RpcProvider>
     )
   }
+  if (current === 'splash' || current === 'persona') {
+    const brand = session.value?.brandId as BrandId | undefined
+    const fromSettings = changingPersona.value
+    return (
+      <div class="h-full flex flex-col bb-canvas">
+        {current === 'splash'
+          ? <SplashScreen brand={brand} onDone={() => { screen.value = 'persona' }} />
+          : <PersonaScreen personas={brandPersonas.value} brand={brand} intro={!fromSettings} initialId={fromSettings ? activePersonaId.value : null} onCancel={fromSettings ? cancelPersonaChange : undefined} onConfirm={(id) => { void choosePersona(client, id) }} />}
+      </div>
+    )
+  }
   if (current === 'onboarding') {
     const tabs = visibleTabs.value.map((t) => ({ id: t.id, label: t.label, icon: isIconName(t.icon) ? t.icon : 'variables' as const }))
     return (
@@ -117,7 +137,7 @@ export function App({ client, transport }: AppProps) {
         <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
           {inSettings
-            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onPersonaChange={selectPersona} integrations={integrations} onReplayTour={replayOnboarding} />
+            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onChangePersona={changePersona} integrations={integrations} onReplayTour={replayOnboarding} />
             : entry
               ? <entry.Tab key={entry.manifest.id} />
               : <EmptyState icon="inspect" title="No tabs enabled" description="Turn a tab on for this brand in dev.html › Plugin configuration (or plugin.config.json) and rebuild." />}

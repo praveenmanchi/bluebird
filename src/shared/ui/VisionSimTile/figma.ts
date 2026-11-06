@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const simulated = 'Sample and pill fills are the pair as simulated at runtime (simulateVision, Machado 2009) — Figma bakes the red/green example for each Simulation.'
 
 /** Figma ↔ code contract for VisionSimTile ("Vision Sim Tile" 40000463:9248). */
@@ -12,6 +13,7 @@ export const figma = {
     'Status (Meta Badge)': 'derived from staysDistinct(): Distinct / Look alike / Blurred',
   },
   figmaGaps: {
+    ...scaleGaps('font/size-caption', 'font/family-ui', 'font/line-caption', 'border-width/default'),
     'feedback/success': 'Bound on the nested MetaBadge (Status); rendered by the composed <MetaBadge>.',
     'feedback/danger': 'Bound on the nested MetaBadge (Status); rendered by the composed <MetaBadge>.',
     'radius/pill': 'Bound on the nested MetaBadge (Status); rendered by the composed <MetaBadge>.',
@@ -22,15 +24,6 @@ export const figma = {
   derivedGaps: {
     '--bb-derived-vision-sim-tile-root-width': 'Tiles fill their grid column (VisionSimGrid: three equal columns) instead of pinning 137px.',
     '--bb-derived-vision-sim-tile-sample-fill': 'The sample background is colors.bg as simulated at runtime (white in the Figma example).',
-    '--bb-derived-vision-sim-tile-status-stroke-width': 'Bound on the nested MetaBadge (Status); rendered by the composed <MetaBadge>.',
-    '--bb-derived-vision-sim-tile-pill-success-padding-top': 'Both pills share one rule; the Error pill tokens carry the identical values.',
-    '--bb-derived-vision-sim-tile-pill-success-padding-right': 'as pill-success-padding-top.',
-    '--bb-derived-vision-sim-tile-pill-success-padding-bottom': 'as pill-success-padding-top.',
-    '--bb-derived-vision-sim-tile-pill-success-padding-left': 'as pill-success-padding-top.',
-    '--bb-derived-vision-sim-tile-pill-success-radius': 'as pill-success-padding-top.',
-    '--bb-derived-vision-sim-tile-label-font-family': 'Inherits the card font (wcag-card/font/family) from the root.',
-    '--bb-derived-vision-sim-tile-label-font-size': 'Inherits the caption size (a11y/font/size-caption, also 10px) from the root.',
-    '--bb-derived-vision-sim-tile-label-line-height': 'Inherits the caption line height (a11y/font/line-caption, also 14px) from the root.',
     '--bb-derived-vision-sim-tile-pill-error-simulation-normal-fill': simulated,
     '--bb-derived-vision-sim-tile-pill-error-simulation-protanopia-fill': simulated,
     '--bb-derived-vision-sim-tile-pill-error-simulation-deuteranopia-fill': simulated,

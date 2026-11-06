@@ -1,9 +1,11 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
 /** Figma ↔ code contract for the UX AI Thinking screen (frame "UX AI body", not a component set; screen 40000288:8337). */
 export const figma = {
   setId: '40000290:6023',
   name: 'UX AI body',
   props: {},
   figmaGaps: {
+    ...scaleGaps('uxai/border-width', 'uxai/beam-width'),
     'uxai/chip/bg': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
     'uxai/chip/border': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
     'uxai/radius/chip': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
@@ -17,13 +19,11 @@ export const figma = {
   },
   derivedGaps: {
     '--bb-derived-uxai-thinking-chat-input-height': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
-    '--bb-derived-uxai-thinking-chat-input-stroke-width': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
     '--bb-derived-uxai-thinking-context-chip--1-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-context-chip--2-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-context-chip--3-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-context-chip--4-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-context-chip-height': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
-    '--bb-derived-uxai-thinking-context-chip-stroke-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-context-chip-ux-ai-body-width': 'Hug size / stroke of a Context Chip instance; the chip sizes itself from its label (ContextChip.css).',
     '--bb-derived-uxai-thinking-gutter-height': 'The Gutter is a spacer: only its width (uxai/size/orb-sm) matters; its height follows the row.',
     '--bb-derived-uxai-thinking-link-button-height': 'Hug size of the Link Button instance; LinkButton.css sizes it from its label.',
@@ -34,7 +34,6 @@ export const figma = {
     '--bb-derived-uxai-thinking-thinking-step-height': 'Hug size of a Thinking Step instance; the step sizes itself from its label (ThinkingStep.css).',
     '--bb-derived-uxai-thinking-thinking-step-ux-ai-body-width': 'Hug size of a Thinking Step instance; the step sizes itself from its label (ThinkingStep.css).',
     '--bb-derived-uxai-thinking-type-artifact-height': 'Hug height / stroke of the Type Artifact instance; TypeArtifact.css owns both (its width is read as the artifact max-width).',
-    '--bb-derived-uxai-thinking-type-artifact-stroke-width': 'Hug height / stroke of the Type Artifact instance; TypeArtifact.css owns both (its width is read as the artifact max-width).',
   },
   notes: 'An earlier Type answer above the one in progress. While thinking, the assistant line uses the Searching orb, finished steps read Done and the current one Running; the Chat Input is Generating (Beam + Stop) and shows the prompt being answered. Steps advance on a fake timer (chat.ts STEP_MS); Stop cancels it.',
 } as const

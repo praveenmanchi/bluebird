@@ -152,7 +152,7 @@ function rawDeclarationsFor(node: { p: string; t: string; b: Record<string, stri
       const family = r.font.replace(new RegExp(`\\s+${String(r.style ?? '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), '').trim()
       out.push(['font-family', JSON.stringify(family)])
       const weight = weightFromStyle(typeof r.style === 'string' ? r.style : undefined)
-      if (weight) out.push(['font-weight', String(weight)])
+      if (weight && !node.b.fontWeight) out.push(['font-weight', String(weight)])
     }
     if (typeof r.lineHeightPercent === 'number') out.push(['line-height', String(Math.round(r.lineHeightPercent * 10) / 1000)])
     if (typeof r.lineHeightPx === 'number') out.push(['line-height', px(r.lineHeightPx)])

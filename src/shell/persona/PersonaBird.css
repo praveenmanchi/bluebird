@@ -1,0 +1,70 @@
+/* The persona picker's bird in a square frame, in the 100 px slot the Figma card gives its
+ * illustration. The frame clips, so the flight leaves it on one side and returns on the other.
+ * Same resting motion as .bb-pick__figure: lifts on hover, tilts towards the pointer. */
+.bb-persona-bird {
+  position: relative;
+  flex: none;
+  width: 100px; /* allow-raw: the Figma card's illustration has no size token */
+}
+.bb-persona-bird__frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: var(--bb-space-inline-xs);
+  border: var(--bb-border-width-default) solid var(--bb-persona-border-panel);
+  border-radius: var(--bb-card-variable-radius);
+  background: var(--bb-persona-surface-spotlight);
+  cursor: pointer;
+}
+.bb-persona-bird__frame:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-persona-border-focus); }
+.bb-persona-bird__figure {
+  display: block;
+  width: 100%;
+  transform-origin: 50% 90%;
+  rotate: calc(var(--pp-look) * 7deg);
+  transition: rotate 260ms ease, transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bb-persona-bird__frame:hover .bb-persona-bird__figure { transform: translateY(-4%) scale(1.05); }
+.bb-persona-bird.is-flying .bb-persona-bird__figure { animation: bb-persona-bird-fly 1500ms ease-in-out both; }
+
+/* Its line, above the bird so it never covers the persona's name. */
+.bb-persona-bird__say {
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 0;
+  pointer-events: none;
+}
+.bb-persona-bird__bubble {
+  display: block;
+  width: max-content;
+  max-width: 200px; /* allow-raw: a one-line quip's bubble, not a Figma value */
+  padding: var(--bb-space-inline-xs) var(--bb-space-inline-md);
+  border: var(--bb-border-width-default) solid var(--bb-persona-border-panel);
+  border-radius: var(--bb-radius-xl);
+  background: var(--bb-persona-surface-panel);
+  color: var(--bb-persona-text-title);
+  font-size: var(--bb-font-size-label);
+  animation: bb-persona-bird-pop 240ms ease-out;
+}
+
+/* Crouch, take off up and away, shrinking into the distance; reappear past the other edge and fly back to land. */
+@keyframes bb-persona-bird-fly {
+  0% { transform: none; }
+  10% { transform: translateY(5%) scale(1.1, 0.88); }
+  45% { transform: translate(115%, -125%) scale(0.3); }
+  46% { transform: translate(-125%, -70%) scale(0.3); }
+  82% { transform: translateY(-14%) scale(1.04); }
+  92% { transform: translateY(0) scale(1.08, 0.92); }
+  100% { transform: none; }
+}
+@keyframes bb-persona-bird-pop { from { opacity: 0; transform: scale(0.8) translateX(-8%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-persona-bird__figure, .bb-persona-bird__bubble { animation: none; transition: none; }
+  .bb-persona-bird.is-flying .bb-persona-bird__figure { animation: none; }
+}

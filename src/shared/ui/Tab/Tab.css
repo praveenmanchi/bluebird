@@ -9,7 +9,7 @@
   gap: var(--bb-tab-gap);
   padding: var(--bb-tab-padding-y) var(--bb-tab-padding-x);
   border: 0;
-  border-bottom: var(--bb-derived-tab-root-stroke-width) solid var(--bb-surface-transparent);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-surface-transparent);
   border-radius: 0;
   background: var(--bb-surface-transparent);
   color: var(--bb-tab-fg-default);
@@ -52,8 +52,8 @@
   width: var(--bb-derived-tab-root-width);
   height: var(--bb-derived-tab-root-height);
   padding: 0;
-  border: var(--bb-derived-tab-root-stroke-width) solid var(--bb-tab-bar-border);
-  border-radius: var(--bb-derived-tab-root-radius);
+  border: var(--bb-border-width-default) solid var(--bb-tab-bar-border);
+  border-radius: var(--bb-radius-md);
   background: var(--bb-tab-bar-bg);
 }
 .bb-tab[data-variant="variant3"]:has(.bb-tab__label) { width: auto; padding-inline: var(--bb-tab-padding-y); }

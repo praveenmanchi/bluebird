@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const composed = 'Bound on the nested Button instance; rendered by the composed <Button>, whose Button.css consumes it. Nothing to read at group level.'
 
 /** Figma ↔ code contract for ButtonGroup. */
@@ -12,6 +13,7 @@ export const figma = {
     'Seconndary butto': 'showSecondary',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width', 'button/primary/border-width'),
     'button/primary/width-md': composed,
     'button/secondary/width-md': composed,
     'button/primary/bg/default': composed,

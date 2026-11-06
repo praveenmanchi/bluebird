@@ -303,3 +303,11 @@ describe('auto-layout defaults', () => {
     expect(describeSet(ctx, 'C', doc).variants[0]!.nodes[0]!.r!.layout).toBe('HORIZONTAL MIN CENTER HUG FIXED')
   })
 })
+
+describe('figmaGet 404', () => {
+  it('says the token cannot see the file and points at the relay', async () => {
+    process.env.FIGMA_TOKEN = 'test'
+    const fetchImpl = (async () => new Response('{"status":404}', { status: 404 })) as typeof fetch
+    await expect(figmaGet('/files/abc', { fetchImpl })).rejects.toThrow(/account cannot see this file.*npm run figma:pull/)
+  })
+})

@@ -7,7 +7,7 @@
   align-items: stretch;
   box-sizing: border-box;
   width: var(--bb-derived-select-field-root-width);
-  gap: var(--bb-derived-select-field-root-gap);
+  gap: var(--bb-dimension-space-5);
 }
 .bb-select-field:has(.bb-select-field__label) { gap: var(--bb-dropdown-gap-label); }
 
@@ -31,8 +31,8 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--bb-derived-select-field-background-border-height);
-  padding-inline: var(--bb-derived-select-field-background-border-padding-left) var(--bb-derived-select-field-background-border-padding-right);
-  border: var(--bb-derived-select-field-background-border-stroke-width) solid var(--bb-dropdown-border-default);
+  padding-inline: var(--bb-space-inset-lg-alt) var(--bb-space-inset-lg-alt);
+  border: var(--bb-icon-stroke-width) solid var(--bb-dropdown-border-default);
   border-radius: var(--bb-dropdown-radius);
   background: var(--bb-dropdown-bg-default);
   color: var(--bb-dropdown-fg-value);
@@ -58,7 +58,7 @@
 .bb-select-field__chevron {
   display: inline-flex;
   flex: none;
-  padding: var(--bb-derived-select-field-svg-padding-top) var(--bb-derived-select-field-svg-padding-right) var(--bb-derived-select-field-svg-padding-bottom) var(--bb-derived-select-field-svg-padding-left);
+  padding: var(--bb-space-inset-sm) var(--bb-dimension-space-3) var(--bb-space-inset-sm) var(--bb-dimension-space-3);
   color: var(--bb-dropdown-chevron-color);
   transition: transform 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }

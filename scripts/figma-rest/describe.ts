@@ -37,7 +37,7 @@ function describeNode(ctx: DescribeContext, node: RestNode, p: string): Componen
   const stroke = node.strokes?.find((x) => x.visible !== false)
   if (stroke) {
     const n = nameOf(stroke.boundVariables?.color); if (n) b.stroke = n; else { const hex = paintHex(stroke); if (hex) r.stroke = hex }
-    const w = nameOf(bv.strokeWeight); if (w) b.strokeWeight = w; else if (typeof node.strokeWeight === 'number' && !mixedStrokeWeight(node)) r.strokeWeight = node.strokeWeight
+    const w = nameOf(bv.strokeWeight ?? bv.strokeTopWeight); if (w) b.strokeWeight = w; else if (typeof node.strokeWeight === 'number' && !mixedStrokeWeight(node)) r.strokeWeight = node.strokeWeight
   }
   if (node.cornerRadius !== 0 && (node.cornerRadius !== undefined || node.rectangleCornerRadii)) {
     const n = nameOf(bv.topLeftRadius)
@@ -54,7 +54,9 @@ function describeNode(ctx: DescribeContext, node: RestNode, p: string): Componen
   // extract.ts rounds to one decimal; matching it exactly keeps the two snapshots comparable.
   if (node.type !== 'TEXT' && node.absoluteBoundingBox) r.size = unrotatedSize(node).map((n) => Math.round(n * 10) / 10)
   if (node.type === 'TEXT') describeText(ctx, node, bv, b, r)
-  if (node.opacity !== undefined && node.opacity !== 1) r.opacity = Math.round(node.opacity * 100) / 100
+  const opacity = nameOf(bv.opacity)
+  if (opacity) b.opacity = opacity
+  else if (node.opacity !== undefined && node.opacity !== 1) r.opacity = Math.round(node.opacity * 100) / 100
   if (node.visible === false) r.hidden = true
 
   const entry: ComponentNode = { id: node.id, p, t: node.type, b }

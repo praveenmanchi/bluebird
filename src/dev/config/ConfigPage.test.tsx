@@ -13,7 +13,14 @@ function serve() {
   return calls
 }
 
-afterEach(() => { vi.unstubAllGlobals(); sessionStorage.clear() })
+// The grid's checkboxes run effects after paint; Preact's fallback timer (35 ms) must fire before jsdom is torn down.
+const AFTER_PAINT_MS = 50
+
+afterEach(async () => {
+  vi.unstubAllGlobals()
+  sessionStorage.clear()
+  await new Promise((resolve) => setTimeout(resolve, AFTER_PAINT_MS))
+})
 
 describe('ConfigPage', () => {
   it('lists the eight brands and the selected brand’s tabs', async () => {
@@ -23,7 +30,7 @@ describe('ConfigPage', () => {
     expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
       expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
     ])
-    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(8)
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(9)
   })
 
   it('saves a hidden tab, a new order and a section set here as one patch for that brand', async () => {
@@ -42,10 +49,45 @@ describe('ConfigPage', () => {
     const patch = calls.find((c) => c.method === 'PUT')!.body as Record<string, { tabs: { id: string; enabled: boolean }[]; integrations: { github: Record<string, unknown> } }>
     expect(Object.keys(patch)).toEqual(['ikea'])
     expect(patch.ikea!.tabs.find((t) => t.id === 'jira')?.enabled).toBe(false)
-    expect(patch.ikea!.tabs.map((t) => t.id).indexOf('publish')).toBe(6)
+    expect(patch.ikea!.tabs.map((t) => t.id).indexOf('publish')).toBe(7)
     expect(patch.ikea!.integrations.github).toMatchObject({ repo: 'ikea/tokens' })
     expect(patch.ikea!.integrations.github).not.toHaveProperty('apiKey')
     expect(await screen.findByRole('heading', { name: /Rebuild the plugin to use it in Figma/ })).toBeInTheDocument()
+  })
+
+  it('saves which features a persona gets for this brand only', async () => {
+    const calls = serve()
+    render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
+    const matrix = await screen.findByRole('table', { name: 'Features per persona' })
+    expect(within(matrix).getAllByRole('columnheader').map((h) => h.textContent)).toEqual([
+      'Feature', expect.stringContaining('Design System'), expect.stringContaining('UI/UX Designer'), expect.stringContaining('Content'), expect.stringContaining('Developer'),
+    ])
+    const a11y = within(matrix).getByRole('checkbox', { name: 'Accessibility for Content' })
+    expect(a11y).not.toBeChecked()
+    fireEvent.click(a11y)
+    expect(within(matrix).getByRole('checkbox', { name: 'Accessibility for Content' })).toBeChecked()
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')[0]).toHaveTextContent('Content')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(calls.some((c) => c.method === 'PUT')).toBe(true))
+    const patch = calls.find((c) => c.method === 'PUT')!.body as Record<string, { personas: Record<string, string[]> }>
+    expect(Object.keys(patch)).toEqual(['ikea'])
+    expect(patch.ikea!.personas).toEqual({ content: ['agents', 'uxai', 'jira', 'a11y'] })
+    expect(await screen.findByRole('heading', { name: /Rebuild the plugin to use it in Figma/ })).toBeInTheDocument()
+  })
+
+  it('says when a persona has nothing and locks tabs this brand hides', async () => {
+    serve()
+    render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
+    const matrix = await screen.findByRole('table', { name: 'Features per persona' })
+    for (const tab of ['UX AI agents', 'UXAI', 'Jira board']) fireEvent.click(within(matrix).getByRole('checkbox', { name: `${tab} for Content` }))
+    expect(within(matrix).getByRole('columnheader', { name: /Content/ })).toHaveTextContent('Not offered')
+
+    fireEvent.click(screen.getByRole('switch', { name: 'Show Publish' }))
+    expect(within(matrix).getByRole('checkbox', { name: 'Publish for Design System' })).toBeDisabled()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Use default personas' }))
+    expect(within(matrix).getByRole('columnheader', { name: /Content/ })).toHaveTextContent('3 features')
   })
 
   it('blocks Save when a brand would have no tab left', async () => {

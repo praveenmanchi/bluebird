@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for SectionHeader. */
 export const figma = {
   setId: '226:2612',
@@ -11,6 +12,7 @@ export const figma = {
     Toggle: 'toggle (+ checked / onToggle)',
   },
   figmaGaps: {
+    ...scaleGaps('font/family-ui', 'font/weight-medium', 'font/line-label', 'font/line-caption'),
     'toggle/knob/bg': 'consumed by the composed Toggle (knob fill override on the Switch instance)',
   },
   notes: [

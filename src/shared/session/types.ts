@@ -31,3 +31,13 @@ export const ONBOARDING_MSG = {
   status: 'onboarding:status',
   complete: 'onboarding:complete',
 } as const
+
+/** The persona picked on the first-run screen. Stored per user, so it survives reopens and Reset forgets it. */
+export interface PersonaStatus { personaId: string | null }
+
+export interface PersonaSelectRequest { personaId: string }
+
+export const PERSONA_MSG = {
+  status: 'persona:status',
+  select: 'persona:select',
+} as const

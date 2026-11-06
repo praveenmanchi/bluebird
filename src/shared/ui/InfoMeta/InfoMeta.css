@@ -9,7 +9,7 @@
   color: var(--bb-status-pill-fg-default);
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-status-pill-font-size);
-  font-weight: var(--bb-derived-info-meta-20m-font-weight);
+  font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-status-pill-line-height);
   white-space: nowrap;
 }

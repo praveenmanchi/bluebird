@@ -21,13 +21,13 @@ body {
   height: calc(var(--bb-dimension-size-control-32) * 1.5);
   padding-inline: var(--bb-space-inset-lg);
   background: var(--bb-background);
-  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-border);
 }
 .dh-nav__brand { display: inline-flex; align-items: center; gap: var(--bb-space-inline-md); border-radius: var(--bb-dropdown-radius); text-decoration: none; color: inherit; }
 .dh-nav__brand .bb-brand-logo { display: block; height: calc(var(--bb-dimension-size-control-32) * 0.8); width: auto; }
 .dh-nav__brand:focus-visible { outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-dropdown-border-focus); outline-offset: var(--bb-space-stack-xs); }
 .dh-nav__product { display: inline-flex; align-items: center; gap: var(--bb-space-inline-md); color: var(--bb-card-variable-meta-fg); font-size: var(--bb-font-size-caption); }
-.dh-nav__product::before { content: ""; width: var(--bb-border-width-default); height: 16px; background: var(--bb-boader); } /* allow-raw */
+.dh-nav__product::before { content: ""; width: var(--bb-border-width-default); height: 16px; background: var(--bb-border); } /* allow-raw */
 .dh-nav__tabs { display: flex; gap: var(--bb-space-stack-xs); align-self: stretch; margin-inline-start: auto; }
 .dh-nav__tab {
   position: relative;
@@ -50,7 +50,7 @@ body {
   background: var(--bb-dropdown-border-focus);
 }
 .dh-nav__tab:focus-visible { outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-dropdown-border-focus); outline-offset: calc(var(--bb-border-width-default) * -2); }
-.dh-nav__divider { width: var(--bb-border-width-default); height: var(--bb-dimension-size-control-32); margin-inline: var(--bb-space-inline-md); background: var(--bb-boader); }
+.dh-nav__divider { width: var(--bb-border-width-default); height: var(--bb-dimension-size-control-32); margin-inline: var(--bb-space-inline-md); background: var(--bb-border); }
 .dh-nav__avatar {
   display: inline-grid;
   place-items: center;
@@ -58,7 +58,7 @@ body {
   height: 28px; /* allow-raw */
   border-radius: 50%;
   background: var(--bb-card-variable-bg-hover);
-  border: var(--bb-border-width-default) solid var(--bb-boader);
+  border: var(--bb-border-width-default) solid var(--bb-border);
   color: var(--bb-card-variable-meta-fg);
   overflow: hidden;
 }
@@ -74,8 +74,8 @@ body {
   padding: var(--bb-space-stack-xs) var(--bb-space-inset-lg);
   background: var(--bb-background);
 }
-.dm__toolbar { min-height: calc(var(--bb-dimension-size-control-32) * 1.25); border-bottom: var(--bb-border-width-default) solid var(--bb-boader); }
-.dm__statusbar { min-height: var(--bb-dimension-size-control-32); border-top: var(--bb-border-width-default) solid var(--bb-boader); }
+.dm__toolbar { min-height: calc(var(--bb-dimension-size-control-32) * 1.25); border-bottom: var(--bb-border-width-default) solid var(--bb-border); }
+.dm__statusbar { min-height: var(--bb-dimension-size-control-32); border-top: var(--bb-border-width-default) solid var(--bb-border); }
 .dm__toolbar-actions { display: inline-flex; align-items: center; gap: var(--bb-space-stack-xs); }
 .dm__times { flex: none; color: var(--bb-card-variable-meta-fg); }
 /* The canvas: a dot grid, like the design tool the plugin lives in. */
@@ -86,7 +86,7 @@ body {
   overflow: auto;
   padding: var(--bb-space-inset-lg);
   background-color: var(--bb-card-variable-bg-default);
-  background-image: radial-gradient(var(--bb-boader) 1px, transparent 1px); /* allow-raw: dot grid */
+  background-image: radial-gradient(var(--bb-border) 1px, transparent 1px); /* allow-raw: dot grid */
   background-size: 24px 24px; /* allow-raw */
 }
 .dm__window {
@@ -95,7 +95,7 @@ body {
   border-radius: var(--bb-radius-xl);
   overflow: hidden;
   background: var(--bb-background);
-  box-shadow: 0 0 0 var(--bb-border-width-default) var(--bb-boader), 0 var(--bb-space-stack-md) calc(var(--bb-space-stack-md) * 4) var(--bb-color-alpha-black-10);
+  box-shadow: 0 0 0 var(--bb-border-width-default) var(--bb-border), 0 var(--bb-space-stack-md) calc(var(--bb-space-stack-md) * 4) var(--bb-color-alpha-black-10);
 }
 .dm__titlebar {
   display: flex;
@@ -104,7 +104,7 @@ body {
   height: var(--bb-dimension-size-control-32);
   padding-inline: var(--bb-space-inset-md);
   background: var(--bb-card-variable-bg-hover);
-  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-border);
   font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-type-weight-600);
 }

@@ -1,3 +1,5 @@
+import { scaleGaps } from '../../../shared/brand/scaleGaps'
+
 // Shared reasons for the MCP v2 step screens' figma.ts files. Every step body in
 // Figma ("MCP flow v2 · 600") is the same shell — Stepper, mcp/* cards, Actions
 // bar — around composed design-system instances, so most bindings and raw
@@ -45,12 +47,16 @@ const READ_ELSEWHERE: Readonly<Record<string, string>> = {
   'mcp/space/hair': 'Read in ShipPushing.css, which styles the shared Ship steps list (Pushing, PR link, Push rejected).',
 }
 
+/** Shared scale variables: the step reads a same-value mcp/* token or leaves the layer to a child. */
+const SCALE = /^(border-width|space|radius|font|type|dimension)\//
+
 /** figmaGaps for the named bindings. Throws on one with no known home, so a new binding still needs a decision. */
 export function bindingGaps(names: readonly string[]): Record<string, string> {
   return Object.fromEntries(names.map((name) => {
     if (SHELL_TOKENS.has(name)) return [name, SHELL]
     if (READ_ELSEWHERE[name]) return [name, READ_ELSEWHERE[name]]
     const hit = PREFIXES.find(([prefix]) => name.startsWith(prefix))
+    if (!hit && SCALE.test(name)) return [name, scaleGaps(name)[name]!]
     if (!hit) throw new Error(`No figmaGaps reason for "${name}" — read it in the step's CSS or add a reason in screenGaps.ts`)
     return [name, composed(hit[1])]
   }))

@@ -34,7 +34,7 @@
   min-height: calc(var(--bb-dimension-size-control-32) * 1.25);
   padding: var(--bb-space-stack-xs) var(--bb-space-inset-lg);
   background: var(--bb-background);
-  border-bottom: var(--bb-border-width-default) solid var(--bb-boader);
+  border-bottom: var(--bb-border-width-default) solid var(--bb-border);
 }
 .an__section {
   display: flex;
@@ -44,7 +44,7 @@
   font-size: var(--bb-font-size-body);
   font-weight: var(--bb-type-weight-600);
 }
-.an__section::after { content: ""; flex: 1; height: var(--bb-border-width-default); background: var(--bb-boader); }
+.an__section::after { content: ""; flex: 1; height: var(--bb-border-width-default); background: var(--bb-border); }
 .an__section:first-child { margin-top: 0; }
 
 /* Stat tiles: text column, sparkline column. */
@@ -56,7 +56,7 @@
   column-gap: var(--bb-space-inline-md);
   row-gap: var(--bb-space-stack-xs);
   padding: var(--bb-space-inset-lg);
-  border: var(--bb-border-width-default) solid var(--bb-boader);
+  border: var(--bb-border-width-default) solid var(--bb-border);
   border-radius: var(--bb-dropdown-radius);
   background: var(--an-surface);
 }
@@ -80,7 +80,7 @@
   gap: var(--bb-space-stack-md);
   min-width: 0;
   padding: var(--bb-space-inset-lg);
-  border: var(--bb-border-width-default) solid var(--bb-boader);
+  border: var(--bb-border-width-default) solid var(--bb-border);
   border-radius: var(--bb-dropdown-radius);
   background: var(--an-surface);
 }
@@ -109,7 +109,7 @@
   min-width: 140px; /* allow-raw */
   transform: translate(12px, calc(-100% - 8px)); /* allow-raw */
   padding: var(--bb-space-inset-md);
-  border: var(--bb-border-width-default) solid var(--bb-boader);
+  border: var(--bb-border-width-default) solid var(--bb-border);
   border-radius: var(--bb-dropdown-radius);
   background: var(--bb-card-variable-bg-default);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); /* allow-raw */
@@ -230,7 +230,7 @@
   gap: 6px; /* allow-raw */
   height: 24px; /* allow-raw */
   padding-inline: var(--bb-space-inset-md);
-  border: var(--bb-border-width-default) solid var(--bb-boader);
+  border: var(--bb-border-width-default) solid var(--bb-border);
   border-radius: 999px; /* allow-raw */
   background: none;
   color: var(--bb-card-variable-meta-fg);

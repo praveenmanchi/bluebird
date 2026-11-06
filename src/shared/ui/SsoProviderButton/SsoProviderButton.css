@@ -38,8 +38,8 @@
 }
 .bb-sso-provider[data-provider='google'] .bb-sso-provider__glyph { justify-content: center; }
 .bb-sso-provider__tile {
-  width: var(--bb-derived-sso-provider-button-tile-width);
-  height: var(--bb-derived-sso-provider-button-tile-height);
+  width: var(--bb-dimension-space-7);
+  height: var(--bb-dimension-space-7);
   background: var(--bb-login-provider-glyph);
 }
 .bb-sso-provider__ring { display: block; width: 100%; height: 100%; stroke: var(--bb-login-provider-glyph); }

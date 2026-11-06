@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const secondary = 'Bound on the nested "Action" Button (Type=Secondary — No tickets, Error); the composed <Button variant="secondary"> (Button.css) consumes it.'
 const primary = 'Bound on the nested "Action" Button (Type=Primary — Not connected); the composed <Button variant="primary"> (Button.css) consumes it.'
 
@@ -12,6 +13,7 @@ export const figma = {
     'Action › width FIXED (button/*/width-md)': 'width="fixed" (120 wide in Figma)',
   },
   figmaGaps: {
+    ...scaleGaps('button/secondary/border-width', 'button/primary/border-width'),
     'button/secondary/bg/default': secondary,
     'button/secondary/border/default': secondary,
     'button/secondary/radius': secondary,
@@ -27,8 +29,6 @@ export const figma = {
     'button/primary/height': primary,
     'button/primary/width-md': `${primary} Read under [data-width="fixed"], which JiraEmptyState sets.`,
   },
-  derivedGaps: {
-    '--bb-derived-jira-empty-state-action-stroke-width': 'Stroke of the nested Action Button; Button.css reads button/*/border-width.',
-  },
+  derivedGaps: {},
   notes: 'Created 2026-10-09 for the Jira tab. The Icon is a Tab Icons "Jira" instance at 24 with no bound size or colour, so it renders as <Icon size="lg" tone="default"> (icon/size/lg = 24, icon/glyph/default). Title and Body texts are not Figma component properties — the copy lives in the variants — so code keeps it per state with overrides. The Error state is announced with role="alert".',
 } as const

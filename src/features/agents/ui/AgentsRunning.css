@@ -26,7 +26,7 @@
   flex-direction: column;
   gap: var(--bb-agents-space-inline);
   padding: var(--bb-agents-space-row-x);
-  border: var(--bb-derived-agents-running-progress-stroke-width) solid var(--bb-agents-surface-panel-border);
+  border: var(--bb-agents-border-width) solid var(--bb-agents-surface-panel-border);
   border-radius: var(--bb-agents-radius-panel);
   background: var(--bb-agents-surface-panel);
 }

@@ -5,6 +5,7 @@ import { createIntegrationsHandlers } from './integrations'
 import { readIntegrations } from '@shared/integrations/effective'
 import { createLibrariesHandlers } from '@shared/libraries/handlers'
 import { createOnboardingHandlers } from './onboarding'
+import { createPersonaHandlers } from './persona'
 import type { Session } from '@shared/session'
 import { createRouter, type HandlerMap } from '@shared/bridge'
 import { resolveBrandTokens } from '@shared/brand/resolve'
@@ -32,6 +33,7 @@ const coreHandlers: HandlerMap = {
   ...createSessionHandlers(config, store),
   ...createIntegrationsHandlers(store),
   ...createOnboardingHandlers(store),
+  ...createPersonaHandlers(config, store),
   // Dual File Mode: library files read over the Figma REST API, shared by the tabs that ask.
   ...createLibrariesHandlers({
     readSettings: async () => (await readIntegrations((k) => store.get(k))).dualFile,

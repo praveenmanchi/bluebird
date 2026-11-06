@@ -1,0 +1,345 @@
+/* Persona picker — Figma page Persona (40002515:6432). Colours are persona/*. That group has no
+ * spacing or type, so those reuse onboarding/*, and all sizes are shares of the window so it holds at S, M and L.
+ * Banner strip (carried over from the splash) · stage with the birds on their branch ·
+ * speech-bubble panel. Picking a bird sends the others away and centres it on a full circle. Resting styles are the END state;
+ * `.is-still` only switches animations off. --pp-* are runtime vars (--bb- is generated). */
+.bb-pick {
+  --pp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --pp-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pp-hero: 1.2;
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden auto;
+  background: var(--bb-persona-surface-stage);
+  color: var(--bb-persona-text-title);
+  font-family: var(--bb-onboarding-font-family), ui-sans-serif, system-ui, sans-serif;
+  container-type: size;
+}
+
+/* The splash's brand colour lifts away like a curtain, leaving the banner strip behind. */
+.bb-pick__curtain {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: var(--bb-persona-surface-banner);
+  pointer-events: none;
+  transform: translateY(-100%);
+  animation: bb-pick-curtain 560ms var(--pp-ease) backwards;
+}
+.bb-pick__header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: var(--bb-onboarding-header-padding-y) var(--bb-onboarding-plugin-padding-x);
+  background: var(--bb-persona-surface-banner);
+}
+.bb-brand-logo.bb-pick__logo {
+  width: var(--bb-derived-onboarding-screen-brand-logos-width);
+  height: var(--bb-derived-onboarding-screen-brand-logos-height);
+}
+
+.bb-pick__stage {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--bb-onboarding-gap-md);
+  padding: var(--bb-onboarding-gap-lg) var(--bb-onboarding-plugin-padding-x) 0;
+}
+/* Clouds drift behind everything; the sky fills whatever height the window leaves. */
+.bb-pick__sky { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.bb-pick__cloud { fill: var(--bb-persona-surface-cloud); opacity: 0.55; animation: bb-pick-drift 14s ease-in-out infinite alternate; }
+.bb-pick__cloud--2 { opacity: 0.35; animation-duration: 19s; animation-direction: alternate-reverse; }
+.bb-pick__cloud--3 { opacity: 0.45; animation-duration: 23s; }
+.bb-pick__heading { position: relative; display: flex; flex-direction: column; gap: var(--bb-onboarding-copy-gap); text-align: center; }
+.bb-pick__title {
+  margin: 0;
+  font-size: var(--bb-onboarding-font-title-size);
+  font-weight: var(--bb-onboarding-font-title-weight);
+  line-height: var(--bb-onboarding-font-title-line);
+}
+.bb-pick__subtitle {
+  margin: 0;
+  color: var(--bb-persona-text-meta);
+  font-size: var(--bb-onboarding-font-text-size);
+  line-height: var(--bb-onboarding-font-text-line);
+}
+.bb-pick.has-intro .bb-pick__heading { animation: bb-pick-rise 500ms 260ms var(--pp-ease) backwards; }
+
+/* Birds sit on the branch, labels hang below it. Subgrid shares one bird row and one label row
+ * across all five, so a label that wraps at S can't lift the branch away from the feet. */
+.bb-pick__birds {
+  display: grid;
+  grid-template-columns: repeat(var(--pp-n), minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  row-gap: var(--bb-onboarding-gap-md);
+}
+.bb-pick__bird {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--bb-onboarding-tile-radius);
+  background: none;
+  color: var(--bb-persona-text-meta);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 460ms var(--pp-ease);
+}
+/* Ring only once someone is navigating by keyboard: see usingKeyboard in PersonaScreen.tsx. */
+.bb-pick__bird:focus-visible { outline: none; }
+.bb-pick.uses-keyboard .bb-pick__bird:focus-visible { outline: var(--bb-onboarding-border-width) solid var(--bb-persona-border-focus); outline-offset: var(--bb-onboarding-tab-gap); }
+.bb-pick__figure {
+  position: relative;
+  display: block;
+  width: 118%;
+  margin: 0 -9%;
+  transform-origin: 50% 90%;
+  transition: transform 420ms var(--pp-ease-back);
+}
+.bb-pick.has-intro .bb-pick__figure { animation: bb-pick-land 620ms calc(420ms + var(--pp-i) * 110ms) var(--pp-ease-back) backwards; }
+.bb-pick__bird:hover .bb-pick__figure { transform: translateY(-4%) scale(1.05); }
+
+/* Picked: this bird slides to the middle column and grows, whichever column it came from. */
+.bb-pick__bird.is-selected {
+  z-index: 2;
+  cursor: default;
+  transform: translateX(calc(((var(--pp-n) - 1) / 2 - var(--pp-i)) * 100%));
+}
+.bb-pick__bird.is-selected .bb-pick__figure { transform: translateY(-4%) scale(var(--pp-hero)); }
+
+/* The others crouch and fly off to their own side. Resting state is hidden, so `.is-still` needs no extra rule. */
+.bb-pick.has-selection .bb-pick__bird:not(.is-selected) {
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 460ms var(--pp-ease), visibility 0s 640ms;
+}
+.bb-pick.has-selection .bb-pick__bird:not(.is-selected) .bb-pick__figure { animation: bb-pick-fly-away 640ms cubic-bezier(0.45, 0, 0.8, 0.6) both; }
+.bb-pick.has-selection .bb-pick__bird:not(.is-selected) .bb-pick__label { opacity: 0; }
+
+/* Change persona: the picked bird slides home and the others fly back in, one after another. */
+.bb-pick.is-returning .bb-pick__bird:not(.is-anchor) .bb-pick__figure { animation: bb-pick-fly-back 720ms calc(120ms + var(--pp-i) * 90ms) var(--pp-ease) backwards; }
+
+/* Full circle behind the centre of the stage. Under the branch and the birds, grows in with the pick.
+ * The grid item has no height, so the circle never stretches the bird row off the branch. */
+.bb-pick__sun {
+  position: relative;
+  grid-row: 1;
+  grid-column: 1 / -1;
+  align-self: end;
+  justify-self: center;
+  width: calc(100% / var(--pp-n) * 1.18 * var(--pp-hero) * 1.06);
+  height: 0;
+}
+.bb-pick__sun::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bb-persona-surface-spotlight);
+  opacity: 0;
+  transform: translateY(5%) scale(0.3);
+  transition: transform 460ms var(--pp-ease-back), opacity 200ms ease;
+}
+.bb-pick.has-selection .bb-pick__sun::before { opacity: 1; transform: translateY(5%); }
+.bb-pick.is-leaving .bb-pick__sun::before { opacity: 0; transform: translateY(5%) scale(0.3); }
+.bb-pick__label {
+  font-size: var(--bb-onboarding-font-tab-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-tab-line);
+  text-align: center;
+  transition: color 200ms ease, opacity 200ms ease;
+}
+.bb-pick__bird:hover .bb-pick__label, .bb-pick__bird.is-selected .bb-pick__label { color: var(--bb-persona-text-title); }
+.bb-pick__bird.is-selected .bb-pick__label { font-weight: var(--bb-onboarding-font-weight-strong); }
+
+.bb-pick__branch {
+  position: relative;
+  grid-row: 1;
+  grid-column: 1 / -1;
+  align-self: end;
+  width: calc(100% + var(--bb-onboarding-plugin-padding-x) * 2);
+  height: var(--bb-onboarding-gap-xl);
+  margin: 0 calc(var(--bb-onboarding-plugin-padding-x) * -1) calc(var(--bb-onboarding-gap-xl) * -0.4);
+  overflow: visible;
+}
+.bb-pick__bough {
+  fill: none;
+  stroke: var(--bb-persona-branch-stage);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  vector-effect: non-scaling-stroke;
+}
+.bb-pick.has-intro .bb-pick__bough { animation: bb-pick-grow 700ms 240ms var(--pp-ease) backwards; }
+
+/* Speech bubble: the panel's tail tracks the selected bird on the same columns. */
+.bb-pick__panel {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--bb-onboarding-gap-md);
+  margin-top: var(--bb-onboarding-gap-md);
+  padding: var(--bb-onboarding-plugin-padding-y) var(--bb-onboarding-plugin-padding-x);
+  border-top: var(--bb-onboarding-border-width) solid var(--bb-persona-border-panel);
+  background: var(--bb-persona-surface-panel);
+}
+.bb-pick.has-intro .bb-pick__panel { animation: bb-pick-panel 520ms 700ms var(--pp-ease) backwards; }
+.bb-pick__tail-track {
+  position: absolute;
+  top: 0;
+  right: var(--bb-onboarding-plugin-padding-x);
+  left: var(--bb-onboarding-plugin-padding-x);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.bb-pick.has-selection .bb-pick__tail-track { opacity: 1; }
+.bb-pick__tail {
+  position: absolute;
+  left: 50%;
+  width: var(--bb-onboarding-gap-lg);
+  height: var(--bb-onboarding-gap-lg);
+  border-top: var(--bb-onboarding-border-width) solid var(--bb-persona-border-panel);
+  border-left: var(--bb-onboarding-border-width) solid var(--bb-persona-border-panel);
+  background: var(--bb-persona-surface-panel);
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+.bb-pick__bubble {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--bb-onboarding-copy-gap);
+  min-height: calc(var(--bb-onboarding-font-heading-line) + var(--bb-onboarding-font-text-line) + var(--bb-onboarding-tile-size) + var(--bb-onboarding-gap-lg));
+}
+.bb-pick__hint {
+  margin: 0;
+  color: var(--bb-persona-text-meta);
+  font-size: var(--bb-onboarding-font-heading-size);
+  line-height: var(--bb-onboarding-font-heading-line);
+  text-align: center;
+  animation: bb-pick-nudge 1.6s 1.4s ease-in-out infinite;
+}
+.bb-pick__quip {
+  margin: 0;
+  font-size: var(--bb-onboarding-font-heading-size);
+  font-weight: var(--bb-onboarding-font-weight-strong);
+  line-height: var(--bb-onboarding-font-heading-line);
+  animation: bb-pick-rise 320ms var(--pp-ease) backwards;
+}
+.bb-pick__blurb {
+  margin: 0;
+  color: var(--bb-persona-text-meta);
+  font-size: var(--bb-onboarding-font-text-size);
+  line-height: var(--bb-onboarding-font-text-line);
+  animation: bb-pick-rise 320ms 60ms var(--pp-ease) backwards;
+}
+.bb-pick__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-onboarding-gap-xs);
+  margin: var(--bb-onboarding-gap-xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-pick__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-onboarding-gap-xs);
+  padding: var(--bb-onboarding-counter-padding-y) var(--bb-onboarding-counter-padding-x);
+  border: var(--bb-onboarding-border-width) solid var(--bb-persona-border-panel);
+  border-radius: var(--bb-onboarding-counter-radius);
+  font-size: var(--bb-onboarding-font-tab-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-tab-line);
+  animation: bb-pick-chip 340ms calc(120ms + var(--pp-i) * 60ms) var(--pp-ease-back) backwards;
+}
+.bb-pick__tool .bb-icon { width: var(--bb-onboarding-icon-size-sm); height: var(--bb-onboarding-icon-size-sm); }
+.bb-pick__footer { display: flex; gap: var(--bb-onboarding-gap-sm); }
+.bb-pick__continue { flex: 1 1 auto; }
+
+/* Take-off: the picked bird flaps away in a puff of feathers. */
+.bb-pick.is-leaving .bb-pick__bird.is-selected .bb-pick__figure { animation: bb-pick-take-off 900ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards; }
+.bb-pick__feather {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9%;
+  height: 16%;
+  border-radius: 100% 0;
+  background: var(--bb-persona-feather);
+  opacity: 0;
+  animation: bb-pick-feather 800ms ease-out forwards;
+}
+
+@keyframes bb-pick-drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
+@keyframes bb-pick-curtain { from { transform: translateY(0); } }
+@keyframes bb-pick-rise { from { opacity: 0; transform: translateY(30%); } }
+@keyframes bb-pick-grow { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes bb-pick-land {
+  0% { opacity: 0; transform: translateY(-120%) rotate(-10deg); }
+  60% { opacity: 1; transform: translateY(0) scale(1.08, 0.9); }
+  80% { transform: translateY(-6%) scale(0.97, 1.04); }
+  100% { transform: none; }
+}
+@keyframes bb-pick-fly-away {
+  0% { transform: none; }
+  22% { transform: translateY(6%) scale(1.08, 0.9); }
+  100% { opacity: 0; transform: translate(calc(var(--pp-dir) * 280%), -320%) rotate(calc(var(--pp-dir) * 16deg)) scale(0.8); }
+}
+@keyframes bb-pick-fly-back {
+  0% { opacity: 0; transform: translate(calc(var(--pp-dir) * 280%), -320%) rotate(calc(var(--pp-dir) * 16deg)) scale(0.8); }
+  68% { opacity: 1; transform: translateY(-8%); }
+  84% { transform: translateY(0) scale(1.08, 0.9); }
+  100% { transform: none; }
+}
+@keyframes bb-pick-panel { from { opacity: 0; transform: translateY(40%); } }
+@keyframes bb-pick-chip { from { opacity: 0; transform: scale(0.6) translateY(30%); } }
+@keyframes bb-pick-nudge { 50% { transform: translateY(-14%); } }
+@keyframes bb-pick-take-off {
+  0% { transform: translateY(-4%) scale(var(--pp-hero)); }
+  18% { transform: translateY(4%) scale(calc(var(--pp-hero) + 0.1), calc(var(--pp-hero) - 0.12)); }
+  100% { transform: translate(120%, -420%) scale(0.7) rotate(16deg); opacity: 0.9; }
+}
+@keyframes bb-pick-feather {
+  0% { opacity: 1; transform: rotate(var(--pp-a)) translateY(0) scale(0.6); }
+  100% { opacity: 0; transform: rotate(calc(var(--pp-a) + 90deg)) translateY(-420%) scale(1); }
+}
+
+/* Room above the birds: the picked one grows into it. */
+@container (min-height: 36rem) {
+  .bb-pick__birds { --pp-hero: 1.5; }
+}
+/* Opened on a persona: everything is already in place. */
+.bb-pick.is-instant .bb-pick__bird, .bb-pick.is-instant .bb-pick__figure, .bb-pick.is-instant .bb-pick__sun::before { animation: none; transition: none; }
+
+/* Short window: the tabs and Continue matter more than the description, so it goes first. */
+@container (max-height: 34rem) {
+  .bb-pick__blurb { display: none; }
+}
+/* Small window: the same layout, tighter type. */
+@container (max-width: 26rem) {
+  .bb-pick__title { font-size: var(--bb-onboarding-font-heading-size); line-height: var(--bb-onboarding-font-heading-line); }
+  .bb-pick__stage { padding-top: var(--bb-onboarding-gap-sm); }
+}
+
+.bb-pick.is-still *, .bb-pick.is-still *::before, .bb-pick.is-still *::after { animation: none; transition: none; }
+.bb-pick.is-still .bb-pick__curtain { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .bb-pick *, .bb-pick *::before, .bb-pick *::after { animation: none; transition: none; }
+  .bb-pick__curtain { display: none; }
+}

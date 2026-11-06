@@ -2,7 +2,6 @@ import type { ComponentChildren, JSX } from 'preact'
 import { Button } from '../Button/Button'
 import { Tab } from '../Tab/Tab'
 import type { IconName } from '../Icon/Icon'
-import userpic from '../../../../figma/assets/persona-userpic-05.png'
 import './PersonaCard.css'
 
 /** Figma "Team Description" default. */
@@ -32,10 +31,12 @@ export interface PersonaCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 
   description?: ComponentChildren
   /** The 11px note next to the action button (Figma reuses the Team Description text there). */
   footnote?: ComponentChildren
-  /** Overrides the persona illustration src (Figma instance "Delivery boy" = Userpic 05). */
+  /** The persona illustration src (Figma instance "Delivery boy" = Userpic 05, figma/assets/persona-userpic-05.png). The plugin passes `media` instead, so the picture stays out of its bundle. */
   image?: string
   /** Alt text for the illustration; empty by default because the name is right beside it. */
   imageAlt?: string
+  /** Replaces the illustration with something live, such as the persona's animated bird. */
+  media?: ComponentChildren
   /** The compact Tab instances shown under the description (the tools this persona sees). */
   tabs?: readonly PersonaCardTab[]
   /** Click handler of the "variable button" instance. */
@@ -53,8 +54,9 @@ export function PersonaCard({
   name,
   description = PERSONA_CARD_DESCRIPTION,
   footnote = PERSONA_CARD_DESCRIPTION,
-  image = userpic,
+  image,
   imageAlt = '',
+  media,
   tabs = PERSONA_CARD_TABS,
   onOpen,
   actionLabel = 'Change the persona',
@@ -64,7 +66,7 @@ export function PersonaCard({
   return (
     <article {...rest} class={`bb-persona-card ${cls ?? ''}`}>
       <div class="bb-persona-card__body">
-        <img class="bb-persona-card__image" src={image} alt={imageAlt} width={100} height={106} />
+        {media ?? (image && <img class="bb-persona-card__image" src={image} alt={imageAlt} width={100} height={106} />)}
         <div class="bb-persona-card__content">
           <div class="bb-persona-card__heading">
             <h3 class="bb-persona-card__name">{name}</h3>

@@ -1,3 +1,4 @@
+import { scaleGaps } from '../shared/brand/scaleGaps'
 /** Figma ↔ code contract for the Settings · Integrations screen (frame, not a component set). */
 const PREFIX = '--bb-derived-settings-integrations-'
 const composed = (component: string) => `Bound on the composed ${component} instance; ${component}'s own CSS consumes it.`
@@ -17,7 +18,7 @@ export const figma = {
   name: 'Settings · Integrations',
   props: {
     'Settings body': 'SettingsIntegrations: one IntegrationSection per entry of integrations/sections.ts (GitHub, Notifications, Storybook, Zeroheight, Dual File Mode, AI Agent Assistance, MCP + Code Sync, Jira)',
-    'Section header': 'SectionHeader (logo, title, description; the switch drives the section\'s enabled value)',
+    'Section header': 'SectionHeader (logo, title, description) plus code-only status badge and arrow: sections start collapsed; the switch, shown when open, drives the section\'s enabled value',
     'Input Box': 'Input (secret fields use password + eye)',
     dropbox: 'SelectInput: SelectField over a DropdownMenu of MenuItems',
     Toggle: 'Toggle',
@@ -28,8 +29,9 @@ export const figma = {
     'Team Banner': 'TeamBanner, rendered by SettingsScreen',
   },
   figmaGaps: {
+    ...scaleGaps('dimension/space/10', 'space/inset-xs', 'space/inset-lg-alt', 'dimension/space/6', 'dimension/space/8', 'space/stack-xs', 'dimension/space/9', 'dimension/space/45', 'text/placeholder', 'dimension/radius/12'),
     Background: 'The SettingsScreen root (.bb-settings) paints Background around the sections.',
-    'Banner/bg': chrome, Boader: chrome, 'tab/gap': chrome, 'tab/padding-x': chrome, 'tab/padding-y': chrome,
+    'Banner/bg': chrome, Border: chrome, 'tab/gap': chrome, 'tab/padding-x': chrome, 'tab/padding-y': chrome,
     'tab/icon/default': chrome, 'tab/indicator/color': chrome,
     'footer/bg/default': chrome, 'footer/border/top': chrome, 'footer/padding-x': chrome, 'footer/padding-y': chrome,
     'settings/space/page-x': 'Body inline padding; in code the sections sit inside the Settings screen column (.bb-settings), which already pads it.',
@@ -52,7 +54,7 @@ export const figma = {
     ]),
     ...gaps('Desktop-mock width (1074); the screen fills the 360–760px plugin window.', ['root-width']),
     ...gaps(persona, ['persona-card-gap', 'persona-card-height', 'persona-card-padding-bottom', 'persona-card-padding-left', 'persona-card-padding-right', 'persona-card-padding-top', 'persona-card-width']),
-    ...gaps(team, ['team-banner-fill', 'team-banner-height', 'team-banner-padding-bottom', 'team-banner-padding-left', 'team-banner-padding-right', 'team-banner-padding-top', 'team-banner-radius', 'team-banner-width']),
+    ...gaps(team, ['team-banner-height', 'team-banner-padding-bottom', 'team-banner-padding-left', 'team-banner-padding-right', 'team-banner-padding-top', 'team-banner-radius', 'team-banner-width']),
     ...gaps(fill, [
       'actions-width', 'custom-instructions-width', 'section-header-width', 'toggle-width', 'mcp-r1-c1-column-1-width', 'input-box-settings-integrations-width',
       ...indexed('input-box', 28, ['width']).filter((n) => n !== 'input-box--19-width'),
@@ -65,7 +67,7 @@ export const figma = {
       'toggle--1-height', 'toggle--2-height', 'toggle--3-height', 'toggle-settings-integrations-height',
       'jira-height', 'jira-row-1-height', 'mcp-row-2-height',
     ]),
-    ...gaps(composed('SectionHeader'), ['section-header-gap', 'section-header-padding-right']),
+    ...gaps(composed('SectionHeader'), ['section-header-gap', 'section-header-padding-right', 'configure-the-github-repository-where-extracted-va-line-height']),
     ...gaps(stale, ['label-input-label-color', 'label-input-label-font-family', 'label-input-label-font-weight']),
   },
   notes: 'Desktop mock 1074 × ~3680. Code: two columns from a 560px container up (halves, or Dual File\'s 324 / fill split), one column below; the AI provider rows wrap the API key under the model when narrow. Values persist per section through integrations:get / integrations:save (figma.clientStorage, zod-validated, field rules in @shared/integrations/validate). Test Connection is wired for Jira (via the proxy) and Dual File Mode (Figma REST); other sections say it is not wired. Dual File is ahead of Figma: code has two file slots, each with ID, API key and a "File N contains" dropbox (Variables / Components / Variables + Components), where the frame still shows the Variables/Components ID + key pairs. Figma has Styleguide ID as a "dropbox"; code uses an Input because listing styleguides needs the Zeroheight API. Select options (branches, paths, models) are fixed lists until the GitHub/AI APIs are wired. The Jira "Base URL - Enterprise" helper in Figma is the Input Box placeholder copy; code says what the field is for.',

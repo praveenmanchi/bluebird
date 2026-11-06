@@ -86,6 +86,30 @@ describe('extractComponents', () => {
     expect(snap.coverage).toEqual([{ section: 'Atoms', type: 'COMPONENT_SET', name: 'Button', id: 'set1', variants: 1, coverage: expect.any(Number) }])
   })
 
+  it('records a bound opacity as a binding, not a raw value', async () => {
+    const original = variant.boundVariables
+    variant.boundVariables = { ...original, opacity: { id: 'v4' } } as typeof original
+    try {
+      const root = (await extractComponents(manifest)).sets[0]!.variants[0]!.nodes[0]!
+      expect(root.b.opacity).toBe('button/height')
+      expect(root.r).not.toHaveProperty('opacity')
+    } finally {
+      variant.boundVariables = original
+    }
+  })
+
+  it('reads a stroke weight bound side by side, as Figma stores a uniform binding', async () => {
+    const original = variant.boundVariables
+    variant.boundVariables = { ...original, strokeTopWeight: { id: 'v4' }, strokeBottomWeight: { id: 'v4' }, strokeLeftWeight: { id: 'v4' }, strokeRightWeight: { id: 'v4' } } as typeof original
+    try {
+      const root = (await extractComponents(manifest)).sets[0]!.variants[0]!.nodes[0]!
+      expect(root.b.strokeWeight).toBe('button/height')
+      expect(root.r).not.toHaveProperty('strokeWeight')
+    } finally {
+      variant.boundVariables = original
+    }
+  })
+
   it('walks the tier pages when the file has them, finding sets nested in doc frames', async () => {
     const loaded: string[] = []
     const tierPage = (id: string, name: string, children: unknown[]) => ({ id, type: 'PAGE', name, children, loadAsync: async () => { loaded.push(id) } })

@@ -184,7 +184,7 @@ async function describeNode(index: VariableIndex, node: SceneNode, path: string)
     const stroke = firstVisible(node.strokes)
     if (stroke) {
       const n = boundName(index, (stroke as SolidPaint).boundVariables?.color); if (n) b.stroke = n; else { const hex = paintHex(stroke); if (hex) r.stroke = hex }
-      const w = boundName(index, bv.strokeWeight); if (w) b.strokeWeight = w; else if (typeof node.strokeWeight === 'number') r.strokeWeight = node.strokeWeight
+      const w = boundName(index, bv.strokeWeight ?? bv.strokeTopWeight); if (w) b.strokeWeight = w; else if (typeof node.strokeWeight === 'number') r.strokeWeight = node.strokeWeight
     }
   }
   if ('cornerRadius' in node && node.cornerRadius !== 0) {
@@ -212,7 +212,8 @@ async function describeNode(index: VariableIndex, node: SceneNode, path: string)
       else if (node.lineHeight.unit === 'PERCENT') r.lineHeightPercent = node.lineHeight.value
     }
   }
-  if ('opacity' in node && node.opacity !== 1) r.opacity = Math.round(node.opacity * 100) / 100
+  bind('opacity', boundName(index, bv.opacity))
+  if ('opacity' in node && node.opacity !== 1 && !bv.opacity) r.opacity = Math.round(node.opacity * 100) / 100
   if (!node.visible) r.hidden = true
 
   const entry: SnapNode = { id: node.id, p: path, t: node.type, b }

@@ -7,7 +7,7 @@
   flex: none;
   box-sizing: border-box;
   padding: var(--bb-jira-space-hair) var(--bb-jira-space-inline);
-  border: var(--bb-derived-story-points-root-stroke-width) solid var(--bb-jira-points-border);
+  border: var(--bb-jira-border-width) solid var(--bb-jira-points-border);
   border-radius: var(--bb-jira-radius-pill);
   background: var(--bb-jira-points-bg);
 }
