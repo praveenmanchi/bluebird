@@ -1,4 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
+import { Thread } from '../ui/Thread'
+import { stepCount } from '../chat'
+import type { Turn } from '../state'
 import { render, screen, within, fireEvent } from '@testing-library/preact'
 import { UxaiAnswer } from '../ui/UxaiAnswer'
 import { UxaiComponent } from '../ui/UxaiComponent'
@@ -93,5 +96,20 @@ describe('uxai screens on Figma fixtures', () => {
     expect(answerKindFor('What variables does my selection use?')).toBe('selection')
     expect(answerKindFor('Swap it on my selection')).toBe('selection')
     expect(answerKindFor('Check contrast in every brand')).toBe('color')
+  })
+})
+
+describe('the bot while a turn is running', () => {
+  const running = (progress: number) => {
+    const turn = { id: 't', prompt: 'What is our primary colour?', kind: 'color', status: 'thinking', progress } as Turn
+    const { container } = render(<Thread turns={[turn]} />)
+    return container.querySelector('.bb-uxai-bot')!.getAttribute('data-state')
+  }
+
+  it('searches through the steps, then answers on the last one', () => {
+    const steps = stepCount({ kind: 'color' } as Turn)
+    expect(steps).toBeGreaterThan(1)
+    expect(running(0)).toBe('searching')
+    expect(running(steps - 1)).toBe('answering')
   })
 })

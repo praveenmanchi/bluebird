@@ -4,7 +4,7 @@
 // through whichever provider (Claude, OpenAI, Gemini) Settings pick.
 import * as z from 'zod/mini'
 import type { HandlerMap } from '@shared/bridge'
-import { AiError, complete, describeProvider, isProviderConfig, PROVIDER_LABEL, providerId, selectProvider, type AiFetch } from '@shared/ai'
+import { AiError, complete, failureOf, describeProvider, isProviderConfig, PROVIDER_LABEL, providerId, selectProvider, type AiFetch } from '@shared/ai'
 import { normalizeIntegration, sectionSchemas, testMessage, type ConnectionTestResult, type IntegrationValues } from '@shared/integrations'
 import { MSG, askRequestSchema, type AskResult } from '../messages'
 import { systemPrompt } from '../prompt'
@@ -22,8 +22,13 @@ export function createAskHandlers(deps: AskDeps): HandlerMap {
     const { messages } = askRequestSchema.parse(payload)
     const config = selectProvider(await deps.readSettings())
     if (!isProviderConfig(config)) return { status: 'not-configured', reason: config.reason }
-    const text = await complete(config, { system: systemPrompt(config.instructions), messages, maxTokens: MAX_TOKENS }, deps.fetch)
-    return { status: 'answered', text, model: config.model, provider: config.provider }
+    try {
+      const text = await complete(config, { system: systemPrompt(config.instructions), messages, maxTokens: MAX_TOKENS }, deps.fetch)
+      return { status: 'answered', text, model: config.model, provider: config.provider }
+    } catch (error: unknown) {
+      // A plain result, not a throw: the bridge only carries an error's sentence, and the tab needs its kind.
+      return { status: 'failed', failure: failureOf(error) }
+    }
   }
 
   /** Settings › Test Connection for AI Agent Assistance: the form's unsaved key and model for the picked provider, one tiny request. */

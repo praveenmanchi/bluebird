@@ -34,7 +34,7 @@ export const gemini: ProviderAdapter = {
   failure: (status, body, model) => {
     const { message, status: code } = geminiDetail(body)
     if (status === 400 && /API key not valid|API_KEY_INVALID/i.test(`${message} ${code}`)) {
-      return new AiError('Google rejected the Gemini API key. Check it in Settings › AI Agent Assistance.', status, 'gemini')
+      return new AiError('Google rejected the Gemini API key. Check it in Settings › AI Agent Assistance.', status, 'gemini', 'key')
     }
     switch (status) {
       case 401: case 403: return new AiError(`This Gemini key isn’t allowed to do that.${message ? ` Google said: ${message}` : ''}`, status, 'gemini')

@@ -35,11 +35,31 @@ export interface CompleteOptions {
 /** The subset of fetch the sandbox (Figma's fetch), the browser and tests all provide. */
 export type AiFetch = (url: string, init: { method: string; headers: Record<string, string>; body: string }) => Promise<{ status: number; text(): Promise<string> }>
 
+/** What went wrong with a model request, so a screen can say so without reading the sentence. */
+export type AiFailureKind = 'network' | 'lost' | 'timeout' | 'key' | 'rate' | 'model' | 'unreadable' | 'other'
+
+/** A failure that can cross the bridge: a plain object, unlike an Error. */
+export interface AiFailure { kind: AiFailureKind; message: string; provider?: Provider }
+
+const kindForStatus = (status: number): AiFailureKind => {
+  if (status === 401 || status === 403) return 'key'
+  if (status === 404) return 'model'
+  if (status === 429 || status === 503 || status === 529) return 'rate'
+  return 'other'
+}
+
 export class AiError extends Error {
-  constructor(message: string, readonly status: number, readonly provider: Provider) {
+  constructor(message: string, readonly status: number, readonly provider: Provider, readonly kind: AiFailureKind = kindForStatus(status)) {
     super(message)
     this.name = 'AiError'
   }
+}
+
+/** Any thrown value as an AiFailure. A bridge timeout has no AiError behind it, so it is read from its message. */
+export function failureOf(error: unknown): AiFailure {
+  if (error instanceof AiError) return { kind: error.kind, message: error.message, provider: error.provider }
+  if (error instanceof Error) return { kind: /timed out/i.test(error.message) ? 'timeout' : 'other', message: error.message }
+  return { kind: 'other', message: 'Something went wrong.' }
 }
 
 /** One provider's HTTP shape: where to post, what to send, and how to read the reply. */

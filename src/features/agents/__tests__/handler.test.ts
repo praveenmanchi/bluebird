@@ -85,6 +85,13 @@ describe('agents sandbox handlers', () => {
     expect(none.findings).toEqual([])
   })
 
+  it('reports a failed model request, so a run with no findings isn’t read as clean', async () => {
+    const fetch: AiFetch = async () => { throw new Error('offline') }
+    const result = await call<RunResult>(handlers({ ...DEFAULT_INTEGRATIONS.ai, claudeKey: 'k' }, fetch), MSG.run, { runId: 'r9', agent: 'spelling', scope: 'page', rules: [], brandModes: [], mode: 'suggest' })
+    expect(result.findings).toEqual([])
+    expect(result.failure).toMatchObject({ kind: 'network', provider: 'claude' })
+  })
+
   it('applies text and resize fixes, reporting what could not be applied', async () => {
     const { label, icon, pageNode } = page()
     const resized: number[][] = []

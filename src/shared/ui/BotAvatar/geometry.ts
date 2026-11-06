@@ -25,14 +25,17 @@ export const EMBLEM: Record<BotAgent, { icon: IconName; size: number; cy: number
 export const HOVER = { cx: 20, cy: 38.33, rx: 8.67, ry: 1.2, restRx: 6 } as const
 export const THRUSTER = { x: 15.33, y: 35.33, width: 9.33, height: 2, rx: 1 } as const
 export const ARMS = [
-  { x: 1.33, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(28 4 20)' },
-  { x: 35, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(-28 36 20)' },
+  { x: 1.33, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(28 4 20)', out: 'rotate(70 4 20)', up: 'rotate(150 4 20)' },
+  { x: 35, y: 19.33, width: 3.67, height: 11.33, rx: 1.83, raised: 'rotate(-28 36 20)', out: 'rotate(-70 36 20)', up: 'rotate(-150 36 20)' },
 ] as const
 export const EARS = [
   { x: 5.67, y: 5.33, width: 3, height: 7.33, rx: 1.5 },
   { x: 31.33, y: 5.33, width: 3, height: 7.33, rx: 1.5 },
 ] as const
 export const NECK = { x: 16.67, y: 14.67, width: 6.67, height: 3.33 } as const
+/** Bot Scene "Something broke": the spring under a popped head. */
+export const SPRING = 'M16.67 16.67l6.67-1.33-6.67-1.33 6.67-1.33'
+export const SPRING_WIDTH = 1.13
 export const HEAD = { x: 7.67, y: 1.33, width: 24.67, height: 14.67, rx: 6.67 } as const
 export const VISOR = { x: 10.33, y: 4, width: 19.33, height: 9.33, rx: 4.67, strokeWidth: 0.83 } as const
 export const TORSO = { x: 5.33, y: 16.67, width: 29.33, height: 19.33, rx: 8 } as const

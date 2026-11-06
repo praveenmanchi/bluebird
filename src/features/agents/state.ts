@@ -1,10 +1,11 @@
 // Tab-local state. Nothing outside src/features/agents reads or writes this.
+import type { BotSceneId } from '@shared/ui'
 import { signal } from '@preact/signals'
 import type { FindingSeverity } from '@shared/ui'
 import { AGENTS, BRAND_MODES, OUTPUTS } from './agents'
 import type { AgentFinding, AgentId, RunMode, RunResult, RunStep, ScopeId, ScopeInfo } from './messages'
 
-export type View = 'gallery' | 'setup' | 'running' | 'results' | 'voice' | 'run-all'
+export type View = 'gallery' | 'setup' | 'running' | 'results' | 'voice' | 'run-all' | 'scenario'
 export type FindingFilter = 'all' | FindingSeverity | 'fixable'
 export type FindingStatus = 'applied' | 'ignored' | 'failed'
 export type VoicePhase = 'idle' | 'listening' | 'speaking' | 'thinking'
@@ -21,6 +22,20 @@ export interface LiveRun {
   steps: readonly RunStep[]
   findings: readonly AgentFinding[]
 }
+
+/** The full-screen scene when a run can't start, fails, finds nothing, or a fix gets stuck. */
+export interface AgentScenario {
+  scene: BotSceneId
+  agent: AgentId
+  provider?: string
+  /** Replaces the standard body, when the run knows more. */
+  body?: string
+  /** Where "Back" and the follow-on actions return to. */
+  back: View
+}
+
+/** The agent that stopped Run all, and the row text for it. */
+export interface RunAllFailure { agent: AgentId; text: string }
 
 /** A transient notice on the Results screen (an Apply outcome, a report written). */
 export interface Notice { tone: 'info' | 'error'; text: string }
@@ -53,9 +68,13 @@ export const transcript = signal('')
 /** Run all: percent per agent (0–100); null when it has not been started. */
 export const runAll = signal<Partial<Record<AgentId, number>> | null>(null)
 export const runAllApplied = signal(false)
+export const scenario = signal<AgentScenario | null>(null)
+export const runAllFailure = signal<RunAllFailure | null>(null)
 
 export function reset(): void {
   view.value = 'gallery'
+  scenario.value = null
+  runAllFailure.value = null
   voiceReturn.value = 'gallery'
   agentId.value = 'accessibility'
   scope.value = 'selection'

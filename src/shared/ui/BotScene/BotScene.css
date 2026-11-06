@@ -1,0 +1,29 @@
+/* BotScene — Figma "Bot Scene" (40002629:7211). The robot is painted by BotAvatar.css; the props
+ * here use the same tokens as Figma. UX AI is uxai/orb/core; an agent takes agents/bot/<agent>
+ * through data-agent. The emblem follows BotAvatar: pupil on the two pale agents. */
+.bb-bot-avatar.bb-bot-scene {
+  width: calc(var(--bb-agents-size-bot) * 7);
+  max-width: 100%;
+  height: auto;
+}
+.bb-bot-avatar.bb-bot-scene[data-character='uxai'] { color: var(--bb-uxai-orb-core); }
+
+.bb-bot-scene__fill-body { fill: currentColor; }
+.bb-bot-scene__fill-white { fill: var(--bb-persona-bird-eye); }
+.bb-bot-scene__fill-pupil { fill: var(--bb-persona-bird-pupil); }
+.bb-bot-scene__fill-danger { fill: var(--bb-feedback-danger); }
+.bb-bot-scene__fill-amber { fill: var(--bb-persona-bird-beak); }
+.bb-bot-scene__fill-muted { fill: var(--bb-icon-muted); }
+
+[class*='bb-bot-scene__line-'],
+.bb-bot-scene__face {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bb-bot-scene__line-body { stroke: currentColor; }
+.bb-bot-scene__line-white { stroke: var(--bb-persona-bird-eye); }
+.bb-bot-scene__line-danger { stroke: var(--bb-feedback-danger); }
+.bb-bot-scene__line-amber { stroke: var(--bb-persona-bird-beak); }
+.bb-bot-scene__line-muted { stroke: var(--bb-icon-muted); }
+.bb-bot-scene__face { stroke: var(--bb-persona-bird-eye); }

@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'preact/hooks'
-import { Button, ColorSwatch, ContextChip, Message, ThinkingOrb } from '@shared/ui'
+import { Button, ColorSwatch, ContextChip, Message, UxaiBot } from '@shared/ui'
 import { Fx, Stage, reveal, type CursorStop } from '../stage'
 import type { SceneProps } from './types'
 
@@ -26,7 +26,7 @@ export function UxaiScene({ still }: SceneProps) {
       <div class="bb-ob-scene">
         <Message role="user" text={QUESTION} {...reveal(2000)} />
         <div {...reveal(2300, 'fade', 'bb-ob-row bb-ob-row--start')}>
-          <Fx kind="spin" at={2300}><ThinkingOrb state="composing" size="20" /></Fx>
+          <Fx kind="spin" at={2300}><UxaiBot state="answering" size="20" /></Fx>
           <span class="bb-ob-meta">Searched 3 sources · Brand UI, Components, Docs</span>
         </div>
         <Message role="assistant" text="Use text/accent. It passes AA on every surface in every brand." {...reveal(3300)} />

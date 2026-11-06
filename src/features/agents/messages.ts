@@ -2,6 +2,7 @@
 // (reads layers, resolves tokens, asks the configured model), streams findings
 // back as it goes, and writes results into Figma: token rebinds, text fixes,
 // Dev Mode annotations and a report frame on the canvas.
+import type { AiFailure } from '@shared/ai'
 import * as z from 'zod/mini'
 import type { FindingSeverity } from '@shared/ui'
 
@@ -123,6 +124,8 @@ export interface RunResult {
   /** The model that reviewed the text (Spelling, UX writing, Content suggestions), or why none did. */
   model: { provider: 'claude' | 'openai' | 'gemini'; model: string } | { skipped: string } | null
   stopped: boolean
+  /** A model request failed, so the run is incomplete even if it finished. */
+  failure?: AiFailure
 }
 
 export const stopRequestSchema = z.object({ runId: z.string().check(z.minLength(1)) })

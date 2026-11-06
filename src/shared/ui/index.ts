@@ -214,6 +214,12 @@ export { SelectionPreview } from './SelectionPreview/SelectionPreview'
 export type { SelectionStat, SelectionPreviewProps } from './SelectionPreview/SelectionPreview'
 
 // AI Agents (Figma section "Agents")
+export { BotScene, BOT_SCENES } from './BotScene/BotScene'
+export type { BotSceneCharacter, BotSceneId, BotSceneProps } from './BotScene/BotScene'
+export { AiScenario, scenarioCopy, sceneForFailure } from './AiScenario/AiScenario'
+export type { AiScenarioAction, AiScenarioProps, AiScenarioSurface } from './AiScenario/AiScenario'
+export { UxaiBot, UXAI_BOT_STATES } from './UxaiBot/UxaiBot'
+export type { UxaiBotProps, UxaiBotSize, UxaiBotState } from './UxaiBot/UxaiBot'
 export { BOT_AGENT_NAME, BotAvatar } from './BotAvatar/BotAvatar'
 export type { BotAvatarProps, BotAgent, BotState } from './BotAvatar/BotAvatar'
 export { VOICE_WAVE_BARS, VoiceWave } from './VoiceWave/VoiceWave'

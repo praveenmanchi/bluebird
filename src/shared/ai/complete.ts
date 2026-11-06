@@ -19,30 +19,37 @@ const withTimeout = <T>(work: Promise<T>, ms: number): Promise<T> => new Promise
 export async function complete(config: Pick<ProviderConfig, 'provider' | 'model' | 'apiKey'>, options: CompleteOptions, fetchImpl: AiFetch): Promise<string> {
   const adapter = ADAPTERS[config.provider]
   const label = PROVIDER_LABEL[config.provider]
+  const timedOut = (error: unknown) => error instanceof Error && error.message === 'timeout'
+  const tooSlow = () => new AiError(`${label} took too long to answer. Try a smaller scope or a faster model.`, 0, config.provider, 'timeout')
   let res: { status: number; text(): Promise<string> }
-  let body: string
   try {
     res = await withTimeout(fetchImpl(adapter.url(config.model), {
       method: 'POST',
       headers: adapter.headers(config.apiKey),
       body: JSON.stringify(adapter.body(config.model, options)),
     }), options.timeoutMs ?? AI_TIMEOUT_MS)
+  } catch (error: unknown) {
+    if (timedOut(error)) throw tooSlow()
+    throw new AiError(`Couldn’t reach ${label}. Check your connection and try again.`, 0, config.provider, 'network')
+  }
+  let body: string
+  try {
     body = await res.text()
   } catch (error: unknown) {
-    const timedOut = error instanceof Error && error.message === 'timeout'
-    throw new AiError(timedOut ? `${label} took too long to answer. Try a smaller scope or a faster model.` : `Couldn’t reach ${label}. Check your connection and try again.`, 0, config.provider)
+    if (timedOut(error)) throw tooSlow()
+    throw new AiError(`Lost ${label} part way through the reply. Try again.`, 0, config.provider, 'lost')
   }
   if (res.status < 200 || res.status >= 300) throw adapter.failure(res.status, body, config.model)
   let parsed: unknown
   try {
     parsed = JSON.parse(body)
   } catch {
-    throw new AiError(`${label} sent a reply that isn’t JSON. Try asking again.`, res.status, config.provider)
+    throw new AiError(`${label} sent a reply that isn’t JSON. Try asking again.`, res.status, config.provider, 'unreadable')
   }
   try {
     return adapter.text(parsed)
   } catch (error: unknown) {
     const refused = error instanceof Error && error.message === 'refusal'
-    throw new AiError(refused ? `${label} declined to answer this one.` : `${label} sent an empty or unreadable reply. Try asking again.`, res.status, config.provider)
+    throw new AiError(refused ? `${label} declined to answer this one.` : `${label} sent an empty or unreadable reply. Try asking again.`, res.status, config.provider, 'unreadable')
   }
 }

@@ -83,7 +83,7 @@ export function AgentsVoice({ agent = agentById('accessibility'), phase = 'liste
         )}
         {turns.map((t, i) => (
           <div key={i} class="bb-agents-voice__turn">
-            <Message class="bb-agents-voice__message" role={t.role} text={t.text} orbState={phase === 'thinking' && i === turns.length - 1 ? 'composing' : 'breathing'} />
+            <Message class="bb-agents-voice__message" role={t.role} text={t.text} botState={phase === 'thinking' && i === turns.length - 1 ? 'answering' : 'ready'} />
             {t.steps && t.steps.length > 0 && (
               <div class="bb-agents-voice__indent">
                 <span class="bb-agents-voice__gutter" aria-hidden="true" />
@@ -92,7 +92,7 @@ export function AgentsVoice({ agent = agentById('accessibility'), phase = 'liste
             )}
           </div>
         ))}
-        {phase === 'thinking' && <Message class="bb-agents-voice__message" role="assistant" text="Thinking…" orbState="composing" />}
+        {phase === 'thinking' && <Message class="bb-agents-voice__message" role="assistant" text="Thinking…" botState="answering" />}
         {phase !== 'thinking' && (
           <div class="bb-agents-voice__replies">
             <span class="bb-agents-voice__gutter" aria-hidden="true" />

@@ -1,12 +1,14 @@
-import { useEffect } from 'preact/hooks'
-import { useRpc } from '@shared/ui'
+import { useEffect, useState } from 'preact/hooks'
+import { AiScenario, useRpc, type AiScenarioAction, type BotSceneId } from '@shared/ui'
+import { requestSettings } from '@shared/navigation'
+import { INTEGRATIONS_MSG, type IntegrationSettings } from '@shared/integrations'
 import { libraryState, loadLibraryState } from '@shared/libraries'
 import { MSG, type AskResult, type SelectionContext } from '../messages'
-import { draft, panelMode, reset, sources, turns, variables, view } from '../state'
+import { draft, panelMode, reset, sources, turns, variables, view, welcomeDismissed } from '../state'
 import { applySwaps, discardSwaps, send, setPanelMode, showChat, showSources, stop, swapVariable, toggleSource, type Ground } from '../chat'
 import { groundedAnswer, librarySources, selectIndex, selectionFailedAnswer, withModel, withoutModel, type GroundedAnswer } from '../grounding'
 import { buildMessages, libraryContext } from '../prompt'
-import { AI_TIMEOUT_MS, PROVIDER_LABEL } from '@shared/ai'
+import { AI_TIMEOUT_MS, PROVIDER_LABEL, failureOf, isProviderConfig, selectProvider } from '@shared/ai'
 import type { LibraryIndex } from '@shared/libraries'
 import { UxaiSources } from './UxaiSources'
 import { UxaiAnswer } from './UxaiAnswer'
@@ -23,6 +25,13 @@ const SELECTION_TIMEOUT_MS = 30_000
 /** The sandbox gives up on the model at AI_TIMEOUT_MS; wait a little past it so its message arrives. */
 const ASK_TIMEOUT_MS = AI_TIMEOUT_MS + 15_000
 
+/** The scene the welcome shows instead of the suggestions, if something needs setting up. */
+function welcomeScene(lib: typeof libraryState.value, model: BotSceneId | null): BotSceneId | null {
+  if (lib.status === 'error') return 'unreadable'
+  if (model) return model
+  return lib.status === 'not-configured' ? 'empty-shelf' : null
+}
+
 /**
  * UX AI tab: ask the design system questions, answered from the selected sources.
  *
@@ -38,6 +47,7 @@ const ASK_TIMEOUT_MS = AI_TIMEOUT_MS + 15_000
 export function Tab() {
   const rpc = useRpc()
   const lib = libraryState.value
+  const [modelScene, setModelScene] = useState<BotSceneId | null>(null)
 
   /** Loads through the shared state (the footer's Dual File pill follows it); a stale answer is dropped there. */
   const loadLibraries = (refresh = false) => {
@@ -48,6 +58,14 @@ export function Tab() {
     loadLibraries()
     return () => reset()
   }, [])
+
+  // Whether a model can answer: none set up, or the default one has no key and another stands in.
+  useEffect(() => {
+    rpc.call<IntegrationSettings>(INTEGRATIONS_MSG.get).then((s) => {
+      const config = selectProvider(s.ai)
+      setModelScene(!isProviderConfig(config) ? 'no-connection' : config.fallback ? 'default-needed' : null)
+    }, () => undefined)
+  }, [rpc])
 
   // The sources follow the shared library state (this tab's Refresh, or a Settings save elsewhere).
   // A reload keeps the files the designer unticked unticked.
@@ -87,9 +105,10 @@ export function Tab() {
     const messages = buildMessages(history, prompt, libraryContext(prompt, kind, index, answer.selection))
     try {
       const result = await rpc.call<AskResult>(MSG.ask, { messages }, ASK_TIMEOUT_MS)
-      return result.status === 'answered' ? withModel(answer, result.text, PROVIDER_LABEL[result.provider], result.model) : answer
+      if (result.status === 'answered') return withModel(answer, result.text, PROVIDER_LABEL[result.provider], result.model)
+      return result.status === 'failed' ? withoutModel(answer, result.failure) : answer
     } catch (error: unknown) {
-      return withoutModel(answer, error instanceof Error ? error.message : 'no reply')
+      return withoutModel(answer, failureOf(error))
     }
   }
 
@@ -99,8 +118,19 @@ export function Tab() {
   const onDraft = (value: string) => { draft.value = value }
   const onUseSelection = () => { draft.value = SELECTION_PROMPT }
 
+  const dismiss = () => { welcomeDismissed.value = true }
+  const welcomeActions = (scene: BotSceneId): readonly AiScenarioAction[] => {
+    switch (scene) {
+      case 'unreadable': return [{ label: 'Try again', onClick: () => loadLibraries(true) }, { label: 'Check Settings', onClick: requestSettings }]
+      case 'no-connection': return [{ label: 'Set up a connection', onClick: requestSettings }, { label: 'Ask anyway', onClick: dismiss }]
+      case 'default-needed': return [{ label: 'Choose a default', onClick: requestSettings }, { label: 'Ask anyway', onClick: dismiss }]
+      default: return [{ label: 'Connect libraries', onClick: requestSettings }, { label: 'Use sample data', onClick: dismiss }]
+    }
+  }
+
   const all = turns.value
   if (view.value === 'sources' || all.length === 0) {
+    const scene = view.value !== 'sources' && !welcomeDismissed.value ? welcomeScene(lib, modelScene) : null
     return (
       <UxaiSources
         sources={sources.value}
@@ -113,7 +143,8 @@ export function Tab() {
         onBack={showChat}
         hasConversation={all.length > 0}
         onUseSelection={onUseSelection}
-        status={<LibraryStatus state={lib} onRefresh={() => loadLibraries(true)} />}
+        status={scene ? undefined : <LibraryStatus state={lib} onRefresh={() => loadLibraries(true)} />}
+        scenario={scene ? <AiScenario surface="uxai" scene={scene} body={lib.status === 'error' ? lib.message : undefined} actions={welcomeActions(scene)} /> : undefined}
       />
     )
   }

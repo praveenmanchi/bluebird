@@ -46,6 +46,11 @@ describe('ask handlers', () => {
     await expect(handlers()[MSG.ask]!({ messages: [] } as never, ctx)).rejects.toThrow()
   })
 
+  it('reports what went wrong as a result, because the bridge only carries an error’s sentence', async () => {
+    const fetch: AiFetch = async () => { throw new Error('offline') }
+    expect(await ask(handlers({ ...DEFAULT_INTEGRATIONS.ai, claudeKey: 'k' }, fetch))).toMatchObject({ status: 'failed', failure: { kind: 'network', provider: 'claude' } })
+  })
+
   it('routes to OpenAI or Gemini when Settings pick them', async () => {
     const urls: string[] = []
     const fetch: AiFetch = async (url) => {

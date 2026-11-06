@@ -2,7 +2,8 @@
 // components out of the index (search), and the selection is checked against it
 // (which bindings and instances come from which library file). Pure; no RPC.
 import { queryTerms, searchComponents, searchStyles, searchVariables, type LibraryComponent, type LibraryIndex, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
-import type { MetaBadgeTone } from '@shared/ui'
+import { PROVIDER_LABEL, type AiFailure } from '@shared/ai'
+import { sceneForFailure, type BotSceneId, type MetaBadgeTone } from '@shared/ui'
 import type { AnswerKind, CannedAnswer, Source, Suggestion } from './fixtures'
 import type { SelectionContext } from './messages'
 
@@ -39,6 +40,8 @@ export interface GroundedAnswer extends CannedAnswer {
   selection?: SelectionReport
   /** fileKey → file name, for citations. */
   files: Readonly<Record<string, string>>
+  /** Something stopped a proper answer: the Thread shows this scene. */
+  scenario?: { scene: BotSceneId; provider?: string }
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
@@ -50,17 +53,18 @@ export const PENDING_ANSWER: GroundedAnswer = {
 }
 
 export function failedAnswer(message: string): GroundedAnswer {
-  return { ...PENDING_ANSWER, text: `I couldn’t read your libraries: ${message}`, thoughtFor: 'Stopped early' }
+  return { ...PENDING_ANSWER, text: `I couldn’t read your libraries: ${message}`, thoughtFor: 'Stopped early', scenario: { scene: 'unreadable' } }
 }
 
 /** The model's reply in place of the library summary; the artifacts and steps stay, plus the model step. */
 export function withModel(answer: GroundedAnswer, text: string, provider: string, model: string): GroundedAnswer {
-  return { ...answer, text, steps: [...answer.steps, `Asked ${provider} (${model}) with what matched`], thoughtFor: `Answered by ${provider} · ${model}` }
+  const { scenario: _found, ...rest } = answer
+  return { ...rest, text, steps: [...answer.steps, `Asked ${provider} (${model}) with what matched`], thoughtFor: `Answered by ${provider} · ${model}` }
 }
 
-/** The model failed: keep the library answer and say why the model's is missing. */
-export function withoutModel(answer: GroundedAnswer, reason: string): GroundedAnswer {
-  return { ...answer, text: `${answer.text} (The model couldn’t answer: ${reason})` }
+/** The model failed: keep the library answer, and let the scene say why the model's is missing. */
+export function withoutModel(answer: GroundedAnswer, failure: AiFailure): GroundedAnswer {
+  return { ...answer, scenario: { scene: sceneForFailure(failure.kind), ...(failure.provider ? { provider: PROVIDER_LABEL[failure.provider] } : {}) } }
 }
 
 /** The selection couldn't be read from Figma (the libraries are fine). */
@@ -202,6 +206,7 @@ function nothingFound(prompt: string, index: LibraryIndex): GroundedAnswer {
     steps: [`Searched ${plural(index.variables.length, 'variable')} and ${plural(index.components.length, 'component')}`],
     thoughtFor: 'No match',
     files: fileNames(index),
+    scenario: { scene: files.length ? 'no-answer' : 'unreadable' },
   }
 }
 
@@ -244,7 +249,7 @@ function originSummary<T extends { origin: Origin; match?: { fileKey: string } }
 function selectionAnswer(selection: SelectionContext | null, index: LibraryIndex): GroundedAnswer {
   const names = fileNames(index)
   if (!selection) {
-    return { ...PENDING_ANSWER, text: 'Select a layer in Figma, then ask again. I’ll check which of its variables and components come from your libraries.', thoughtFor: 'Nothing selected', files: names }
+    return { ...PENDING_ANSWER, text: 'Select a layer in Figma, then ask again. I’ll check which of its variables and components come from your libraries.', thoughtFor: 'Nothing selected', files: names, scenario: { scene: 'nothing-selected' } }
   }
   const report = checkSelection(selection, index)
   const unlinked = report.variables.filter((v) => v.origin !== 'library').length + report.components.filter((c) => c.origin !== 'library').length

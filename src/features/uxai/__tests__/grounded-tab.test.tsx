@@ -111,11 +111,40 @@ describe('uxai Tab with Dual File libraries', () => {
     expect(messages.at(-1)!.content).toMatch(/surface\/accent \[COLOR, Brand UI\][\s\S]*Question: What is our primary colour\?$/)
   })
 
-  it('keeps the library answer and says why when the model fails', async () => {
-    await renderTab({ libraries: READY, ask: async () => { throw new Error('Anthropic rejected the Claude API key.') } })
+  it('keeps the library answer and shows the scene when the model fails', async () => {
+    await renderTab({ libraries: READY, ask: async () => ({ status: 'failed', failure: { kind: 'key', message: 'Anthropic rejected the Claude API key.', provider: 'claude' } }) })
     ask_('What is our primary colour?')
     await finish()
-    expect(screen.getByText(/surface\/accent \(Brand UI\) is #0C8CE9.*\(The model couldn’t answer: Anthropic rejected the Claude API key\.\)/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'This key doesn’t fit' })).toBeInTheDocument()
+    expect(screen.getByText(/Claude turned down your API key/)).toBeInTheDocument()
+    expect(screen.getByText(/surface\/accent \(Brand UI\) is #0C8CE9/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Update key' })).toBeInTheDocument()
+  })
+
+  it('reads a bridge timeout as a timeout', async () => {
+    await renderTab({ libraries: READY, ask: async () => { throw new Error('Request "uxai:ask" timed out after 90000ms') } })
+    ask_('What is our primary colour?')
+    await finish()
+    expect(screen.getByRole('heading', { name: 'I fell asleep waiting' })).toBeInTheDocument()
+  })
+
+  it('asks again from the scene', async () => {
+    const ask = vi.fn(async () => ({ status: 'failed' as const, failure: { kind: 'network' as const, message: 'offline', provider: 'claude' as const } }))
+    await renderTab({ libraries: READY, ask })
+    ask_('What is our primary colour?')
+    await finish()
+    expect(screen.getByRole('heading', { name: 'Someone tripped over the wire' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
+    await finish()
+    expect(ask).toHaveBeenCalledTimes(2)
+  })
+
+  it('shows the tumbleweed when nothing matches', async () => {
+    await renderTab({ libraries: READY })
+    ask_('zzz nonsense qqq')
+    await finish()
+    expect(screen.getByRole('heading', { name: 'I looked everywhere' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add a source' })).toBeInTheDocument()
   })
 
   it('keeps unticked files unticked across a refresh', async () => {
@@ -130,8 +159,11 @@ describe('uxai Tab with Dual File libraries', () => {
 
   it('shows no sources, with the reason, when Dual File isn’t set up', async () => {
     await renderTab({ libraries: { status: 'not-configured', reason: 'empty', message: 'Add your library files in Settings › Dual File Mode.' } })
-    expect(screen.getByText('No libraries connected')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'My bookshelf is empty' })).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'Sources' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Use sample data' }))
+    expect(screen.queryByRole('heading', { name: 'My bookshelf is empty' })).toBeNull()
+    expect(screen.getByText('No libraries connected')).toBeInTheDocument()
     ask('What is our primary colour?')
     await finish()
     expect(screen.getByText(/Your primary colour is surface\/accent/)).toBeInTheDocument()
@@ -140,7 +172,8 @@ describe('uxai Tab with Dual File libraries', () => {
   it('explains a failed load and retries it', async () => {
     let calls = 0
     await renderTab({}, { [LIBRARIES_MSG.load]: async () => { calls++; if (calls === 1) throw new Error('Figma is rate-limiting requests.'); return READY } })
-    expect(screen.getByRole('alert')).toHaveTextContent('Figma is rate-limiting requests.')
+    expect(screen.getByRole('heading', { name: 'I can’t read these libraries' })).toBeInTheDocument()
+    expect(screen.getByText('Figma is rate-limiting requests.')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
     await act(async () => { await vi.advanceTimersByTimeAsync(0) })
     expect(calls).toBe(2)

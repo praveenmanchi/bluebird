@@ -31,7 +31,7 @@
   flex: 1 1 auto;
   min-width: 0;
 }
-.bb-message__orb { flex: none; }
+.bb-message__bot { flex: none; }
 .bb-message__text {
   margin: 0;
   font-family: var(--bb-uxai-font-family), ui-sans-serif, system-ui, sans-serif;

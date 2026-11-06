@@ -1,7 +1,7 @@
 // One agent run: read the scope, apply the agent's rule pack, ask the model where
 // the pack needs one, stream progress, return the findings. Runs inside Figma
 // (the inventory and palette reads) with the model call injected.
-import { complete, isProviderConfig, selectProvider, type AiFetch } from '@shared/ai'
+import { complete, failureOf, isProviderConfig, selectProvider, type AiFailure, type AiFetch } from '@shared/ai'
 import type { IntegrationValues } from '@shared/integrations'
 import { brand } from '@shared/config'
 import type { AgentFinding, AgentId, RunProgress, RunRequest, RunResult, RunStep, ScopeInfo } from '../messages'
@@ -75,13 +75,14 @@ export async function runAgent(request: RunRequest, deps: RunDeps): Promise<RunR
   const on = ctx.rules.size === 0 ? 'all' : `${ctx.rules.size}`
   step(`Loaded rule pack · ${copy.rules} (${on} rules on)`, 5)
 
+  let failure: AiFailure | undefined
   const finish = (checked: number, model: RunResult['model'], stopped = false): RunResult => {
     done()
     percent = 100
     label = `Checked ${scopeInfo.frames} frames · ${scopeInfo.layers} layers`
     emitNow()
     const sorted = [...findings].sort(bySeverity)
-    return { runId: request.runId, agent: request.agent, scope: scopeInfo, brandModes: request.agent === 'accessibility' ? request.brandModes : [], steps, findings: sorted, score: score(sorted, checked), checked, durationMs: now() - started, model, stopped }
+    return { runId: request.runId, agent: request.agent, scope: scopeInfo, brandModes: request.agent === 'accessibility' ? request.brandModes : [], steps, findings: sorted, score: score(sorted, checked), checked, durationMs: now() - started, model, stopped, ...(failure ? { failure } : {}) }
   }
   if (scopeInfo.empty) return finish(0, null)
 
@@ -142,6 +143,7 @@ export async function runAgent(request: RunRequest, deps: RunDeps): Promise<RunR
             if (item && row.suggestion) suggestions.set(item.id, row.suggestion)
           }
         } catch (error: unknown) {
+          failure ??= failureOf(error)
           steps.push({ label: `Model couldn’t help: ${error instanceof Error ? error.message : 'no reply'}`, status: 'done' })
         }
       }
@@ -168,6 +170,7 @@ export async function runAgent(request: RunRequest, deps: RunDeps): Promise<RunR
           const text = await complete(config, { system: systemPromptFor(request.agent, config.instructions, ctx.rules), messages: [{ role: 'user', content: userMessageFor(batch) }], maxTokens: REVIEW_MAX_TOKENS, json: true }, deps.fetch)
           findings = [...findings, ...reviewFindings(request.agent, ctx, parseReview(text, batch, rules), batch, inv.texts)]
         } catch (error: unknown) {
+          failure ??= failureOf(error)
           steps.push({ label: `Request ${i + 1} failed: ${error instanceof Error ? error.message : 'no reply'}`, status: 'done' })
         }
         percent = 55 + Math.round((40 * (i + 1)) / groups.length)

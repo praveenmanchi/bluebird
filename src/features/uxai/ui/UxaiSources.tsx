@@ -1,5 +1,5 @@
 import type { ComponentChildren } from 'preact'
-import { Button, LinkButton, PromptChip, SourceCard, ThinkingOrb } from '@shared/ui'
+import { Button, LinkButton, PromptChip, SourceCard, UxaiBot } from '@shared/ui'
 import { WELCOME_PROMPTS, type Source } from '../fixtures'
 import { Composer } from './Composer'
 import './uxai.css'
@@ -28,6 +28,8 @@ export interface UxaiSourcesProps {
   onUseSelection?: () => void
   /** Where the sources come from (Dual File libraries or samples). Not in Figma; it carries load errors and Refresh. */
   status?: ComponentChildren
+  /** Shown instead of the welcome suggestions when something needs setting up. */
+  scenario?: ComponentChildren
 }
 
 /** Figma "UX AI · Sources" body (40000290:5841): the welcome prompts above the Chat Input. The
@@ -35,7 +37,7 @@ export interface UxaiSourcesProps {
  *  sources" opens the source list here, which Figma no longer draws. */
 export function UxaiSources({
   sources, managing = false, onToggleSource, draft, onDraft, onSend, onManageSources, onBack, hasConversation = false,
-  onUploadFile, onAddLibrary, onUseSelection, status,
+  onUploadFile, onAddLibrary, onUseSelection, status, scenario,
 }: UxaiSourcesProps) {
   return (
     <div class="bb-uxai-screen bb-uxai-sources" data-managing={managing || undefined}>
@@ -83,9 +85,9 @@ export function UxaiSources({
               </div>
             )}
           </>
-        ) : (
+        ) : scenario ?? (
           <section class="bb-uxai-sources__welcome" aria-label="Suggested questions">
-            <ThinkingOrb state="breathing" size="40" />
+            <UxaiBot state="ready" size="40" />
             <h3 class="bb-uxai-sources__welcome-title">Ask anything about your design system</h3>
             <div class="bb-uxai-sources__suggestions">
               {WELCOME_PROMPTS.map((p) => <PromptChip key={p.label} icon={p.icon} onClick={() => onSend?.(p.label)}>{p.label}</PromptChip>)}

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
-import { ANTHROPIC_URL, GEMINI_API, OPENAI_URL, complete, extractArray, extractJson, isProviderConfig, providerId, selectProvider, type AiFetch } from './index'
+import { AiError, ANTHROPIC_URL, GEMINI_API, OPENAI_URL, complete, failureOf, extractArray, extractJson, isProviderConfig, providerId, selectProvider, type AiFetch } from './index'
 
 const reply = (status: number, body: unknown): AiFetch => async () => ({ status, text: async () => JSON.stringify(body) })
 const ai = DEFAULT_INTEGRATIONS.ai
@@ -113,3 +113,43 @@ describe('extractJson', () => {
     expect(extractArray('no json')).toEqual([])
   })
 })
+
+describe('failure kinds', () => {
+  const config = { provider: 'claude', model: 'm', apiKey: 'k' } as const
+  const options = { system: 's', messages: [{ role: 'user', content: 'q' }], maxTokens: 8 } as const
+  const answer = (status: number, body = '{}'): AiFetch => async () => ({ status, text: async () => body })
+  const kindOf = async (fetchImpl: AiFetch, timeoutMs?: number) => {
+    try {
+      await complete(config, { ...options, ...(timeoutMs ? { timeoutMs } : {}) }, fetchImpl)
+    } catch (error: unknown) {
+      return failureOf(error).kind
+    }
+    return 'none'
+  }
+
+  it('names the HTTP failures', async () => {
+    expect(await kindOf(answer(401))).toBe('key')
+    expect(await kindOf(answer(403))).toBe('key')
+    expect(await kindOf(answer(404))).toBe('model')
+    expect(await kindOf(answer(429))).toBe('rate')
+    expect(await kindOf(answer(529))).toBe('rate')
+    expect(await kindOf(answer(500))).toBe('other')
+  })
+
+  it('tells a failed request from a reply that dropped part way', async () => {
+    expect(await kindOf(async () => { throw new Error('offline') })).toBe('network')
+    expect(await kindOf(async () => ({ status: 200, text: async () => { throw new Error('reset') } }))).toBe('lost')
+  })
+
+  it('names a timeout and an unreadable reply', async () => {
+    expect(await kindOf(() => new Promise(() => undefined), 1)).toBe('timeout')
+    expect(await kindOf(answer(200, 'not json'))).toBe('unreadable')
+  })
+
+  it('reads a failure from any thrown value', () => {
+    expect(failureOf(new AiError('No', 429, 'gemini'))).toEqual({ kind: 'rate', message: 'No', provider: 'gemini' })
+    expect(failureOf(new Error('Request "ai:ask" timed out after 90000ms')).kind).toBe('timeout')
+    expect(failureOf('boom')).toEqual({ kind: 'other', message: 'Something went wrong.' })
+  })
+})
+

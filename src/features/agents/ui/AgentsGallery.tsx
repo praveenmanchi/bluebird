@@ -52,7 +52,6 @@ export function AgentsGallery({
   agents = DEFAULT_AGENTS, scope = 'selection', scopeInfo = SAMPLE_SCOPES[scope], scopeMeta, recentRuns = RECENT_RUNS,
   onScope, onOpen, onStop, onRunAll, onOpenReport, onMic,
 }: AgentsGalleryProps) {
-  const empty = scopeInfo?.empty === true
   return (
     <div class="bb-agents-gallery">
       <header class="bb-agents-gallery__header">
@@ -60,7 +59,7 @@ export function AgentsGallery({
           <h2 class="bb-agents-gallery__heading">{GALLERY_COPY.title}</h2>
           <p class="bb-agents-gallery__subtitle">{GALLERY_COPY.subtitle}</p>
         </div>
-        <Button class="bb-agents-gallery__run-all" disabled={empty} onClick={onRunAll}>{GALLERY_COPY.runAll}</Button>
+        <Button class="bb-agents-gallery__run-all" onClick={onRunAll}>{GALLERY_COPY.runAll}</Button>
       </header>
 
       <div class="bb-agents-gallery__scope">

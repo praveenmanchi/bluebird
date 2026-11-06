@@ -1,9 +1,10 @@
 import type { ComponentChildren } from 'preact'
 import { useLayoutEffect, useRef } from 'preact/hooks'
-import { ColorArtifact, ComponentArtifact, Message, PromptChip, ThinkingStep, TypeArtifact } from '@shared/ui'
+import { AiScenario, ColorArtifact, ComponentArtifact, Message, PromptChip, ThinkingStep, TypeArtifact, type AiScenarioAction, type BotSceneId } from '@shared/ui'
+import { requestSettings } from '@shared/navigation'
 import { NODES, type AnswerKind } from '../fixtures'
 import type { Turn } from '../state'
-import { answerFor, stepCount } from '../chat'
+import { answerFor, showSources, stepCount } from '../chat'
 import { LibraryAnswer } from './LibraryAnswer'
 
 export interface ThreadProps {
@@ -16,7 +17,7 @@ export interface ThreadProps {
   onOpenUrl?: (url: string) => void
 }
 
-/** Figma "Indent": content aligned with the assistant text, past the orb's gutter. */
+/** Figma "Indent": content aligned with the assistant text, past the bot's gutter. */
 function Indent({ children, label }: { children: ComponentChildren; label?: string }) {
   return (
     <div class="bb-uxai-indent" aria-label={label}>
@@ -38,10 +39,12 @@ function Artifact({ kind, panel, onFocusNode }: { kind: AnswerKind; panel?: Comp
 function Working({ turn }: { turn: Turn }) {
   const answer = answerFor(turn)
   const steps = answer.steps.length ? answer.steps : [answer.hint]
-  const visible = steps.slice(0, Math.min(turn.progress + 1, stepCount(turn)))
+  const total = stepCount(turn)
+  const visible = steps.slice(0, Math.min(turn.progress + 1, total))
+  const answering = total > 1 && turn.progress >= total - 1
   return (
     <>
-      <Message role="assistant" text={answer.searching} orbState="searching" />
+      <Message role="assistant" text={answer.searching} botState={answering ? 'answering' : 'searching'} />
       <Indent label="Reasoning">
         <div class="bb-uxai-thinking" role="status">
           {visible.map((step, i) => (
@@ -51,6 +54,21 @@ function Working({ turn }: { turn: Turn }) {
       </Indent>
     </>
   )
+}
+
+/** These have no answer to show: the scene is the whole reply. The rest keep the library answer below it. */
+const NO_ANSWER: ReadonlySet<BotSceneId> = new Set<BotSceneId>(['no-answer', 'nothing-selected', 'unreadable'])
+
+function scenarioActions(scene: BotSceneId, retry: () => void): readonly AiScenarioAction[] {
+  const again = { label: 'Try again', onClick: retry }
+  const settings = (label: string) => ({ label, onClick: requestSettings })
+  switch (scene) {
+    case 'wrong-key': return [settings('Update key')]
+    case 'default-needed': return [settings('Choose a default')]
+    case 'wire-cut': case 'unreadable': return [again, settings('Check Settings')]
+    case 'no-answer': return [{ label: 'Add a source', onClick: showSources }]
+    default: return [again]
+  }
 }
 
 interface AnsweredProps {
@@ -69,8 +87,19 @@ function Answered({ turn, latest, panel, onSend, onFocusNode, onOpenUrl }: Answe
   const hasArtifact = grounded
     ? Boolean(grounded.variables || grounded.components || grounded.selection)
     : turn.kind === 'selection' ? livePanel !== undefined : turn.kind !== 'icons'
+  const scenario = grounded?.scenario
+  const scene = scenario && (
+    <AiScenario
+      surface="uxai"
+      scene={scenario.scene}
+      provider={scenario.provider}
+      actions={latest ? scenarioActions(scenario.scene, () => onSend?.(turn.prompt)) : []}
+    />
+  )
+  if (scenario && NO_ANSWER.has(scenario.scene)) return <>{scene}</>
   return (
     <>
+      {scene}
       {answer.steps.length > 0 && (
         <Indent label="Reasoning">
           <div class="bb-uxai-thinking">

@@ -1,7 +1,7 @@
 // AI providers for UX AI and the agents: Settings in, text out. The key is read
 // in the sandbox and sent to the provider's own host only.
-export { AiError, PROVIDERS, PROVIDER_LABEL } from './types'
-export type { AiFetch, ChatMessage, CompleteOptions, Provider, ProviderConfig } from './types'
+export { AiError, PROVIDERS, PROVIDER_LABEL, failureOf } from './types'
+export type { AiFailure, AiFailureKind, AiFetch, ChatMessage, CompleteOptions, Provider, ProviderConfig } from './types'
 export { complete, ADAPTERS, AI_TIMEOUT_MS } from './complete'
 export { describeProvider, isProviderConfig, providerId, providersWithKeys, selectProvider } from './select'
 export type { NotConfigured } from './select'

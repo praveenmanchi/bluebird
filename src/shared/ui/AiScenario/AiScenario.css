@@ -1,0 +1,30 @@
+/* AiScenario — the centred stack on the Figma AI scenarios page (40002629:6458): Bot Scene,
+ * title, body, actions. Layout and type use the uxai/* tokens both tabs share. */
+.bb-ai-scenario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-uxai-space-section);
+  margin: auto;
+  padding: var(--bb-uxai-space-panel);
+  text-align: center;
+}
+.bb-ai-scenario__title {
+  margin: 0;
+  color: var(--bb-uxai-text-title);
+  font-size: var(--bb-uxai-font-size-title);
+  font-weight: var(--bb-uxai-font-weight-strong);
+}
+.bb-ai-scenario__body {
+  margin: 0;
+  max-width: calc(var(--bb-agents-size-bot) * 11);
+  color: var(--bb-uxai-text-body);
+  font-size: var(--bb-uxai-font-size-body);
+}
+.bb-ai-scenario__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--bb-uxai-space-inline);
+  margin-top: var(--bb-uxai-space-tight);
+}

@@ -43,7 +43,6 @@ export function AgentsSetup({
   onScope, onToggleRule, onMode, onBrand, onOutput, onEditRules, onRun, onMic, onBack,
 }: AgentsSetupProps) {
   const help = MODES.find((m) => m.id === mode)?.help
-  const empty = scopeInfo?.empty === true
   return (
     <div class="bb-agents-setup">
       <BackLink class="bb-agents-setup__back" onBack={onBack} />
@@ -112,7 +111,7 @@ export function AgentsSetup({
 
       <div class="bb-agents-setup__run">
         <VoiceBar class="bb-agents-setup__voice" state="idle" micLabel={`Talk to the ${agent.title}`} onToggle={onMic} />
-        <Button class="bb-agents-setup__go" size="lg" disabled={empty} onClick={onRun}>{agent.runLabel}</Button>
+        <Button class="bb-agents-setup__go" size="lg" onClick={onRun}>{agent.runLabel}</Button>
       </div>
     </div>
   )

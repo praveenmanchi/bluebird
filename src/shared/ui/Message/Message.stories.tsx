@@ -20,7 +20,7 @@ export const User: Story = { parameters: v('Role=User') }
 export const Assistant: Story = { args: { role: 'assistant' }, parameters: v('Role=Assistant') }
 
 export const AssistantWithContent: Story = {
-  args: { role: 'assistant', orbState: 'composing', text: 'Your primary colour is Brand/Primary (#0C8CE9).' },
+  args: { role: 'assistant', botState: 'answering', text: 'Your primary colour is Brand/Primary (#0C8CE9).' },
   render: (args) => (
     <Message {...args}>
       <ThinkingStep status="done">Searched Variables · Brand UI (421)</ThinkingStep>

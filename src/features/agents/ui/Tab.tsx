@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'preact/hooks'
 import { signal } from '@preact/signals'
-import { useRpc, type FindingAction } from '@shared/ui'
+import { useRpc, type AiScenarioAction, type FindingAction } from '@shared/ui'
+import { requestSettings } from '@shared/navigation'
 import { AGENTS, PIPELINE_ORDER, RUN_ALL_COPY, SCOPES, agentById, isRunnable, type AgentDef } from '../agents'
 import { INTEGRATIONS_MSG, type IntegrationSettings } from '@shared/integrations'
 import { isProviderConfig, selectProvider, PROVIDER_LABEL } from '@shared/ai'
@@ -8,15 +9,16 @@ import { MSG, type AgentFinding } from '../messages'
 import {
   applyFindings, applySafeFixes, backToGallery, leaveVoice, markdownReport, openFindings, openResults, openSetup, overallProgress,
   pipelineState, refreshScope, runOne, runSummary, sendMessage, setFindingStatus, setScope, speechRecognition, startRunAll, stopAll, stopAllAndLeave, stopRun,
-  toggleMic, writeReport, type PipelineState,
+  toggleMic, writeReport, leaveScenario, retryRunAll, startRun, type PipelineState,
 } from '../run'
 import {
-  agentId, brands, chat, filter, findingStatus, mode, notice, outputs, reset, results, rules, run, runAll, runAllApplied, scope, scopeInfo, transcript, view, voice,
+  agentId, brands, chat, filter, findingStatus, mode, notice, outputs, reset, results, rules, run, runAll, runAllApplied, scope, scopeInfo, transcript, view, voice, runAllFailure, scenario,
 } from '../state'
 import { AgentsGallery, scopeMetaFor, type CardStatus, type RecentRun } from './AgentsGallery'
 import { AgentsResults } from './AgentsResults'
 import { AgentsRunAll, type PipelineRow } from './AgentsRunAll'
 import { AgentsRunning } from './AgentsRunning'
+import { AgentsScenario } from './AgentsScenario'
 import { AgentsSetup } from './AgentsSetup'
 import { AgentsVoice } from './AgentsVoice'
 import { downloadText, safeFilename } from './download'
@@ -100,11 +102,35 @@ export function Tab() {
           onMode={(m) => { mode.value = m }}
           onBrand={(b, on) => { brands.value = { ...brands.value, [b]: on } }}
           onOutput={(id, on) => { outputs.value = { ...outputs.value, [id]: on } }}
-          onRun={() => { void runOne(rpc, agent.id) }}
+          onRun={() => startRun(rpc, agent.id, modelReady.value)}
           onMic={() => toggleMic(rpc)}
           onBack={() => backToGallery(rpc)}
         />
       )
+    case 'scenario': {
+      const shown = scenario.value
+      if (!shown) { view.value = 'gallery'; return null }
+      const owner = agentById(shown.agent)
+      const again = { label: 'Run again', onClick: () => { leaveScenario('setup'); startRun(rpc, owner.id, modelReady.value) } }
+      const back = { label: 'Back to agents', onClick: () => leaveScenario('gallery') }
+      const settings = (label: string) => ({ label, onClick: requestSettings })
+      const findings = results.value[owner.id]?.findings.length ?? 0
+      const partial = findings ? [{ label: `See ${findings} ${findings === 1 ? 'finding' : 'findings'}`, onClick: () => { leaveScenario(); openResults(owner.id) } }] : [back]
+      const actions = ((): readonly AiScenarioAction[] => {
+        switch (shown.scene) {
+          case 'no-connection': return [settings('Set up a connection'), back]
+          case 'default-needed': return [settings('Choose a default'), back]
+          case 'wrong-key': return [settings('Update key'), back]
+          case 'wire-cut': return [again, settings('Check Settings')]
+          case 'timed-out': return [again, { label: 'Change scope', onClick: () => leaveScenario('setup') }]
+          case 'nothing-selected': return [{ label: 'Use the whole page', onClick: () => { setScope(rpc, 'page'); leaveScenario() } }, back]
+          case 'all-clear': return [{ label: 'Run another agent', onClick: () => leaveScenario('gallery') }]
+          case 'fix-stuck': return [{ label: 'See what’s left', onClick: () => leaveScenario('results') }, back]
+          default: return [again, ...partial]
+        }
+      })()
+      return <AgentsScenario scene={shown.scene} agent={owner} bot={owner.bot} provider={shown.provider} body={shown.body} actions={actions} />
+    }
     case 'running': {
       const live = run.value?.agent === agent.id ? run.value : null
       const steps = live ? live.steps : (result?.steps ?? [])
@@ -167,6 +193,7 @@ export function Tab() {
       )
     case 'run-all': {
       const progress = runAll.value ?? {}
+      const failure = runAllFailure.value
       const runnable = AGENTS.filter(isRunnable)
       const doneAgents = runnable.filter((a) => (progress[a.id] ?? 0) >= 100)
       const info = scopeInfo.value
@@ -174,14 +201,15 @@ export function Tab() {
       const openAll = openFindings(allFindings, findingStatus.value)
       const appliedAll = allFindings.filter((f) => findingStatus.value[f.id] === 'applied').length
       const rows: PipelineRow[] = PIPELINE_ORDER.map(agentById).map((a, i, ordered) => {
-        const state: PipelineState = pipelineState(a, progress)
+        const state: PipelineState = pipelineState(a, progress, failure?.agent)
         const r = results.value[a.id]
         const before = ordered[i - 1]
         const live = run.value?.agent === a.id ? run.value : null
-        const text = state === 'done' && r ? runSummary(r)
-          : state === 'running' ? (live?.label ?? 'Starting…')
-            : state === 'queued' ? `Waits for ${before?.name ?? 'the scope'} to finish`
-              : 'Not available'
+        const text = state === 'failed' && failure ? failure.text
+          : state === 'done' && r ? runSummary(r)
+            : state === 'running' ? (live?.label ?? 'Starting…')
+              : state === 'queued' ? (failure ? `Waiting for you to retry ${agentById(failure.agent).name}` : `Waits for ${before?.name ?? 'the scope'} to finish`)
+                : 'Not available'
         return { agent: a, state, text }
       })
       return (
@@ -196,6 +224,8 @@ export function Tab() {
           applied={runAllApplied.value}
           onStopAll={() => stopAllAndLeave(rpc)}
           onOpen={openResults}
+          onRetry={() => { void retryRunAll(rpc) }}
+          failedName={failure ? agentById(failure.agent).name : undefined}
           onOpenMerged={() => { openResults(doneAgents[0]?.id ?? 'accessibility') }}
           onApply={() => { void applyFindings(rpc, openAll.filter((f) => f.fixable)).then(() => { runAllApplied.value = true }) }}
           onMic={() => toggleMic(rpc)}

@@ -7,7 +7,8 @@ import { Tab } from '../ui/Tab'
 import { createMockHandlers, MOCK_STEP } from '../mock'
 import { SPEAK_MS } from '../run'
 import { reset } from '../state'
-import { MSG } from '../messages'
+import { MSG, type AgentFinding, type RunRequest, type RunResult } from '../messages'
+import { agentById } from '../agents'
 
 const TICK = 10
 const RUN_TICKS = Math.ceil(100 / MOCK_STEP)
@@ -202,3 +203,99 @@ describe('agents Tab', () => {
     expect(screen.getByRole('heading', { name: 'UX AI agents' })).toBeInTheDocument()
   })
 })
+
+describe('agent scenarios', () => {
+  beforeEach(() => { vi.useFakeTimers(); reset() })
+  afterEach(() => { vi.useRealTimers() })
+
+  const scopeInfo = { scope: 'selection', name: 'Checkout flow', frames: 3, layers: 148, empty: false }
+  const finished = (request: RunRequest, extra: Partial<RunResult> = {}): RunResult => ({
+    runId: request.runId, agent: request.agent, scope: scopeInfo, brandModes: [], steps: [], findings: [], score: 100, checked: 148, durationMs: 1, model: null, stopped: false, ...extra,
+  } as RunResult)
+  const open = async (name: string, id: Parameters<typeof agentById>[0]) => {
+    await settle()
+    fireEvent.click(within(card(name)).getByRole('button', { name: 'Run' }))
+    fireEvent.click(screen.getByRole('button', { name: agentById(id).runLabel }))
+    await settle()
+  }
+
+  it('says an agent isn’t plugged in before a run that needs a model', async () => {
+    const run = vi.fn()
+    renderTab({ [MSG.run]: run as never })
+    await open('Spelling & grammar', 'spelling')
+    expect(screen.getByRole('heading', { name: 'These agents aren’t plugged in' })).toBeInTheDocument()
+    expect(run).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Back to agents' }))
+    expect(screen.getByRole('heading', { name: 'UX AI agents' })).toBeInTheDocument()
+  })
+
+  it('says there’s nothing to check, and offers the whole page', async () => {
+    renderTab({ [MSG.scope]: (async () => ({ ...scopeInfo, frames: 0, layers: 0, empty: true })) as never })
+    await settle()
+    fireEvent.click(screen.getByRole('button', { name: 'Run all on scope' }))
+    await settle()
+    expect(screen.getByRole('heading', { name: 'Nothing to check' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Use the whole page' }))
+    await settle()
+    expect(screen.getByRole('tab', { name: 'Whole page' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('shows the scene for a failed model request, not a clean result', async () => {
+    renderTab({ [MSG.run]: (async (r: RunRequest) => finished(r, { failure: { kind: 'network', message: 'offline', provider: 'claude' } })) as never })
+    await open('Accessibility', 'accessibility')
+    expect(screen.getByRole('heading', { name: 'Someone tripped over the wire' })).toBeInTheDocument()
+    expect(screen.getByText(/Accessibility couldn’t reach Claude/)).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Nothing to fix!' })).toBeNull()
+  })
+
+  it('offers what a failed run found so far', async () => {
+    const findings = [{ id: 'accessibility:1', severity: 'minor', fixable: false, nodeIds: [] }] as unknown as AgentFinding[]
+    renderTab({ [MSG.run]: (async (r: RunRequest) => finished(r, { findings, failure: { kind: 'lost', message: 'gone', provider: 'claude' } })) as never })
+    await open('Accessibility', 'accessibility')
+    expect(screen.getByRole('heading', { name: 'The line dropped mid-run' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'See 1 finding' })).toBeInTheDocument()
+  })
+
+  it('celebrates a clean run', async () => {
+    renderTab({ [MSG.run]: (async (r: RunRequest) => finished(r)) as never })
+    await open('Accessibility', 'accessibility')
+    expect(screen.getByRole('heading', { name: 'Nothing to fix!' })).toBeInTheDocument()
+    expect(screen.getByText(/Accessibility checked 148 layers/)).toBeInTheDocument()
+  })
+
+  it('shows the scene when the run itself fails, and can run again', async () => {
+    let calls = 0
+    renderTab({ [MSG.run]: (async (r: RunRequest) => { calls += 1; if (calls === 1) throw new Error('Figma said no'); return finished(r) }) as never })
+    await open('Accessibility', 'accessibility')
+    expect(screen.getByRole('heading', { name: 'Well, that wasn’t meant to happen' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Run again' }))
+    await settle()
+    expect(calls).toBe(2)
+    expect(screen.getByRole('heading', { name: 'Nothing to fix!' })).toBeInTheDocument()
+  })
+
+  it('stops Run all at the agent that failed, then carries on from it', async () => {
+    const ran: string[] = []
+    let failed = false
+    renderTab({ [MSG.run]: (async (r: RunRequest) => {
+      ran.push(r.agent)
+      if (r.agent === 'content' && !failed) { failed = true; return finished(r, { failure: { kind: 'lost', message: 'gone', provider: 'claude' } }) }
+      return finished(r)
+    }) as never })
+    await settle()
+    fireEvent.click(screen.getByRole('button', { name: 'Run all on scope' }))
+    await settle()
+    await settle()
+    expect(screen.getByText('The line dropped mid-run')).toBeInTheDocument()
+    expect(screen.getByText('Failed')).toBeInTheDocument()
+    expect(screen.getAllByText('Waiting for you to retry Content').length).toBeGreaterThan(0)
+    const before = ran.length
+    fireEvent.click(screen.getByRole('button', { name: 'Retry Content' }))
+    await settle()
+    await settle()
+    expect(ran.slice(before)[0]).toBe('content')
+    expect(ran.filter((a) => a === 'accessibility')).toHaveLength(1)
+    expect(screen.queryByText('Failed')).toBeNull()
+  })
+})
+

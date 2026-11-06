@@ -20,6 +20,10 @@ export interface AgentsRunAllProps {
   applied?: boolean
   onStopAll?: () => void
   onOpen?: (id: AgentId) => void
+  /** Carry on from the agent that failed. */
+  onRetry?: () => void
+  /** The agent that stopped the run, for the overall line. */
+  failedName?: string
   onOpenMerged?: () => void
   onApply?: () => void
   onMic?: () => void
@@ -31,8 +35,9 @@ const BADGE: Record<PipelineState, { label: string; tone: MetaBadgeTone }> = {
   running: { label: 'Running', tone: 'accent' },
   queued: { label: 'Queued', tone: 'neutral' },
   skipped: { label: 'Skipped', tone: 'neutral' },
+  failed: { label: 'Failed', tone: 'danger' },
 }
-const BOT_STATE = { done: 'default', running: 'working', queued: 'sleeping', skipped: 'default' } as const
+const BOT_STATE = { done: 'default', running: 'working', queued: 'sleeping', skipped: 'default', failed: 'sleeping' } as const
 
 // The Figma "AI Agents · Run all" screen, verbatim.
 const FIGMA_ROWS: readonly PipelineRow[] = [
@@ -48,7 +53,7 @@ const FIGMA_ROWS: readonly PipelineRow[] = [
 export function AgentsRunAll({
   rows = FIGMA_ROWS, subtitle = RUN_ALL_COPY.subtitle('Selection', 'Checkout flow', 3),
   done = 3, total = 5, findings = 26, fixable = 12, percent = 75, applied = false,
-  onStopAll, onOpen, onOpenMerged, onApply, onMic, onBack,
+  onStopAll, onOpen, onOpenMerged, onApply, onMic, onBack, onRetry, failedName,
 }: AgentsRunAllProps) {
   const finished = done >= total
   return (
@@ -64,7 +69,7 @@ export function AgentsRunAll({
 
       <section class="bb-agents-run-all__overall" aria-label="Overall progress">
         <div class="bb-agents-run-all__head">
-          <span class="bb-agents-run-all__label">{`${done} of ${total} agents done · ${findings} findings so far`}</span>
+          <span class="bb-agents-run-all__label">{failedName ? `${done} of ${total} agents done · ${failedName} needs a retry` : `${done} of ${total} agents done · ${findings} findings so far`}</span>
           <span class="bb-agents-run-all__percent">{Math.round(percent)}%</span>
         </div>
         <ProgressBar class="bb-agents-run-all__bar" value={percent} tone="success" aria-label="All agents progress" />
@@ -80,6 +85,7 @@ export function AgentsRunAll({
             </div>
             <MetaBadge tone={BADGE[state].tone}>{BADGE[state].label}</MetaBadge>
             {state === 'done' && <LinkButton onClick={() => onOpen?.(agent.id)} aria-label={`Open ${agent.name} results`}>Open</LinkButton>}
+            {state === 'failed' && <LinkButton onClick={onRetry} aria-label={`Retry ${agent.name}`}>Retry</LinkButton>}
           </div>
         ))}
       </div>

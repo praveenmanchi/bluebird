@@ -39,6 +39,7 @@
 
 .bb-bot-avatar__thrust,
 .bb-bot-avatar__brackets,
+.bb-bot-avatar__spring,
 .bb-bot-avatar__zzz {
   fill: none;
   stroke-linecap: round;
@@ -46,6 +47,7 @@
 }
 .bb-bot-avatar__thrust { stroke: var(--bb-persona-bird-beak); }
 .bb-bot-avatar__brackets { stroke: currentColor; }
+.bb-bot-avatar__spring { stroke: var(--bb-icon-muted); }
 .bb-bot-avatar__zzz {
   stroke: var(--bb-icon-muted);
   stroke-width: var(--bb-agents-face-stroke);

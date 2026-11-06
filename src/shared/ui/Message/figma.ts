@@ -1,4 +1,4 @@
-const orb = 'Bound on the nested Thinking Orb ("Orb") instance; rendered by the composed <ThinkingOrb>, whose ThinkingOrb.css consumes it.'
+const orb = 'Bound on the nested Thinking Orb in the last Figma snapshot. Figma now nests UX AI Bot, so this goes at the next figma:pull.'
 
 /** Figma ↔ code contract for Message ("Message" 40000284:8190). */
 export const figma = {
@@ -7,7 +7,7 @@ export const figma = {
   props: {
     Role: 'role (User / Assistant)',
     Text: 'text',
-    'Orb (Thinking Orb: State=Breathing, Size=20)': 'orbState (size fixed at 20)',
+    'Bot (UX AI Bot: State=Ready, 20)': 'botState (size fixed at 20)',
     'Rich content below the text (code only)': 'children',
   },
   figmaGaps: {
@@ -15,5 +15,5 @@ export const figma = {
     'uxai/radius/pill': orb,
     'uxai/size/orb-sm': orb,
   },
-  notes: 'Created 2026-10-09 for the UX AI tab. Assistant composes ThinkingOrb (Breathing, 20; `orbState` lets a streaming answer switch it to Composing). `children` is the slot for artifacts below the text — Figma draws text only. The root is FIXED 640 × 40 in Figma (derived); the code reads them as max-width and min-height so long answers and artifacts grow the row. Text keeps line breaks (pre-wrap).',
+  notes: 'Created 2026-10-09 for the UX AI tab. Assistant composes UxaiBot (Ready, 20; `botState` lets a streaming answer switch it to Answering). `children` is the slot for artifacts below the text — Figma draws text only. The root is FIXED 640 × 40 in Figma (derived); the code reads them as max-width and min-height so long answers and artifacts grow the row. Text keeps line breaks (pre-wrap).',
 } as const

@@ -22,6 +22,9 @@ export function setTimer(next: ReturnType<typeof setTimeout> | null): void {
   timer = next
 }
 
+/** The designer chose “Ask anyway” or “Use sample data” on the welcome scene. */
+export const welcomeDismissed = signal(false)
+
 export function reset(): void {
   setTimer(null)
   view.value = 'chat'
@@ -30,4 +33,5 @@ export function reset(): void {
   draft.value = ''
   variables.value = VARIABLES
   panelMode.value = 'swap'
+  welcomeDismissed.value = false
 }

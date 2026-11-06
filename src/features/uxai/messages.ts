@@ -1,6 +1,7 @@
 // This tab's wire contract: reveal a node, read what the selection binds (for
 // answers grounded in the Dual File libraries), open a library link and ask Claude. The
 // library index itself comes from the shared `libraries:load`.
+import type { AiFailure } from '@shared/ai'
 import * as z from 'zod/mini'
 
 export const MSG = {
@@ -26,6 +27,7 @@ export type AskRequest = z.infer<typeof askRequestSchema>
 export type AskResult =
   | { status: 'answered'; text: string; model: string; provider: 'claude' | 'openai' | 'gemini' }
   | { status: 'not-configured'; reason: 'disabled' | 'no-key' }
+  | { status: 'failed'; failure: AiFailure }
 
 export const focusRequestSchema = z.object({ nodeId: z.string().check(z.minLength(1)) })
 export type FocusRequest = z.infer<typeof focusRequestSchema>

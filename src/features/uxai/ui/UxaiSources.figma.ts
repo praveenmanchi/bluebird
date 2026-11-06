@@ -7,9 +7,9 @@ export const figma = {
     'uxai/surface/field': 'Bound on the composed ChatInput instance; ChatInput.css consumes it.',
     'uxai/space/row-x': 'Bound on the composed PromptChip / ChatInput instances; PromptChip.css / ChatInput.css consume it.',
     'uxai/space/row-y': 'Bound on the composed PromptChip / ChatInput instances; PromptChip.css / ChatInput.css consume it.',
-    'uxai/surface/sunken': 'Bound on the composed ThinkingOrb instance; ThinkingOrb.css consumes it.',
+    'uxai/surface/sunken': 'Bound on the Thinking Orb in the last Figma snapshot. Figma now nests UX AI Bot, so this goes at the next figma:pull.',
     'uxai/radius/pill': 'Bound on the composed ThinkingOrb / PromptChip instances; ThinkingOrb.css / PromptChip.css consume it.',
-    'uxai/size/orb-lg': 'Bound on the composed ThinkingOrb instance; ThinkingOrb.css consumes it.',
+    'uxai/size/orb-lg': 'Bound on the Thinking Orb in the last Figma snapshot. Figma now nests UX AI Bot, so this goes at the next figma:pull.',
     'uxai/chip/bg': 'Bound on the composed PromptChip instance; PromptChip.css consumes it.',
   },
   derivedGaps: {

@@ -1,0 +1,82 @@
+/* UxaiBot — Figma "UX AI Bot" (40002611:72953). The agent robot (BotAvatar.css paints its parts),
+ * coloured uxai/orb/core and sized by uxai/size/orb-*. The bubble is persona/bird/eye with a
+ * currentColor outline, so it reads on light and dark surfaces. Ready floats, Searching scans and
+ * bounces its dots, Answering floats slowly. All of it stops under prefers-reduced-motion. */
+.bb-bot-avatar.bb-uxai-bot {
+  width: var(--bb-uxai-size-orb-lg);
+  height: var(--bb-uxai-size-orb-lg);
+  color: var(--bb-uxai-orb-core);
+}
+.bb-bot-avatar.bb-uxai-bot[data-size='20'] {
+  width: var(--bb-uxai-size-orb-sm);
+  height: var(--bb-uxai-size-orb-sm);
+}
+
+.bb-uxai-bot__robot {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 240ms ease; /* allow-raw */
+}
+.bb-uxai-bot__bubble-shape {
+  fill: var(--bb-persona-bird-eye);
+  stroke: currentColor;
+}
+.bb-uxai-bot__dot { fill: currentColor; }
+.bb-uxai-bot__lines {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+.bb-uxai-bot__smile {
+  fill: none;
+  stroke: var(--bb-persona-bird-eye);
+  stroke-linecap: round;
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+.bb-uxai-bot__bubble,
+.bb-uxai-bot__dot { transform-box: fill-box; }
+.bb-uxai-bot__bubble {
+  transform-origin: left bottom;
+  animation: bb-uxai-bot-pop 240ms ease-out; /* allow-raw */
+}
+.bb-uxai-bot[data-state='ready'] .bb-bot-avatar__figure {
+  animation: bb-bot-avatar-float 3.6s ease-in-out infinite; /* allow-raw */
+}
+.bb-uxai-bot[data-state='ready'] .bb-bot-avatar__eyes {
+  animation: bb-bot-avatar-glance 4.8s ease-in-out infinite; /* allow-raw */
+}
+.bb-uxai-bot[data-state='searching'] .bb-bot-avatar__figure {
+  animation: bb-bot-avatar-float 0.9s ease-in-out infinite; /* allow-raw */
+}
+.bb-uxai-bot[data-state='searching'] .bb-bot-avatar__scan {
+  animation: bb-bot-avatar-scan 1.2s ease-in-out infinite; /* allow-raw */
+}
+.bb-uxai-bot[data-state='searching'] .bb-bot-avatar__thrust {
+  animation: bb-bot-avatar-flicker 0.9s ease-in-out infinite; /* allow-raw */
+}
+.bb-uxai-bot__dot { animation: bb-uxai-bot-dot 1s ease-in-out infinite; /* allow-raw */ }
+.bb-uxai-bot__dot:nth-of-type(2) { animation-delay: 160ms; /* allow-raw */ }
+.bb-uxai-bot__dot:nth-of-type(3) { animation-delay: 320ms; /* allow-raw */ }
+.bb-uxai-bot[data-state='answering'] .bb-bot-avatar__figure {
+  animation: bb-bot-avatar-float 2.4s ease-in-out infinite; /* allow-raw */
+}
+
+@keyframes bb-uxai-bot-pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bb-uxai-bot-dot {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  40% { transform: translateY(-1px); opacity: 1; } /* allow-raw */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-uxai-bot__robot { transition: none; }
+  .bb-uxai-bot__bubble,
+  .bb-uxai-bot__dot,
+  .bb-uxai-bot[data-state] .bb-bot-avatar__figure,
+  .bb-uxai-bot[data-state] .bb-bot-avatar__eyes,
+  .bb-uxai-bot[data-state] .bb-bot-avatar__scan,
+  .bb-uxai-bot[data-state] .bb-bot-avatar__thrust { animation: none; }
+}

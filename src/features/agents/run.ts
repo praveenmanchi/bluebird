@@ -2,13 +2,15 @@
 // annotations, the report frame, the agent conversation. Pure helpers first
 // (unit tested), then the actions, which take the RpcClient the Tab holds.
 import type { RpcClient } from '@shared/bridge'
+import { PROVIDER_LABEL, failureOf, type AiFailure } from '@shared/ai'
+import { scenarioCopy, sceneForFailure, type BotSceneId } from '@shared/ui'
 import { AGENTS, PIPELINE_ORDER, agentById, isRunnable, type AgentDef } from './agents'
 import {
   MSG, type AgentFinding, type AgentId, type AnnotateResult, type ApplyResult, type ChatResult, type ReportResult, type RunProgress, type RunRequest, type RunResult, type ScopeInfo,
 } from './messages'
 import {
   agentId, brands, chat, filter, findingStatus, mode, notice, outputs, results, rules, run, runAll, runAllApplied, scope, scopeInfo, transcript, view, voice, voiceReturn,
-  type FindingFilter, type FindingStatus, type View,
+  type FindingFilter, type FindingStatus, type View, scenario, runAllFailure,
 } from './state'
 
 /** A run reads the document and may wait on the model several times. */
@@ -34,10 +36,11 @@ export function filterCounts(findings: readonly AgentFinding[]): Record<FindingF
 }
 
 /** Run all row state for one agent. */
-export type PipelineState = 'done' | 'running' | 'queued' | 'skipped'
+export type PipelineState = 'done' | 'running' | 'queued' | 'skipped' | 'failed'
 
-export function pipelineState(agent: AgentDef, progress: Partial<Record<AgentId, number>>): PipelineState {
+export function pipelineState(agent: AgentDef, progress: Partial<Record<AgentId, number>>, failed?: AgentId): PipelineState {
   if (!isRunnable(agent)) return 'skipped'
+  if (agent.id === failed) return 'failed'
   const p = progress[agent.id] ?? 0
   if (p >= 100) return 'done'
   const order = PIPELINE_ORDER.map(agentById).filter(isRunnable)
@@ -92,6 +95,37 @@ let unsubscribe: (() => void) | undefined
 let stopRunAllFlag = false
 
 const say = (tone: 'info' | 'error', text: string) => { notice.value = { tone, text } }
+
+/** Show a full-screen scene for this agent. Back returns to `back`. */
+export function showScenario(scene: BotSceneId, agent: AgentId, back: View, details: { provider?: string; body?: string } = {}): void {
+  agentId.value = agent
+  scenario.value = { scene, agent, back, ...details }
+  view.value = 'scenario'
+}
+
+/** Leave the scene for where it came from (or a screen the action picked). */
+export function leaveScenario(to?: View): void {
+  const back = scenario.value?.back ?? 'gallery'
+  scenario.value = null
+  view.value = to ?? back
+}
+
+const failureDetails = (failure: AiFailure) => (failure.provider ? { provider: PROVIDER_LABEL[failure.provider] } : {})
+
+/** Run all marks the row; a single run opens the scene, or leaves a notice if the designer moved on. */
+function reportFailure(id: AgentId, failure: AiFailure, navigate: boolean): void {
+  const scene = sceneForFailure(failure.kind)
+  if (!navigate) runAllFailure.value = { agent: id, text: scenarioCopy(scene, { surface: 'agents', ...failureDetails(failure) }).title }
+  else if (view.value === 'running') showScenario(scene, id, 'setup', failureDetails(failure))
+  else say('error', failure.message)
+}
+
+/** Run one agent, unless it can't start: nothing in scope, or it needs a model that isn't set up. */
+export function startRun(rpc: RpcClient, id: AgentId, modelReady: boolean): void {
+  if (scopeInfo.value?.empty) { showScenario('nothing-selected', id, 'setup'); return }
+  if (agentById(id).needsModel && !modelReady) { showScenario('no-connection', id, 'setup'); return }
+  void runOne(rpc, id)
+}
 
 function rulesFor(agent: AgentDef): string[] {
   const on = agent.rules.filter((r) => rules.value[`${agent.id}:${r.id}`] ?? r.enabled).map((r) => r.id)
@@ -155,14 +189,21 @@ export async function runOne(rpc: RpcClient, id: AgentId, { navigate = true }: {
     if (run.value?.runId !== runId) return null // stopped meanwhile
     results.value = { ...results.value, [id]: result }
     run.value = null
-    if (navigate && view.value === 'running') { filter.value = 'all'; notice.value = null; view.value = 'results' }
+    if (result.failure) {
+      reportFailure(id, result.failure, navigate)
+    } else if (navigate && view.value === 'running') {
+      filter.value = 'all'
+      notice.value = null
+      const clean = !result.findings.length && !result.stopped && !(result.model && 'skipped' in result.model)
+      if (clean) showScenario('all-clear', id, 'gallery', { body: `${agent.name} checked ${result.scope.layers} layers and every one looks great. Go you.` })
+      else view.value = 'results'
+    }
     void afterRun(rpc, agent, result)
     return result
   } catch (error: unknown) {
     if (run.value?.runId === runId) {
       run.value = null
-      say('error', error instanceof Error ? error.message : 'The run failed.')
-      if (navigate && view.value === 'running') view.value = 'setup'
+      reportFailure(id, failureOf(error), navigate)
     }
     return null
   } finally {
@@ -219,6 +260,9 @@ export async function applyFindings(rpc: RpcClient, findings: readonly AgentFind
     for (const id of result.applied) next[id] = 'applied'
     for (const { id } of result.failed) next[id] = 'failed'
     findingStatus.value = next
+    if (result.failed.length && view.value === 'results') {
+      showScenario('fix-stuck', agentId.value, 'results', { body: `${result.applied.length} of ${withFix.length} fixes went in. Figma wouldn’t let ${result.failed.length} through, usually because those layers are locked or were removed.` })
+    }
     if (result.failed.length) say('error', `${result.failed.length} ${result.failed.length === 1 ? 'fix' : 'fixes'} couldn’t be applied: ${result.failed[0]!.reason}`)
     return result.applied.length
   } catch (error: unknown) {
@@ -250,18 +294,31 @@ export async function stopRun(rpc: RpcClient): Promise<void> {
 }
 
 export async function startRunAll(rpc: RpcClient): Promise<void> {
-  stopRunAllFlag = false
+  if (scopeInfo.value?.empty) { showScenario('nothing-selected', agentId.value, 'gallery'); return }
   runAll.value = {}
   runAllApplied.value = false
   view.value = 'run-all'
+  await runPipeline(rpc)
+}
+
+/** Run all's Retry: carries on from the agent that failed. */
+export async function retryRunAll(rpc: RpcClient): Promise<void> {
+  await runPipeline(rpc)
+}
+
+async function runPipeline(rpc: RpcClient): Promise<void> {
+  stopRunAllFlag = false
+  runAllFailure.value = null
   for (const id of PIPELINE_ORDER) {
     if (stopRunAllFlag) return
-    if (!isRunnable(agentById(id))) continue
+    if (!isRunnable(agentById(id)) || (runAll.value?.[id] ?? 0) >= 100) continue
     const off = rpc.on<RunProgress>(MSG.progress, (p) => { if (run.value?.runId === p.runId) runAll.value = { ...(runAll.value ?? {}), [id]: Math.min(99, p.percent) } })
-    const result = await runOne(rpc, id, { navigate: false })
+    await runOne(rpc, id, { navigate: false })
     off()
     if (stopRunAllFlag) return
-    runAll.value = { ...(runAll.value ?? {}), [id]: result ? 100 : 100 }
+    // The later agents wait: the run order keeps their fixes from colliding.
+    if (runAllFailure.value) return
+    runAll.value = { ...(runAll.value ?? {}), [id]: 100 }
   }
 }
 
@@ -270,6 +327,7 @@ export function stopAllAndLeave(rpc: RpcClient): void {
   stopRunAllFlag = true
   void stopRun(rpc)
   runAll.value = null
+  runAllFailure.value = null
   view.value = 'gallery'
 }
 
