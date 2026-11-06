@@ -27946,7 +27946,7 @@
       "id": "40000324:8451",
       "key": "835199bc6f7722626d5d446c8321de4dc4527021",
       "name": "SSO Provider Button",
-      "description": "One identity provider on the SSO screen. Opens the provider’s sign-in in the browser; while waiting the screen swaps to the Spinner (Accent). Glyphs are monochrome marks bound to login/provider/glyph.",
+      "description": "One identity provider on the SSO screen. Opens the provider’s sign-in in the browser; while waiting the screen swaps to the Spinner (Accent). Microsoft and Okta are single-colour logos bound to login/provider/glyph; Google keeps its brand colours.",
       "props": {
         "Provider": {
           "type": "VARIANT",
