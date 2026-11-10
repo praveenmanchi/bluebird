@@ -50,7 +50,45 @@
         "source": {
           "collection": "Brand UI",
           "mode": "AkzoNobel"
-        }
+        },
+        "tabs": [
+          {
+            "id": "a11y",
+            "enabled": true
+          },
+          {
+            "id": "jira",
+            "enabled": true
+          },
+          {
+            "id": "varmapper",
+            "enabled": true
+          },
+          {
+            "id": "uxai",
+            "enabled": true
+          },
+          {
+            "id": "agents",
+            "enabled": true
+          },
+          {
+            "id": "varsearch",
+            "enabled": true
+          },
+          {
+            "id": "audit",
+            "enabled": true
+          },
+          {
+            "id": "mcp",
+            "enabled": true
+          },
+          {
+            "id": "publish",
+            "enabled": false
+          }
+        ]
       },
       "adecco": {
         "label": "Adecco",
