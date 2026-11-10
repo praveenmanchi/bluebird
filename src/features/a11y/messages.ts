@@ -14,6 +14,10 @@ export const MSG = {
   target: 'a11y:target',
   /** Opens the W3C Quick Reference for the chosen standard ("Check rules"); the sandbox owns the URL. */
   openRules: 'a11y:open-rules',
+  /** Draws the Figma report (Export › Figma report) beside the scope. */
+  createReport: 'a11y:create-report',
+  /** Draws the developer spec for the selected screen (Export › Developer spec). */
+  createSpec: 'a11y:create-spec',
 } as const
 
 
@@ -228,3 +232,39 @@ export const annotateRequestSchema = z.object({
   label: z.string().check(z.minLength(1)),
 })
 export type AnnotateRequest = z.infer<typeof annotateRequestSchema>
+
+const hex = z.string().check(z.regex(/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/))
+const pairSchema = z.object({ fg: hex, bg: hex })
+
+/** Colours the UI reads from the active brand's CSS; the user's file has none of Bluebird's variables. */
+export const docThemeSchema = z.object({
+  page: hex, subtle: hex, border: hex, borderStrong: hex, title: hex, body: hex, meta: hex, accent: hex,
+  severity: z.object({ critical: pairSchema, serious: pairSchema, moderate: pairSchema, minor: pairSchema, pass: pairSchema }),
+  annotation: z.object({ focus: hex, heading: hex, landmark: hex, on: hex }),
+  banner: z.object({ bg: hex, text: hex }),
+  logoSvg: z.string().check(z.maxLength(200_000)),
+})
+
+export const docBrandingSchema = z.object({
+  documentType: z.string().check(z.minLength(1)),
+  createdAt: z.string().check(z.minLength(1)),
+  documentId: z.string().check(z.minLength(1)),
+  file: z.string(),
+  version: z.string(),
+})
+
+/** The report content is built by the UI (doc/report-doc.ts); only its outline is checked here. */
+export const createReportRequestSchema = z.object({
+  theme: docThemeSchema,
+  branding: docBrandingSchema,
+  doc: z.looseObject({ kind: z.literal('report'), title: z.string(), issues: z.array(z.unknown()) }),
+})
+
+export const createSpecRequestSchema = z.object({
+  theme: docThemeSchema,
+  branding: docBrandingSchema,
+  audit: z.object({ standard: z.optional(standardSchema), platform: platformSchema, openIssues: z.nullable(z.number().check(z.int(), z.nonnegative())) }),
+})
+
+/** The frame Bluebird drew, so the UI can say where it went. */
+export interface CreatedDocument { nodeId: string; name: string }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks'
-import { Button, ScanSummary, SectionTitle, SegmentedControl, useRpc, type IconName } from '@shared/ui'
-import { MSG, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
+import { Button, Notice, ScanSummary, SectionTitle, SegmentedControl, useRpc, type IconName } from '@shared/ui'
+import { BUILD_VERSION } from '@shared/buildInfo'
+import { MSG, type CreatedDocument, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
 import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, type LevelFilter } from '../state'
 import { contrastRule, rulesFor, targetRule, type RuleId } from '../rules'
 import { STANDARDS, standardLabel, type StandardId } from '../standards'
@@ -13,6 +14,9 @@ import { downloadText, safeFilename } from './download'
 import { NonTextCard } from './NonTextCard'
 import { TargetCard } from './TargetCard'
 import { summaryProps, emptySummaryProps } from './summaryProps'
+import { ExportMenu, type ExportFormat } from './ExportMenu'
+import { createdLabel, documentId, readDocTheme } from './docTheme'
+import { buildReportDoc } from '../doc/report-doc'
 import './a11y.css'
 
 type FindingKind = 'all' | 'contrast' | 'nontext' | 'target'
@@ -45,6 +49,8 @@ const LEVELS = [
 export function Tab() {
   const rpc = useRpc()
   const [kind, setKind] = useState<FindingKind>('all')
+  const [exporting, setExporting] = useState(false)
+  const [exported, setExported] = useState<{ format: 'figma-report' | 'developer-spec'; name: string } | { error: string } | null>(null)
 
   useEffect(() => {
     const off = rpc.on<ScanProgress>(MSG.progress, (p) => { visited.value = p.visited })
@@ -99,17 +105,46 @@ export function Tab() {
   /** The version the results were measured against (the dropdown may have moved since). */
   const scannedStandard = r?.standard
 
-  /** The artifact an auditor reads: same data, two formats. */
-  function exportReport(format: 'JSON' | 'Markdown') {
+  /** The artifact an auditor reads: JSON and Markdown download; the Figma report and developer spec are drawn on the canvas. */
+  async function exportReport(format: ExportFormat) {
     if (!r) return
-    const report = buildReport(r, { ...r.meta, generatedAt: new Date().toISOString() })
-    // usedIconNames (scripts/gen-tokens.ts) treats ANY bare lowercase kebab
-    // literal in src/ as an icon reference — comments included — so the
-    // extension is derived rather than written out, or we ship a stray glyph.
-    const extension = format === 'Markdown' ? 'md' : format.toLowerCase()
-    const name = safeFilename([r.meta.file, r.meta.page, 'accessibility'], extension)
-    if (format === 'JSON') downloadText(name, JSON.stringify(report, null, 2), 'application/json')
-    else downloadText(name, reportToMarkdown(report), 'text/markdown')
+    setExported(null)
+    if (format === 'json' || format === 'markdown') {
+      const report = buildReport(r, { ...r.meta, generatedAt: new Date().toISOString() })
+      // usedIconNames (scripts/gen-tokens.ts) treats ANY bare lowercase kebab
+      // literal in src/ as an icon reference — comments included — so the
+      // extension is derived rather than written out, or we ship a stray glyph.
+      const extension = format === 'markdown' ? 'md' : format.toLowerCase()
+      const name = safeFilename([r.meta.file, r.meta.page, 'accessibility'], extension)
+      if (format === 'json') downloadText(name, JSON.stringify(report, null, 2), 'application/json')
+      else downloadText(name, reportToMarkdown(report), 'text/markdown')
+      return
+    }
+    const now = new Date()
+    const spec = format === 'developer-spec'
+    const branding = {
+      documentType: spec ? 'Accessibility spec for developers' : 'Accessibility report',
+      createdAt: createdLabel(now),
+      documentId: documentId(spec ? 'S' : 'R', now),
+      file: [r.meta.file, r.meta.page].filter(Boolean).join(' › '),
+      version: BUILD_VERSION,
+    }
+    setExporting(true)
+    try {
+      const theme = readDocTheme()
+      const created = spec
+        ? await rpc.call<CreatedDocument>(MSG.createSpec, { theme, branding, audit: { standard: r.standard, platform: platform.value, openIssues: total } }, 60_000)
+        : await rpc.call<CreatedDocument>(MSG.createReport, {
+          theme,
+          branding,
+          doc: buildReportDoc(r, { issues, nonText, targets }, { title: target.value?.name ?? r.meta.page, platform: platform.value, scannedOn: createdLabel(now).split(',')[0] ?? '' }),
+        }, 60_000)
+      setExported({ format, name: created.name })
+    } catch (e: unknown) {
+      setExported({ error: e instanceof Error ? e.message : 'Could not draw it on the canvas' })
+    } finally {
+      setExporting(false)
+    }
   }
 
   return (
@@ -146,13 +181,6 @@ export function Tab() {
             {r.unmeasurable.length > 0 && <span data-tone="warn">{r.unmeasurable.length} could not be measured</span>}
           </p>
         )}
-        {r && (
-          <div class="bb-a11y__export">
-            <span class="bb-a11y__export-label">Export report</span>
-            <Button variant="secondary" onClick={() => exportReport('JSON')}>JSON</Button>
-            <Button variant="secondary" onClick={() => exportReport('Markdown')}>Markdown</Button>
-          </div>
-        )}
         {r && r.unmeasurable.length > 0 && (
           <details class="bb-a11y__unmeasurable">
             <summary>
@@ -173,13 +201,24 @@ export function Tab() {
         {r && (
           <section class="bb-a11y__findings" aria-label="Findings">
             <SectionTitle title="Findings" count={String(total)} showAction={false} />
-            <SegmentedControl
-              class="bb-a11y__kinds"
-              aria-label="Filter findings"
-              options={KINDS.map(([k, label, icon]) => ({ value: k, label: `${label} ${counts[k]}`, icon }))}
-              value={kind}
-              onChange={setKind}
-            />
+            {exported && 'error' in exported && <Notice tone="error" title="Couldn’t draw it on the canvas">{exported.error}</Notice>}
+            {exported && 'format' in exported && (
+              <Notice tone="info" title={exported.format === 'figma-report' ? 'Figma report added to the canvas' : 'Developer spec added to the canvas'}>
+                {exported.format === 'figma-report'
+                  ? `“${exported.name}” is next to your frames: ${total} issue${total === 1 ? '' : 's'}, each with the layer, the rule it breaks and the fix.`
+                  : `“${exported.name}” is next to the screen, with focus order, names, states and keyboard notes.`}
+              </Notice>
+            )}
+            <div class="bb-a11y__findings-bar">
+              <SegmentedControl
+                class="bb-a11y__kinds"
+                aria-label="Filter findings"
+                options={KINDS.map(([k, label, icon]) => ({ value: k, label: `${label} ${counts[k]}`, icon }))}
+                value={kind}
+                onChange={setKind}
+              />
+              <ExportMenu busy={exporting} onExport={(format) => { void exportReport(format) }} />
+            </div>
             {total === 0 && (
               <p class="bb-a11y__empty">
                 Nothing to report in {r.scope === 'page' ? 'this page' : 'the selection'} against {standardLabel(scannedStandard)} · {ruleList.map((rule) => rule.id).join(', ')}.

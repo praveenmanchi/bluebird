@@ -5,10 +5,10 @@ import { PassThrough } from 'node:stream'
 import { createBuildRunner, type Spawn } from '../../tools/dev-config/build-runner'
 
 function fakeSpawn() {
-  const runs: { command: string; args: readonly string[]; cwd: string; child: EventEmitter & { stdout: PassThrough; stderr: PassThrough } }[] = []
-  const spawn: Spawn = (command, args, { cwd }) => {
+  const runs: { command: string; args: readonly string[]; cwd: string; env: NodeJS.ProcessEnv; child: EventEmitter & { stdout: PassThrough; stderr: PassThrough } }[] = []
+  const spawn: Spawn = (command, args, { cwd, env }) => {
     const child = Object.assign(new EventEmitter(), { stdout: new PassThrough(), stderr: new PassThrough() })
-    runs.push({ command, args, cwd, child })
+    runs.push({ command, args, cwd, env, child })
     return child as unknown as ReturnType<Spawn>
   }
   return { spawn, runs }
@@ -53,5 +53,54 @@ describe('build runner', () => {
     const lines = (runner.state() as { output: string }).output.split('\n')
     expect(lines).toHaveLength(40)
     expect(lines[0]).toBe('line 20')
+  })
+})
+
+import { failureLine, withoutNoise } from '../../tools/dev-config/build-runner'
+
+/** The real Rollup warning zod triggers on every build, passing or not. */
+const ZOD_WARNING = [
+  'node_modules/zod/v4/core/util.js (400:0): A comment',
+  '"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer"',
+  'in "node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.',
+]
+
+describe('build output', () => {
+  it('drops the zod comment warning so it cannot hide the failing step', () => {
+    expect(withoutNoise(['> vite build', ...ZOD_WARNING, ...ZOD_WARNING, '✓ built in 204ms'])).toEqual(['> vite build', '✓ built in 204ms'])
+  })
+
+  it('names the line that failed, not npm’s footer', () => {
+    expect(failureLine(['[size] dist/index.html = 1434.0 KB (budget 1430 KB) — OVER BUDGET', 'npm error Lifecycle script `build` failed with error:'])).toBe('[size] dist/index.html = 1434.0 KB (budget 1430 KB) — OVER BUDGET')
+    expect(failureLine(['all good'])).toBeUndefined()
+  })
+
+  it('keeps the error in view even after hundreds of warning lines, and reports it', async () => {
+    const { spawn, runs } = fakeSpawn()
+    const runner = createBuildRunner('/repo', spawn)
+    runner.start()
+    for (let i = 0; i < 60; i += 1) runs[0]!.child.stderr.write(`${ZOD_WARNING.join('\n')}\n`)
+    runs[0]!.child.stdout.write('[size] dist/index.html = 1434.0 KB (budget 1430 KB) — OVER BUDGET\n')
+    await tick()
+    runs[0]!.child.emit('close', 1)
+    const state = runner.state()
+    expect(state).toMatchObject({ status: 'failed', summary: '[size] dist/index.html = 1434.0 KB (budget 1430 KB) — OVER BUDGET' })
+    expect(state.status !== 'idle' && state.output).not.toMatch(/Rollup cannot interpret/)
+  })
+})
+
+describe('build environment', () => {
+  it('does not pass the dev server’s NODE_ENV to the build, so Vite makes a production build', () => {
+    const before = process.env.NODE_ENV
+    process.env.NODE_ENV = 'development'
+    try {
+      const { spawn, runs } = fakeSpawn()
+      createBuildRunner('/repo', spawn).start()
+      expect(runs[0]!.env.NODE_ENV).toBeUndefined()
+      expect(runs[0]!.env.PATH).toBe(process.env.PATH)
+    } finally {
+      if (before === undefined) delete process.env.NODE_ENV
+      else process.env.NODE_ENV = before
+    }
   })
 })

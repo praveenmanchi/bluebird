@@ -30,6 +30,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
+  /* Space between the Change / Severity badges and Rating, matching the badges' own gap. */
+  gap: var(--bb-space-inline-xs);
   box-sizing: border-box;
   min-height: var(--bb-derived-wcag-card-header-height);
   padding: var(--bb-dimension-space-8) var(--bb-dimension-space-8) var(--bb-space-inset-xs) var(--bb-dimension-space-8);

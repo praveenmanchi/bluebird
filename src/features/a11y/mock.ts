@@ -5,7 +5,7 @@ import { ruleIn } from './rules'
 import { DEFAULT_STANDARD, quickrefUrl, type StandardId } from './standards'
 import { checksTargets, rateTarget, requiredTarget, type Platform } from './target'
 
-const sample: ScanResult = {
+export const sampleScan: ScanResult = {
   scope: 'page',
   meta: { file: 'Plugin UI', page: 'Marketing site', brand: 'Bridge' },
   scanned: 1284,
@@ -66,12 +66,12 @@ const sample: ScanResult = {
 }
 
 const many: ScanResult = {
-  ...sample,
+  ...sampleScan,
   scanned: 9_412,
   textNodes: 318,
   durationMs: 1_240,
   issues: Array.from({ length: 12 }, (_, i) => {
-    const base = sample.issues[i % sample.issues.length]!
+    const base = sampleScan.issues[i % sampleScan.issues.length]!
     return { ...base, nodeId: `2:${i + 1}`, nodeIds: [`2:${i + 1}`], occurrences: 1, name: `${base.name} ${i + 1}`, ratio: Math.round((base.ratio + i * 0.07) * 100) / 100 }
   }),
 }
@@ -88,7 +88,7 @@ export function createMockHandlers(scenario: MockScenario = 'default'): HandlerM
         ctx.emit(MSG.progress, { visited })
       }
       if (scenario === 'error') throw new Error('Figma stopped responding while traversing the page (mock scenario)')
-      const result = scenario === 'many' || scenario === 'slow' ? many : scenario === 'empty' ? { ...sample, issues: [] } : sample
+      const result = scenario === 'many' || scenario === 'slow' ? many : scenario === 'empty' ? { ...sampleScan, issues: [] } : sampleScan
       // Re-measure the fixture targets for the chosen platform and standard, as the sandbox does
       // (iOS 44 pt, Android 48 dp; no target or non-text findings before the version that added them).
       const platform = payload.platform ?? 'web'
@@ -111,6 +111,9 @@ export function createMockHandlers(scenario: MockScenario = 'default'): HandlerM
     [MSG.selectAll]: async (payload: { nodeIds: readonly string[] }) => ({ selected: payload.nodeIds.length }),
     [MSG.applyFix]: async (payload: { nodeIds: readonly string[] }) => ({ applied: payload.nodeIds.length }),
     [MSG.annotate]: async (payload: { nodeIds: readonly string[] }) => ({ annotated: payload.nodeIds.length }),
+    // The dev harness has no canvas: answer with the frame name the sandbox would draw.
+    [MSG.createReport]: async (payload: { doc: { title: string } }) => ({ nodeId: 'doc:report', name: `Figma report · ${payload.doc.title}` }),
+    [MSG.createSpec]: async () => ({ nodeId: 'doc:spec', name: 'Accessibility spec · Login screen' }),
   }
 }
 
