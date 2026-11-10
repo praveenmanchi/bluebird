@@ -72,6 +72,10 @@ export function BuildPrompt({ open, onClose }: BuildPromptProps) {
   }
   const close = () => { clearBuildPending(); onClose() }
   const running = build.status === 'running'
+  // Keep the end of the log in view: that is where a failing step says what went wrong.
+  const log = useRef<HTMLPreElement>(null)
+  const output = build.status === 'idle' ? '' : build.output
+  useEffect(() => { if (log.current) log.current.scrollTop = log.current.scrollHeight }, [output])
 
   return (
     <dialog ref={ref} class="cfg-dialog" aria-labelledby="cfg-dialog-title" onCancel={(e) => { e.preventDefault(); if (!running) close() }}>
@@ -85,8 +89,12 @@ export function BuildPrompt({ open, onClose }: BuildPromptProps) {
       </p>
 
       {running && <div class="cfg-dialog__status"><Spinner tone="accent" label="Building" /> Building… this takes about a minute.</div>}
-      {build.status === 'failed' && <Notice tone="error" title="The build failed">Nothing in Figma changed. The last lines of output are below.</Notice>}
-      {(running || build.status === 'failed') && build.output && <pre class="cfg-dialog__log" aria-label="Build output">{build.output}</pre>}
+      {build.status === 'failed' && (
+        <Notice tone="error" title="The build failed">
+          {build.summary ? <><code>{build.summary}</code> Nothing in Figma changed.</> : 'Nothing in Figma changed. The last lines of output are below.'}
+        </Notice>
+      )}
+      {(running || build.status === 'failed') && build.output && <pre ref={log} class="cfg-dialog__log" aria-label="Build output">{build.output}</pre>}
       {error && <Notice tone="error" title="Couldn’t run the build from here">{error} Run <code>{BUILD_COMMAND}</code> in a terminal instead.</Notice>}
       {copy === 'copied' && <p class="cfg-dialog__hint">Copied. Paste it in a terminal at the repo root.</p>}
       {copy === 'failed' && <p class="cfg-dialog__hint">Copy didn’t work here: type <code>{BUILD_COMMAND}</code> in a terminal at the repo root.</p>}

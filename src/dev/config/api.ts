@@ -23,7 +23,7 @@ const BUILD_ENDPOINT = '/__bluebird/build'
 export type BuildState =
   | { status: 'idle' }
   | { status: 'running'; startedAt: string; output: string }
-  | { status: 'passed' | 'failed'; startedAt: string; finishedAt: string; exitCode: number | null; output: string }
+  | { status: 'passed' | 'failed'; startedAt: string; finishedAt: string; exitCode: number | null; output: string; summary?: string }
 
 interface BuildReply { ok: boolean; build?: BuildState; error?: string }
 
