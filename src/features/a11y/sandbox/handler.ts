@@ -15,6 +15,7 @@ import { buildInventory, type InventoryNode } from '../inventory'
 import { summarizeScope } from '../scope-summary'
 import { ruleIn } from '../rules'
 import { DEFAULT_STANDARD, quickrefUrl, type StandardId } from '../standards'
+import { createReport, createSpec } from './documents'
 import {
   MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema, openRulesRequestSchema,
   type ContrastIssue, type ScanTarget, type ScanResult, type ScanProgress, type UnmeasurableText,
@@ -494,4 +495,6 @@ export const handlers: HandlerMap = {
   [MSG.selectAll]: selectAll,
   [MSG.applyFix]: applyFix,
   [MSG.annotate]: annotate,
+  [MSG.createReport]: createReport,
+  [MSG.createSpec]: createSpec,
 }

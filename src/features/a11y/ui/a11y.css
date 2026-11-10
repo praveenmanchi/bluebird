@@ -73,23 +73,16 @@
 }
 
 /* Export row — the artifact an auditor reads, in two formats. */
-.bb-a11y__export {
+/* Findings row — Figma "Accessibility M · Results · Export" (40002658:26473): the filters, then
+ * Export ▾ on the right. The menu opens under the button, right-aligned. */
+.bb-a11y__findings-bar {
   display: flex;
   align-items: center;
-  gap: var(--bb-space-inline-sm);
-  flex-wrap: wrap;
+  gap: var(--bb-space-inline-md);
 }
-.bb-a11y__export-label {
-  margin-right: auto;
-  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-type-size-10);
-  font-weight: var(--bb-type-weight-600);
-  line-height: var(--bb-type-line-11);
-  color: var(--bb-text-tertiary);
-}
-
-/* Figma L "Results": Findings title + filter tabs above the stacked WCAG cards. */
-.bb-a11y__findings { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); container: a11y-findings / inline-size; }
+.bb-a11y__findings-bar .bb-a11y__kinds { flex: 1 1 auto; min-width: 0; }
+.bb-a11y__export-menu { position: relative; flex: none; }
+.bb-a11y__export-options { position: absolute; top: calc(100% + var(--bb-space-inset-sm)); right: 0; z-index: 1; min-width: var(--bb-size-control-width-lg); }
 .bb-a11y__kinds { align-self: flex-start; }
 /* Accessibility S: the Figma Criteria filter turns Show icon off on every item (inset space/8)
  * so the four items fit 310 wide. */

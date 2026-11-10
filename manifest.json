@@ -9,7 +9,8 @@
   },
   "capabilities": [],
   "permissions": [
-    "teamlibrary"
+    "teamlibrary",
+    "currentuser"
   ],
   "enableProposedApi": false,
   "documentAccess": "dynamic-page",

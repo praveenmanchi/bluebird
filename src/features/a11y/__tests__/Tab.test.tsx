@@ -146,3 +146,57 @@ describe('a11y Tab', () => {
     expect(screen.getAllByRole('article')).toHaveLength(2)
   })
 })
+
+describe('a11y Tab · Export menu', () => {
+  async function scanned(handlers: HandlerMap) {
+    renderTab(handlers)
+    await screen.findByRole('heading', { name: 'Ready to check Login screen' })
+    fireEvent.click(screen.getByRole('button', { name: 'Scan' }))
+    await waitFor(() => expect(screen.getByRole('region', { name: 'Findings' })).toBeInTheDocument(), { timeout: 3000 })
+  }
+
+  it('replaces the export row with an Export menu beside the filters', async () => {
+    await scanned(mockHandlers)
+    expect(screen.queryByText('Export report', { selector: 'span' })).toBeNull()
+    const trigger = screen.getByRole('button', { name: 'Export report' })
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['JSON', 'Markdown', 'Figma report', 'Developer spec'])
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('option', { name: 'Figma report' })).toBeNull()
+    expect(document.activeElement).toBe(trigger)
+  })
+
+  it('draws the Figma report from the findings on screen and says where it went', async () => {
+    let received: { doc: { kind: string; title: string; issues: { id: string }[] }; theme: { page: string }; branding: { documentType: string; documentId: string } } | null = null
+    await scanned({ ...mockHandlers, [MSG.createReport]: async (p: NonNullable<typeof received>) => { received = p; return { nodeId: 'r', name: `Figma report · ${p.doc.title}` } } })
+    fireEvent.click(screen.getByRole('button', { name: 'Export report' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Figma report' }))
+    expect(await screen.findByText('Figma report added to the canvas')).toBeInTheDocument()
+    expect(screen.getByText(/“Figma report · Login screen” is next to your frames/)).toBeInTheDocument()
+    expect(received!.doc.kind).toBe('report')
+    expect(received!.doc.issues[0]?.id).toBe('A11Y-01')
+    expect(received!.theme.page).toBe('#ffffff')
+    expect(received!.branding.documentType).toBe('Accessibility report')
+    expect(received!.branding.documentId).toMatch(/^A11Y-R-\d{8}-\d{4}$/)
+  })
+
+  it('asks the sandbox for a developer spec with the audit status', async () => {
+    let audit: { openIssues: number | null; platform: string } | null = null
+    await scanned({ ...mockHandlers, [MSG.createSpec]: async (p: { audit: NonNullable<typeof audit> }) => { audit = p.audit; return { nodeId: 's', name: 'Accessibility spec · Login screen' } } })
+    fireEvent.click(screen.getByRole('button', { name: 'Export report' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Developer spec' }))
+    expect(await screen.findByText('Developer spec added to the canvas')).toBeInTheDocument()
+    expect(audit).toMatchObject({ platform: 'web' })
+    expect(audit!.openIssues).toBeGreaterThan(0)
+  })
+
+  it('reports a canvas failure instead of failing silently', async () => {
+    await scanned({ ...mockHandlers, [MSG.createSpec]: async () => { throw new Error('Select the screen to spec — a frame, or anything inside one') } })
+    fireEvent.click(screen.getByRole('button', { name: 'Export report' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Developer spec' }))
+    expect(await screen.findByText('Couldn’t draw it on the canvas')).toBeInTheDocument()
+    expect(screen.getByText(/Select the screen to spec/)).toBeInTheDocument()
+  })
+})

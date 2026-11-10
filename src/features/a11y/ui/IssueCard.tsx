@@ -4,12 +4,9 @@ import { MSG, type ContrastIssue } from '../messages'
 import { understandingUrl, type StandardId } from '../standards'
 import { useAnnotate } from './useAnnotate'
 
-/** WCAG criterion a contrast issue is reported against. `fail` breaks 1.4.3 (AA); everything else below AAA breaks 1.4.6. */
-export function criterionFor(issue: ContrastIssue): { code: string; title: string; rating: 'AA' | 'AAA'; needs: number } {
-  const large = issue.fontSize >= 24 || (issue.fontSize >= 18.66 && issue.isBold)
-  if (issue.level === 'fail') return { code: '1.4.3', title: 'Contrast (Minimum)', rating: 'AA', needs: large ? 3 : 4.5 }
-  return { code: '1.4.6', title: 'Contrast (Enhanced)', rating: 'AAA', needs: large ? 4.5 : 7 }
-}
+import { criterionFor } from '../criteria'
+
+export { criterionFor }
 
 const DESCRIPTION: Record<string, string> = {
   '1.4.3': 'Text and images of text have a contrast ratio of at least 4.5:1 (3:1 for large text).',

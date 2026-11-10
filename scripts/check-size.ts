@@ -80,7 +80,8 @@ import { resolve } from 'node:path'
 // 2026-11-06 (Variable mapper + Component audit tabs, persona screens): user raised the budget to 1430 KB.
 // The two tabs and their tour scenes added ~33 KB (matching, scans and Library Analytics ship in dist/code.js;
 // their mocks are dev-only), the splash and persona screens ~32 KB: 1426.2 KB. One-brand builds remain the lever.
-const BUDGET_KB = 1430
+// 2026-11-10 (a11y Export menu, Figma report + developer spec, a11y/report/* tokens): user raised the budget to 1440 KB.
+const BUDGET_KB = 1440
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

@@ -31,7 +31,7 @@ export default tseslint.config(
   {
     // Same missing type information, on any find call. This one searches a single main
     // component, not a page, so the advice about loading pages doesn't apply.
-    files: ['src/features/audit/sandbox/scan.ts'],
+    files: ['src/features/audit/sandbox/scan.ts', 'src/features/a11y/sandbox/spec-collect.ts'],
     rules: { '@figma/figma-plugins/dynamic-page-find-method-advice': 'off' },
   },
   {
