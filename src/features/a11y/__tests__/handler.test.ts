@@ -528,6 +528,23 @@ describe('a11y:scan — hardening', () => {
     expect((await run()).issues[0]?.assumedBackground).toBe(true)
   })
 
+  it('keeps an assumed-background finding apart from a measured one with the same pair', async () => {
+    page((frame) => {
+      ;(frame as Record<string, unknown>).fills = []
+      const card: Record<string, unknown> = {
+        id: 'card', type: 'FRAME', name: 'Panel', visible: true, opacity: 1,
+        fills: [{ type: 'SOLID', visible: true, color: { r: 1, g: 1, b: 1 } }], parent: frame,
+      }
+      card.children = [text('measured', 'faint', faint, 12, card)]
+      // Floating text first: a later sibling is painted over it, never behind it.
+      return [text('floating', 'faint', faint, 12, frame), card]
+    })
+    const { issues } = await run()
+    expect(issues).toHaveLength(2)
+    expect(issues.find((i) => i.nodeIds.includes('measured'))?.assumedBackground).toBeUndefined()
+    expect(issues.find((i) => i.nodeIds.includes('floating'))?.assumedBackground).toBe(true)
+  })
+
   it('still walks an instance that has overrides, even when its component was seen', async () => {
     const main = { id: 'main' }
     page((frame) => ['i1', 'i2'].map((id, i) => {

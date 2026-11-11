@@ -91,7 +91,9 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
       // One card per distinct pair at a given size, not one per layer — and
       // not one per run either, when a node has two runs in the same style.
       const e = finding.entry
-      const key = `${e.foreground}|${e.background}|${e.fontSize}|${e.isBold}`
+      // An assumed backdrop is a guess, not a measurement: it never shares a card
+      // with a measured pair, or the card would present one as the other.
+      const key = `${e.foreground}|${e.background}|${e.fontSize}|${e.isBold}|${e.assumedBackground ? 'assumed' : 'measured'}`
       const existing = grouped.get(key)
       if (!existing) {
         grouped.set(key, { ...e, nodeIds: [e.nodeId], occurrences: 1 })
