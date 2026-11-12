@@ -2,10 +2,13 @@
 import { vi } from 'vitest'
 
 export function installFigmaMock(overrides: Partial<PluginAPI> = {}): PluginAPI {
+  const pluginData = new Map<string, string>()
   const mock = {
     mixed: Symbol('mixed'),
     skipInvisibleInstanceChildren: false,
-    root: { name: 'Test file' },
+    // A document-level key/value store, as Figma gives one: features keep file-scoped
+    // state (ignored a11y findings, publish releases) in it.
+    root: { name: 'Test file', getPluginData: (key: string) => pluginData.get(key) ?? '', setPluginData: (key: string, value: string) => pluginData.set(key, value) },
     currentPage: { name: 'Test page', selection: [], children: [] },
     variables: {
       getLocalVariableCollectionsAsync: vi.fn(async () => []),

@@ -3,6 +3,9 @@ import { annotationForContrast } from '../annotate'
 import { MSG, type ContrastIssue } from '../messages'
 import { understandingUrl, type StandardId } from '../standards'
 import { useAnnotate } from './useAnnotate'
+import { useIgnore } from './useIgnore'
+import { confidenceLine, contrastConfidence } from '../confidence'
+import { contrastIgnoreKey } from '../ignore'
 
 import { criterionFor } from '../criteria'
 
@@ -20,6 +23,7 @@ export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?
   const { annotation, onAnnotate } = useAnnotate(
     issue.nodeId, issue.nodeIds, annotationForContrast(issue, c.code, c.needs).label,
   )
+  const ignore = useIgnore(contrastIgnoreKey(issue))
   const focus = () => { void rpc.call(MSG.focus, { nodeId: issue.nodeId }).catch(() => undefined) }
   const selectAll = issue.occurrences > 1
     ? () => { void rpc.call(MSG.selectAll, { nodeIds: issue.nodeIds }).catch(() => undefined) }
@@ -37,6 +41,9 @@ export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?
       principle="perceivable"
       disabilities={['visual']}
       node={`${issue.name} [TEXT]`}
+      evidence={confidenceLine(contrastConfidence(issue))}
+      ignored={ignore.ignoredCard && { reason: ignore.ignoredCard.reason, scope: 'pair', onUndo: ignore.ignoredCard.onUndo }}
+      onIgnore={ignore.onIgnore}
       occurrences={issue.occurrences > 1
         ? { count: issue.occurrences, onSelectAll: selectAll }
         : undefined}
@@ -62,7 +69,7 @@ export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?
       }}
       actual={`${issue.ratio.toFixed(2)}:1`}
       required={`${c.needs}:1 (${c.rating})`}
-      whyItFails={`“${issue.text || issue.name}” (${issue.fontSize}px${issue.isBold ? ' bold' : ''}) measures ${issue.ratio.toFixed(2)}:1 against ${issue.assumedBackground ? 'an assumed white background — nothing opaque sits behind it' : 'its background'}; ${c.rating} needs ${c.needs}:1.${issue.occurrences > 1 ? ` ${issue.occurrences} layers share this pair.` : ''}`}
+      whyItFails={`“${issue.text || issue.name}” (${issue.fontSize}px${issue.isBold ? ' bold' : ''}) measures ${issue.ratio.toFixed(2)}:1 against ${issue.assumedBackground ? 'an assumed white background — nothing opaque sits behind it' : issue.gradientBackground ? 'the worst point of the gradient behind it' : 'its background'}; ${c.rating} needs ${c.needs}:1.${issue.occurrences > 1 ? ` ${issue.occurrences} layers share this pair.` : ''}`}
       severity={issue.assumedBackground ? 'moderate' : issue.level === 'fail' ? 'critical' : 'serious'}
       howToFix={issue.fix
         ? `Rebind the text to ${issue.fix.tokenName}, the nearest token in the ${issue.fix.mode} palette that reaches ${issue.fix.ratio.toFixed(2)}:1.`

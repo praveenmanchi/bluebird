@@ -20,7 +20,7 @@ export interface Rule {
 export const RULES: readonly Rule[] = [
   { id: '1.4.3', name: '1.4.3 Contrast (minimum)', description: 'Text 4.5:1, large text 3:1, in every brand mode', level: 'AA', since: 'wcag20' },
   { id: '1.4.6', name: '1.4.6 Contrast (enhanced)', description: 'Text 7:1, large text 4.5:1', level: 'AAA', since: 'wcag20' },
-  { id: '1.4.11', name: '1.4.11 Non-text contrast', description: 'Borders and icons that identify a control, 3:1', level: 'AA', since: 'wcag21' },
+  { id: '1.4.11', name: '1.4.11 Non-text contrast', description: 'Borders that identify a control, 3:1', level: 'AA', since: 'wcag21' },
   { id: '2.5.8', name: '2.5.8 Target size (minimum)', description: '24×24 hit area, or enough space around it', level: 'AA', since: TARGET_MINIMUM_SINCE },
   { id: '2.5.5', name: '2.5.5 Target size (enhanced)', description: '44×44 hit area', level: 'AAA', since: TARGET_ENHANCED_SINCE },
 ]

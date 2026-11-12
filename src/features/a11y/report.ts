@@ -7,8 +7,9 @@
 import { NON_TEXT_MIN } from './nontext'
 import type { ScanResult } from './messages'
 import { RULES, ruleIn } from './rules'
-import { standardLabel } from './standards'
-import { requiredLabel, targetCriterion, unitOf } from './target'
+import { criteriaCount, standardLabel } from './standards'
+import { CONFIDENCE_LABEL, contrastConfidence, nonTextConfidence, targetConfidence, type Confidence } from './confidence'
+import { requiredLabel, targetCitation, unitOf } from './target'
 
 export interface ReportMeta {
   /** Figma file name. */
@@ -19,6 +20,8 @@ export interface ReportMeta {
   brand: string
   /** ISO timestamp. Passed in so the builder stays pure and testable. */
   generatedAt: string
+  /** Set when the export holds only part of the scan, e.g. "Level AA only". */
+  filter?: string
 }
 
 export interface ReportFinding {
@@ -30,6 +33,8 @@ export interface ReportFinding {
   occurrences: number
   actual: string
   required: string
+  /** Measured from the file, inferred from a layer name, or measured against an assumption. */
+  confidence: Confidence
   fix?: string
 }
 
@@ -56,10 +61,14 @@ export interface Report {
     durationMs: number
   }
   findings: readonly ReportFinding[]
+  /** Set when the brand palette could not be read, so the reader knows what is missing. */
+  paletteError?: string
   /** Layers deliberately excluded, so the numbers can be audited. */
   excluded: {
     unmeasurable: readonly { nodeId: string; layer: string; reason: string }[]
     exemptCount: number
+    /** Which layers were exempt. Empty for scans made before 2026-11-12, which only counted them. */
+    exempt: readonly { nodeId: string; layer: string; reason: string }[]
   }
 }
 
@@ -75,10 +84,10 @@ const CRITERION_TITLES = {
 const automatedFor = (standard: ScanResult['standard']): readonly string[] =>
   RULES.filter((r) => ruleIn(r.id, standard)).map((r) => `${r.id} ${CRITERION_TITLES[r.id]}`)
 
-const notCoveredFor = (label: string): string =>
-  `Automated design-time checks only. Roughly 70% of ${label} cannot be decided from a `
-  + 'Figma tree — focus order, keyboard operation, alt text quality, reading order, timing and '
-  + 'motion all need human review. A clean report is not a conformance claim.'
+const notCoveredFor = (label: string, automated: number, total: number): string =>
+  `Automated design-time checks only: ${automated} of the ${total} success criteria in ${label} can be `
+  + 'decided from a Figma tree. Focus order, keyboard operation, alt text quality, reading order, timing '
+  + 'and motion all need human review. A clean report is not a conformance claim.'
 
 export function buildReport(result: ScanResult, meta: ReportMeta): Report {
   const findings: ReportFinding[] = []
@@ -96,6 +105,7 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
       occurrences: issue.occurrences,
       actual: `${issue.ratio.toFixed(2)}:1`,
       required: `${failsAA ? (large ? 3 : 4.5) : (large ? 4.5 : 7)}:1`,
+      confidence: contrastConfidence(issue),
       fix: issue.fix ? `Rebind to ${issue.fix.tokenName} (${issue.fix.ratio.toFixed(2)}:1)` : undefined,
     })
   }
@@ -110,20 +120,22 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
       occurrences: issue.occurrences,
       actual: `${issue.ratio.toFixed(2)}:1`,
       required: `${NON_TEXT_MIN}:1`,
+      confidence: nonTextConfidence(issue),
     })
   }
 
   for (const issue of result.targets) {
-    const enhanced = targetCriterion(issue) === '2.5.5'
+    const cited = targetCitation(issue)
     findings.push({
-      criterion: enhanced ? '2.5.5' : '2.5.8',
-      title: enhanced ? 'Target Size (Enhanced)' : 'Target Size (Minimum)',
-      level: enhanced ? 'AAA' : 'AA',
+      criterion: cited.code ?? cited.label,
+      title: cited.title,
+      level: cited.level,
       layer: issue.name,
       nodeId: issue.nodeId,
       occurrences: issue.occurrences,
       actual: `${issue.width} × ${issue.height} ${unitOf(issue)}`,
       required: requiredLabel(issue),
+      confidence: targetConfidence(issue),
       fix: 'Grow the hit area to the minimum; padding counts.',
     })
   }
@@ -132,7 +144,10 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
     tool: 'Bluebird',
     standard: label,
     meta,
-    coverage: { automated: automatedFor(result.standard), notCovered: notCoveredFor(label) },
+    coverage: {
+      automated: automatedFor(result.standard),
+      notCovered: notCoveredFor(label, automatedFor(result.standard).length, criteriaCount(result.standard)),
+    },
     summary: {
       findings: findings.length,
       contrast: result.issues.length,
@@ -146,12 +161,17 @@ export function buildReport(result: ScanResult, meta: ReportMeta): Report {
       durationMs: result.durationMs,
     },
     findings,
+    paletteError: result.paletteError,
     excluded: {
       unmeasurable: result.unmeasurable.map((u) => ({ nodeId: u.nodeId, layer: u.name, reason: u.reason })),
       exemptCount: result.exempt,
+      exempt: (result.exemptLayers ?? []).map((e) => ({ nodeId: e.nodeId, layer: e.name, reason: e.reason })),
     },
   }
 }
+
+/** How many exempt layers the Markdown names before it summarises the rest. */
+const EXEMPT_LISTED = 50
 
 const escapePipes = (value: string) => value.replace(/\|/g, '\\|')
 
@@ -165,6 +185,7 @@ export function reportToMarkdown(report: Report): string {
     `- **Brand mode:** ${meta.brand}`,
     `- **Standard:** ${report.standard}`,
     `- **Generated:** ${meta.generatedAt}`,
+    ...(meta.filter ? [`- **Filter:** ${meta.filter} (findings outside it are left out)`] : []),
     `- **Tool:** ${report.tool}`,
     '',
     '## Summary',
@@ -175,12 +196,12 @@ export function reportToMarkdown(report: Report): string {
   ]
 
   if (report.findings.length) {
-    lines.push('## Findings', '', '| SC | Criterion | Level | Layer | Layers | Measured | Required | Suggested fix |',
-      '| --- | --- | --- | --- | --- | --- | --- | --- |')
+    lines.push('## Findings', '', '| SC | Criterion | Level | Layer | Layers | Measured | Required | Decided by | Suggested fix |',
+      '| --- | --- | --- | --- | --- | --- | --- | --- | --- |')
     for (const f of report.findings) {
       lines.push(
         `| ${f.criterion} | ${escapePipes(f.title)} | ${f.level} | ${escapePipes(f.layer)} | ${f.occurrences} `
-        + `| ${f.actual} | ${f.required} | ${f.fix ? escapePipes(f.fix) : '—'} |`,
+        + `| ${f.actual} | ${f.required} | ${CONFIDENCE_LABEL[f.confidence]} | ${f.fix ? escapePipes(f.fix) : '—'} |`,
       )
     }
     lines.push('')
@@ -190,10 +211,18 @@ export function reportToMarkdown(report: Report): string {
 
   lines.push('## Excluded from the counts', '')
   lines.push(`- ${report.excluded.exemptCount} layer${report.excluded.exemptCount === 1 ? '' : 's'} exempt under WCAG 1.4.3 (inactive controls, logotypes).`)
+  // Named, not just counted: a count nobody can check is not auditable.
+  for (const e of report.excluded.exempt.slice(0, EXEMPT_LISTED)) lines.push(`  - **${e.layer}** — ${e.reason}`)
+  if (report.excluded.exempt.length > EXEMPT_LISTED) lines.push(`  - …and ${report.excluded.exempt.length - EXEMPT_LISTED} more.`)
   lines.push(`- ${summary.instancesSkipped} repeated component instance${summary.instancesSkipped === 1 ? '' : 's'} scanned once.`)
   if (report.excluded.unmeasurable.length) {
     lines.push('', '### Could not be measured', '')
     for (const u of report.excluded.unmeasurable) lines.push(`- **${u.layer}** — ${u.reason}`)
+  }
+
+  if (report.paletteError) {
+    lines.push('', '> **Brand variables could not be read:** ' + report.paletteError
+      + ' Ratios were still measured, but no finding carries a token name, a per-brand verdict or a suggested fix.', '')
   }
 
   lines.push('', '## Coverage', '', 'Checked automatically:', '')

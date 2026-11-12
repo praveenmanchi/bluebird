@@ -18,6 +18,10 @@ export const MSG = {
   createReport: 'a11y:create-report',
   /** Draws the developer spec for the selected screen (Export › Developer spec). */
   createSpec: 'a11y:create-spec',
+  /** Correct a wrong finding: record it as ignored in the document. */
+  ignore: 'a11y:ignore',
+  /** Undo that. */
+  unignore: 'a11y:unignore',
 } as const
 
 
@@ -113,7 +117,14 @@ export interface ContrastIssue {
   /** True when no opaque layer was found and the ratio is against an assumed
    *  white — the card must say so rather than present it as measured. */
   assumedBackground?: boolean
+  /** The backdrop is a gradient: this is its worst point, not its only colour. */
+  gradientBackground?: boolean
+  /** Set when someone marked this finding as not a finding. */
+  ignored?: IgnoredAt
 }
+
+/** When a finding was ignored, so the card can say so and offer to restore it. */
+export interface IgnoredAt { at: string }
 
 /** WCAG 1.4.11: a border too faint to see against what it sits on. */
 export interface NonTextIssue {
@@ -126,6 +137,12 @@ export interface NonTextIssue {
   /** What the stroke is measured against. */
   background: string
   ratio: number
+  /** Why this stroke counts as a control boundary: Figma said so ('reaction'), the
+   *  component it belongs to said so ('component'), or its own name did ('name'). */
+  evidence?: 'reaction' | 'component' | 'name'
+  /** The backdrop is a gradient: the ratio is its worst point. */
+  gradientBackground?: boolean
+  ignored?: IgnoredAt
 }
 
 /** WCAG 2.5.8 / 2.5.5: a tap target smaller than the minimum. */
@@ -144,9 +161,18 @@ export interface TargetSizeIssue {
   standard?: StandardId
   /** 'reaction' when Figma told us it is interactive; 'control' when the name did. */
   evidence: 'reaction' | 'control'
+  ignored?: IgnoredAt
 }
 
-/** Text whose backdrop could not be measured — an image, gradient or mixed fill. */
+/** A layer the standard treats as incidental, named so the count can be audited. */
+export interface ExemptLayer {
+  nodeId: string
+  name: string
+  /** 'inactive' or 'logotype' — which exemption it fell under. */
+  reason: string
+}
+
+/** Text whose backdrop could not be measured — an image or mixed fill. */
 export interface UnmeasurableText {
   nodeId: string
   name: string
@@ -194,6 +220,8 @@ export interface ScanResult {
   meta: ScanMeta
   /** The WCAG version the scan checked against; absent means 2.2 (scans before standards existed). */
   standard?: StandardId
+  /** The platform whose target minimum it used; absent means web (scans before this was recorded). */
+  platform?: 'web' | 'ios' | 'android'
   scanned: number
   textNodes: number
   /** Grouped findings: one entry per distinct colour pair at a given size. */
@@ -204,10 +232,16 @@ export interface ScanResult {
   targets: readonly TargetSizeIssue[]
   /** Text the standard treats as incidental (inactive controls, logotypes). */
   exempt: number
+  /** Which layers those were. Absent from scans made before 2026-11-12. */
+  exemptLayers?: readonly ExemptLayer[]
   /** Text we refuse to guess at, rather than reporting a fabricated ratio. */
   unmeasurable: readonly UnmeasurableText[]
   /** Repeated component instances whose subtree was scanned only once. */
   instancesSkipped: number
+  /** Why the brand palette could not be read, when it could not. Without it a finding
+   *  has no token names, no per-brand verdicts and no suggested fix — which must be
+   *  said, not left to look like "this file has no tokens". */
+  paletteError?: string
   durationMs: number
   /** Components and frames in scope with their pass/fail. Absent from scans made before 2026-10-11. */
   inventory?: ScanInventory
@@ -226,6 +260,12 @@ export const applyFixRequestSchema = z.object({
   variableId: z.string().check(z.minLength(1)),
 })
 export type ApplyFixRequest = z.infer<typeof applyFixRequestSchema>
+
+/** The finding to ignore, keyed as ../ignore.ts spells it. */
+export const ignoreRequestSchema = z.object({
+  key: z.string().check(z.minLength(1), z.maxLength(200)),
+})
+export type IgnoreRequest = z.infer<typeof ignoreRequestSchema>
 
 export const annotateRequestSchema = z.object({
   nodeIds: z.array(z.string()).check(z.minLength(1)),

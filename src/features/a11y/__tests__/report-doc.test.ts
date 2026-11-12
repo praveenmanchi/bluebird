@@ -30,6 +30,20 @@ describe('buildReportDoc', () => {
     expect(doc.verdict.summary).toMatch(/^4 issues to fix: 1 critical and 3 serious\. 1 layer needs a manual check\./)
   })
 
+  it('does not call a screen non-conformant at AA when only AAA findings are open', () => {
+    const aaaOnly = buildReportDoc(scan, { issues: scan.issues.filter((i) => i.level !== 'fail'), nonText: [], targets: [] }, options)
+    expect(aaaOnly.issues.length).toBeGreaterThan(0)
+    expect(aaaOnly.issues.every((i) => i.level === 'AAA')).toBe(true)
+    expect(aaaOnly.verdict.badge).toEqual({ tone: 'moderate', label: 'AA checks pass' })
+    expect(aaaOnly.verdict.headline).toMatch(/^No automated AA issues, \d+ AAA issues? open$/)
+  })
+
+  it('files a platform-only target under the platform guideline, with its own reference', () => {
+    const android = buildReportDoc(scan, { issues: [], nonText: [], targets: [{ ...scan.targets[0]!, width: 46, height: 46, platform: 'android', required: 48 }] }, { ...options, platform: 'android' })
+    expect(android.issues[0]).toMatchObject({ criterion: 'Android tap target (Material Design)', level: 'AAA' })
+    expect(android.issues[0]?.reference.url).toMatch(/^https:\/\/support\.google\.com\//)
+  })
+
   it('keeps every affected layer so the sandbox can link each one', () => {
     expect(doc.issues[0]?.nodeIds).toEqual(['1:1', '1:4', '1:5'])
     expect(doc.issues[0]?.layer).toBe('Caption · 3 layers')

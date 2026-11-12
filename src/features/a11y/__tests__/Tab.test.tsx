@@ -110,7 +110,7 @@ describe('a11y Tab', () => {
     await screen.findByRole('heading', { name: 'Ready to check Main screens' })
     fireEvent.click(screen.getByRole('button', { name: 'Scan' }))
     // 3 contrast + 1 non-text + 2 target-size findings from the fixture.
-    await waitFor(() => expect(screen.getByText('1 fail AA')).toBeInTheDocument(), { timeout: 3000 })
+    await waitFor(() => expect(screen.getByText('4 fail AA')).toBeInTheDocument(), { timeout: 3000 })
     expect(screen.getByRole('heading', { name: 'Findings' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'All 6' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getAllByRole('article')).toHaveLength(6)

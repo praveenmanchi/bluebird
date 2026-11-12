@@ -40,6 +40,15 @@ export function includes(standard: StandardId | undefined, since: StandardId): b
   return RANK[standard ?? DEFAULT_STANDARD] >= RANK[since]
 }
 
+/**
+ * How many success criteria each version has, so a report can say what share of it
+ * a design-time scan decides. WCAG 2.0: 61. WCAG 2.1: 78. WCAG 2.2: 86 — the
+ * Recommendation lists 87 headings, but 4.1.1 Parsing is marked obsolete and removed.
+ */
+const CRITERIA: Readonly<Record<StandardId, number>> = { wcag20: 61, wcag21: 78, wcag22: 86 }
+
+export const criteriaCount = (id?: StandardId): number => CRITERIA[id ?? DEFAULT_STANDARD]
+
 /** The W3C's "How to Meet WCAG" Quick Reference for that version (the "Check rules" link). */
 export const quickrefUrl = (id?: StandardId): string => `https://www.w3.org/WAI/${standardOf(id).path}/quickref/`
 

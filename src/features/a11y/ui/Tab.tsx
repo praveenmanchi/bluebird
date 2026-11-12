@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'preact/hooks'
 import { Button, Notice, ScanSummary, SectionTitle, SegmentedControl, useRpc, type IconName } from '@shared/ui'
 import { BUILD_VERSION } from '@shared/buildInfo'
+import { brand } from '@shared/config'
 import { MSG, type CreatedDocument, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
-import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, type LevelFilter } from '../state'
+import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, ignored, type LevelFilter } from '../state'
 import { contrastRule, rulesFor, targetRule, type RuleId } from '../rules'
-import { STANDARDS, standardLabel, type StandardId } from '../standards'
+import { contrastIgnoreKey, nonTextIgnoreKey, seedIgnored, targetIgnoreKey } from '../ignore'
+import { DEFAULT_STANDARD, STANDARDS, standardLabel, type StandardId } from '../standards'
 import { PLATFORMS, PLATFORM_TARGETS, targetCriterion, type Platform } from '../target'
 import { ReadyPanel } from './ReadyPanel'
 import { FilterSelect } from './FilterSelect'
@@ -18,6 +20,9 @@ import { ExportMenu, type ExportFormat } from './ExportMenu'
 import { createdLabel, documentId, readDocTheme } from './docTheme'
 import { buildReportDoc } from '../doc/report-doc'
 import './a11y.css'
+
+/** The variable collection a finding's tokens come from, named in the warning when it cannot be read. */
+const BRAND_COLLECTION = brand.source.collection
 
 type FindingKind = 'all' | 'contrast' | 'nontext' | 'target'
 /** The criteria filter items, with the UI Icons glyph each Figma "Criteria filter" item shows. */
@@ -83,7 +88,10 @@ export function Tab() {
     error.value = null
     visited.value = 0
     try {
-      result.value = await rpc.call<ScanResult>(MSG.scan, { scope: scope.value, platform: platform.value, standard: standard.value }, 120_000)
+      const scan = await rpc.call<ScanResult>(MSG.scan, { scope: scope.value, platform: platform.value, standard: standard.value }, 120_000)
+      result.value = scan
+      // The document remembers which findings were corrected; the tab starts from that.
+      ignored.value = seedIgnored(scan)
     } catch (e: unknown) {
       error.value = e instanceof Error ? e.message : 'Scan failed'
     } finally {
@@ -92,14 +100,28 @@ export function Tab() {
   }
 
   const r = result.value
+  // Results are read with the settings they were measured with: moving a dropdown afterwards
+  // must not relabel or hide findings as if the scan had been run again.
+  const shownPlatform = r ? r.platform ?? 'web' : platform.value
+  const shownStandard = r ? r.standard ?? DEFAULT_STANDARD : standard.value
+  const stale = r !== null && (shownPlatform !== platform.value || shownStandard !== standard.value)
   // Only the rules the chosen version has are listed, and only a listed, ticked rule shows its findings.
-  const ruleList = rulesFor(platform.value, standard.value)
+  const ruleList = rulesFor(shownPlatform, shownStandard)
   const on = rules.value
   const listed = (id: RuleId) => on[id] && ruleList.some((rule) => rule.id === id)
-  const issues = r?.issues.filter((i) => listed(contrastRule(i)) && (level.value === 'all' || criterionFor(i).rating === level.value)) ?? []
+  const shownIssues = r?.issues.filter((i) => listed(contrastRule(i)) && (level.value === 'all' || criterionFor(i).rating === level.value)) ?? []
   // 1.4.11 is AA only; a target finding is AA (2.5.8) or AAA (2.5.5) depending on the bar it missed.
-  const nonText = level.value === 'AAA' || !listed('1.4.11') ? [] : (r?.nonText ?? [])
-  const targets = (r?.targets ?? []).filter((t) => listed(targetRule(t)) && (level.value === 'all' || (targetCriterion(t) === '2.5.5' ? 'AAA' : 'AA') === level.value))
+  const shownNonText = level.value === 'AAA' || !listed('1.4.11') ? [] : (r?.nonText ?? [])
+  const shownTargets = (r?.targets ?? []).filter((t) => listed(targetRule(t)) && (level.value === 'all' || (targetCriterion(t) === '2.5.5' ? 'AAA' : 'AA') === level.value))
+  // A finding someone has corrected stays on screen, below the rest, and out of every count.
+  const isIgnored = (key: string) => ignored.value[key] !== undefined
+  const issues = shownIssues.filter((i) => !isIgnored(contrastIgnoreKey(i)))
+  const nonText = shownNonText.filter((n) => !isIgnored(nonTextIgnoreKey(n)))
+  const targets = shownTargets.filter((t) => !isIgnored(targetIgnoreKey(t)))
+  const ignoredIssues = shownIssues.filter((i) => isIgnored(contrastIgnoreKey(i)))
+  const ignoredNonText = shownNonText.filter((n) => isIgnored(nonTextIgnoreKey(n)))
+  const ignoredTargets = shownTargets.filter((t) => isIgnored(targetIgnoreKey(t)))
+  const ignoredTotal = ignoredIssues.length + ignoredNonText.length + ignoredTargets.length
   const total = issues.length + nonText.length + targets.length
   const counts: Record<FindingKind, number> = { all: total, contrast: issues.length, nontext: nonText.length, target: targets.length }
   /** The version the results were measured against (the dropdown may have moved since). */
@@ -110,7 +132,10 @@ export function Tab() {
     if (!r) return
     setExported(null)
     if (format === 'json' || format === 'markdown') {
-      const report = buildReport(r, { ...r.meta, generatedAt: new Date().toISOString() })
+      // The download holds what is on screen, as the Figma report does, and says so when filtered.
+      const off = ruleList.filter((rule) => !on[rule.id]).map((rule) => rule.id)
+      const filter = [level.value === 'all' ? '' : `Level ${level.value} only`, off.length ? `${off.join(', ')} unticked` : ''].filter(Boolean).join('; ')
+      const report = buildReport({ ...r, issues, nonText, targets }, { ...r.meta, generatedAt: new Date().toISOString(), filter: filter || undefined })
       // usedIconNames (scripts/gen-tokens.ts) treats ANY bare lowercase kebab
       // literal in src/ as an icon reference — comments included — so the
       // extension is derived rather than written out, or we ship a stray glyph.
@@ -133,11 +158,11 @@ export function Tab() {
     try {
       const theme = readDocTheme()
       const created = spec
-        ? await rpc.call<CreatedDocument>(MSG.createSpec, { theme, branding, audit: { standard: r.standard, platform: platform.value, openIssues: total } }, 60_000)
+        ? await rpc.call<CreatedDocument>(MSG.createSpec, { theme, branding, audit: { standard: r.standard, platform: shownPlatform, openIssues: total } }, 60_000)
         : await rpc.call<CreatedDocument>(MSG.createReport, {
           theme,
           branding,
-          doc: buildReportDoc(r, { issues, nonText, targets }, { title: target.value?.name ?? r.meta.page, platform: platform.value, scannedOn: createdLabel(now).split(',')[0] ?? '' }),
+          doc: buildReportDoc(r, { issues, nonText, targets }, { title: target.value?.name ?? r.meta.page, platform: shownPlatform, scannedOn: createdLabel(now).split(',')[0] ?? '' }),
         }, 60_000)
       setExported({ format, name: created.name })
     } catch (e: unknown) {
@@ -172,14 +197,22 @@ export function Tab() {
             onCheckRules={() => { void rpc.call(MSG.openRules, { standard: standard.value }).catch(() => undefined) }}
           />
         )}
-        {(r || scanning.value) && <ScanSummary {...(r ? summaryProps(r) : emptySummaryProps(scope.value))} />}
+        {/* The dashboard counts what the list shows: the same filters, minus anything ignored. */}
+        {(r || scanning.value) && <ScanSummary {...(r ? summaryProps(r, { issues, nonText, targets }) : emptySummaryProps(scope.value))} />}
         {r && (
           <p class="bb-a11y__summary" role="status">
             {/* Say what was collapsed or skipped rather than quietly under-reporting. */}
             {r.instancesSkipped > 0 && <span>{r.instancesSkipped} repeated instances scanned once</span>}
             {r.exempt > 0 && <span>{r.exempt} exempt (inactive or logotype)</span>}
             {r.unmeasurable.length > 0 && <span data-tone="warn">{r.unmeasurable.length} could not be measured</span>}
+            {ignoredTotal > 0 && <span>{ignoredTotal} ignored</span>}
+            {stale && <span data-tone="warn">These results are for {standardLabel(shownStandard)} on {PLATFORM_TARGETS[shownPlatform].label}. Scan again to use the new setting.</span>}
           </p>
+        )}
+        {r?.paletteError && (
+          <Notice tone="error" title={`No ${BRAND_COLLECTION} variables in this scan`}>
+            {r.paletteError} Ratios are still measured, but findings have no token names, no per-brand verdicts and no suggested fix.
+          </Notice>
         )}
         {r && r.unmeasurable.length > 0 && (
           <details class="bb-a11y__unmeasurable">
@@ -227,6 +260,17 @@ export function Tab() {
             {(kind === 'all' || kind === 'contrast') && issues.map((issue) => <IssueCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
             {(kind === 'all' || kind === 'nontext') && nonText.map((issue) => <NonTextCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
             {(kind === 'all' || kind === 'target') && targets.map((issue) => <TargetCard key={issue.nodeId} issue={issue} />)}
+          </section>
+        )}
+        {r && ignoredTotal > 0 && (
+          <section class="bb-a11y__findings" aria-label="Ignored findings">
+            <SectionTitle title="Ignored" count={String(ignoredTotal)} showAction={false} />
+            <p class="bb-a11y__empty">
+              Corrections are kept in the file, so a re-scan does not bring these back. Restore one from its card.
+            </p>
+            {(kind === 'all' || kind === 'contrast') && ignoredIssues.map((issue) => <IssueCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
+            {(kind === 'all' || kind === 'nontext') && ignoredNonText.map((issue) => <NonTextCard key={issue.nodeId} issue={issue} standard={scannedStandard} />)}
+            {(kind === 'all' || kind === 'target') && ignoredTargets.map((issue) => <TargetCard key={issue.nodeId} issue={issue} />)}
           </section>
         )}
       </div>

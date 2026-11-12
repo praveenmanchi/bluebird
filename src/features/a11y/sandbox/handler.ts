@@ -1,31 +1,36 @@
 // Runs inside Figma. Everything that touches the document for this tab lives here.
 import type { HandlerMap, HandlerContext } from '@shared/bridge'
 import { traverse, scopeRoots } from '@shared/figma/traverse'
-import { solidFill, solidStroke, solidFromPaints, resolveBackground } from '@shared/figma/paint'
-import type { RGBA } from '@shared/figma/color'
+import { solidFill, solidStroke, solidFromPaints, resolveBackground, type BackgroundResolution } from '@shared/figma/paint'
+import type { RGB, RGBA } from '@shared/figma/color'
 import { blendOver, contrastRatio, rgbaToHex } from '@shared/figma/color'
 import { brand } from '@shared/config'
 import { isBoldStyle, rateContrast, requiredRatio, roundRatio } from '../contrast'
 import { exemptionFor } from '../exempt'
-import { isDecorativeName, passesNonText } from '../nontext'
+import { contrastIgnoreKey, findIgnore, nonTextIgnoreKey, targetIgnoreKey, withIgnore, withoutIgnore } from '../ignore'
+import { readIgnores, writeIgnores } from './ignores'
+import { isBoundaryName, isDecorativeName, passesNonText } from '../nontext'
 import { isControlName, hasSpacingException, rateTarget, requiredTarget, checksTargets, spacingExceptionApplies, type Box, type Platform } from '../target'
 import { nearestPassingToken, verdictsAcrossModes } from '../tokens'
-import { loadBrandPalette, modeColors, type BrandPalette } from './variables'
+import { loadBrandPalette, modeColors, tokenLookup, type BrandPalette, type TokenLookup } from './variables'
 import { buildInventory, type InventoryNode } from '../inventory'
 import { summarizeScope } from '../scope-summary'
 import { ruleIn } from '../rules'
 import { DEFAULT_STANDARD, quickrefUrl, type StandardId } from '../standards'
 import { createReport, createSpec } from './documents'
 import {
-  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema, openRulesRequestSchema,
+  MSG, scanRequestSchema, focusRequestSchema, selectRequestSchema, applyFixRequestSchema, annotateRequestSchema, targetRequestSchema, openRulesRequestSchema, ignoreRequestSchema,
   type ContrastIssue, type ScanTarget, type ScanResult, type ScanProgress, type UnmeasurableText,
-  type NonTextIssue, type TargetSizeIssue,
+  type NonTextIssue, type TargetSizeIssue, type ExemptLayer, type IgnoredAt,
 } from '../messages'
+
+/** Enough to audit the exempt count without burying the report. */
+const EXEMPT_LIST_LIMIT = 200
 
 /** One text node's verdict before findings are grouped. */
 type Finding =
   | { kind: 'ok' }
-  | { kind: 'exempt' }
+  | { kind: 'exempt'; entry: ExemptLayer }
   | { kind: 'unmeasurable'; entry: UnmeasurableText }
   | { kind: 'issue'; entry: Omit<ContrastIssue, 'nodeIds' | 'occurrences'> }
 
@@ -49,8 +54,11 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
     // An instance with overrides may differ from the one already walked — a
     // red label in the third card is exactly the kind of thing a scan is for.
     if (hasOverrides(node)) return false
-    const key = await mainComponentId(node)
-    if (!key) return false
+    const main = await mainComponentId(node)
+    if (!main) return false
+    // The same component on another surface is another measurement: a ghost
+    // button that passes on white can fail on the dark hero beside it.
+    const key = `${main}|${surroundingsKey(node)}`
     if (seenComponents.has(key)) { instancesSkipped += 1; return true }
     seenComponents.add(key)
     return false
@@ -58,7 +66,7 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
 
   // One pass feeds all three criteria: 1.4.3/1.4.6 text, 1.4.11 borders, 2.5.8 targets.
   const strokeNodes: SceneNode[] = []
-  const targetNodes: { node: SceneNode; evidence: 'reaction' | 'control' }[] = []
+  const targetNodes: TargetCandidate[] = []
   // Every instance met, for the Scan Summary's component inventory.
   const instanceNodes: InstanceNode[] = []
 
@@ -76,16 +84,24 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
   )
 
   // One read of the Brand collection per scan, shared by every finding.
-  const palette = await loadPaletteQuietly()
+  const { palette, paletteError } = await loadPalette()
 
   const grouped = new Map<string, ContrastIssue & { nodeIds: string[] }>()
   const unmeasurable: UnmeasurableText[] = []
+  const exemptLayers: ExemptLayer[] = []
   let exempt = 0
 
+  const lookup = tokenLookup(palette)
   for (const node of textNodes) {
-    for (const finding of evaluateText(node, palette)) {
+    for (const finding of await evaluateText(node, palette, lookup)) {
       if (finding.kind === 'ok') continue
-      if (finding.kind === 'exempt') { exempt += 1; continue }
+      // Counted whatever happens, and listed up to a point, so the number can be
+      // audited without a report that is mostly exemptions.
+      if (finding.kind === 'exempt') {
+        exempt += 1
+        if (exemptLayers.length < EXEMPT_LIST_LIMIT) exemptLayers.push(finding.entry)
+        continue
+      }
       if (finding.kind === 'unmeasurable') { unmeasurable.push(finding.entry); continue }
 
       // One card per distinct pair at a given size, not one per layer — and
@@ -93,7 +109,7 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
       const e = finding.entry
       // An assumed backdrop is a guess, not a measurement: it never shares a card
       // with a measured pair, or the card would present one as the other.
-      const key = `${e.foreground}|${e.background}|${e.fontSize}|${e.isBold}|${e.assumedBackground ? 'assumed' : 'measured'}`
+      const key = `${e.foreground}|${e.background}|${e.fontSize}|${e.isBold}|${e.assumedBackground ? 'assumed' : 'measured'}|${e.gradientBackground ? 'gradient' : 'flat'}`
       const existing = grouped.get(key)
       if (!existing) {
         grouped.set(key, { ...e, nodeIds: [e.nodeId], occurrences: 1 })
@@ -104,13 +120,22 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
     }
   }
 
-  const issues = [...grouped.values()].sort((a, b) => a.ratio - b.ratio)
-  // A standard only gets the criteria it has: 1.4.11 arrived in 2.1, target size in 2.1 / 2.2.
-  const nonText = ruleIn('1.4.11', standard) ? collectNonText(strokeNodes) : []
-  const targets = checksTargets(platform, standard) ? collectTargets(targetNodes, platform, standard) : []
+  // A finding somebody has already marked as wrong comes back marked, not dropped:
+  // it stays visible, out of the counts, and can be restored from its card.
+  const ignores = readIgnores()
+  const marked = <T extends { ignored?: IgnoredAt }>(list: readonly T[], keyOf: (f: T) => string): T[] =>
+    list.map((f) => {
+      const hit = findIgnore(ignores, keyOf(f))
+      return hit ? { ...f, ignored: { at: hit.at } } : f
+    })
 
-  // Inventory: which components and frames hold a finding.
-  const flagged = new Set([...issues, ...nonText, ...targets].flatMap((f) => f.nodeIds))
+  const issues = marked([...grouped.values()].sort((a, b) => a.ratio - b.ratio), contrastIgnoreKey)
+  // A standard only gets the criteria it has: 1.4.11 arrived in 2.1, target size in 2.1 / 2.2.
+  const nonText = ruleIn('1.4.11', standard) ? marked(collectNonText(strokeNodes), nonTextIgnoreKey) : []
+  const targets = checksTargets(platform, standard) ? marked(collectTargets(targetNodes, platform, standard), targetIgnoreKey) : []
+
+  // Inventory: which components and frames hold a finding. An ignored one fails nothing.
+  const flagged = new Set([...issues, ...nonText, ...targets].filter((f) => !f.ignored).flatMap((f) => f.nodeIds))
   const candidates: SceneNode[] = [...textNodes, ...strokeNodes, ...targetNodes.map((t) => t.node)]
   const identities = await componentIdentities(instanceNodes)
   const inventory = buildInventory({
@@ -124,14 +149,17 @@ async function scan(payload: unknown, ctx: HandlerContext): Promise<ScanResult> 
     scope,
     meta: { file: figma.root.name, page: figma.currentPage.name, brand: brand.label },
     standard,
+    platform,
     scanned,
     textNodes: textNodes.length,
     issues,
     nonText,
     targets,
     exempt,
+    exemptLayers,
     unmeasurable,
     instancesSkipped,
+    paletteError,
     durationMs: Date.now() - started,
     inventory,
   }
@@ -154,6 +182,22 @@ async function componentIdentities(instances: readonly InstanceNode[]): Promise<
   return out
 }
 
+/**
+ * The point of the backdrop that gives the lowest ratio.
+ *
+ * A flat backdrop has one point. A gradient is a range and the text sits on all
+ * of it, so the honest reading is its worst point, not an average nobody sees.
+ */
+function worstAgainst(fill: RGBA, backdrop: BackgroundResolution): { foreground: RGB; background: RGB; ratio: number } {
+  let worst: { foreground: RGB; background: RGB; ratio: number } | undefined
+  for (const background of backdrop.colors ?? [backdrop.color]) {
+    const foreground = blendOver(fill, background)
+    const ratio = contrastRatio(foreground, background)
+    if (!worst || ratio < worst.ratio) worst = { foreground, background, ratio }
+  }
+  return worst ?? { foreground: backdrop.color, background: backdrop.color, ratio: 1 }
+}
+
 function hasVisibleStroke(node: SceneNode): boolean {
   return 'strokes' in node && Array.isArray(node.strokes) && node.strokes.some((s) => s.visible !== false)
 }
@@ -163,7 +207,7 @@ function hasVisibleStroke(node: SceneNode): boolean {
  * the fallback for files that have not been prototyped.
  */
 function targetEvidence(node: SceneNode): 'reaction' | 'control' | null {
-  if ('reactions' in node && Array.isArray(node.reactions) && node.reactions.length > 0) return 'reaction'
+  if (hasReaction(node)) return 'reaction'
   if (node.type === 'INSTANCE' && isControlName(node.name)) return 'control'
   return null
 }
@@ -173,6 +217,11 @@ function collectNonText(nodes: readonly SceneNode[]): NonTextIssue[] {
   const grouped = new Map<string, NonTextIssue & { nodeIds: string[] }>()
   for (const node of nodes) {
     if (isDecorativeName(node.name)) continue
+    const evidence = identifiesControl(node)
+    if (!evidence) continue
+    // The criterion leaves inactive components out, as 1.4.3 does.
+    const chain = chainFor(node)
+    if (exemptionFor(chain.names, chain.variants) === 'inactive') continue
     const stroke = solidStroke(node)
     if (!stroke) continue
     const backdrop = resolveBackground(node)
@@ -181,37 +230,63 @@ function collectNonText(nodes: readonly SceneNode[]): NonTextIssue[] {
     // faint stroke on a strongly filled button is not a failure: the fill is
     // the boundary. Only flag the stroke when it is doing the job alone.
     const own = solidFill(node)
-    if (own && own.a >= 1 && passesNonText(contrastRatio(blendOver(own, backdrop.color), backdrop.color))) continue
-    const colour = blendOver(stroke, backdrop.color)
-    const ratio = contrastRatio(colour, backdrop.color)
-    if (passesNonText(ratio)) continue
+    if (own && own.a >= 1 && passesNonText(worstAgainst(own, backdrop).ratio)) continue
+    const worst = worstAgainst(stroke, backdrop)
+    if (passesNonText(worst.ratio)) continue
 
-    const foreground = rgbaToHex(colour)
-    const background = rgbaToHex(backdrop.color)
+    const foreground = rgbaToHex(worst.foreground)
+    const background = rgbaToHex(worst.background)
     const key = `${foreground}|${background}`
     const existing = grouped.get(key)
     if (existing) {
       existing.nodeIds.push(node.id)
       existing.occurrences += 1
+      // A stroke Figma proved interactive outranks one judged by its name.
+      if (evidence === 'reaction') existing.evidence = 'reaction'
     } else {
       grouped.set(key, {
         nodeId: node.id, nodeIds: [node.id], occurrences: 1, name: node.name,
-        foreground, background, ratio: roundRatio(ratio),
+        foreground, background, ratio: roundRatio(worst.ratio), evidence,
+        gradientBackground: backdrop.colors ? true : undefined,
       })
     }
   }
   return [...grouped.values()].sort((a, b) => a.ratio - b.ratio)
 }
 
-/** WCAG 2.5.8 / 2.5.5, or the platform's minimum on iOS / Android: a target's smaller side decides. */
-function collectTargets(candidates: readonly { node: SceneNode; evidence: 'reaction' | 'control' }[], platform: Platform, standard: StandardId): TargetSizeIssue[] {
-  // The icon inside a button is not a second target; only the outermost
-  // interactive node counts, or a 16px glyph in a 44px button gets flagged.
+type TargetCandidate = { node: SceneNode; evidence: 'reaction' | 'control' }
+
+/**
+ * Which candidates are the things a person taps.
+ *
+ * The icon inside a button is not a second target, or a 16px glyph in a 44px
+ * button gets flagged: a candidate holding one other candidate is the target.
+ * A candidate holding several ("Button group", "Tab bar") is a container, and
+ * its controls are the targets. A prototyped layer stays a target either way,
+ * alongside the controls inside it.
+ */
+function resolveTargets(candidates: readonly TargetCandidate[]): TargetCandidate[] {
   const ids = new Set(candidates.map((c) => c.node.id))
-  const outermost = candidates.filter(({ node }) => {
-    for (let p = node.parent; p && p.type !== 'PAGE'; p = p.parent) if (ids.has(p.id)) return false
-    return true
-  })
+  const inside = new Map<string, TargetCandidate[]>()
+  const top: TargetCandidate[] = []
+  for (const candidate of candidates) {
+    let holder: string | null = null
+    for (let p = candidate.node.parent; p && p.type !== 'PAGE'; p = p.parent) if (ids.has(p.id)) { holder = p.id; break }
+    if (holder === null) top.push(candidate)
+    else inside.set(holder, [...(inside.get(holder) ?? []), candidate])
+  }
+  const resolve = (candidate: TargetCandidate): TargetCandidate[] => {
+    const held = inside.get(candidate.node.id) ?? []
+    if (held.length < 2) return [candidate]
+    const below = held.flatMap(resolve)
+    return candidate.evidence === 'reaction' ? [candidate, ...below] : below
+  }
+  return top.flatMap(resolve)
+}
+
+/** WCAG 2.5.8 / 2.5.5, or the platform's minimum on iOS / Android: a target's smaller side decides. */
+function collectTargets(candidates: readonly TargetCandidate[], platform: Platform, standard: StandardId): TargetSizeIssue[] {
+  const outermost = resolveTargets(candidates)
   const boxOf = (node: SceneNode): Box => {
     const b = node.absoluteBoundingBox
     return b ? { x: b.x, y: b.y, width: b.width, height: b.height } : { x: 0, y: 0, width: node.width, height: node.height }
@@ -246,6 +321,13 @@ function collectTargets(candidates: readonly { node: SceneNode; evidence: 'react
   return [...grouped.values()].sort((a, b) => Math.min(a.width, a.height) - Math.min(b.width, b.height))
 }
 
+/** What an instance is drawn on, and how dimmed: the things outside it that change its contrast. */
+function surroundingsKey(node: SceneNode): string {
+  const backdrop = resolveBackground(node)
+  if (backdrop.indeterminate) return `unmeasurable:${backdrop.reason ?? ''}`
+  return `${rgbaToHex(backdrop.color)}|${backdrop.assumed ? 'assumed' : 'measured'}|${backdrop.foregroundOpacity}`
+}
+
 /** Figma lists every property an instance changed; an empty list means it matches its main. */
 function hasOverrides(node: InstanceNode): boolean {
   const overrides = (node as InstanceNode & { overrides?: readonly unknown[] }).overrides
@@ -262,31 +344,71 @@ async function mainComponentId(node: InstanceNode): Promise<string | null> {
   }
 }
 
-/** Ancestor names and variant values, for the WCAG "incidental text" exemptions. */
-function chainFor(node: TextNode): { names: string[]; variants: string[] } {
+const COMPONENT_TYPES = new Set(['INSTANCE', 'COMPONENT', 'COMPONENT_SET'])
+
+/** An instance's variant and boolean properties as "Name=value" (a boolean's key carries a "#id" suffix). */
+function stateProps(node: InstanceNode): string[] {
+  const props = node.componentProperties ?? {}
+  const out: string[] = []
+  for (const key of Object.keys(props)) {
+    const prop = props[key]
+    if (prop && (prop.type === 'VARIANT' || prop.type === 'BOOLEAN')) out.push(`${key.split('#')[0]}=${String(prop.value)}`)
+  }
+  return out
+}
+
+/**
+ * Names and component states above a layer, for the WCAG "inactive" and "logotype" exemptions.
+ *
+ * A name only speaks for the component the layer belongs to. A plain frame or
+ * section further up ("Disabled states", "Logo wall") is where the component
+ * was placed, not what state it is in, so it exempts nothing.
+ */
+function chainFor(node: SceneNode): { names: string[]; variants: string[] } {
   const names: string[] = [node.name]
-  const variants: string[] = []
+  const variants: string[] = node.type === 'INSTANCE' ? stateProps(node) : []
+  let insideComponent = COMPONENT_TYPES.has(node.type)
   let parent: BaseNode | null = node.parent
   while (parent && parent.type !== 'PAGE' && parent.type !== 'DOCUMENT') {
-    names.push(parent.name)
-    if (parent.type === 'INSTANCE') {
-      const props = parent.componentProperties
-      for (const key of Object.keys(props)) {
-        const prop = props[key]
-        if (prop && prop.type === 'VARIANT') variants.push(`${key}=${String(prop.value)}`)
-      }
-    }
+    const isComponent = COMPONENT_TYPES.has(parent.type)
+    if (isComponent || (!insideComponent && parent.type !== 'SECTION')) names.push(parent.name)
+    if (parent.type === 'INSTANCE') variants.push(...stateProps(parent))
+    if (isComponent) insideComponent = true
     parent = parent.parent
   }
   return { names, variants }
 }
 
-/** A file without the Brand collection still scans; it just talks in hexes. */
-async function loadPaletteQuietly(): Promise<BrandPalette | null> {
+const hasReaction = (node: BaseNode): boolean => 'reactions' in node && Array.isArray(node.reactions) && node.reactions.length > 0
+
+/**
+ * 1.4.11 is about the boundary of a control, not every outline in the file: a
+ * card's hairline is decoration. A stroke counts when its own layer is named
+ * for a control, or it sits inside a control component or a prototyped layer.
+ */
+function identifiesControl(node: SceneNode): NonTextIssue['evidence'] | null {
+  if (hasReaction(node)) return 'reaction'
+  if (isBoundaryName(node.name)) return 'name'
+  for (let p: BaseNode | null = node.parent; p && p.type !== 'PAGE' && p.type !== 'DOCUMENT'; p = p.parent) {
+    if (hasReaction(p)) return 'reaction'
+    if (COMPONENT_TYPES.has(p.type) && isBoundaryName(p.name)) return 'component'
+  }
+  return null
+}
+
+/**
+ * A file without the Brand collection still scans; it just talks in hexes.
+ *
+ * A failure is reported rather than swallowed: when Figma cannot serve the
+ * variables — the desktop app offline is the usual reason — every finding
+ * silently loses its token names, its per-brand verdicts and its suggested fix,
+ * and a scan that quietly says less is the thing this tab exists to prevent.
+ */
+async function loadPalette(): Promise<{ palette: BrandPalette | null; paletteError?: string }> {
   try {
-    return await loadBrandPalette(brand.source.collection, brand.source.mode)
-  } catch {
-    return null
+    return { palette: await loadBrandPalette(brand.source.collection, brand.source.mode) }
+  } catch (error: unknown) {
+    return { palette: null, paletteError: error instanceof Error ? error.message : String(error) }
   }
 }
 
@@ -297,6 +419,16 @@ interface TextRun {
   fontSize: number
   isBold: boolean
   characters: string
+}
+
+/** The variable bound to the paint the scan measures: the topmost visible one. */
+function paintVariableId(fills: readonly Paint[]): string | undefined {
+  for (let i = fills.length - 1; i >= 0; i -= 1) {
+    const paint = fills[i]!
+    if (paint.visible === false || (paint.opacity ?? 1) === 0) continue
+    return paint.type === 'SOLID' ? paint.boundVariables?.color?.id : undefined
+  }
+  return undefined
 }
 
 /**
@@ -312,8 +444,9 @@ function textRuns(node: TextNode): TextRun[] {
     if (segments.length) {
       return segments.map((seg) => ({
         fill: solidFromPaints(seg.fills, opacity),
-        // The typed segment shape omits `fills`, but Figma does return it.
-        fillVariableId: (seg.boundVariables as { fills?: readonly VariableAlias[] } | undefined)?.fills?.[0]?.id,
+        // Figma records a text colour binding on the paint itself; the segment's own
+        // `boundVariables` only lists typography, so reading it alone finds no token in a real file.
+        fillVariableId: paintVariableId(seg.fills) ?? (seg.boundVariables as { fills?: readonly VariableAlias[] } | undefined)?.fills?.[0]?.id,
         fontSize: seg.fontSize,
         isBold: isBoldStyle(seg.fontName.style, seg.fontWeight),
         characters: seg.characters,
@@ -331,12 +464,13 @@ function textRuns(node: TextNode): TextRun[] {
   }]
 }
 
-function evaluateText(node: TextNode, palette: BrandPalette | null): Finding[] {
+async function evaluateText(node: TextNode, palette: BrandPalette | null, lookup: TokenLookup): Promise<Finding[]> {
   // Whitespace-only and zero-size text is not something anyone reads.
   if (!node.characters.trim() || node.opacity === 0) return [{ kind: 'ok' }]
 
   const { names, variants } = chainFor(node)
-  if (exemptionFor(names, variants)) return [{ kind: 'exempt' }]
+  const exemption = exemptionFor(names, variants)
+  if (exemption) return [{ kind: 'exempt', entry: { nodeId: node.id, name: node.name, reason: exemption } }]
 
   const backdrop = resolveBackground(node)
   if (backdrop.indeterminate) {
@@ -348,20 +482,22 @@ function evaluateText(node: TextNode, palette: BrandPalette | null): Finding[] {
     if (!run.fill || !run.characters.trim() || run.fontSize <= 0) continue
     // The run is as strong as its own alpha times everything dimming it.
     const fill = { ...run.fill, a: run.fill.a * backdrop.foregroundOpacity }
-    const foreground = blendOver(fill, backdrop.color)
-    const ratio = contrastRatio(foreground, backdrop.color)
+    // On a gradient this is its worst point; on a flat backdrop, the only one.
+    const { foreground, background, ratio } = worstAgainst(fill, backdrop)
     const level = rateContrast(ratio, run.fontSize, run.isBold)
     if (level === 'aaa') continue
 
     const needed = requiredRatio(level, run.fontSize, run.isBold)
     const mode = brand.source.mode
-    const fgModes = modeColors(palette, run.fillVariableId)
-    const bgModes = modeColors(palette, backdrop.variableId)
+    const fgBound = await lookup(run.fillVariableId)
+    const bgBound = await lookup(backdrop.variableId)
+    const fgModes = modeColors(palette, fgBound?.brandId)
+    const bgModes = modeColors(palette, bgBound?.brandId)
     const brandModes = Object.keys(fgModes).length && Object.keys(bgModes).length
       ? verdictsAcrossModes(fgModes, bgModes, needed)
       : undefined
     const suggestion = palette
-      ? nearestPassingToken(foreground, backdrop.color, needed, textCandidates(palette))
+      ? nearestPassingToken(foreground, background, needed, textCandidates(palette), fill.a)
       : null
 
     findings.push({
@@ -373,16 +509,17 @@ function evaluateText(node: TextNode, palette: BrandPalette | null): Finding[] {
         fontSize: run.fontSize,
         isBold: run.isBold,
         foreground: rgbaToHex(foreground),
-        background: rgbaToHex(backdrop.color),
+        background: rgbaToHex(background),
         ratio: roundRatio(ratio),
         level,
-        fgToken: tokenFor(palette, run.fillVariableId, mode),
-        bgToken: tokenFor(palette, backdrop.variableId, mode),
+        fgToken: fgBound && run.fillVariableId ? { id: run.fillVariableId, name: fgBound.name, mode } : undefined,
+        bgToken: bgBound && backdrop.variableId ? { id: backdrop.variableId, name: bgBound.name, mode } : undefined,
         brandModes: brandModes && brandModes.length ? brandModes : undefined,
         fix: suggestion
           ? { tokenId: suggestion.id, tokenName: suggestion.name, hex: rgbaToHex(suggestion.rgb), ratio: roundRatio(suggestion.ratio), mode }
           : undefined,
         assumedBackground: backdrop.assumed || undefined,
+        gradientBackground: backdrop.colors ? true : undefined,
       },
     })
   }
@@ -403,14 +540,12 @@ function textCandidates(palette: BrandPalette) {
 
 /** The variable bound to a text node's first paint, when there is one. */
 function textFillVariableId(node: TextNode): string | undefined {
+  if (Array.isArray(node.fills)) {
+    const onPaint = paintVariableId(node.fills)
+    if (onPaint) return onPaint
+  }
   const fills = node.boundVariables?.fills
   return Array.isArray(fills) ? fills[0]?.id : undefined
-}
-
-function tokenFor(palette: BrandPalette | null, variableId: string | undefined, mode: string) {
-  if (!palette || !variableId) return undefined
-  const name = palette.names.get(variableId)
-  return name ? { id: variableId, name, mode } : undefined
 }
 
 async function focus(payload: unknown): Promise<void> {
@@ -447,10 +582,13 @@ async function applyFix(payload: unknown): Promise<{ applied: number }> {
     if (!node || !('fills' in node)) continue
     const fills = (node as SceneNode & { fills: readonly Paint[] }).fills
     if (fills === figma.mixed || !fills.length) continue
+    // The scan measured the topmost visible paint, so that is the one to rebind.
     const next = [...fills]
-    const first = next[0]!
-    if (first.type !== 'SOLID') continue
-    next[0] = figma.variables.setBoundVariableForPaint(first, 'color', variable)
+    let top = next.length - 1
+    while (top > 0 && next[top]!.visible === false) top -= 1
+    const paint = next[top]!
+    if (paint.type !== 'SOLID') continue
+    next[top] = figma.variables.setBoundVariableForPaint(paint, 'color', variable)
     ;(node as SceneNode & { fills: readonly Paint[] }).fills = next
     applied += 1
   }
@@ -489,8 +627,26 @@ async function target(payload: unknown): Promise<ScanTarget | null> {
   return summarizeScope(scope, roots, page.name)
 }
 
+/** Mark a finding as not a finding. Recorded in the document, so the team shares the correction. */
+function ignore(payload: unknown): { at: string } {
+  const { key } = ignoreRequestSchema.parse(payload)
+  const at = new Date().toISOString()
+  writeIgnores(withIgnore(readIgnores(), key, at))
+  return { at }
+}
+
+function unignore(payload: unknown): { restored: number } {
+  const { key } = ignoreRequestSchema.parse(payload)
+  const before = readIgnores()
+  const after = withoutIgnore(before, key)
+  writeIgnores(after)
+  return { restored: before.length - after.length }
+}
+
 export const handlers: HandlerMap = {
   [MSG.scan]: scan,
+  [MSG.ignore]: ignore,
+  [MSG.unignore]: unignore,
   [MSG.target]: target,
   [MSG.openRules]: (payload: unknown) => { figma.openExternal(quickrefUrl(openRulesRequestSchema.parse(payload ?? {}).standard)) },
   [MSG.focus]: focus,

@@ -5,9 +5,10 @@ import type { ContrastIssue, NonTextIssue, ScanResult, TargetSizeIssue, Unmeasur
 import { criterionFor } from '../criteria'
 import { NON_TEXT_MIN } from '../nontext'
 import { rulesFor, type RuleId } from '../rules'
-import { standardLabel, understandingUrl, type StandardId } from '../standards'
+import { criteriaCount, standardLabel, understandingUrl, type StandardId } from '../standards'
+import { CONFIDENCE_DETAIL, CONFIDENCE_LABEL, contrastConfidence, nonTextConfidence, targetConfidence, type Confidence } from '../confidence'
 import { severityOf, summarizeScan, type FindingSeverity } from '../summary'
-import { PLATFORM_TARGETS, requiredLabel, targetCriterion, unitOf, type Platform } from '../target'
+import { PLATFORM_TARGETS, requiredLabel, targetCitation, targetCriterion, unitOf, type Platform } from '../target'
 import type { Badge, CheckRun, CheckType, DocFact, ManualCheck, ReportDoc, ReportIssue } from './types'
 
 /** The findings on screen: the tab's rule and level filters already applied. */
@@ -47,6 +48,7 @@ function contrastIssue(issue: ContrastIssue, standard: StandardId | undefined): 
     ...(issue.fgToken ? [{ key: 'Token', value: issue.fgToken.name }] : []),
     { key: 'Measured', value: `${ratio} · ${hex(issue.foreground)} on ${hex(issue.background)}${issue.assumedBackground ? ' (background assumed white)' : ''}`, tone: severityOf({ kind: 'contrast', issue }) },
     { key: 'Required', value: `${c.needs}:1 for ${Math.round(issue.fontSize)}px text (${c.rating})` },
+    ...decidedBy(contrastConfidence(issue)),
     { key: 'User impact', value: IMPACT.contrast },
   ]
   const fix = issue.fix
@@ -83,6 +85,7 @@ function nonTextIssue(issue: NonTextIssue, standard: StandardId | undefined): Om
       { key: 'Layer', value: layerLabel(issue.name, issue.occurrences) },
       { key: 'Measured', value: `${ratio} · ${hex(issue.foreground)} on ${hex(issue.background)}`, tone: 'serious' },
       { key: 'Required', value: `${NON_TEXT_MIN}:1 against what it sits on (AA)` },
+      ...decidedBy(nonTextConfidence(issue)),
       { key: 'User impact', value: IMPACT.nontext },
     ],
     designFix: `Darken or lighten the stroke until it reaches ${NON_TEXT_MIN}:1 against ${hex(issue.background)}.`,
@@ -101,33 +104,46 @@ function targetCode(platform: Platform, required: number): string {
 }
 
 function targetIssue(issue: TargetSizeIssue, standard: StandardId | undefined): Omit<ReportIssue, 'id'> {
-  const code = targetCriterion(issue)
-  const enhanced = code === '2.5.5'
+  const cited = targetCitation(issue)
+  const enhanced = cited.level === 'AAA'
   const unit = unitOf(issue)
   const platform = issue.platform ?? 'web'
   const size = `${issue.width} × ${issue.height} ${unit}`
   const why = issue.evidence === 'reaction' ? 'has a prototype interaction' : 'its name marks it as a control'
   return {
     type: 'target',
-    criterion: `${code} Target Size (${enhanced ? 'Enhanced' : 'Minimum'})`,
+    criterion: cited.code ? `${cited.code} ${cited.title}` : `${cited.title} (${cited.label})`,
     principle: 'Operable',
-    level: enhanced ? 'AAA' : 'AA',
-    severity: severityOf({ kind: 'target', width: issue.width, height: issue.height }),
+    level: cited.level,
+    severity: severityOf({ kind: 'target', width: issue.width, height: issue.height, standard: issue.standard }),
     layer: layerLabel(issue.name, issue.occurrences),
     measuredShort: `${issue.width} × ${issue.height} · needs ${issue.required} × ${issue.required}`,
     facts: [
       { key: 'Layer', value: `${layerLabel(issue.name, issue.occurrences)} · ${why}` },
       { key: 'Measured', value: size, tone: enhanced ? 'moderate' : 'serious' },
       { key: 'Required', value: requiredLabel(issue) },
+      ...decidedBy(targetConfidence(issue)),
       { key: 'User impact', value: IMPACT.target },
     ],
     designFix: `Keep the artwork and grow the hit area to ${issue.required} × ${issue.required} ${unit}. Padding counts.`,
     codeFix: targetCode(platform, issue.required),
     sample: { kind: 'target', width: issue.width, height: issue.height, required: issue.required },
     nodeIds: issue.nodeIds.length ? issue.nodeIds : [issue.nodeId],
-    reference: { label: `Understanding SC ${code} (W3C)`, url: understandingUrl(standard, enhanced ? 'target-size-enhanced' : 'target-size-minimum') },
+    reference: cited.code
+      ? { label: `Understanding SC ${cited.code} (W3C)`, url: understandingUrl(standard, enhanced ? 'target-size-enhanced' : 'target-size-minimum') }
+      : PLATFORM_REFERENCE[platform === 'android' ? 'android' : 'ios'],
   }
 }
+
+/** Where Apple and Google publish the tap-target minimum a platform-only finding cites. */
+const PLATFORM_REFERENCE = {
+  ios: { label: 'Apple Human Interface Guidelines: Accessibility', url: 'https://developer.apple.com/design/human-interface-guidelines/accessibility' },
+  android: { label: 'Android Accessibility Help: Touch target size', url: 'https://support.google.com/accessibility/android/answer/7101858' },
+} as const
+
+/** Only said when it is worth saying: a measured finding needs no caveat, a guess does. */
+const decidedBy = (confidence: Confidence): DocFact[] =>
+  (confidence === 'measured' ? [] : [{ key: 'Decided by', value: `${CONFIDENCE_LABEL[confidence]} — ${CONFIDENCE_DETAIL[confidence]}`, tone: 'moderate' as const }])
 
 const RULE_TYPE: Readonly<Record<RuleId, CheckType>> = { '1.4.3': 'contrast', '1.4.6': 'contrast', '1.4.11': 'nontext', '2.5.8': 'target', '2.5.5': 'target' }
 
@@ -149,7 +165,7 @@ function checksRun(r: ScanResult, view: ReportView, platform: Platform): CheckRu
   }
   const checked: Readonly<Record<CheckType, string>> = {
     contrast: plural(r.textNodes, 'text layer'),
-    nontext: 'Borders and icons',
+    nontext: 'Control borders',
     target: 'Interactive targets',
     code: 'Not automated',
   }
@@ -189,6 +205,9 @@ export function buildReportDoc(r: ScanResult, view: ReportView, options: ReportO
   const criteria = new Set(issues.map((i) => i.criterion)).size
   const manual = manualChecks(r.unmeasurable)
   const clean = issues.length === 0
+  // Only an AA finding stops a screen meeting AA: text at 5:1 passes 1.4.3 and merely misses AAA.
+  const openAA = issues.filter((i) => i.level === 'AA').length
+  const openAAA = issues.length - openAA
 
   const counts = (['critical', 'serious', 'moderate', 'minor'] as const).filter((s) => severity[s]).map((s) => `${severity[s]} ${s}`)
   const verdictSummary = clean
@@ -199,14 +218,16 @@ export function buildReportDoc(r: ScanResult, view: ReportView, options: ReportO
     kind: 'report',
     title: options.title,
     details: [
-      { key: 'Standard', value: `${label} · Level AA` },
+      { key: 'Standard', value: `${label} · Level AA${openAAA ? ' and AAA' : ''}` },
       { key: 'Platform', value: PLATFORM_TARGETS[options.platform].label },
       { key: 'Scope', value: `${r.scope === 'page' ? r.meta.page : options.title} · ${r.scanned.toLocaleString('en-GB')} layers` },
       { key: 'Scanned', value: options.scannedOn },
     ],
     verdict: clean
       ? { badge: { tone: 'pass', label: 'Automated checks pass' }, headline: `No automated issues against ${label} AA`, summary: verdictSummary }
-      : { badge: { tone: 'critical', label: 'Does not conform' }, headline: `Not yet ${label} AA`, summary: verdictSummary },
+      : openAA
+        ? { badge: { tone: 'critical', label: 'Does not conform' }, headline: `Not yet ${label} AA`, summary: verdictSummary }
+        : { badge: { tone: 'moderate', label: 'AA checks pass' }, headline: `No automated AA issues, ${plural(openAAA, 'AAA issue')} open`, summary: verdictSummary },
     totals: [
       { value: summary.score === null ? '—' : `${summary.score}%`, label: 'Components passing', note: summary.components.total ? `${summary.components.passing} of ${plural(summary.components.total, 'component')}` : 'No components in scope' },
       { value: String(issues.length), label: 'Issues to fix', note: issues.length ? `across ${plural(criteria, 'criterion', 'criteria')}` : 'none found' },
@@ -218,6 +239,6 @@ export function buildReportDoc(r: ScanResult, view: ReportView, options: ReportO
     issues,
     manual,
     checks,
-    footer: `Generated by Bluebird Accessibility checker on ${options.scannedOn}. Automated checks find only part of WCAG issues, so this report is not a conformance claim. Re-run the scan and export again to refresh it.`,
+    footer: `Generated by Bluebird Accessibility checker on ${options.scannedOn}. It decides ${automatedRuns.length} of the ${criteriaCount(standard)} success criteria in ${label}, so this report is not a conformance claim. Re-run the scan and export again to refresh it.`,
   }
 }

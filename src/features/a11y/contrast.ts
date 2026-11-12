@@ -35,7 +35,7 @@ export const BOLD_WEIGHT = 700
 export function isBoldStyle(style: string, weight?: number): boolean {
   if (typeof weight === 'number') return weight >= BOLD_WEIGHT
   if (/semi\s*-?bold|demi/i.test(style)) return false
-  return /bold|black|heavy|extra/i.test(style)
+  return /bold|black|heavy/i.test(style)
 }
 
 export function roundRatio(ratio: number): number {

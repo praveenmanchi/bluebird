@@ -10,6 +10,22 @@ export type Exemption = 'inactive' | 'logotype'
 const INACTIVE = /(^|[^a-z])(disabled|inactive)([^a-z]|$)/i
 const LOGOTYPE = /(^|[^a-z])(logo|logotype|wordmark|brandmark)([^a-z]|$)/i
 
+const OFF = /^(false|no|off|0|none)$/i
+
+/**
+ * "State=Disabled" and "Disabled=True" are inactive; "Disabled=False" is the
+ * enabled control and must be checked. A property named for the inactive state
+ * only counts when its value is not a negative.
+ */
+function variantSaysInactive(entry: string): boolean {
+  const at = entry.indexOf('=')
+  if (at < 0) return INACTIVE.test(entry)
+  const key = entry.slice(0, at)
+  const value = entry.slice(at + 1).trim()
+  if (INACTIVE.test(value)) return true
+  return INACTIVE.test(key) && !OFF.test(value)
+}
+
 /**
  * Decide whether a finding is incidental, given the node's own name, its
  * ancestors' names, and any variant property values in the chain
@@ -20,7 +36,7 @@ export function exemptionFor(
   variantValues: readonly string[] = [],
 ): Exemption | null {
   for (const value of variantValues) {
-    if (INACTIVE.test(value)) return 'inactive'
+    if (variantSaysInactive(value)) return 'inactive'
   }
   for (const name of names) {
     if (INACTIVE.test(name)) return 'inactive'

@@ -20,6 +20,8 @@ describe('severityOf', () => {
     expect(severityOf({ kind: 'nontext' })).toBe('serious')
     expect(severityOf({ kind: 'target', width: 16, height: 16 })).toBe('serious')
     expect(severityOf({ kind: 'target', width: 30, height: 30 })).toBe('moderate')
+    // Under 2.1 there is no AA minimum: a 16px target only misses the AAA bar, as its card says.
+    expect(severityOf({ kind: 'target', width: 16, height: 16, standard: 'wcag21' })).toBe('moderate')
   })
 })
 
@@ -59,7 +61,8 @@ describe('summarizeScan', () => {
       targets: [{ nodeId: 't', nodeIds: ['t'], occurrences: 1, name: 'Close', width: 16, height: 16, required: 24, evidence: 'reaction' }],
     })
     expect(s.findings).toBe(4)
-    expect(s.failAA).toBe(1)
+    // 1.4.3, 1.4.11 and 2.5.8 are all AA: the faint border and the 16px target count too.
+    expect(s.failAA).toBe(3)
     expect(s.principles).toEqual({ perceivable: 3, operable: 1, understandable: 0, robust: 0 })
     expect(s.severity).toEqual({ critical: 1, serious: 3, moderate: 0, minor: 0 })
   })
@@ -73,5 +76,20 @@ describe('summarizeScan', () => {
       ],
     })
     expect(s.brands).toEqual([{ brand: 'Bridge', failing: 2 }, { brand: 'Ikea', failing: 1 }])
+  })
+
+  it('counts the findings it is given, so the dashboard can follow the filters', () => {
+    const full = {
+      ...base,
+      issues: [contrast(), contrast({ level: 'aa', nodeId: 'c2' })],
+      nonText: [{ nodeId: 'n', nodeIds: ['n'], occurrences: 1, name: 'Border', foreground: '#eee', background: '#fff', ratio: 1.2 }],
+      targets: [{ nodeId: 't', nodeIds: ['t'], occurrences: 1, name: 'Close', width: 16, height: 16, required: 24, evidence: 'reaction' as const }],
+    }
+    const onlyContrast = summarizeScan(full, { issues: full.issues, nonText: [], targets: [] })
+    expect(onlyContrast.findings).toBe(2)
+    expect(onlyContrast.failAA).toBe(1)
+    expect(onlyContrast.principles).toEqual({ perceivable: 2, operable: 0, understandable: 0, robust: 0 })
+    // Components and frames still describe the whole scan: only the scan knows which component a layer is in.
+    expect(onlyContrast.components).toEqual(summarizeScan(full).components)
   })
 })

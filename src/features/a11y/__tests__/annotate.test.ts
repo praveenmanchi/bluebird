@@ -48,6 +48,12 @@ describe('annotationForTarget', () => {
   it('cites 2.5.8 at the 24px bar', () => {
     expect(annotationForTarget(issue).label).toContain('WCAG 2.5.8 — target is 16×16px, needs 24×24px.')
   })
+  it('cites the platform guideline, not a WCAG number, when no WCAG bar is missed', () => {
+    const label = annotationForTarget({ ...issue, width: 46, height: 46, required: 48, platform: 'android' }).label
+    expect(label).toMatch(/^Material Design — target is 46×46dp, needs 48×48dp/)
+    expect(label).not.toContain('WCAG')
+  })
+
   it('cites 2.5.5 at the 44px bar', () => {
     expect(annotationForTarget({ ...issue, width: 32, height: 32, required: 44 }).label).toContain('WCAG 2.5.5')
   })
