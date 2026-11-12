@@ -2,9 +2,10 @@ import { useEffect } from 'preact/hooks'
 import { Icon, LinkButton, MetaBadge, Notice, PublishEmptyState, SectionTitle, SegmentedControl, Spinner, useRpc } from '@shared/ui'
 import { requestSettings } from '@shared/navigation'
 import { HISTORY_TYPES } from '@shared/history/types'
-import { openLink, refresh } from '../actions'
+import { approveChangelog, openChangelog, openLink, refresh } from '../actions'
 import { FILTER_LABEL, groupEntries } from '../format'
-import { current, days, entries, error, feature, fresh, loading, polling, reset, result, selected, showAll, shown, type FeatureFilter } from '../state'
+import { approveError, approving, changelogPhase, current, days, entries, error, feature, flash, fresh, loading, polling, reset, result, selected, showAll, shown, type FeatureFilter } from '../state'
+import { ChangelogDialog } from './ChangelogDialog'
 import { EntryCard } from './EntryCard'
 import { EntryDetails } from './EntryDetails'
 import { RangeSelect } from './RangeSelect'
@@ -49,7 +50,15 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
   const site = r?.jiraSite ?? ''
 
   if (current.value) {
-    return <div class="bb-history"><EntryDetails entry={current.value} jiraSite={site} onBack={() => { selected.value = null }} onOpenUrl={open} /></div>
+    const entry = current.value
+    return (
+      <div class="bb-history">
+        <EntryDetails
+          entry={entry} jiraSite={site} onBack={() => { selected.value = null; approveError.value = null }} onOpenUrl={open}
+          onApprove={() => { void approveChangelog(rpc, entry) }} approving={approving.value === entry.id} approveError={approveError.value}
+        />
+      </div>
+    )
   }
 
   const all = entries.value
@@ -79,6 +88,11 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
               <Icon name="ui-prototype-loop" aria-hidden="true" />
             </button>
           )}
+          {connected && (
+            <button type="button" class="bb-history__refresh" aria-label="New changelog" title="New changelog from this branch" onClick={() => { void openChangelog(rpc) }}>
+              <Icon name="ui-general-add" aria-hidden="true" />
+            </button>
+          )}
         </div>
         {connected && (
           <div class="bb-history__filters">
@@ -94,6 +108,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         )}
       </section>
 
+      {flash.value && <Notice tone="info" title="Changelog">{flash.value}</Notice>}
       {fresh.value && <Notice tone="info" title={`${fresh.value.count} new ${fresh.value.count === 1 ? 'entry' : 'entries'}`}>From {listNames(fresh.value.by)} since you last refreshed.</Notice>}
 
       {error.value ? (
@@ -103,7 +118,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
       ) : !connected ? (
         <PublishEmptyState state="not-connected" title="Connect the history repository" body={`${r.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Everyone who uses the same repository sees the same history.`} actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]} />
       ) : !list.length ? (
-        <PublishEmptyState state="first-release" title="No history yet" body={filtered ? `Nobody on the team used ${FILTER_LABEL[feature.value as Exclude<FeatureFilter, 'all'>]} in the last ${days.value} days.` : `Extractions, reports, Code Connect templates, MCP pushes and UX AI answers from everyone on the team show up here. Nothing in the last ${days.value} days.`} actions={[]} />
+        <PublishEmptyState state="first-release" title="No history yet" body={filtered && feature.value === 'changelog' ? `No changelogs in the last ${days.value} days. Press + on a branch to generate one.` : filtered ? `Nobody on the team used ${FILTER_LABEL[feature.value as Exclude<FeatureFilter, 'all'>]} in the last ${days.value} days.` : `Extractions, reports, Code Connect templates, MCP pushes and UX AI answers from everyone on the team show up here. Nothing in the last ${days.value} days.`} actions={[]} />
       ) : (
         groups.map((g) => (
           <section key={g.label} class="bb-history__day" aria-label={g.label}>
@@ -116,6 +131,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
           </section>
         ))
       )}
+      {changelogPhase.value !== 'closed' && <ChangelogDialog />}
       {filtered && !showAll.value && list.length > PAGE_SIZE && <LinkButton class="bb-history__more" onClick={() => { showAll.value = true }}>Show {list.length - PAGE_SIZE} more</LinkButton>}
     </div>
   )

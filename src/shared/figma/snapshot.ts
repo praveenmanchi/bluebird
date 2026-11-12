@@ -78,6 +78,7 @@ async function readComponents(): Promise<ComponentEntry[]> {
   for (const n of roots) {
     out.push({
       id: n.key || n.id,
+      nodeId: n.id,
       name: n.name,
       page: pageOf(n),
       variants: n.type === 'COMPONENT_SET' ? n.children.length : 1,

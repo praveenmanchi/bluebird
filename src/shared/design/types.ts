@@ -18,6 +18,8 @@ export interface VariableEntry {
 export interface ComponentEntry {
   /** Component key when the file has been published, else the node id. Stable across renames. */
   id: string
+  /** The node's id in the file. A branch keeps its main file's ids, so this finds the same component there. */
+  nodeId?: string
   name: string
   page: string
   variants: number

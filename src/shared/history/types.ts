@@ -5,7 +5,7 @@
 // every read is validated against this schema.
 import * as z from 'zod/mini'
 
-export const HISTORY_TYPES = ['extraction', 'report', 'code-connect', 'mcp', 'ux-ai'] as const
+export const HISTORY_TYPES = ['extraction', 'changelog', 'report', 'code-connect', 'mcp', 'ux-ai'] as const
 export type HistoryType = typeof HISTORY_TYPES[number]
 
 const text = (max: number) => z.string().check(z.maxLength(max))
@@ -27,6 +27,8 @@ const section = z.discriminatedUnion('kind', [
   z.object({
     kind: z.literal('changes'),
     title: text(80),
+    /** What a row is, for the count beside each group ("3 components"); absent = variable. */
+    unit: z.optional(z.enum(['variable', 'component'])),
     groups: z.array(z.object({ change: z.enum(['added', 'modified', 'removed']), rows: z.array(changeRow).check(z.maxLength(500)) })).check(z.maxLength(3)),
   }),
   z.object({
@@ -47,7 +49,8 @@ export const historyEntrySchema = z.object({
   schema: z.literal(1),
   id: z.string().check(z.regex(/^[A-Za-z0-9_-]{6,64}$/)),
   type: z.enum(HISTORY_TYPES),
-  status: z.enum(['done', 'failed']),
+  /** `review`: a changelog waiting for a teammate to approve it. */
+  status: z.enum(['done', 'failed', 'review']),
   /** The card title, e.g. "Button refresh". */
   title: text(160),
   /** The action line, e.g. "Extraction pushed to develop · PR #74 · Project Bluebird UI". */
@@ -61,6 +64,8 @@ export const historyEntrySchema = z.object({
   /** Card footer: what changed in variables / components. */
   variables: opt(160),
   components: opt(160),
+  /** Who approved a changelog, and when. */
+  review: z.optional(z.object({ by: text(120), at: z.string().check(z.regex(/^\d{4}-\d{2}-\d{2}T/)) })),
   /** Where it landed: a pull request, commit or report. https only. */
   link: z.optional(z.object({ url: z.string().check(z.regex(/^https:\/\/\S+$/), z.maxLength(2048)), label: text(80) })),
   details: z.optional(z.object({

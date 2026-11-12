@@ -1,9 +1,24 @@
 // Sample entries for the mock transport, stories and tests — the Figma
 // "History · 600" examples, one per entry type, with full details. Times are
 // relative to `now` so Today / Yesterday / Earlier this week always group.
+import type { Change } from '@shared/design/types'
 import type { HistoryEntry } from '@shared/history/types'
+import { changelogEntry } from './changelog'
 
 const ago = (now: Date, hours: number) => new Date(now.getTime() - hours * 3_600_000).toISOString()
+
+const mode = (m: string, old: string, next: string) => ({ mode: m, state: 'changed' as const, kind: 'color' as const, old, new: next })
+const same = (m: string, value: string, kind: 'color' | 'number' = 'color') => ({ mode: m, state: 'unchanged' as const, kind, value })
+
+/** What the sample branch "button-refresh" changed against its main file. */
+export const SAMPLE_CHANGES: readonly Change[] = [
+  { id: 'variable:v-translucent', subject: 'variable', kind: 'removed', preview: 'color', name: 'surface/translucent', detail: 'Removed · used by 1 component', breaking: true, swatch: '#FFFFFF1A', modeValues: [same('Bridge', '#FFFFFF1A'), same('Ikea', '#FFFFFF1A')], usedIn: ['Toggle'], source: 'Brand UI › surface/translucent' },
+  { id: 'variable:v-info', subject: 'variable', kind: 'added', preview: 'color', name: 'feedback/info', detail: 'New · #007BE5', breaking: false, swatch: '#007BE5', modeValues: [same('Bridge', '#007BE5'), same('Ikea', '#007BE5')], usedIn: ['Notice'], source: 'Brand UI › feedback/info' },
+  { id: 'variable:v-primary', subject: 'variable', kind: 'modified', preview: 'color', name: 'button/bg/primary', detail: '#0C8CE9 → #0978C8 · 1 of 2 brands', breaking: false, swatch: '#0978C8', modeValues: [mode('Bridge', '#0C8CE9', '#0978C8'), same('Ikea', '#0058A3')], usedIn: ['Button', 'Date picker'], source: 'Brand UI › button/bg/primary' },
+  { id: 'variable:v-radius', subject: 'variable', kind: 'modified', preview: 'number', name: 'radius/control', detail: '6 → 8', breaking: false, modeValues: [{ mode: 'Value', state: 'changed', kind: 'number', old: '6', new: '8' }], usedIn: ['Button', 'Tab'], source: 'Semantics › radius/control' },
+  { id: 'component:c-chip', subject: 'component', kind: 'added', preview: 'component', name: 'Filter chip', detail: 'New · 4 variants · 3 properties', breaking: false, modeValues: [], usedIn: [], source: 'Atoms › Filter chip' },
+  { id: 'component:c-button', subject: 'component', kind: 'modified', preview: 'component', name: 'Button', detail: '+2 variants · +Loading', breaking: false, modeValues: [], usedIn: [], source: 'Atoms › Button' },
+]
 
 type Seed = Omit<HistoryEntry, 'schema' | 'at'> & { hoursAgo: number }
 
@@ -77,6 +92,10 @@ const SEEDS: Seed[] = [
     id: 'ex2bridge', hoursAgo: 31, type: 'extraction', status: 'failed', title: 'Bridge components sync', ticket: 'BB-340',
     summary: 'Extraction not pushed · main is protected · Bridge Components', by: { name: 'Ravi Kumar', team: 'Dev' }, file: 'Bridge Components', variables: '3 modified · not pushed',
     details: { notice: { tone: 'error', title: 'The push was rejected', body: 'main only accepts pull requests. Nothing was pushed and nobody was notified.' } },
+  },
+  {
+    id: 'cl1toggle', hoursAgo: 52,
+    ...changelogEntry({ changes: SAMPLE_CHANGES.slice(0, 3), title: 'Toggle surface cleanup', notes: 'Toggle moves to surface/overlay; the translucent surface is gone.', ticket: 'BB-336', by: 'Meera Shah', team: 'Product Design', file: 'toggle-cleanup', main: 'Project Bluebird UI', page: 'Molecules', warnings: [], time: '10:05' }),
   },
   {
     id: 'ex3baseln', hoursAgo: 90, type: 'extraction', status: 'done', title: 'Baseline before the button refresh', ticket: 'BB-338',

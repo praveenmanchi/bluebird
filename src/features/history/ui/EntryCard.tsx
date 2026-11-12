@@ -1,7 +1,7 @@
-import { Button, Icon, LinkButton, MetaBadge } from '@shared/ui'
+import { Button, ChangeStatus, Icon, LinkButton, MetaBadge, type IconName } from '@shared/ui'
 import { teamShort } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
-import { TYPE_LABEL, cardDate, typeTone } from '../format'
+import { STATUS_LABEL, STATUS_TONE, TYPE_LABEL, cardDate, changeCounts, countsLabel, typeTone } from '../format'
 
 export interface EntryCardProps {
   entry: HistoryEntry
@@ -12,9 +12,25 @@ export interface EntryCardProps {
 }
 
 /**
+ * One footer group: the icon, then a Change Status pill per count in the line
+ * (Updated / Added / Removed) and whatever else the line says as text.
+ */
+function Changes({ what, icon, line }: { what: string; icon: IconName; line: string }) {
+  const parsed = changeCounts(line)
+  return (
+    <span class="bb-history-card__change" role="group" aria-label={countsLabel(what, parsed)}>
+      <Icon name={icon} aria-hidden="true" />
+      {parsed.counts.map((c) => <ChangeStatus key={c.status} status={c.status} count={c.count} />)}
+      {parsed.rest && <span>{parsed.rest}</span>}
+    </span>
+  )
+}
+
+/**
  * Figma "History Entry" (Molecules › History, 40002709:7089): type and title on the
  * left; Jira ticket, date, name and team on the right; what happened; then the
- * variable and component changes and View details. Failed entries get the red stroke.
+ * variable and component changes (Change Status pills, a rule between the two
+ * groups) and View details. Failed entries get the red stroke.
  */
 export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl }: EntryCardProps) {
   const team = teamShort(entry.by.team)
@@ -23,7 +39,10 @@ export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl }: EntryCardProps
     <article class="bb-history-card" data-status={entry.status} aria-label={`${TYPE_LABEL[entry.type]}: ${entry.title}`}>
       <div class="bb-history-card__header">
         <div class="bb-history-card__titles">
-          <MetaBadge tone={typeTone(entry)}>{TYPE_LABEL[entry.type]}</MetaBadge>
+          <span class="bb-history-card__badges">
+            <MetaBadge tone={typeTone(entry)}>{TYPE_LABEL[entry.type]}</MetaBadge>
+            {entry.status === 'review' && <MetaBadge tone={STATUS_TONE.review}>{STATUS_LABEL.review}</MetaBadge>}
+          </span>
           <h3 class="bb-history-card__title">{entry.title}</h3>
         </div>
         <div class="bb-history-card__meta">
@@ -47,10 +66,11 @@ export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl }: EntryCardProps
       <p class="bb-history-card__what">{entry.summary}</p>
       <div class="bb-history-card__footer">
         <div class="bb-history-card__changes">
-          {entry.variables && <span class="bb-history-card__change"><Icon name="variables" aria-label="Variables" />{entry.variables}</span>}
-          {entry.components && <span class="bb-history-card__change"><Icon name="ui-toolbar-component" aria-label="Components" />{entry.components}</span>}
+          {entry.variables && <Changes what="Variables" icon="variables" line={entry.variables} />}
+          {entry.variables && entry.components && <span class="bb-history-card__rule" aria-hidden="true" />}
+          {entry.components && <Changes what="Components" icon="ui-toolbar-component" line={entry.components} />}
         </div>
-        <Button variant="secondary" trailingIcon="ui-prototype-navigate-to" onClick={onOpen} aria-label={`View details: ${entry.title}`}>View details</Button>
+        <Button variant="secondary" trailingIcon="ui-prototype-navigate-to" onClick={onOpen} aria-label={`View details: ${entry.title}`}>{entry.status === 'review' ? 'Review' : 'View details'}</Button>
       </div>
     </article>
   )

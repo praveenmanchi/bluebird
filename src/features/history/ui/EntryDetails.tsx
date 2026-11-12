@@ -1,13 +1,18 @@
 import { Avatar, Button, CheckItem, CodeSnippet, LinkButton, Message, MetaBadge, Notice, PublishStep, SectionTitle, ValueDiff } from '@shared/ui'
 import { copyText } from '@shared/clipboard'
 import type { HistoryEntry, HistorySection } from '@shared/history/types'
-import { TYPE_LABEL, initials, longDate, typeTone } from '../format'
+import { STATUS_TONE, TYPE_LABEL, initials, longDate, statusLabel, typeTone } from '../format'
 
 export interface EntryDetailsProps {
   entry: HistoryEntry
   jiraSite: string
   onBack: () => void
   onOpenUrl: (url: string) => void
+  /** Approve a changelog that is under review; omitted where nothing can be approved. */
+  onApprove?: () => void
+  /** The approval is being saved. */
+  approving?: boolean
+  approveError?: string | null
 }
 
 const CHANGE_TONE = { added: 'success', modified: 'accent', removed: 'danger' } as const
@@ -20,14 +25,14 @@ function Changes({ section }: { section: Extract<HistorySection, { kind: 'change
       <SectionTitle title={section.title} showCount count={total} showAction={false} />
       {section.groups.filter((g) => g.rows.length).map((g) => (
         <div key={g.change} class="bb-history__group">
-          <div class="bb-history__group-head"><MetaBadge tone={CHANGE_TONE[g.change]}>{CHANGE_LABEL[g.change]}</MetaBadge><span class="bb-history__hint">{g.rows.length} {g.rows.length === 1 ? 'variable' : 'variables'}</span></div>
+          <div class="bb-history__group-head"><MetaBadge tone={CHANGE_TONE[g.change]}>{CHANGE_LABEL[g.change]}</MetaBadge><span class="bb-history__hint">{g.rows.length} {section.unit ?? 'variable'}{g.rows.length === 1 ? '' : 's'}</span></div>
           <ul class="bb-history__list">
             {g.rows.map((r) => (
               <li key={r.name} class="bb-history__change">
                 <div class="bb-history__change-row">
                   <span class="bb-history__change-name">{r.name}</span>
                   {r.valueKind === 'text'
-                    ? <span class="bb-history__hint">{[r.old, r.new].filter(Boolean).join(' → ')}</span>
+                    ? (r.old || r.new) && <span class="bb-history__hint">{[r.old, r.new].filter(Boolean).join(' → ')}</span>
                     : <ValueDiff kind={r.valueKind} old={r.old ?? '—'} new={r.new ?? '—'} />}
                   {(r.breaking || r.scope) && <MetaBadge tone={r.breaking ? 'danger' : 'neutral'}>{r.breaking ? 'Breaking' : r.scope}</MetaBadge>}
                 </div>
@@ -63,7 +68,7 @@ function Section({ section }: { section: HistorySection }) {
  * numbers, an optional notice, the type's own sections, the activity log and the links.
  * Everything comes from the entry, so every type renders through this one screen.
  */
-export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl }: EntryDetailsProps) {
+export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl, onApprove, approving = false, approveError }: EntryDetailsProps) {
   const d = entry.details ?? {}
   const ticketUrl = entry.ticket && jiraSite ? `${jiraSite}/browse/${entry.ticket}` : ''
   return (
@@ -73,7 +78,7 @@ export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl }: EntryDetail
         <div class="bb-history__badges">
           {entry.variables && <MetaBadge tone="neutral" meta={entry.variables}>Variables</MetaBadge>}
           {entry.components && <MetaBadge tone="neutral" meta={entry.components}>Components</MetaBadge>}
-          <MetaBadge tone={entry.status === 'failed' ? 'danger' : 'success'}>{entry.status === 'failed' ? 'Failed' : 'Done'}</MetaBadge>
+          <MetaBadge tone={STATUS_TONE[entry.status]}>{statusLabel(entry)}</MetaBadge>
           <span class="bb-history__grow" />
           {entry.ticket && (ticketUrl ? <LinkButton onClick={() => onOpenUrl(ticketUrl)}>Jira {entry.ticket}</LinkButton> : <span class="bb-history__hint">Jira {entry.ticket}</span>)}
         </div>
@@ -112,7 +117,9 @@ export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl }: EntryDetail
           <div class="bb-history__steps">{d.activity.map((a, i) => <PublishStep key={i} status="done" title={a.title} detail={a.detail} time={a.time} />)}</div>
         </section>
       )}
+      {approveError && <Notice tone="error" title="Not approved">{approveError}</Notice>}
       <div class="bb-history__actions">
+        {entry.status === 'review' && onApprove && <Button variant="primary" loading={approving} onClick={onApprove}>Approve and publish</Button>}
         {entry.link && <Button variant="primary" onClick={() => onOpenUrl(entry.link!.url)}>{entry.link.label}</Button>}
         {entry.link && <Button variant="secondary" onClick={() => { void copyText(entry.link!.url) }}>Copy link</Button>}
       </div>

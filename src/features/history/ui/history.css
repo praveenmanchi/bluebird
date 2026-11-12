@@ -130,6 +130,7 @@
   background: var(--bb-publish-surface-field);
 }
 .bb-history-card[data-status='failed'] { border-color: var(--bb-publish-step-failed); }
+.bb-history-card__badges { display: flex; flex-wrap: wrap; gap: var(--bb-publish-space-tight); }
 .bb-history-card__header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--bb-publish-space-inline); }
 .bb-history-card__titles { display: flex; flex-direction: column; align-items: flex-start; gap: var(--bb-publish-space-tight); min-width: 0; }
 .bb-history-card__title {
@@ -160,7 +161,60 @@
   padding-top: var(--bb-publish-space-inline);
   border-top: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
 }
+/* Figma "Line 1": the upright rule between the Variables and Components groups. */
+.bb-history-card__rule { align-self: stretch; flex: none; border-left: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border); }
 .bb-history-card__changes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bb-publish-space-inline); min-width: 0; font-size: var(--bb-publish-font-size-body); color: var(--bb-publish-text-body); }
+
+/* "New changelog" pop-up (Figma 40002732:11169): covers the tab; the dialog is a
+ * title bar over the body, centred, and the tab scrolls when it is taller. */
+.bb-changelog {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-panel);
+  background: color-mix(in srgb, var(--bb-publish-surface-field) 70%, transparent);
+  overflow-y: auto;
+}
+.bb-changelog__panel {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  margin-block: auto;
+  outline: none;
+}
+/* Figma "Frame 1430102558" (40002734:22605): title and Branch badge, ruled off from the body. */
+.bb-changelog__bar {
+  box-sizing: border-box;
+  min-height: 34px; /* allow-raw: the title bar's fixed height in Figma, not bound to a variable */
+  padding-inline: var(--bb-dimension-space-12) var(--bb-space-inset-lg-alt);
+  border: var(--bb-border-width-default) solid var(--bb-border);
+  border-radius: var(--bb-dimension-radius-8) var(--bb-dimension-radius-8) 0 0;
+  background: var(--bb-publish-surface-panel);
+}
+/* Figma "New changelog" (40002734:22587): no top stroke, it sits under the bar. */
+.bb-changelog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-panel);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-top: 0;
+  border-radius: 0 0 var(--bb-publish-radius-panel) var(--bb-publish-radius-panel);
+  background: var(--bb-publish-surface-panel);
+}
+.bb-changelog__list,
+.bb-changelog__field { display: flex; flex-direction: column; gap: var(--bb-publish-space-tight); min-width: 0; }
+.bb-changelog__chips { display: flex; flex-wrap: wrap; gap: var(--bb-publish-space-tight); }
+.bb-changelog__busy { display: flex; flex-direction: column; align-items: center; gap: var(--bb-publish-space-inline); padding: var(--bb-publish-space-panel); text-align: center; }
+.bb-changelog__actions { justify-content: flex-end; }
+/* Figma: Cancel and the main action are the same fixed width. */
+.bb-changelog__actions > .bb-button { min-width: var(--bb-button-primary-width-md); }
 
 @container history (max-width: 420px) { /* allow-raw: S-window breakpoint (filters and facts stack), not a Figma value */
   .bb-history__filters { flex-wrap: wrap; }

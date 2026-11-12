@@ -13,6 +13,7 @@
     "currentuser"
   ],
   "enableProposedApi": false,
+  "enablePrivatePluginApi": true,
   "documentAccess": "dynamic-page",
   "editorType": [
     "figma"
