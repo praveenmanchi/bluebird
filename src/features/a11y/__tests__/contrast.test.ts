@@ -34,6 +34,9 @@ describe('WCAG rating', () => {
     expect(isBoldStyle('SemiBold')).toBe(false)
     expect(isBoldStyle('DemiBold')).toBe(false)
     expect(isBoldStyle('Extra Bold')).toBe(true)
+    // "Extra" alone says nothing about weight: Extra Light is the thinnest cut there is.
+    expect(isBoldStyle('Extra Light')).toBe(false)
+    expect(isBoldStyle('ExtraLight')).toBe(false)
   })
 
   it('rounds ratios to two decimals', () => {

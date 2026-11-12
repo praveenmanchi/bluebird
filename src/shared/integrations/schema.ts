@@ -14,7 +14,7 @@ export const INTEGRATIONS_KEY = 'bluebird:integrations'
  * Sections whose Test Connection is wired. Each is answered by the feature that owns the
  * connection, on `<section>:test`, with the section's unsaved form values as the payload.
  */
-export const TESTABLE_INTEGRATIONS: readonly IntegrationId[] = ['jira', 'dualFile', 'ai', 'github']
+export const TESTABLE_INTEGRATIONS: readonly IntegrationId[] = ['jira', 'dualFile', 'ai', 'github', 'storage']
 /** `jira:test`, `dual-file:test`: bridge types are lower-case, so camelCase ids become kebab-case. */
 export const testMessage = (section: IntegrationId): string => `${section.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}:test`
 /** What a passing test reports; a failing one rejects with a readable message. */
@@ -39,6 +39,13 @@ export const MODEL_OPTIONS = {
 export const PROVIDER_OPTIONS = ['Claude', 'OpenAI', 'Gemini'] as const
 
 export const OUTPUT_FORMATS = ['style-dictionary', 'tokens-studio', 'raw-json'] as const
+
+/** How often an open plugin checks Storage for teammates' new History entries. */
+export const REFRESH_OPTIONS = ['Every minute', 'Every 5 minutes', 'Every 15 minutes', 'Only when I refresh'] as const
+export type RefreshOption = (typeof REFRESH_OPTIONS)[number]
+/** Milliseconds between automatic checks; 0 = never. */
+export const REFRESH_MS: Readonly<Record<RefreshOption, number>> = { 'Every minute': 60_000, 'Every 5 minutes': 300_000, 'Every 15 minutes': 900_000, 'Only when I refresh': 0 }
+export const refreshMs = (value: string): number => REFRESH_MS[value as RefreshOption] ?? 60_000
 
 /** What a Dual File slot holds: one library file can carry variables, components, or both. */
 export const FILE_ROLES = ['Variables', 'Components', 'Variables + Components'] as const
@@ -74,6 +81,11 @@ export const sectionSchemas = {
   }),
   mcp: z.object({ enabled: z.boolean(), repo: text(), baseBranch: text(), token: text(), filePath: text(), outputFormat: text(), branchTemplate: text(), enterpriseUrl: text() }),
   jira: z.object({ enabled: z.boolean(), projectKey: text(), apiKey: text(), email: text(), siteUrl: text(), baseUrl: text(), proxyUrl: text() }),
+  /**
+   * Where the team History lives: a GitHub repository every designer's plugin reads and writes.
+   * `sameAsGithub` borrows the repository and token from the GitHub section; the folder is its own.
+   */
+  storage: z.object({ sameAsGithub: z.boolean(), apiKey: text(), repo: text(), branch: text(), baseUrl: text(), folder: text(), refresh: text() }),
 }
 
 export type IntegrationId = keyof typeof sectionSchemas
@@ -97,6 +109,7 @@ export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof Int
   ai: ['claudeKey', 'openaiKey', 'geminiKey'],
   mcp: ['token'],
   jira: ['apiKey'],
+  storage: ['apiKey'],
 }
 
 export const isSecretField = (section: IntegrationId, key: string): boolean => (SECRET_FIELDS[section] as readonly string[]).includes(key)
@@ -127,6 +140,7 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   ai: { enabled: true, provider: 'Claude', claudeModel: 'claude-opus-5-5', claudeKey: '', openaiModel: 'gpt-5.5', openaiKey: '', geminiModel: 'gemini-3.5-flash', geminiKey: '', managedAgents: true, instructions: '' },
   mcp: { enabled: true, repo: '', baseBranch: 'main', token: '', filePath: 'src/tokens/design-tokens.json', outputFormat: '', branchTemplate: '', enterpriseUrl: '' },
   jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '' },
+  storage: { sameAsGithub: true, apiKey: '', repo: '', branch: 'main', baseUrl: '', folder: '.bluebird/history', refresh: 'Every minute' },
 }
 
 export const saveRequestSchema = z.object({ section: z.enum(INTEGRATION_IDS as [IntegrationId, ...IntegrationId[]]), values: z.unknown() })
@@ -135,10 +149,14 @@ export type SaveIntegrationRequest<K extends IntegrationId = IntegrationId> = { 
 // figma.com/design/<key>/…, /file/, /proto/, /board/ — also with a branch: /design/<key>/branch/<branchKey>/…
 const FIGMA_FILE_URL = /^(?:https?:\/\/)?(?:www\.)?figma\.com\/(?:design|file|proto|board)\/([A-Za-z0-9]+)(?:\/branch\/([A-Za-z0-9]+))?/
 
-/** A pasted Figma file URL becomes its file key (the branch key for a branch URL); anything else is left as typed. */
+/**
+ * A pasted Figma file URL becomes its file key; anything else is left as typed. A branch URL gives
+ * the main file's key: libraries are published from the main file, and the published components,
+ * styles and Library Analytics endpoints refuse a branch key.
+ */
 export function figmaFileKey(value: string): string {
   const match = FIGMA_FILE_URL.exec(value.trim())
-  return match ? (match[2] ?? match[1]!) : value.trim()
+  return match ? match[1]! : value.trim()
 }
 
 const FILE_ID_FIELDS = new Set(['file1Id', 'file2Id'])

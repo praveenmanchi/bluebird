@@ -10,6 +10,8 @@ import { createMockHandlers as uxai } from '@features/uxai/mock'
 import { createAskHandlers } from '@features/uxai/sandbox/ask'
 import { createMockHandlers as agents } from '@features/agents/mock'
 import { createMockHandlers as publish } from '@features/publish/mock'
+import { createMockHandlers as extraction } from '@features/extraction/mock'
+import { createMockHandlers as history } from '@features/history/mock'
 import { createMockHandlers as varsearch } from '@features/varsearch/mock'
 import { createMockHandlers as varmapper } from '@features/varmapper/mock'
 import { createMockHandlers as audit } from '@features/audit/mock'
@@ -98,7 +100,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
   const uxaiHandlers = import.meta.env.DEV && persist
     ? { ...uxai(), ...createAskHandlers({ readSettings: async () => (await readIntegrations((k) => store.get(k))).ai, fetch: (url, init) => globalThis.fetch(url, init) }) }
     : uxai()
-  return { ...shell, ...a11y(scenario), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario), ...varsearch(scenario), ...(import.meta.env.DEV ? { ...varmapper(scenario), ...audit(scenario) } : {}) }
+  return { ...shell, ...a11y(scenario), ...jiraHandlers, ...mcp(), ...uxaiHandlers, ...agents(), ...publish(scenario), ...extraction(scenario), ...history(scenario), ...varsearch(scenario), ...(import.meta.env.DEV ? { ...varmapper(scenario), ...audit(scenario) } : {}) }
 }
 
 export const mockHandlers: HandlerMap = createMockHandlers()

@@ -104,6 +104,74 @@
         "source": {
           "collection": "Brand UI",
           "mode": "Gap"
+        },
+        "tabs": [
+          {
+            "id": "jira",
+            "enabled": true
+          },
+          {
+            "id": "varsearch",
+            "enabled": true
+          },
+          {
+            "id": "extraction",
+            "enabled": true
+          },
+          {
+            "id": "history",
+            "enabled": true
+          },
+          {
+            "id": "a11y",
+            "enabled": true
+          },
+          {
+            "id": "publish",
+            "enabled": true
+          },
+          {
+            "id": "mcp",
+            "enabled": true
+          },
+          {
+            "id": "varmapper",
+            "enabled": true
+          },
+          {
+            "id": "uxai",
+            "enabled": true
+          },
+          {
+            "id": "agents",
+            "enabled": true
+          },
+          {
+            "id": "audit",
+            "enabled": true
+          }
+        ],
+        "personas": {
+          "design-system": [
+            "audit",
+            "varsearch",
+            "varmapper",
+            "publish",
+            "extraction",
+            "a11y",
+            "uxai",
+            "agents",
+            "history",
+            "jira",
+            "mcp"
+          ],
+          "developer": [
+            "mcp",
+            "varsearch",
+            "jira",
+            "history",
+            "publish"
+          ]
         }
       }
     }
@@ -117,9 +185,11 @@
         "varsearch",
         "varmapper",
         "publish",
+        "extraction",
         "a11y",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "ui-designer": {
@@ -131,7 +201,8 @@
         "jira",
         "mcp",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "ux-designer": {
@@ -141,7 +212,8 @@
         "a11y",
         "jira",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "content": {
@@ -149,7 +221,8 @@
       "tabs": [
         "agents",
         "uxai",
-        "jira"
+        "jira",
+        "history"
       ]
     },
     "developer": {
@@ -157,7 +230,8 @@
       "tabs": [
         "mcp",
         "varsearch",
-        "jira"
+        "jira",
+        "history"
       ]
     }
   },
@@ -206,6 +280,16 @@
       "enabled": true,
       "label": "Publish",
       "icon": "change-log"
+    },
+    "extraction": {
+      "enabled": true,
+      "label": "Extraction",
+      "icon": "extract"
+    },
+    "history": {
+      "enabled": true,
+      "label": "History",
+      "icon": "ui-prototype-time"
     }
   },
   "window": {

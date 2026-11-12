@@ -22,6 +22,14 @@ const result: ScanResult = {
   targets: [{ nodeId: '4', nodeIds: ['4'], occurrences: 1, name: 'Close', width: 16, height: 16, required: 24, evidence: 'reaction' }],
 }
 
+describe('a filtered export', () => {
+  it('says which filter it was made with, and stays silent when there was none', () => {
+    const filtered = reportToMarkdown(buildReport({ ...result, nonText: [], targets: [] }, { ...meta, filter: 'Level AA only; 1.4.11 unticked' }))
+    expect(filtered).toContain('- **Filter:** Level AA only; 1.4.11 unticked (findings outside it are left out)')
+    expect(reportToMarkdown(buildReport(result, meta))).not.toContain('**Filter:**')
+  })
+})
+
 describe('buildReport', () => {
   const report = buildReport(result, meta)
 
@@ -36,7 +44,7 @@ describe('buildReport', () => {
     const old = buildReport({ ...result, standard: 'wcag20', nonText: [], targets: [] }, meta)
     expect(old.standard).toBe('WCAG 2.0')
     expect(old.coverage.automated).toEqual(['1.4.3 Contrast (Minimum)', '1.4.6 Contrast (Enhanced)'])
-    expect(old.coverage.notCovered).toMatch(/70% of WCAG 2\.0/)
+    expect(old.coverage.notCovered).toMatch(/2 of the 61 success criteria in WCAG 2\.0/)
     expect(reportToMarkdown(old)).toContain('- **Standard:** WCAG 2.0')
     // Under 2.1 a 16px target misses the only bar there is, 2.5.5 at 44px.
     const mid = buildReport({ ...result, standard: 'wcag21', targets: [{ ...result.targets[0]!, required: 44, standard: 'wcag21' }] }, meta)

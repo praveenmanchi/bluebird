@@ -10,3 +10,5 @@ figma/drift.json
 figma/visual
 .env
 .env.local
+test-results
+playwright-report

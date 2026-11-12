@@ -47,6 +47,16 @@ const coreHandlers: HandlerMap = {
   // scripts/ground-truth.ts to map scan findings back to labelled cases. Read-only.
   // A plain stack walk: the find* methods are advised against under dynamic
   // page loading, and the case frames are small.
+  // Which file and page the plugin is actually in. The ground-truth runner reads
+  // case expectations from layer names, so a window on a branch or an unsynced
+  // copy silently judges against the wrong text; this says so out loud.
+  'dev:where': () => ({
+    file: figma.root.name,
+    // Only private plugins get a file key, and only on some hosts.
+    fileKey: (figma as unknown as { fileKey?: string }).fileKey ?? null,
+    page: figma.currentPage.name,
+    cases: figma.currentPage.children.filter((n) => n.name.startsWith('GT-')).length,
+  }),
   'dev:cases': () => figma.currentPage.children.map((frame) => {
     const ids: string[] = []
     const stack: SceneNode[] = [frame]

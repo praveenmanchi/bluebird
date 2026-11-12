@@ -18,11 +18,11 @@ const section = async (name: string) => {
 }
 
 describe('SettingsIntegrations', () => {
-  it('renders the eight Figma sections in order once the settings load', async () => {
+  it('renders the Figma sections, plus Storage, in order once the settings load', async () => {
     const { container } = render(<SettingsIntegrations api={fakeApi()} />)
     await section('Jira integration')
     expect([...container.querySelectorAll('.bb-integrations__section')].map((s) => s.getAttribute('aria-label'))).toEqual([
-      'GitHub output configuration', 'Notifications', 'Storybook', 'Zeroheight', 'Dual File Mode', 'AI agent assistance (UXAI)', 'MCP + code sync', 'Jira integration',
+      'GitHub output configuration', 'Storage', 'Notifications', 'Storybook', 'Zeroheight', 'Dual File Mode', 'AI agent assistance (UXAI)', 'MCP + code sync', 'Jira integration',
     ])
   })
 

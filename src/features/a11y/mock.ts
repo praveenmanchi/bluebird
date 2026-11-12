@@ -100,9 +100,12 @@ export function createMockHandlers(scenario: MockScenario = 'default'): HandlerM
         })
         : []
       const nonText = ruleIn('1.4.11', standard) ? result.nonText : []
-      return { ...result, scope: payload.scope, standard, targets, nonText, issues: payload.scope === 'selection' && scenario === 'default' ? result.issues.slice(0, 1) : result.issues }
+      return { ...result, scope: payload.scope, standard, platform, targets, nonText, issues: payload.scope === 'selection' && scenario === 'default' ? result.issues.slice(0, 1) : result.issues }
     },
     [MSG.focus]: async () => undefined,
+    // Corrections are not persisted in the harness; the tab keeps them for the session.
+    [MSG.ignore]: async () => ({ at: new Date().toISOString() }),
+    [MSG.unignore]: async () => ({ restored: 1 }),
     // The dev harness has no canvas: describe the Login screen frame the Figma Ready to scan shows.
     [MSG.target]: async (payload: { scope: 'selection' | 'page' }): Promise<ScanTarget> => payload.scope === 'page'
       ? { scope: 'page', name: 'Main screens', selected: 12, frames: 12, textLayers: 1840, instances: 412, truncated: false }

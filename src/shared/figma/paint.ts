@@ -17,11 +17,16 @@ export interface BackgroundResolution {
   /** Product of the opacities of every ancestor walked before the opaque layer.
    *  A label inside a 40% group is 40% as strong as its own fill says. */
   foregroundOpacity: number
+  /** Every backdrop the text sits on when that is a range rather than one colour (a gradient).
+   *  The caller judges each and reports the worst; absent for an ordinary single-colour backdrop. */
+  colors?: readonly RGB[]
 }
 
 /** A single paint layer read off a node. */
 type Layer =
   | { kind: 'solid'; rgba: RGBA; variableId?: string }
+  /** An opaque gradient: not one colour but a range, every point of which the text sits on. */
+  | { kind: 'gradient'; stops: readonly RGB[] }
   | { kind: 'unmeasurable'; reason: string }
   | { kind: 'none' }
 
@@ -94,18 +99,40 @@ function topLayerOf(fills: readonly Paint[], nodeOpacity: number, variableAt: (i
         variableId: variableAt(i),
       }
     }
+    const gradient = opaqueGradient(paint, (paint.opacity ?? 1) * nodeOpacity)
+    if (gradient) return gradient
     const reason = UNMEASURABLE[paint.type]
     if (reason) return { kind: 'unmeasurable', reason }
   }
   return { kind: 'none' }
 }
 
+const GRADIENTS = new Set(['GRADIENT_LINEAR', 'GRADIENT_RADIAL', 'GRADIENT_ANGULAR', 'GRADIENT_DIAMOND'])
+
+/**
+ * A gradient's distinct stop colours, when every one of them is opaque.
+ *
+ * Which stop a glyph sits on depends on geometry we do not read, so the honest
+ * answer is the whole range: the caller measures against all of them and
+ * reports the worst. A gradient with any transparency in it stays unmeasurable
+ * — what shows through then depends on the stack below as well.
+ */
+function opaqueGradient(paint: Paint, opacity: number): Layer | null {
+  if (!GRADIENTS.has(paint.type)) return null
+  const stops = (paint as GradientPaint).gradientStops
+  if (opacity < 1 || !stops || stops.length === 0) return null
+  if (stops.some((s) => s.color.a < 1)) return null
+  const seen = new Map<string, RGB>()
+  for (const s of stops) seen.set(`${s.color.r}|${s.color.g}|${s.color.b}`, { r: s.color.r, g: s.color.g, b: s.color.b })
+  return { kind: 'gradient', stops: [...seen.values()] }
+}
+
 /**
  * Node types that fill their whole bounding box, so overlapping one really does
  * put its colour behind you. Text is deliberately excluded: glyphs cover a
  * fraction of their box, and treating a neighbouring label as a backdrop is how
- * a scanner invents ratios. Vectors, stars and ellipses are excluded for the
- * same reason — arbitrary shapes, rectangular bounds.
+ * a scanner invents ratios. Vectors, stars and ellipses are not here either —
+ * arbitrary shapes, rectangular bounds — and are judged apart (SHAPE_TYPES).
  */
 const SOLID_AREA_TYPES = new Set(['FRAME', 'COMPONENT', 'COMPONENT_SET', 'INSTANCE', 'RECTANGLE', 'SECTION'])
 
@@ -154,14 +181,50 @@ const TRANSPARENT_CONTAINERS = new Set(['GROUP', 'BOOLEAN_OPERATION'])
  * topmost first. A group is just a folder: the rectangle inside it is what
  * paints, so a group sibling is opened up rather than skipped.
  */
-function backdropCandidates(sibling: SceneNode, node: SceneNode, out: SceneNode[] = []): SceneNode[] {
+function backdropCandidates(sibling: SceneNode, node: SceneNode, out: Layer[] = []): Layer[] {
   if (sibling.visible === false) return out
   if (TRANSPARENT_CONTAINERS.has(sibling.type) && 'children' in sibling) {
     for (let i = sibling.children.length - 1; i >= 0; i -= 1) backdropCandidates(sibling.children[i]!, node, out)
     return out
   }
-  if (paintsSolidArea(sibling) && coverage(sibling, node) >= BACKDROP_MIN_COVERAGE) out.push(sibling)
+  if (coverage(sibling, node) < BACKDROP_MIN_COVERAGE) return out
+  if (paintsSolidArea(sibling)) { out.push(topLayer(sibling)); return out }
+  if (!SHAPE_TYPES.has(sibling.type)) return out
+  // A painted shape under most of the layer is its backdrop too: initials on an
+  // avatar circle, a count on a badge. Skipping it measures the text against
+  // whatever lies further back, which is a ratio nobody sees.
+  const layer = topLayer(sibling)
+  if (layer.kind === 'none') return out
+  // A full ellipse has known geometry; any other outline may or may not reach
+  // behind the glyphs, so it is listed as unmeasurable rather than guessed.
+  out.push(isWholeEllipse(sibling) && ellipseContains(sibling, node) ? layer : { kind: 'unmeasurable', reason: 'sits on a vector shape' })
   return out
+}
+
+/** Shapes whose painted area is not their bounding box. */
+const SHAPE_TYPES = new Set(['ELLIPSE', 'VECTOR', 'STAR', 'POLYGON'])
+
+const FULL_TURN = Math.PI * 2
+
+/** An ellipse that is neither a ring nor a pie slice. */
+function isWholeEllipse(node: SceneNode): boolean {
+  if (node.type !== 'ELLIPSE') return false
+  const arc = node.arcData
+  if (!arc) return true
+  return arc.innerRadius === 0 && Math.abs(Math.abs(arc.endingAngle - arc.startingAngle) - FULL_TURN) < 0.001
+}
+
+/** True when every corner of `node` lies inside the ellipse (unknown bounds count as inside, as `coverage` does). */
+function ellipseContains(ellipse: SceneNode, node: SceneNode): boolean {
+  const e = bounds(ellipse)
+  const b = bounds(node)
+  if (!e || !b) return true
+  const rx = e.width / 2
+  const ry = e.height / 2
+  if (rx <= 0 || ry <= 0) return false
+  const cx = e.x + rx
+  const cy = e.y + ry
+  return [b.x, b.x + b.width].every((x) => [b.y, b.y + b.height].every((y) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1))
 }
 
 /**
@@ -182,12 +245,15 @@ export function resolveBackground(node: SceneNode): BackgroundResolution {
   let parent: BaseNode | null = node.parent
   let variableId: string | undefined
   let foregroundOpacity = 1
+  let gradient: readonly RGB[] | undefined
 
   const push = (layer: Layer): 'continue' | 'done' | BackgroundResolution => {
     if (layer.kind === 'none') return 'continue'
     if (layer.kind === 'unmeasurable') {
       return { color: { r: 1, g: 1, b: 1 }, indeterminate: true, reason: layer.reason, assumed: false, foregroundOpacity }
     }
+    // An opaque gradient ends the walk exactly as an opaque fill does.
+    if (layer.kind === 'gradient') { gradient = layer.stops; return 'done' }
     layers.push(layer.rgba)
     // The opaque layer is the one a fix would have to work against, so that is
     // the binding worth reporting.
@@ -199,15 +265,15 @@ export function resolveBackground(node: SceneNode): BackgroundResolution {
     const siblings = 'children' in parent ? parent.children : []
     const index = siblings.indexOf(child as never)
     for (let i = index - 1; i >= 0; i -= 1) {
-      for (const candidate of backdropCandidates(siblings[i]!, node)) {
-        const result = push(topLayer(candidate))
-        if (result === 'done') return composite(layers, variableId, foregroundOpacity)
+      for (const layer of backdropCandidates(siblings[i]!, node)) {
+        const result = push(layer)
+        if (result === 'done') return composite(layers, variableId, foregroundOpacity, gradient)
         if (typeof result === 'object') return result
       }
     }
 
     const result = push(topLayer(parent as SceneNode))
-    if (result === 'done') return composite(layers, variableId, foregroundOpacity)
+    if (result === 'done') return composite(layers, variableId, foregroundOpacity, gradient)
     if (typeof result === 'object') return result
 
     // Everything inside this parent — the text included — is dimmed by it.
@@ -219,10 +285,19 @@ export function resolveBackground(node: SceneNode): BackgroundResolution {
   return { ...composite(layers, variableId, foregroundOpacity), assumed: true }
 }
 
-function composite(layers: readonly RGBA[], variableId: string | undefined, foregroundOpacity: number): BackgroundResolution {
-  let bg: RGB = { r: 1, g: 1, b: 1 }
-  for (let i = layers.length - 1; i >= 0; i -= 1) bg = blendOver(layers[i]!, bg)
-  return { color: bg, indeterminate: false, variableId, assumed: false, foregroundOpacity }
+function composite(
+  layers: readonly RGBA[],
+  variableId: string | undefined,
+  foregroundOpacity: number,
+  bases?: readonly RGB[],
+): BackgroundResolution {
+  const over = (base: RGB): RGB => {
+    let bg = base
+    for (let i = layers.length - 1; i >= 0; i -= 1) bg = blendOver(layers[i]!, bg)
+    return bg
+  }
+  const colors = (bases ?? [{ r: 1, g: 1, b: 1 }]).map(over)
+  return { color: colors[0]!, colors: bases ? colors : undefined, indeterminate: false, variableId, assumed: false, foregroundOpacity }
 }
 
 /** Backwards-compatible shorthand: the composited colour, ignoring measurability. */

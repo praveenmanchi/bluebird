@@ -94,6 +94,9 @@ export interface WcagCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ti
   node?: ComponentChildren
   /** Variable the offending layer reads, shown under the node name (gap 3). */
   nodeToken?: WcagCardToken
+  /** How the finding was decided — measured from the file, or inferred from a layer
+   *  name. A reader has to be able to tell a measurement from a guess (gap 12). */
+  evidence?: ComponentChildren
   /** "Colors" row: two swatches with their hex values. */
   colors?: WcagCardColors
   /** Figma "Actual" — the measured value row. */
@@ -221,7 +224,7 @@ function Swatch({ value, token, prefix }: { value: string; token?: WcagCardToken
  */
 export function WcagCard({
   code, title, description, rating = 'A', principle = 'perceivable', disabilities = DEFAULT_DISABILITIES, link,
-  node, nodeToken, colors, actual, required, whyItFails, howToFix, themes = [], themesLabel = 'Themes', preview,
+  node, nodeToken, evidence, colors, actual, required, whyItFails, howToFix, themes = [], themesLabel = 'Themes', preview,
   mode = 'colors', metrics, fix, brandModes, brandModesLabel, severity, occurrences, ignored, annotation,
   manualChecks, manualChecksLabel, onToggleManualCheck, thumbnail, thumbnailAfter, change, lastSeen, snippet,
   typeCompare, target, vision,
@@ -299,6 +302,7 @@ export function WcagCard({
                 {nodeToken && <TokenRef name={nodeToken.name} mode={nodeToken.mode} />}
               </Row>
             )}
+            {evidence !== undefined && <Row label="Decided by">{evidence}</Row>}
             {colors && (
               <Row label="Colours" class="bb-wcag-card__row--colors">
                 <Swatch value={colors.fg} token={colors.fgToken} />

@@ -50,6 +50,8 @@
     "scripts",
     "tools",
     "tests",
+    "e2e",
+    "playwright.config.ts",
     "plugin.config.json",
     "vite.config.ts",
     "vitest.config.ts",

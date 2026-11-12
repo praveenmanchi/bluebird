@@ -4,7 +4,7 @@
 // brand-mode structure Bluebird already has. Two questions:
 //   1. Does this colour pair pass in every brand mode, not just the active one?
 //   2. Which existing token is the nearest one that would pass?
-import { contrastRatio, type RGB } from '@shared/figma/color'
+import { blendOver, contrastRatio, type RGB } from '@shared/figma/color'
 
 /** One candidate colour from the brand palette. */
 export interface PaletteEntry {
@@ -44,7 +44,8 @@ export function perceptualDistance(a: RGB, b: RGB): number {
 }
 
 /**
- * The closest token to `current` that reaches `needed` against `background`.
+ * The closest token to `current` that reaches `needed` against `background`,
+ * drawn at the text's own `opacity`.
  *
  * Ties break toward the smaller change, so a card that fails by a hair gets a
  * neighbouring shade rather than a jump to black. Returns null when the palette
@@ -56,11 +57,13 @@ export function nearestPassingToken(
   background: RGB,
   needed: number,
   palette: readonly PaletteEntry[],
+  opacity = 1,
 ): TokenFix | null {
   let best: TokenFix | null = null
   let bestDistance = Infinity
   for (const entry of palette) {
-    const ratio = contrastRatio(entry.rgb, background)
+    // Rebinding changes the colour, not the layer's opacity: judge the token as it will be drawn.
+    const ratio = contrastRatio(opacity < 1 ? blendOver({ ...entry.rgb, a: opacity }, background) : entry.rgb, background)
     if (ratio < needed) continue
     const distance = perceptualDistance(current, entry.rgb)
     if (distance < bestDistance) {

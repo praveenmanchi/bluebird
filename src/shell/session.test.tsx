@@ -23,7 +23,7 @@ describe('first-run persona', () => {
     fireEvent.click(dom.getByRole('button', { name: 'Continue as Content' }))
     await waitFor(() => expect(screen.value).toBe('onboarding'), { timeout: 3000 })
     expect(activePersonaId.value).toBe('content')
-    expect(visibleTabs.value.map((t) => t.id)).toEqual(['agents', 'uxai', 'jira'])
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['agents', 'uxai', 'jira', 'history'])
   })
 
   it('skips both screens when a persona is stored, and applies it', async () => {

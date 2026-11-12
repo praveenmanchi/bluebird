@@ -50,6 +50,13 @@ describe('nearestPassingToken', () => {
     expect(fix?.name).toBe('Brand/Text/OnAccent')
   })
 
+  it('judges a token at the opacity the text is drawn at', () => {
+    // Secondary reaches 4.5:1 at full strength, but not on a layer at 60% opacity; only Primary does.
+    expect(nearestPassingToken(rgb(0.7, 0.7, 0.7), WHITE, 4.5, palette, 0.6)?.name).toBe('Brand/Text/Primary')
+    const fix = nearestPassingToken(rgb(0.7, 0.7, 0.7), WHITE, 4.5, palette, 0.6)!
+    expect(fix.ratio).toBeLessThan(nearestPassingToken(rgb(0.7, 0.7, 0.7), WHITE, 7, palette)!.ratio)
+  })
+
   it('returns the variable id so the fix can be bound rather than pasted', () => {
     expect(nearestPassingToken(rgb(0.7, 0.7, 0.7), WHITE, 4.5, palette)?.id).toBe('v2')
   })

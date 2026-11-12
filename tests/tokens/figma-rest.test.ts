@@ -250,7 +250,16 @@ describe('figmaGet — rate limits and 403 reasons', () => {
     await expect(figmaGet('/x', { fetchImpl, sleep })).rejects.toMatchObject({ status: 429 })
     expect(fetchImpl).toHaveBeenCalledTimes(MAX_RATE_LIMIT_RETRIES + 1)
     expect(retryDelayMs(null, 2)).toBe(4000)
-    expect(retryDelayMs('600', 0)).toBe(60_000)
+    expect(retryDelayMs('600', 0)).toBe(600_000)
+  })
+
+  it('does not retry a 429 whose Retry-After is longer than a minute', async () => {
+    process.env.FIGMA_TOKEN = 't'
+    const fetchImpl = vi.fn(async () => res(429, { err: 'Rate limit' }, '1800')) as unknown as typeof fetch
+    const sleep = vi.fn<(ms: number) => Promise<void>>(async () => undefined)
+    await expect(figmaGet('/x', { fetchImpl, sleep })).rejects.toThrow(/30 minutes/)
+    expect(fetchImpl).toHaveBeenCalledTimes(1)
+    expect(sleep).not.toHaveBeenCalled()
   })
 
   it('names why a 403 happened', () => {

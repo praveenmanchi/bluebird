@@ -2,13 +2,14 @@
 // thresholds are testable without rendering the tab.
 import type { ScanSummaryProps } from '@shared/ui'
 import type { ScanResult, ScanScope } from '../messages'
-import { summarizeScan } from '../summary'
+import { summarizeScan, type ScanView } from '../summary'
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString()} ${n === 1 ? one : many}`
 const pct = (part: number, whole: number) => (whole ? Math.round((part / whole) * 100) : 0)
 
-export function summaryProps(r: ScanResult): ScanSummaryProps {
-  const s = summarizeScan(r)
+/** `view` is the findings on screen; without it the dashboard describes the whole scan. */
+export function summaryProps(r: ScanResult, view?: ScanView): ScanSummaryProps {
+  const s = summarizeScan(r, view)
   const { total, passing, failing } = s.components
   const instances = (r.inventory?.components ?? []).reduce((n, c) => n + c.instances, 0)
   const framesFailing = s.frames.total - s.frames.passing

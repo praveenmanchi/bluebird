@@ -81,7 +81,19 @@ import { resolve } from 'node:path'
 // The two tabs and their tour scenes added ~33 KB (matching, scans and Library Analytics ship in dist/code.js;
 // their mocks are dev-only), the splash and persona screens ~32 KB: 1426.2 KB. One-brand builds remain the lever.
 // 2026-11-10 (a11y Export menu, Figma report + developer spec, a11y/report/* tokens): user raised the budget to 1440 KB.
-const BUDGET_KB = 1440
+// 2026-11-12 (Extraction tab): user raised the budget to 1460 KB. The tab (branch picker, results, push card,
+// sandbox handlers' UI contract) plus the base64 helper added ~16 KB; build 1456.2 KB.
+// 2026-11-12 (History tab): user raised the budget to 1490 KB. The tab (timeline, entry card, entry details),
+// the shared history store/recorder and the extraction → History entry added ~26 KB; build 1486.4 KB.
+// 2026-11-12 (Settings › Storage + automatic History sync): user raised the budget to 1500 KB. The Storage section,
+// the background check / History tab badge and the refresh icon added ~6 KB; build 1492.2 KB.
+// 2026-11-12 (Changelog generator in History): user raised the budget to 1510 KB. The New changelog pop-up,
+// the review/approve states and their sample data took the build to 1508.7 KB.
+// 2026-11-12 (Accessibility accuracy audit): user raised the budget to 1515 KB. The ten scanner fixes (target
+// citations, platform guideline references, the AA-only verdict) added ~1.8 KB; build 1510.5 KB.
+// 2026-11-12 (Accessibility open items): user raised the budget to 1525 KB. Confidence labels, ignoring a
+// finding, gradient backdrops and the palette-failure notice added ~5 KB; build 1515.8 KB.
+const BUDGET_KB = 1525
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

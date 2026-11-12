@@ -30,7 +30,7 @@ describe('ConfigPage', () => {
     expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
       expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
     ])
-    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(9)
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(11)
   })
 
   it('saves a hidden tab, a new order and a section set here as one patch for that brand', async () => {
@@ -72,7 +72,7 @@ describe('ConfigPage', () => {
     await waitFor(() => expect(calls.some((c) => c.method === 'PUT')).toBe(true))
     const patch = calls.find((c) => c.method === 'PUT')!.body as Record<string, { personas: Record<string, string[]> }>
     expect(Object.keys(patch)).toEqual(['ikea'])
-    expect(patch.ikea!.personas).toEqual({ content: ['agents', 'uxai', 'jira', 'a11y'] })
+    expect(patch.ikea!.personas).toEqual({ content: ['agents', 'uxai', 'jira', 'history', 'a11y'] })
     expect(await screen.findByRole('heading', { name: /Rebuild the plugin to use it in Figma/ })).toBeInTheDocument()
   })
 
@@ -80,14 +80,14 @@ describe('ConfigPage', () => {
     serve()
     render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
     const matrix = await screen.findByRole('table', { name: 'Features per persona' })
-    for (const tab of ['UX AI agents', 'UXAI', 'Jira board']) fireEvent.click(within(matrix).getByRole('checkbox', { name: `${tab} for Content` }))
+    for (const tab of ['UX AI agents', 'UXAI', 'Jira board', 'History']) fireEvent.click(within(matrix).getByRole('checkbox', { name: `${tab} for Content` }))
     expect(within(matrix).getByRole('columnheader', { name: /Content/ })).toHaveTextContent('Not offered')
 
     fireEvent.click(screen.getByRole('switch', { name: 'Show Publish' }))
     expect(within(matrix).getByRole('checkbox', { name: 'Publish for Design System' })).toBeDisabled()
 
     fireEvent.click(screen.getByRole('button', { name: 'Use default personas' }))
-    expect(within(matrix).getByRole('columnheader', { name: /Content/ })).toHaveTextContent('3 features')
+    expect(within(matrix).getByRole('columnheader', { name: /Content/ })).toHaveTextContent('4 features')
   })
 
   it('blocks Save when a brand would have no tab left', async () => {

@@ -5,7 +5,9 @@ import type { PluginConfig } from '@shared/config'
 import { PERSONA_MSG, type PersonaStatus } from '@shared/session'
 import type { SessionStore } from './session'
 
-export const PERSONA_KEY = 'bluebird:persona'
+import { PERSONA_KEY } from '@shared/session/persona-key'
+
+export { PERSONA_KEY }
 
 export function createPersonaHandlers(config: PluginConfig, store: SessionStore): HandlerMap {
   const known = (id: unknown): id is string => typeof id === 'string' && Object.keys(config.personas).includes(id)

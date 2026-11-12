@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { TARGET_MIN_AA, TARGET_MIN_AAA, checksTargets, hasSpacingException, isControlName, rateTarget, requiredTarget, spacingExceptionApplies, targetCriterion, targetThresholds } from '../target'
+import { TARGET_MIN_AA, TARGET_MIN_AAA, checksTargets, hasSpacingException, isControlName, rateTarget, requiredTarget, spacingExceptionApplies, targetCitation, targetCriterion, targetThresholds } from '../target'
 
 describe('target size (2.5.8 / 2.5.5)', () => {
   it('uses 24px for AA and 44px for AAA', () => {
@@ -58,6 +58,22 @@ describe('target size (2.5.8 / 2.5.5)', () => {
   })
 })
 
+describe('targetCitation', () => {
+  it('cites the WCAG criterion a web target misses', () => {
+    expect(targetCitation({ width: 16, height: 16 })).toMatchObject({ code: '2.5.8', level: 'AA' })
+    expect(targetCitation({ width: 30, height: 30 })).toMatchObject({ code: '2.5.5', level: 'AAA' })
+    expect(targetCitation({ width: 16, height: 16, standard: 'wcag21' })).toMatchObject({ code: '2.5.5', level: 'AAA' })
+  })
+
+  it('cites only the platform guideline when no WCAG bar is missed', () => {
+    // 46dp clears 2.5.5's 44 and only misses Material's 48.
+    expect(targetCitation({ width: 46, height: 46, platform: 'android' })).toMatchObject({ code: null, label: 'Material Design', title: 'Android tap target' })
+    // WCAG 2.0 has no target-size criterion to cite.
+    expect(targetCitation({ width: 30, height: 30, platform: 'ios', standard: 'wcag20' })).toMatchObject({ code: null, label: 'Apple HIG' })
+    expect(targetCitation({ width: 30, height: 30, platform: 'ios' })).toMatchObject({ code: '2.5.5' })
+  })
+})
+
 describe('hasSpacingException (2.5.8)', () => {
   const small = { x: 100, y: 100, width: 16, height: 16 }
 
@@ -72,7 +88,14 @@ describe('hasSpacingException (2.5.8)', () => {
   })
 
   it('measures from the circle to the nearest edge, not centre to centre', () => {
-    // Centre at (108,108); a neighbour whose edge is exactly 12px away is clear.
-    expect(hasSpacingException(small, [{ x: 120.01, y: 100, width: 16, height: 16 }])).toBe(true)
+    // Centre at (108,108); a full-size neighbour whose edge is just over 12px away is clear.
+    expect(hasSpacingException(small, [{ x: 120.01, y: 86, width: 44, height: 44 }])).toBe(true)
+  })
+
+  it('fails when the circles of two undersized targets overlap, even if neither touches the other target', () => {
+    // 16px icons 6px apart: centres 22px apart, so the two 24px circles intersect.
+    expect(hasSpacingException(small, [{ x: 122, y: 100, width: 16, height: 16 }])).toBe(false)
+    // 8px apart: centres 24px apart, the circles only touch.
+    expect(hasSpacingException(small, [{ x: 124, y: 100, width: 16, height: 16 }])).toBe(true)
   })
 })

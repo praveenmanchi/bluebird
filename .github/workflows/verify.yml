@@ -1,0 +1,55 @@
+name: Verify
+
+# Runs the same checks as `npm run verify` on every push, so a broken
+# typecheck, lint, token check, test, coverage floor, build, size budget or browser test
+# shows up on the commit instead of in Figma.
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The registries are git-ignored, and typecheck needs them before the build regenerates them.
+      - run: npm run gen
+
+      # The browser tests at the end of verify (tab smoke tests and one flow per tab) run in Chromium.
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run verify
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload browser test traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 7

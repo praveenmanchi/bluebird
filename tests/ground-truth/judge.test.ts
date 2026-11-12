@@ -39,3 +39,55 @@ describe('observed / judge', () => {
     expect(wrong.got).toEqual(['contrast'])
   })
 })
+
+describe('target detail and brand modes', () => {
+  const sized: ScanLike = {
+    meta: { page: 'Accessibility · Ground truth' },
+    issues: [{ nodeIds: ['k1'], level: 'aa', brandModes: [{ brand: 'Bridge', pass: false }] }, { nodeIds: ['k2'], level: 'aa' }],
+    nonText: [],
+    targets: [{ nodeIds: ['small'], width: 16, height: 16 }, { nodeIds: ['mid'], width: 200, height: 32 }],
+    unmeasurable: [],
+  }
+
+  it('tells a target under 24px from a larger one that still misses its bar', () => {
+    expect(observed(c('a ▸ none', ['small']), sized)).toEqual(['target:small'])
+    expect(observed(c('b ▸ none', ['mid']), sized)).toEqual(['target:large'])
+    expect(judge(c('a ▸ target:small', ['small']), sized).pass).toBe(true)
+    expect(judge(c('a ▸ target:large', ['small']), sized).pass).toBe(false)
+  })
+
+  it('lets a case that only says "target" accept either bar', () => {
+    expect(judge(c('old ▸ target', ['small']), sized).pass).toBe(true)
+    expect(judge(c('old ▸ target', ['mid', 'small']), sized).pass).toBe(true)
+    expect(judge(c('old ▸ target', ['nothing']), sized).pass).toBe(false)
+  })
+
+  it('checks brand modes only where the case asks for them', () => {
+    expect(judge(c('k ▸ contrast:aaa, modes', ['k1']), sized).pass).toBe(true)
+    // Asked for, but the finding carries no per-brand verdicts.
+    expect(judge(c('k ▸ contrast:aaa, modes', ['k2']), sized).pass).toBe(false)
+    // Not asked for: a finding that happens to carry them still passes.
+    expect(judge(c('k ▸ contrast:aaa', ['k1']), sized).pass).toBe(true)
+  })
+})
+
+describe('per-run expectations', () => {
+  const name = 'GT-T02 · two 16px targets ▸ target:small | wcag20: none | ios: target:small'
+
+  it('reads the default for a run the name does not mention', () => {
+    expect(parseExpectation(name)).toEqual(['target:small'])
+    expect(parseExpectation(name, 'wcag21')).toEqual(['target:small'])
+    expect(parseExpectation(name, 'android')).toEqual(['target:small'])
+  })
+
+  it('reads the override for a run that has one', () => {
+    expect(parseExpectation(name, 'wcag20')).toEqual([])
+    expect(parseExpectation(name, 'ios')).toEqual(['target:small'])
+  })
+
+  it('rejects an override that names no run or an unknown one', () => {
+    expect(() => parseExpectation('GT-X · thing ▸ none | wcag20')).toThrow(/reads "<run>: <expectation>"/)
+    expect(() => parseExpectation('GT-X · thing ▸ none | wcag19: none')).toThrow(/unknown run "wcag19"/)
+    expect(() => parseExpectation('GT-X · thing ▸ none | wcag20: ', 'wcag20')).toThrow(/no ▸ expectation/)
+  })
+})

@@ -27,6 +27,12 @@ export const target = signal<ScanTarget | null | undefined>(undefined)
  * a re-render cannot lose it, and a re-scan deliberately clears it.
  */
 export const annotations = signal<Record<string, 'queued' | 'placed'>>({})
+/**
+ * Findings marked as not findings, by ignore key → when. Seeded from each scan
+ * (the records live in the Figma document) and updated as cards are ignored or
+ * restored, so the counts and the cards never disagree.
+ */
+export const ignored = signal<Record<string, string>>({})
 
 export function reset(): void {
   scope.value = 'selection'
@@ -38,6 +44,7 @@ export function reset(): void {
   result.value = null
   error.value = null
   annotations.value = {}
+  ignored.value = {}
   rules.value = ALL_RULES
   target.value = undefined
 }

@@ -9,8 +9,19 @@ export type HttpFetch = (url: string, init: { method: string; headers: Record<st
 export interface HttpResponse {
   status: number
   text(): Promise<string>
-  /** Read for Retry-After on a 429 when the runtime exposes it. */
+  /** Read for Retry-After on a 429 when the runtime exposes it (browser, tests). */
   headers?: { get(name: string): string | null }
+  /** Figma's sandbox fetch gives its headers only as this plain object, with no `headers`. */
+  headersObject?: Readonly<Record<string, string>>
+}
+
+/** One response header from either shape, whatever the case of its name. */
+export function headerOf(res: HttpResponse, name: string): string | null {
+  const direct = res.headers?.get(name)
+  if (direct) return direct
+  const wanted = name.toLowerCase()
+  const found = Object.entries(res.headersObject ?? {}).find(([key]) => key.toLowerCase() === wanted)
+  return found ? found[1] : null
 }
 
 export class LibraryError extends Error {
@@ -65,15 +76,28 @@ const timeout = <T>(work: Promise<T>, ms: number): Promise<T> => new Promise<T>(
   work.then((v) => { clearTimeout(timer); resolve(v) }, (e: unknown) => { clearTimeout(timer); reject(e) })
 })
 
-/** Retries after a 429 before giving up, and the longest single wait (the plugin is waiting on it). */
+/** Retries after a 429 before giving up, and the longest wait the plugin holds a loading panel for. */
 export const RATE_LIMIT_RETRIES = 2
-const MAX_RETRY_WAIT_MS = 10_000
+export const MAX_RETRY_WAIT_MS = 10_000
 
-/** Seconds from Retry-After, else 1 s, 2 s…; capped so a loading panel never hangs for long. */
+/** Seconds from Retry-After as Figma gave them, else 1 s, 2 s… */
 export function retryWaitMs(retryAfter: string | null | undefined, attempt: number): number {
   const seconds = Number(retryAfter)
-  return Math.min(Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 1000 * 2 ** attempt, MAX_RETRY_WAIT_MS)
+  return Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 1000 * 2 ** attempt
 }
+
+/** "45 seconds", "30 minutes", "3 hours": how long Figma asked to wait. */
+export function waitText(ms: number): string {
+  const seconds = Math.ceil(ms / 1000)
+  const [n, unit] = seconds < 90 ? [seconds, 'second'] : seconds < 5400 ? [Math.round(seconds / 60), 'minute'] : [Math.round(seconds / 3600), 'hour']
+  return `${n} ${unit}${n === 1 ? '' : 's'}`
+}
+
+/**
+ * Retrying sooner than Retry-After only spends another request against the limit. View and
+ * Collab seats get a monthly allowance on file reads, so the wait can be far longer than a panel can hold.
+ */
+const tooLong = (ms: number) => new LibraryError(`Figma is rate-limiting this API key and asked to wait ${waitText(ms)}. Try again after that; a key from a Full or Dev seat has much higher limits.`, 429)
 
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
@@ -90,7 +114,9 @@ export function createFigmaGet(token: string, label: string, fetchImpl: HttpFetc
         throw new LibraryError('Couldn’t reach api.figma.com. Check your connection and try again.', 0)
       }
       if (res.status === 429 && attempt < RATE_LIMIT_RETRIES) {
-        await sleep(retryWaitMs(res.headers?.get('retry-after'), attempt))
+        const waitMs = retryWaitMs(headerOf(res, 'retry-after'), attempt)
+        if (waitMs > MAX_RETRY_WAIT_MS) throw tooLong(waitMs)
+        await sleep(waitMs)
         continue
       }
       if (res.status < 200 || res.status >= 300) throw failure(res.status, text, need, label)

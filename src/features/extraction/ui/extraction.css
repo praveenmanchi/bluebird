@@ -1,0 +1,102 @@
+/* Extraction tab — Figma "Extraction v2 · single page · 600" (page Extraction,
+ * section 40002702:9074). One vertical scroll: a flat "Extract and push" toolbar
+ * (no card), then the result cards. It has no tokens of its own yet: spacing,
+ * surfaces and type come from the Publish tab's tier-2 tokens, which the Figma
+ * frames are bound to. */
+.bb-extraction {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--bb-publish-space-panel);
+  overflow-y: auto;
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-publish-text-body);
+  container: extraction / inline-size;
+}
+.bb-extraction > * { flex: none; }
+
+.bb-extraction__toolbar,
+.bb-extraction__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  min-width: 0;
+}
+.bb-extraction__card {
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-panel);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-panel);
+  background: var(--bb-publish-surface-panel);
+}
+
+.bb-extraction__header,
+.bb-extraction__compare,
+.bb-extraction__channel,
+.bb-extraction__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+}
+.bb-extraction__header > :first-child,
+.bb-extraction__grow,
+.bb-extraction__compare > .bb-extraction__select { flex: 1 1 0; min-width: 0; }
+.bb-extraction__compare { align-items: flex-end; }
+.bb-extraction__actions { justify-content: flex-end; flex-wrap: wrap; }
+
+/* The menu hangs under its trigger and floats over the cards below. */
+.bb-extraction__select { position: relative; min-width: 0; }
+.bb-extraction__select > .bb-dropdown { width: 100%; }
+.bb-extraction__menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + var(--bb-publish-space-tight));
+  right: 0;
+  left: 0;
+}
+
+.bb-extraction__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-extraction__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bb-publish-space-tight);
+}
+.bb-extraction__filters,
+.bb-extraction__more { align-self: flex-start; }
+
+.bb-extraction__hint {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+
+.bb-extraction__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+  padding: var(--bb-publish-space-panel);
+  font-size: var(--bb-publish-font-size-body);
+  color: var(--bb-publish-text-meta);
+}
+
+@container extraction (max-width: 420px) { /* allow-raw: S-window breakpoint (Extract drops under the branch picker), not a Figma value */
+  .bb-extraction__compare { flex-wrap: wrap; }
+  .bb-extraction__compare > .bb-extraction__select,
+  .bb-extraction__compare > .bb-extraction__grow { flex-basis: 100%; }
+}
+
+/* Channel row: the Connection Row takes the width, the bare switch hugs (both are full-width on their own). */
+.bb-extraction__channel > .bb-connection-row { flex: 1 1 0; width: auto; min-width: 0; }
+.bb-extraction__channel > .bb-toggle { flex: none; width: auto; }

@@ -66,6 +66,33 @@ export function targetCriterion(size: { width: number; height: number; standard?
   return Math.min(size.width, size.height) < TARGET_MIN_AA ? '2.5.8' : '2.5.5'
 }
 
+/** What a target finding is reported against: a WCAG criterion, or only the platform's own guideline. */
+export interface TargetCitation {
+  /** The WCAG criterion it misses, or null when it only misses Apple's or Google's bar. */
+  code: '2.5.8' | '2.5.5' | null
+  /** "WCAG 2.5.8", "Apple HIG": how the finding names its source. */
+  label: string
+  title: string
+  level: 'AA' | 'AAA'
+}
+
+/**
+ * On the web a finding always misses a WCAG bar. On iOS / Android it misses the platform's
+ * 44 pt / 48 dp, which is a WCAG failure only when the size is also under a bar the chosen
+ * version has: a 46 dp Android target clears 2.5.5's 44, and WCAG 2.0 has no target rule at
+ * all, so neither may be filed under a WCAG number.
+ */
+export function targetCitation(issue: { width: number; height: number; standard?: StandardId; platform?: Platform }): TargetCitation {
+  const platform = issue.platform ?? 'web'
+  const smallest = Math.min(issue.width, issue.height)
+  const minimum = includes(issue.standard, TARGET_MINIMUM_SINCE) && smallest < TARGET_MIN_AA
+  if (minimum) return { code: '2.5.8', label: 'WCAG 2.5.8', title: 'Target Size (Minimum)', level: 'AA' }
+  const enhanced = platform === 'web' || (includes(issue.standard, TARGET_ENHANCED_SINCE) && smallest < TARGET_MIN_AAA)
+  if (enhanced) return { code: '2.5.5', label: 'WCAG 2.5.5', title: 'Target Size (Enhanced)', level: 'AAA' }
+  const p = PLATFORM_TARGETS[platform]
+  return { code: null, label: p.source, title: `${p.label} tap target`, level: 'AAA' }
+}
+
 /** "44 × 44 pt (Apple HIG)", "24 × 24 px": a finding's minimum in its platform's units. */
 export function requiredLabel(issue: { required: number; platform?: Platform }): string {
   const p = PLATFORM_TARGETS[issue.platform ?? 'web']
@@ -110,7 +137,8 @@ export interface Box { x: number; y: number; width: number; height: number }
 
 /**
  * The 2.5.8 spacing exception: an undersized target still passes when a
- * 24px-diameter circle centred on it does not intersect any other target.
+ * 24px-diameter circle centred on it does not intersect any other target, nor
+ * the same circle drawn on another undersized target.
  * A lone 16px icon with room around it is fine; the same icon in a packed
  * toolbar is not. Without this, every small icon button is a finding, and
  * most of those findings are wrong.
@@ -126,6 +154,12 @@ export function hasSpacingException(target: Box, others: readonly Box[]): boolea
     const dx = cx - nx
     const dy = cy - ny
     if (dx * dx + dy * dy < r * r) return false
+    // Another undersized target carries a circle of its own, and the two may not overlap.
+    if (Math.min(o.width, o.height) < TARGET_MIN_AA) {
+      const ox = cx - (o.x + o.width / 2)
+      const oy = cy - (o.y + o.height / 2)
+      if (ox * ox + oy * oy < TARGET_MIN_AA * TARGET_MIN_AA) return false
+    }
   }
   return true
 }

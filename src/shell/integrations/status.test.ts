@@ -41,4 +41,11 @@ describe('sectionStatus', () => {
   it('ignores spaces in a field', () => {
     expect(sectionStatus('storybook', { ...D.storybook, baseUrl: '   ' })).toBe('missing')
   })
+
+  it('Storage follows GitHub while it borrows the GitHub repository', () => {
+    expect(sectionStatus('storage', D.storage, { github: D.github })).toBe('missing')
+    expect(sectionStatus('storage', D.storage, { github: { ...D.github, repo: 'a/b', apiKey: 'k' } })).toBe('configured')
+    expect(sectionStatus('storage', { ...D.storage, sameAsGithub: false }, { github: { ...D.github, repo: 'a/b', apiKey: 'k' } })).toBe('missing')
+    expect(sectionStatus('storage', { ...D.storage, sameAsGithub: false, repo: 'a/h', apiKey: 'k' })).toBe('configured')
+  })
 })

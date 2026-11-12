@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { createFigmaGet, retryWaitMs, RATE_LIMIT_RETRIES, type HttpFetch } from '../rest'
+import { createFigmaGet, retryWaitMs, RATE_LIMIT_RETRIES, type HttpFetch, type HttpResponse } from '../rest'
 
 const reply = (status: number, body: unknown, retryAfter?: string) => ({
   status,
@@ -27,9 +27,28 @@ describe('createFigmaGet — rate limits', () => {
     expect(sleep.mock.calls.map((c) => c[0])).toEqual([1000, 2000])
   })
 
-  it('backs off without Retry-After and caps the wait', () => {
+  it('backs off without Retry-After and takes Retry-After as given', () => {
     expect(retryWaitMs(null, 0)).toBe(1000)
     expect(retryWaitMs(undefined, 1)).toBe(2000)
-    expect(retryWaitMs('120', 0)).toBe(10_000)
+    expect(retryWaitMs('120', 0)).toBe(120_000)
+  })
+
+  it('reads Retry-After from headersObject, the only headers Figma\'s sandbox fetch gives', async () => {
+    const answers: HttpResponse[] = [
+      { status: 429, text: async () => '{}', headersObject: { 'Retry-After': '4' } },
+      { status: 200, text: async () => '{"ok":true}', headersObject: {} },
+    ]
+    const fetch = vi.fn<HttpFetch>(async () => answers.shift()!)
+    const sleep = vi.fn<(ms: number) => Promise<void>>(async () => undefined)
+    await expect(createFigmaGet('t', 'File 1', fetch, sleep)('/files/V/meta', 'meta')).resolves.toEqual({ ok: true })
+    expect(sleep).toHaveBeenCalledWith(4000)
+  })
+
+  it('does not retry when Figma asks for a longer wait than the plugin will hold', async () => {
+    const fetch = vi.fn<HttpFetch>(async () => reply(429, { err: 'Rate limit' }, '1800'))
+    const sleep = vi.fn<(ms: number) => Promise<void>>(async () => undefined)
+    await expect(createFigmaGet('t', 'File 1', fetch, sleep)('/files/V/meta', 'meta')).rejects.toThrow(/30 minutes/)
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(sleep).not.toHaveBeenCalled()
   })
 })

@@ -19,6 +19,7 @@
 .bb-a11y__results { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); padding: var(--bb-space-stack-md) var(--bb-space-inset-md); }
 .bb-a11y__summary {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--bb-space-inline-md);
   color: var(--bb-card-variable-meta-fg);
