@@ -104,6 +104,21 @@
         "source": {
           "collection": "Brand UI",
           "mode": "Gap"
+        },
+        "personas": {
+          "design-system": [
+            "audit",
+            "varsearch",
+            "varmapper",
+            "publish",
+            "extraction",
+            "a11y",
+            "uxai",
+            "agents",
+            "history",
+            "jira",
+            "mcp"
+          ]
         }
       }
     }
@@ -117,9 +132,11 @@
         "varsearch",
         "varmapper",
         "publish",
+        "extraction",
         "a11y",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "ui-designer": {
@@ -131,7 +148,8 @@
         "jira",
         "mcp",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "ux-designer": {
@@ -141,7 +159,8 @@
         "a11y",
         "jira",
         "uxai",
-        "agents"
+        "agents",
+        "history"
       ]
     },
     "content": {
@@ -149,7 +168,8 @@
       "tabs": [
         "agents",
         "uxai",
-        "jira"
+        "jira",
+        "history"
       ]
     },
     "developer": {
@@ -157,7 +177,8 @@
       "tabs": [
         "mcp",
         "varsearch",
-        "jira"
+        "jira",
+        "history"
       ]
     }
   },
@@ -206,6 +227,16 @@
       "enabled": true,
       "label": "Publish",
       "icon": "change-log"
+    },
+    "extraction": {
+      "enabled": true,
+      "label": "Extraction",
+      "icon": "extract"
+    },
+    "history": {
+      "enabled": true,
+      "label": "History",
+      "icon": "ui-prototype-time"
     }
   },
   "window": {

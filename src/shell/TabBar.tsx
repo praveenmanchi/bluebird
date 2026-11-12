@@ -1,4 +1,5 @@
 import { ICONS, Tab, type IconName } from '@shared/ui'
+import { historyUnseen } from '@shared/history/watch'
 import { SettingsButton } from './SettingsButton'
 import { activeTabId, selectTab, visibleTabs } from './state'
 
@@ -17,6 +18,7 @@ export interface TabBarProps {
 export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProps) {
   const tabs = visibleTabs.value
   const active = activeTabId.value
+  const unseen = historyUnseen.value
   return (
     <nav class="bb-tabbar" aria-label="Sections">
       <div class="bb-tabbar__tabs" role="tablist">
@@ -28,6 +30,9 @@ export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProp
             onClick={() => { selectTab(tab.id); onTab?.(tab.id) }}
           >
             {tab.label}
+            {tab.id === 'history' && unseen > 0 && tab.id !== active && (
+              <span class="bb-tabbar__badge" aria-label={`${unseen} new from teammates`}>{unseen > 99 ? '99+' : unseen}</span>
+            )}
           </Tab>
         ))}
       </div>

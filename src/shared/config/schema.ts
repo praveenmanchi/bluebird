@@ -38,6 +38,7 @@ export const managedIntegrationsSchema = z.strictObject({
   ai: managed(sectionSchemas.ai),
   mcp: managed(sectionSchemas.mcp),
   jira: managed(sectionSchemas.jira),
+  storage: managed(sectionSchemas.storage),
 })
 
 export const brandSchema = z.object({

@@ -3,6 +3,9 @@
 // fast-forward of the branch, an optional tag, a short watch of the GitHub Actions
 // run it starts, and the Teams post when the designer asked for one.
 import type { IntegrationValues } from '@shared/integrations'
+import { allowedWebhook, hostOf } from '@shared/integrations/webhooks'
+
+export { allowedWebhook }
 import { changelogMarkdown } from '../notes'
 import { PREVIEW_CHARS, type CommitPreview, type CommitPreviewFile, type PipelineStepState, type PublishRequest, type PublishResult } from '../messages'
 import type { Change, ReleaseStore, ReleaseSummary, Snapshot } from '../types'
@@ -112,14 +115,6 @@ export function previewCommit(input: CommitInput): CommitPreview {
 
 // ── Teams ────────────────────────────────────────────────────────────────────
 
-/**
- * Hosts a Teams post may go to; the plugin manifest allows the same two. Classic
- * "Incoming Webhook" connectors live on *.webhook.office.com, Power Automate
- * "When a Teams webhook request is received" triggers on *.logic.azure.com.
- */
-const WEBHOOK_HOSTS = [/^https:\/\/[a-z0-9.-]+\.webhook\.office\.com\//i, /^https:\/\/[a-z0-9.-]+\.logic\.azure\.com\//i]
-export const allowedWebhook = (url: string): boolean => WEBHOOK_HOSTS.some((re) => re.test(url))
-
 /** The webhooks Settings › Notifications holds, trimmed and de-duplicated. */
 export function configuredWebhooks(n: IntegrationValues<'notifications'>): string[] {
   return [...new Set([n.designSystemWebhook, n.devTeamWebhook].map((u) => u.trim()).filter(Boolean))]
@@ -169,7 +164,6 @@ export async function notifyTeams(input: NotifyInput): Promise<{ posted: number;
   return { posted, failed }
 }
 
-const hostOf = (url: string): string => url.replace(/^https?:\/\//, '').split('/')[0] ?? url
 
 // ── GitHub ───────────────────────────────────────────────────────────────────
 

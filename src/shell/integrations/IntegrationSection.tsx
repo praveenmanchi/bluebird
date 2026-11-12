@@ -1,6 +1,6 @@
 import { useId, useState } from 'preact/hooks'
 import { ButtonGroup, Icon, MetaBadge, Notice, SectionHeader, Toggle, type MetaBadgeTone } from '@shared/ui'
-import { normalizeIntegration, validateIntegration, type ConnectionTestResult, type FieldErrors, type IntegrationId, type IntegrationValues } from '@shared/integrations'
+import { normalizeIntegration, validateIntegration, type ConnectionTestResult, type FieldErrors, type IntegrationId, type IntegrationSettings, type IntegrationValues } from '@shared/integrations'
 import { IntegrationColumn, IntegrationField, type FieldValues } from './IntegrationField'
 import { sectionFieldKeys, type ColumnSpec, type FieldSpec, type SectionSpec } from './sections'
 import { sectionStatus, type SectionStatus } from './status'
@@ -18,6 +18,8 @@ export interface IntegrationSectionProps {
   locked?: readonly string[]
   /** Who manages them, for the note above the fields. */
   lockedBy?: string
+  /** The other sections' saved values, for a section whose status borrows one (Storage uses GitHub's). */
+  others?: Partial<IntegrationSettings>
 }
 
 type Status =
@@ -40,7 +42,7 @@ const STATUS: Readonly<Record<SectionStatus, { label: string; tone: MetaBadgeTon
 }
 
 /** One bordered settings section: a header row (logo, title, description, status, arrow) that opens the fields and Test / Save actions. */
-export function IntegrationSection({ spec, initial, onSave, onTest, locked = [], lockedBy = 'your brand' }: IntegrationSectionProps) {
+export function IntegrationSection({ spec, initial, onSave, onTest, locked = [], lockedBy = 'your brand', others }: IntegrationSectionProps) {
   const [values, setValues] = useState<FieldValues>(initial as FieldValues)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
@@ -95,7 +97,7 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
   // Nothing left for the person to fill (a managed section without keys): no Save / Test to offer.
   const editable = sectionFieldKeys(spec).some((key) => !lockedKeys.has(key))
   const ctx = { values, errors, disabled: saving || testing, locked: lockedKeys, onChange }
-  const badge = STATUS[sectionStatus(spec.id, saved)]
+  const badge = STATUS[sectionStatus(spec.id, saved, others)]
   return (
     <section class="bb-integrations__section" aria-label={spec.title} data-section={spec.id} data-columns={spec.columns}>
       <SectionHeader

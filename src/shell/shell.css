@@ -30,6 +30,21 @@
 }
 .bb-tabbar__tabs::-webkit-scrollbar { display: none; }
 .bb-tabbar__settings { flex: none; }
+/* New History entries from teammates (not a Figma part): an accent count pill after the tab label. */
+.bb-tabbar__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--bb-icon-size-sm);
+  margin-left: var(--bb-space-inline-xs);
+  padding: 0 var(--bb-space-inline-xs);
+  border-radius: var(--bb-radius-pill);
+  background: var(--bb-surface-accent);
+  color: var(--bb-text-on-accent);
+  font-size: var(--bb-font-size-caption);
+  font-weight: var(--bb-font-weight-strong);
+  line-height: var(--bb-font-line-caption);
+}
 
 /* Screen root fill is the Brand variable `Background`. */
 .bb-canvas {

@@ -1,0 +1,171 @@
+/* History tab — Figma "History · 600" (page History 40002705:6458) and the
+ * History Entry card (Molecules › History 40002709:7089). No tokens of its own
+ * yet: the frames are bound to the Publish tab's tier-2 tokens, so this is too. */
+.bb-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-section);
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--bb-publish-space-panel);
+  overflow-y: auto;
+  font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
+  color: var(--bb-publish-text-body);
+  container: history / inline-size;
+}
+.bb-history > * { flex: none; }
+
+.bb-history__toolbar,
+.bb-history__day,
+.bb-history__details,
+.bb-history__card,
+.bb-history__group { display: flex; flex-direction: column; gap: var(--bb-publish-space-section); min-width: 0; }
+.bb-history__group { gap: var(--bb-publish-space-tight); }
+
+.bb-history__card {
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-panel);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-panel);
+  background: var(--bb-publish-surface-panel);
+}
+
+.bb-history__header,
+.bb-history__filters,
+.bb-history__badges,
+.bb-history__group-head,
+.bb-history__person,
+.bb-history__actions { display: flex; align-items: center; gap: var(--bb-publish-space-inline); min-width: 0; }
+.bb-history__header > :first-child { flex: 1 1 0; min-width: 0; }
+.bb-history__badges { flex-wrap: wrap; gap: var(--bb-publish-space-tight); }
+.bb-history__actions { flex-wrap: wrap; }
+.bb-history__grow { flex: 1 1 0; }
+
+.bb-history__range { position: relative; flex: none; }
+
+/* Refresh: an icon button beside the GitHub status; spins while a read (or the automatic check) runs. */
+.bb-history__refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--bb-publish-size-step);
+  height: var(--bb-publish-size-step);
+  padding: 0;
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+  color: var(--bb-publish-text-body);
+  cursor: pointer;
+}
+.bb-history__refresh:hover:not(:disabled) { color: var(--bb-publish-text-title); border-color: var(--bb-publish-text-meta); }
+.bb-history__refresh:focus-visible { outline: var(--bb-publish-border-width) solid var(--bb-publish-text-accent); outline-offset: var(--bb-publish-space-hair); }
+.bb-history__refresh:disabled { cursor: default; }
+.bb-history__refresh > svg { width: var(--bb-publish-size-icon); height: var(--bb-publish-size-icon); }
+.bb-history__refresh[data-busy='true'] > svg { animation: bb-history-spin 0.9s linear infinite; }
+@keyframes bb-history-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .bb-history__refresh[data-busy='true'] > svg { animation: none; } }
+.bb-history__menu { position: absolute; z-index: 2; top: calc(100% + var(--bb-publish-space-tight)); left: 0; right: 0; }
+.bb-history__features { min-width: 0; overflow-x: auto; }
+
+.bb-history__list { display: flex; flex-direction: column; gap: var(--bb-publish-space-inline); margin: 0; padding: 0; list-style: none; }
+.bb-history__more,
+.bb-history__back { align-self: flex-start; }
+
+.bb-history__hint {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-caption);
+  line-height: var(--bb-publish-font-line-caption);
+  color: var(--bb-publish-text-meta);
+}
+.bb-history__body { margin: 0; font-size: var(--bb-publish-font-size-body); line-height: var(--bb-publish-font-line-body); color: var(--bb-publish-text-body); }
+.bb-history__title {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-heading);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-label);
+  color: var(--bb-publish-text-title);
+}
+
+.bb-history__who { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--bb-publish-space-inline); }
+.bb-history__stack { display: flex; flex-direction: column; gap: var(--bb-publish-space-hair); min-width: 0; }
+.bb-history__stack--end { align-items: flex-end; text-align: right; }
+.bb-history__name { font-size: var(--bb-publish-font-size-body); font-weight: var(--bb-publish-font-weight-strong); color: var(--bb-publish-text-accent); }
+.bb-history__date { font-size: var(--bb-publish-font-size-body); font-weight: var(--bb-publish-font-weight-medium); color: var(--bb-publish-text-body); }
+
+.bb-history__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--bb-publish-space-inline); margin: 0; }
+.bb-history__fact { display: flex; flex-direction: column; gap: var(--bb-publish-space-hair); min-width: 0; }
+.bb-history__fact dd { margin: 0; font-size: var(--bb-publish-font-size-body); font-weight: var(--bb-publish-font-weight-strong); color: var(--bb-publish-text-title); overflow-wrap: anywhere; }
+
+.bb-history__stats { display: flex; gap: var(--bb-publish-space-inline); }
+.bb-history__stat,
+.bb-history__change {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-hair);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+}
+.bb-history__stat { flex: 1 1 0; }
+.bb-history__stat-value { font-size: var(--bb-publish-font-size-heading); font-weight: var(--bb-publish-font-weight-strong); color: var(--bb-publish-text-title); }
+.bb-history__change-row { display: flex; align-items: center; gap: var(--bb-publish-space-inline); }
+.bb-history__change-name { flex: 1 1 0; min-width: 0; font-size: var(--bb-publish-font-size-body); color: var(--bb-publish-text-title); overflow-wrap: anywhere; }
+.bb-history__steps { display: flex; flex-direction: column; gap: var(--bb-publish-space-hair); }
+
+.bb-history__loading { display: flex; justify-content: center; padding: var(--bb-publish-space-panel); }
+
+/* History Entry card */
+.bb-history-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-publish-space-inline);
+  box-sizing: border-box;
+  padding: var(--bb-publish-space-row-x);
+  border: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+  border-radius: var(--bb-publish-radius-control);
+  background: var(--bb-publish-surface-field);
+}
+.bb-history-card[data-status='failed'] { border-color: var(--bb-publish-step-failed); }
+.bb-history-card__header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--bb-publish-space-inline); }
+.bb-history-card__titles { display: flex; flex-direction: column; align-items: flex-start; gap: var(--bb-publish-space-tight); min-width: 0; }
+.bb-history-card__title {
+  margin: 0;
+  font-size: var(--bb-publish-font-size-title);
+  font-weight: var(--bb-publish-font-weight-strong);
+  line-height: var(--bb-publish-font-line-label);
+  color: var(--bb-publish-text-title);
+  overflow-wrap: anywhere;
+}
+.bb-history-card__meta { display: flex; flex-direction: column; align-items: flex-end; gap: var(--bb-publish-space-hair); flex: none; }
+.bb-history-card__when,
+.bb-history-card__person,
+.bb-history-card__jira,
+.bb-history-card__change { display: flex; align-items: center; gap: var(--bb-publish-space-tight); }
+.bb-history-card__when { gap: var(--bb-publish-space-inline); }
+.bb-history-card__jira-logo,
+.bb-history-card__change > svg { width: var(--bb-publish-size-icon); height: var(--bb-publish-size-icon); flex: none; }
+.bb-history-card__date { font-size: var(--bb-publish-font-size-body); font-weight: var(--bb-publish-font-weight-medium); color: var(--bb-publish-text-body); }
+.bb-history-card__person { font-size: var(--bb-publish-font-size-body); font-weight: var(--bb-publish-font-weight-strong); color: var(--bb-publish-text-accent); }
+.bb-history-card__sep { color: var(--bb-publish-text-meta); font-weight: var(--bb-publish-font-weight-regular); }
+.bb-history-card__what { margin: 0; font-size: var(--bb-publish-font-size-body); line-height: var(--bb-publish-font-line-body); color: var(--bb-publish-text-body); }
+.bb-history-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-publish-space-inline);
+  padding-top: var(--bb-publish-space-inline);
+  border-top: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+}
+.bb-history-card__changes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bb-publish-space-inline); min-width: 0; font-size: var(--bb-publish-font-size-body); color: var(--bb-publish-text-body); }
+
+@container history (max-width: 420px) { /* allow-raw: S-window breakpoint (filters and facts stack), not a Figma value */
+  .bb-history__filters { flex-wrap: wrap; }
+  .bb-history__facts { grid-template-columns: minmax(0, 1fr); }
+  .bb-history__stats { flex-wrap: wrap; }
+  .bb-history-card__header { flex-direction: column; }
+  .bb-history-card__meta { align-items: flex-start; }
+}

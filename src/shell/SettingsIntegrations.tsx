@@ -20,7 +20,8 @@ type Load = { kind: 'loading' } | { kind: 'ready'; settings: IntegrationSettings
 /**
  * Figma "Settings · Integrations" (40000408:8714): one bordered section per
  * integration (GitHub, Notifications, Storybook, Zeroheight, Dual File Mode,
- * AI Agent Assistance, MCP + Code Sync, Jira), each saving on its own.
+ * AI Agent Assistance, MCP + Code Sync, Jira), plus Storage for the team History,
+ * each saving on its own.
  * SettingsScreen places the frame's persona card above and its Team Banner below.
  */
 export function SettingsIntegrations({ api, managed, managedBy }: SettingsIntegrationsProps) {
@@ -43,7 +44,13 @@ export function SettingsIntegrations({ api, managed, managedBy }: SettingsIntegr
             key={spec.id}
             spec={spec}
             initial={state.settings[spec.id]}
-            onSave={api.save}
+            onSave={async (section, values) => {
+              const saved = await api.save(section, values)
+              // Keep the copy the other sections read (Storage's status follows GitHub's).
+              setState((s) => s.kind === 'ready' ? { kind: 'ready', settings: { ...s.settings, [section]: saved } } : s)
+              return saved
+            }}
+            others={state.settings}
             locked={managed?.[spec.id] ? Object.keys(managed[spec.id]!) : undefined}
             lockedBy={managedBy}
             onTest={api.test && TESTABLE_INTEGRATIONS.includes(spec.id) ? api.test : undefined}

@@ -2,7 +2,7 @@
 // "Settings · Integrations" (40000408:8714). Copy, icons and order follow the
 // frame; an array in `blocks` is one row of side-by-side columns.
 import type { IconName, SectionHeaderLogo } from '@shared/ui'
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, type IntegrationId } from '@shared/integrations'
+import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId } from '@shared/integrations'
 
 export interface TextFieldSpec { kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean }
 export interface SelectFieldSpec { kind: 'select'; key: string; label: string; icon: IconName; options: readonly string[] }
@@ -74,6 +74,25 @@ export const SECTIONS: readonly SectionSpec[] = [
       ],
       { kind: 'text', key: 'baseUrl', label: 'Base URL - Enterprise (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: GITHUB_ENTERPRISE_HELPER },
       { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Publish tab compares local variables against the last pushed version on GitHub, showing what changed.' },
+    ],
+  },
+  {
+    id: 'storage', logo: 'github', title: 'Storage', columns: 'halves',
+    description: 'Where the team History is kept: a GitHub repository every designer’s plugin writes to and reads from. Extractions, reports, Code Connect templates, MCP pushes and UX AI answers land here, so everyone sees one changelog.',
+    blocks: [
+      { kind: 'switch', key: 'sameAsGithub', title: 'Use the GitHub output repository', description: 'When on, History uses the repository, branch and API key from GitHub output configuration above, and the fields below are ignored except the folder.' },
+      [
+        [
+          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'Personal access token with Contents read and write', secret: true },
+          { kind: 'text', key: 'branch', label: 'Branch', icon: 'branch', placeholder: 'main' },
+        ],
+        [
+          { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/design-history' },
+          { kind: 'text', key: 'folder', label: 'History folder', icon: 'folder', placeholder: '.bluebird/history', helper: 'One JSON file per day goes here, e.g. .bluebird/history/2026-11-12.json.' },
+        ],
+      ],
+      { kind: 'text', key: 'baseUrl', label: 'Base URL - Enterprise (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: GITHUB_ENTERPRISE_HELPER },
+      { kind: 'select', key: 'refresh', label: 'Check for teammates’ changes', icon: 'branch', options: REFRESH_OPTIONS },
     ],
   },
   {

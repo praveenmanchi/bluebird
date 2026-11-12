@@ -13,7 +13,8 @@ import { SplashScreen } from './SplashScreen'
 import { PersonaScreen } from './PersonaScreen'
 import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
-import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
+import { DEFAULT_INTEGRATIONS, refreshMs } from '@shared/integrations'
+import { historyUnseen, watchHistory } from '@shared/history/watch'
 import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { OPEN_SETTINGS_EVENT, OPEN_TAB_EVENT } from '@shared/navigation'
 import { ensureLibraryState, libraryPill, libraryState, loadLibraryState } from '@shared/libraries/status'
@@ -71,6 +72,16 @@ export function App({ client, transport }: AppProps) {
     // Unreadable Settings read as the defaults: the pills then say what to set up instead of loading forever.
     integrations.load().then((s) => { integrationSettings.value = s }, () => { integrationSettings.value = DEFAULT_INTEGRATIONS })
   }, [integrations, signedIn])
+
+  // Teammates' History entries: checked when the plugin opens and then on the Settings › Storage
+  // interval while it stays open. The count badges the History tab until History is opened.
+  const historyShown = signedIn && visibleTabs.value.some((t) => t.id === 'history')
+  const settingsLoaded = integrationSettings.value !== null
+  const historyEvery = refreshMs(integrationSettings.value?.storage?.refresh ?? '')
+  useEffect(() => {
+    if (!historyShown || !settingsLoaded) { historyUnseen.value = 0; return undefined }
+    return watchHistory(client, historyEvery)
+  }, [client, historyShown, settingsLoaded, historyEvery])
   const pillSettings = integrationSettings.value
   const entry = features.find((f) => f.manifest.id === activeTabId.value)
 

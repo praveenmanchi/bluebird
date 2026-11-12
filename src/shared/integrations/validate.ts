@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
+import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -48,6 +48,8 @@ const localProxy: Rule = (v) => {
 }
 const outputFormat: Rule = (v) => (OUTPUT_FORMATS as readonly string[]).includes(v) ? null : `Use one of: ${OUTPUT_FORMATS.join(', ')}`
 const oneOf = (options: readonly string[]): Rule => (v) => options.includes(v) ? null : `Pick one of: ${options.join(', ')}`
+// A repository folder: relative, no '..' segments, no leading slash — it ends up in a GitHub API path.
+const folder: Rule = (v) => /^(?!\/)(?!.*(^|\/)\.\.(\/|$))[\w.\-/]+$/.test(v) && !v.endsWith('/') ? null : 'Use a folder inside the repository, e.g. .bluebird/history'
 const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') ? null : 'Include {slug} or {name} so each component gets its own story'
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
@@ -59,6 +61,7 @@ const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, 
   ai: { provider: oneOf(PROVIDER_OPTIONS), claudeModel: oneOf(MODEL_OPTIONS.claude), openaiModel: oneOf(MODEL_OPTIONS.openai), geminiModel: oneOf(MODEL_OPTIONS.gemini) },
   mcp: { repo, outputFormat, branchTemplate: noSpaces, enterpriseUrl: url },
   jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: localProxy },
+  storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS) },
 }
 
 /**

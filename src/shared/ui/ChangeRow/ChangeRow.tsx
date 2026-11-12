@@ -37,6 +37,8 @@ export interface ChangeRowProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>,
   /** The Include checkbox. Leave undefined to let the row keep its own state (starts checked, as in Figma). */
   included?: boolean
   onIncludedChange?: (included: boolean) => void
+  /** Code-only: false drops the Include checkbox, for lists where nothing is picked (the Extraction tab). */
+  showInclude?: boolean
   /** Extra content after the badge. */
   trailing?: ComponentChildren
 }
@@ -63,6 +65,7 @@ export function ChangeRow({
   swatch = '#0560A3',
   included,
   onIncludedChange,
+  showInclude = true,
   trailing,
   class: cls,
   ...rest
@@ -76,7 +79,7 @@ export function ChangeRow({
   }
   return (
     <div {...rest} class={`bb-change-row ${cls ?? ''}`} data-kind={kind} data-state={state} data-included={String(checked)}>
-      <Checkbox class="bb-change-row__include" checked={checked} onChange={toggle} aria-label={`Include ${name}`} />
+      {showInclude && <Checkbox class="bb-change-row__include" checked={checked} onChange={toggle} aria-label={`Include ${name}`} />}
       <Preview kind={kind} swatch={swatch} />
       <div class="bb-change-row__text">
         <span class="bb-change-row__name">{name}</span>

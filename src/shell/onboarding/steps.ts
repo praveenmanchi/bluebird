@@ -62,6 +62,18 @@ const TAB_COPY: Readonly<Record<string, TabCopy>> = {
     title: 'Publish your design system as a release',
     body: 'Extract what changed since the last release, review it per brand, let the version and notes draft themselves, then publish to your docs site.',
   },
+  // No scene of its own yet: the Publish scene shows the same extract → review → push motion.
+  extraction: {
+    scene: 'publish',
+    title: 'Extract and hand off variable changes',
+    body: 'Compare this file with the latest extraction on any branch, see which variables changed and which components they touch, then push it or open a pull request.',
+  },
+  // No scene of its own yet: the Publish scene shows a list of changes, which is close.
+  history: {
+    scene: 'publish',
+    title: 'See what the whole team did',
+    body: 'Every extraction, report, Code Connect template, MCP push and UX AI answer from everyone on the team, from one shared GitHub repository. Filter by date or feature and open any entry for the full changelog.',
+  },
   agents: {
     scene: 'agents',
     title: 'Expert agents that review your work',
