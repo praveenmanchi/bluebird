@@ -105,6 +105,52 @@
           "collection": "Brand UI",
           "mode": "Gap"
         },
+        "tabs": [
+          {
+            "id": "jira",
+            "enabled": true
+          },
+          {
+            "id": "varsearch",
+            "enabled": true
+          },
+          {
+            "id": "extraction",
+            "enabled": true
+          },
+          {
+            "id": "history",
+            "enabled": true
+          },
+          {
+            "id": "a11y",
+            "enabled": true
+          },
+          {
+            "id": "publish",
+            "enabled": true
+          },
+          {
+            "id": "mcp",
+            "enabled": true
+          },
+          {
+            "id": "varmapper",
+            "enabled": true
+          },
+          {
+            "id": "uxai",
+            "enabled": true
+          },
+          {
+            "id": "agents",
+            "enabled": true
+          },
+          {
+            "id": "audit",
+            "enabled": true
+          }
+        ],
         "personas": {
           "design-system": [
             "audit",
@@ -118,6 +164,13 @@
             "history",
             "jira",
             "mcp"
+          ],
+          "developer": [
+            "mcp",
+            "varsearch",
+            "jira",
+            "history",
+            "publish"
           ]
         }
       }

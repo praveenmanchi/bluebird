@@ -87,7 +87,13 @@ import { resolve } from 'node:path'
 // the shared history store/recorder and the extraction → History entry added ~26 KB; build 1486.4 KB.
 // 2026-11-12 (Settings › Storage + automatic History sync): user raised the budget to 1500 KB. The Storage section,
 // the background check / History tab badge and the refresh icon added ~6 KB; build 1492.2 KB.
-const BUDGET_KB = 1500
+// 2026-11-12 (Changelog generator in History): user raised the budget to 1510 KB. The New changelog pop-up,
+// the review/approve states and their sample data took the build to 1508.7 KB.
+// 2026-11-12 (Accessibility accuracy audit): user raised the budget to 1515 KB. The ten scanner fixes (target
+// citations, platform guideline references, the AA-only verdict) added ~1.8 KB; build 1510.5 KB.
+// 2026-11-12 (Accessibility open items): user raised the budget to 1525 KB. Confidence labels, ignoring a
+// finding, gradient backdrops and the palette-failure notice added ~5 KB; build 1515.8 KB.
+const BUDGET_KB = 1525
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'
