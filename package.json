@@ -5,6 +5,7 @@
   "description": "Bluebird \u2014 persona-based, multi-tab, multi-brand Figma plugin",
   "type": "module",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "gen": "tsx scripts/gen-registry.ts && tsx scripts/gen-tokens.ts",
     "dev": "npm run gen && vite",
     "dev:sandbox": "npm run gen && tsx scripts/build-sandbox.ts --watch",
@@ -21,7 +22,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "npm run typecheck && npm run lint && npm run tokens:check && npm run test && npm run build",
+    "verify": "npm run typecheck && npm run lint && npm run tokens:check && npm run test:coverage && npm run build",
     "gen:tokens": "tsx scripts/gen-tokens.ts",
     "tokens:check": "tsx scripts/check-tokens.ts",
     "figma:parity": "node --env-file-if-exists=.env --import tsx scripts/figma-parity.ts",

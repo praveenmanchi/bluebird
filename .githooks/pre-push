@@ -1,0 +1,10 @@
+#!/bin/sh
+# Fast checks before a push. The full verify (coverage, build, size budget)
+# runs in GitHub Actions; the build is left out here because it bumps build-info.json.
+# Skip once with: git push --no-verify
+set -e
+
+echo "pre-push: typecheck, lint, tests"
+npm run typecheck
+npm run lint
+npm run test
