@@ -39,7 +39,7 @@ const provider = (id: ProviderSpec['provider'], name: string, placeholder: strin
   apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API key`, icon: 'api-key', placeholder, secret: true },
 })
 
-const LIBRARY_TOKEN = 'Personal access token: file_variables:read, library_content:read'
+const LIBRARY_TOKEN = 'Figma personal access token'
 
 /** One Dual File slot: ID and what it contains in the narrow column, its API key in the wide one. */
 const dualFileRow = (n: 1 | 2): readonly ColumnSpec[] => [
@@ -51,7 +51,7 @@ const dualFileRow = (n: 1 | 2): readonly ColumnSpec[] => [
     {
       kind: 'text', key: `file${n}Key`, label: `File ${n} API key`, icon: 'api-key', placeholder: LIBRARY_TOKEN, secret: true,
       helper: n === 1
-        ? 'Variables need file_variables:read (Enterprise); components need library_content:read and must be published.'
+        ? 'Scopes: file_content:read, library_content:read, file_metadata:read. On Enterprise also file_variables:read (variables) and library_analytics:read (Audit › Across files). Components must be published.'
         : 'Optional when File 1’s key can open this file too. Leave File 2 empty if File 1 holds both.',
     },
   ],
@@ -64,7 +64,7 @@ export const SECTIONS: readonly SectionSpec[] = [
     blocks: [
       [
         [
-          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'Personal access token with file_variables:read', secret: true },
+          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'GitHub personal access token', secret: true },
           { kind: 'select', key: 'branch', label: 'Branch', icon: 'branch', options: BRANCHES },
         ],
         [

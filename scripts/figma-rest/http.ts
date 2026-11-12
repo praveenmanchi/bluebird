@@ -23,11 +23,10 @@ export class FigmaHttpError extends Error {
 export const MAX_RATE_LIMIT_RETRIES = 3
 const MAX_WAIT_MS = 60_000
 
-/** Seconds from Retry-After, else exponential backoff (1 s, 2 s, 4 s…), capped at a minute. */
+/** Seconds from Retry-After as Figma gave them, else exponential backoff (1 s, 2 s, 4 s…). */
 export function retryDelayMs(retryAfter: string | null, attempt: number): number {
   const seconds = Number(retryAfter)
-  const ms = Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 1000 * 2 ** attempt
-  return Math.min(ms, MAX_WAIT_MS)
+  return Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 1000 * 2 ** attempt
 }
 
 export interface GetOptions {
@@ -41,7 +40,12 @@ export async function figmaGet<T>(path: string, { fetchImpl = fetch, sleep = (ms
   for (let attempt = 0; ; attempt += 1) {
     const res = await fetchImpl(`https://api.figma.com/v1${path}`, { headers: { 'X-Figma-Token': token } })
     if (res.status === 429 && attempt < MAX_RATE_LIMIT_RETRIES) {
-      await sleep(retryDelayMs(res.headers.get('retry-after'), attempt))
+      const waitMs = retryDelayMs(res.headers.get('retry-after'), attempt)
+      // Retrying sooner than Retry-After only spends another request against the limit.
+      if (waitMs > MAX_WAIT_MS) {
+        throw new FigmaHttpError(429, `Figma API 429 for ${path}: rate limited, retry after ${Math.round(waitMs / 60_000)} minutes (seat ${res.headers.get('x-figma-rate-limit-type') ?? 'unknown'}, plan ${res.headers.get('x-figma-plan-tier') ?? 'unknown'}). View and Collab seats have a monthly allowance on file reads; use a token from a Full or Dev seat.`)
+      }
+      await sleep(waitMs)
       continue
     }
     if (res.status === 404) throw new FigmaHttpError(404, `Figma API 404 for ${path}: this token's account cannot see this file, or it does not exist. Pull through the relay instead (npm run figma:pull), or set FIGMA_TOKEN from an account with access.`)

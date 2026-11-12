@@ -149,10 +149,14 @@ export type SaveIntegrationRequest<K extends IntegrationId = IntegrationId> = { 
 // figma.com/design/<key>/…, /file/, /proto/, /board/ — also with a branch: /design/<key>/branch/<branchKey>/…
 const FIGMA_FILE_URL = /^(?:https?:\/\/)?(?:www\.)?figma\.com\/(?:design|file|proto|board)\/([A-Za-z0-9]+)(?:\/branch\/([A-Za-z0-9]+))?/
 
-/** A pasted Figma file URL becomes its file key (the branch key for a branch URL); anything else is left as typed. */
+/**
+ * A pasted Figma file URL becomes its file key; anything else is left as typed. A branch URL gives
+ * the main file's key: libraries are published from the main file, and the published components,
+ * styles and Library Analytics endpoints refuse a branch key.
+ */
 export function figmaFileKey(value: string): string {
   const match = FIGMA_FILE_URL.exec(value.trim())
-  return match ? (match[2] ?? match[1]!) : value.trim()
+  return match ? match[1]! : value.trim()
 }
 
 const FILE_ID_FIELDS = new Set(['file1Id', 'file2Id'])

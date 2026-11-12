@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { DEFAULT_INTEGRATIONS, figmaFileKey, mergeIntegrations, normalizeIntegration } from './schema'
 
 describe('Dual File settings', () => {
-  it('turns a pasted Figma URL into its file key (branch key for a branch URL)', () => {
+  it('turns a pasted Figma URL into its file key (the main file key for a branch URL)', () => {
     expect(figmaFileKey('https://www.figma.com/design/JPZ7koqomjcjczGQuhIMVH/Plugin-UI?node-id=1-2')).toBe('JPZ7koqomjcjczGQuhIMVH')
     expect(figmaFileKey('figma.com/file/AbC123/x')).toBe('AbC123')
-    expect(figmaFileKey('https://www.figma.com/design/AbC123/branch/Br4nch/x')).toBe('Br4nch')
+    expect(figmaFileKey('https://www.figma.com/design/AbC123/branch/Br4nch/x')).toBe('AbC123')
     expect(figmaFileKey('  AbC123 ')).toBe('AbC123')
   })
 
