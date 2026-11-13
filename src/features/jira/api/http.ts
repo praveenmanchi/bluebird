@@ -25,12 +25,25 @@ export type SettingsProblem = { reason: 'disabled' | 'incomplete' | 'invalid'; m
 const trimSlash = (s: string) => s.trim().replace(/\/+$/, '')
 const FIELD_LABELS: Record<string, string> = { siteUrl: 'Site URL', baseUrl: 'Base URL', proxyUrl: 'Proxy URL', email: 'Email ID', projectKey: 'Project key' }
 
+/** Host of a URL, lowercased — string work, not `new URL`: the sandbox has no URL. */
+function hostOf(url: string): string {
+  const [authority = ''] = url.trim().replace(/^https?:\/\//i, '').split(/[/?#]/)
+  return (authority.split('@').pop() ?? '').toLowerCase()
+}
+
+/** An Atlassian Cloud site, whichever URL field it was typed into. Mirrors the proxy's allow-list. */
+const isCloudHost = (url: string) => hostOf(url).endsWith('.atlassian.net')
+
 /** The connection Settings describe, or why there is none. */
 export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | SettingsProblem {
   if (!s.enabled) return { reason: 'disabled', missing: [] }
-  const server = s.baseUrl.trim() !== ''
+  const hasBase = s.baseUrl.trim() !== ''
+  // Base URL is the Server / DC field, but a Cloud host stays Cloud whichever field it was typed
+  // into: Cloud removed /rest/api/*/search (CHANGE-2046), so a misfiled site would otherwise page
+  // a dead endpoint and the board would come back empty.
+  const server = hasBase && !isCloudHost(s.baseUrl)
   const missing = [
-    ...(server || s.siteUrl.trim() ? [] : ['Site URL']),
+    ...(hasBase || s.siteUrl.trim() ? [] : ['Site URL']),
     ...(s.apiKey.trim() ? [] : ['Jira API key']),
     ...(server || s.email.trim() ? [] : ['Email ID']),
   ]
@@ -38,7 +51,7 @@ export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | S
   // Stored values are re-checked here: the token is only ever sent to a host these rules allow.
   const invalid = Object.keys(validateIntegration('jira', s))
   if (invalid.length) return { reason: 'invalid', missing: invalid.map((k) => FIELD_LABELS[k] ?? k) }
-  const site = trimSlash(server ? s.baseUrl : s.siteUrl)
+  const site = trimSlash(hasBase ? s.baseUrl : s.siteUrl)
   // Server / DC personal access tokens are bearer tokens; Cloud API tokens are basic auth with the email.
   const authorization = s.email.trim() ? `Basic ${base64(`${s.email.trim()}:${s.apiKey.trim()}`)}` : `Bearer ${s.apiKey.trim()}`
   return { flavor: server ? 'server' : 'cloud', site, endpoint: trimSlash(s.proxyUrl) || site, authorization, projectKey: s.projectKey.trim() }

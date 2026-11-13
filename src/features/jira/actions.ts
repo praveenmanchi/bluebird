@@ -34,9 +34,11 @@ export async function loadBoard(rpc: RpcClient, { refresh = false }: { refresh?:
     syncedAt.value = result.syncedAt
     truncated.value = result.truncated
     loadedDetail.value = new Set()
-    defaultFilters.value = boardDefaults(result.activeSprint)
     // Nothing assigned (e.g. an all-unassigned project)? Open on Reported / Watching instead of an empty board.
-    if (!refresh) filters.value = { ...defaultFilters.value, scope: openingScope(result.tickets, filters.value.scope) }
+    const scope = refresh ? filters.value.scope : openingScope(result.tickets, filters.value.scope)
+    // The active sprint only narrows the board when it has tickets in the scope being opened.
+    defaultFilters.value = boardDefaults(result.activeSprint, result.tickets.filter((t) => t.scopes.includes(scope)))
+    if (!refresh) filters.value = { ...defaultFilters.value, scope }
     if (!result.tickets.some((t) => t.key === selectedKey.value)) {
       selectedKey.value = groupByStatus(filterTickets(result.tickets, filters.value))[0]?.tickets[0]?.key ?? result.tickets[0]?.key ?? null
     }

@@ -24,8 +24,8 @@ export const site = signal(SAMPLE_SITE)
 export const me = signal<Person>(ME)
 export const syncedAt = signal<number | null>(Date.now() - FIXTURE_SYNC_AGE)
 /** What "Clear filters" returns to: the active sprint, everything else open. */
-export const defaultFilters = signal<BoardFilters>(boardDefaults(CURRENT_SPRINT))
-export const filters = signal<BoardFilters>(boardDefaults(CURRENT_SPRINT))
+export const defaultFilters = signal<BoardFilters>(boardDefaults(CURRENT_SPRINT, TICKETS))
+export const filters = signal<BoardFilters>(boardDefaults(CURRENT_SPRINT, TICKETS))
 export const refreshing = signal(false)
 /** Jira matched more issues than the board reads (api/client MAX_ISSUES). */
 export const truncated = signal(false)
@@ -65,8 +65,8 @@ export function reset(): void {
   site.value = SAMPLE_SITE
   me.value = ME
   syncedAt.value = Date.now() - FIXTURE_SYNC_AGE
-  defaultFilters.value = boardDefaults(CURRENT_SPRINT)
-  filters.value = boardDefaults(CURRENT_SPRINT)
+  defaultFilters.value = boardDefaults(CURRENT_SPRINT, TICKETS)
+  filters.value = boardDefaults(CURRENT_SPRINT, TICKETS)
   refreshing.value = false
   truncated.value = false
   refreshError.value = null
