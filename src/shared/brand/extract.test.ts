@@ -1,6 +1,6 @@
 // Exercises the in-Figma extractor against a tiny fake `figma` global.
 import { describe, it, expect, beforeEach } from 'vitest'
-import { extractTokens, extractComponents, extractIcons, iconKey, type ExtractManifest } from './extract'
+import { extractTokens, extractComponents, extractIcons, iconKey, iconLabel, oneVariantPerGlyph, type ExtractManifest } from './extract'
 import { installFigmaMock } from '../../../tests/mocks/figma'
 
 const manifest: ExtractManifest = {
@@ -46,7 +46,7 @@ const variant = {
 }
 const set = { id: 'set1', type: 'COMPONENT_SET', name: 'Button', description: 'desc', children: [variant], componentPropertyDefinitions: { 'Label#1:2': { type: 'TEXT', defaultValue: 'Button' }, Type: { type: 'VARIANT', variantOptions: ['Primary'], defaultValue: 'Primary' } }, findAll: () => [variant, label] }
 const icon = { id: 'i1', name: 'Tab Icon=Dropdown- down', exportAsync: async () => '<svg viewBox="0 0 24 24"><path fill="#F5F5F5"/></svg>' }
-const iconSet = { id: 'icons', type: 'COMPONENT_SET', name: 'Tab Icons', children: [icon] }
+const iconSet: { id: string; type: string; name: string; children: Array<{ id: string; name: string; exportAsync: () => Promise<string> }> } = { id: 'icons', type: 'COMPONENT_SET', name: 'Tab Icons', children: [icon] }
 const page = { id: 'page', type: 'PAGE', name: 'Components', children: [{ type: 'SECTION', name: '⚛ Atoms', children: [set] }], loadAsync: async () => undefined }
 
 beforeEach(() => {
@@ -151,5 +151,43 @@ describe('extractIcons', () => {
     const snap = await extractIcons(manifest)
     expect(Object.keys(snap.icons)).toEqual(['dropdown-down'])
     expect(iconKey('Tab Icon=Variable Mapper', 'Tab Icon')).toBe('variable-mapper')
+  })
+
+  it('exports one glyph per icon when the set has Size variants', async () => {
+    const svg = async () => '<svg viewBox="0 0 24 24"><path/></svg>'
+    iconSet.children = [
+      { id: '40002805:1', name: 'Tab Icon=Jira, Size=Small', exportAsync: svg },
+      { id: '91:7', name: 'Tab Icon=Jira, Size=Large', exportAsync: svg },
+      { id: '40002805:2', name: 'Tab Icon=Jira, Size=Medium', exportAsync: svg },
+    ]
+    try {
+      const snap = await extractIcons(manifest)
+      expect(snap.icons).toEqual({ jira: { id: '91:7', name: 'Jira', svg: '<svg viewBox="0 0 24 24"><path/></svg>' } })
+    } finally {
+      iconSet.children = [icon]
+    }
+  })
+})
+
+describe('icon variant names', () => {
+  it('keys and labels a glyph by its icon property, ignoring Size', () => {
+    expect(iconKey('Icon=add, Size=Large', 'Icon')).toBe('add')
+    expect(iconKey('Tab Icon=Variable Mapper, Size=Small', 'Tab Icon')).toBe('variable-mapper')
+    expect(iconKey('Size=Medium, Icon=team-library', 'Icon')).toBe('team-library')
+    expect(iconLabel('Tab Icon=Variable Mapper, Size=Small', 'Tab Icon')).toBe('Variable Mapper')
+    expect(iconLabel('Icon=add', 'Icon')).toBe('add')
+  })
+
+  it('keeps the drawn original (lowest node id) of each glyph, in first-seen order', () => {
+    const variants = [
+      { id: '40002805:10', name: 'Icon=a, Size=Small' },
+      { id: '40002351:5', name: 'Icon=a, Size=Large' },
+      { id: '40002805:11', name: 'Icon=a, Size=Medium' },
+      { id: '40002805:12', name: 'Icon=b, Size=Small' },
+      { id: '91:3', name: 'Icon=b, Size=Medium' },
+      { id: '40002351:9', name: 'Icon=c' },
+    ]
+    const picked = oneVariantPerGlyph(variants, (name) => iconKey(name, 'Icon'))
+    expect(picked.map((v) => v.id)).toEqual(['40002351:5', '91:3', '40002351:9'])
   })
 })
