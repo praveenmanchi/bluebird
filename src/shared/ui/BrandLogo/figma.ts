@@ -43,6 +43,6 @@ export const figma = {
     'Figma pads SVG exports to whole pixels (ikea.svg is 0 0 107 35 around the 106.281x35 artwork, bridge 163 for 162.7), so in the 106.3 box the ikea artwork scales ~0.7% to fit. ' +
     'Brand=fiskars (40000064:9860) keeps its fixed 140x30 frame: fiskars.svg (0 0 141 30, re-exported 2026-09-26) puts the 140.4x29.6 box at the origin, so it fills the frame at 99% like bridge instead of letterboxing. ' +
     'Brand=akzonobel (40002394:43169) and Brand=adecco (40002394:43179), both added 2026-10-27, hug their artwork Frame (159.6x23.3 / 109x59.3) with 3px padding; BrandLogo.css adds the per-brand padding tokens to the frame size. ' +
-    'Brand=gap (40002444:66792, drawn by the designer as "Brand=Gap Inc", renamed and given hug auto-layout with 6px padding 2026-10-28) is the stacked GAP INC. mark, reversed white because the Gap mode copies Bridge\'s blue banner. ' +
+    'Brand=gap (40002444:66792, drawn by the designer as "Brand=Gap Inc", renamed and given hug auto-layout with 6px padding 2026-10-28) is the stacked GAP INC. mark (a one-line wordmark sat here for a while; the stacked mark went back in on 2026-11-13, scaled to a 33.4x30 Frame so the component is 45.4x42), reversed white because the Gap mode copies Bridge\'s blue banner. ' +
     'Since 2026-09-27 the generator gives same-named layers position-indexed tokens (vector--1) instead of dropping all but the last. Those names follow layer order, so distinct names in Figma (e.g. "Oval" / "Wordmark") would make the ikea sizing robust to a reorder.',
 } as const

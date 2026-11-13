@@ -14,8 +14,11 @@
 /* AkzoNobel's and Adecco's frames hug their artwork frame with 3px padding on every side. */
 .bb-brand-logo[data-logo="akzonobel"] { width: calc(var(--bb-derived-brand-logo-frame-brand-akzonobel-width) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-left) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-right)); height: calc(var(--bb-derived-brand-logo-frame-brand-akzonobel-height) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-top) + var(--bb-derived-brand-logo-root-brand-akzonobel-padding-bottom)); }
 .bb-brand-logo[data-logo="adecco"]    { width: calc(var(--bb-derived-brand-logo-frame-brand-adecco-width) + var(--bb-derived-brand-logo-root-brand-adecco-padding-left) + var(--bb-derived-brand-logo-root-brand-adecco-padding-right)); height: calc(var(--bb-derived-brand-logo-frame-brand-adecco-height) + var(--bb-derived-brand-logo-root-brand-adecco-padding-top) + var(--bb-derived-brand-logo-root-brand-adecco-padding-bottom)); }
-/* Gap's frame hugs its stacked "GAP INC." artwork frame with 6px padding (white artwork for the Bridge-style blue banner). */
+/* Gap's frame hugs its stacked "GAP INC." artwork frame (33.4x30) with 6px padding (white artwork for the Bridge-style blue banner). */
 .bb-brand-logo[data-logo="gap"]       { width: calc(var(--bb-derived-brand-logo-frame-brand-gap-width) + var(--bb-derived-brand-logo-root-brand-gap-padding-left) + var(--bb-derived-brand-logo-root-brand-gap-padding-right)); height: calc(var(--bb-derived-brand-logo-frame-brand-gap-height) + var(--bb-derived-brand-logo-root-brand-gap-padding-top) + var(--bb-derived-brand-logo-root-brand-gap-padding-bottom)); }
+/* The screens that give every brand logo one fixed 162.7x48 slot (login, splash, persona, tour) would letterbox this
+ * nearly square mark with empty space either side, so there its width follows the artwork; each screen keeps its height. */
+.bb-brand-logo[data-logo="gap"]:is(.bb-login__logo, .bb-splash__logo, .bb-pick__logo, .bb-onboarding__logo) { width: auto; }
 /* Brand=HCL is the company mark, not a client brand: a single-colour glyph bound to Banner/Text, used by the login screen and the Banner's "Powered by". */
 .bb-brand-logo[data-logo="hcltech"]   { width: var(--bb-derived-brand-logo-root-brand-hcl-width);       height: var(--bb-derived-brand-logo-root-brand-hcl-height); color: var(--bb-banner-text); }
 /* Figma's Banner scales its "brand logos" instance to ~50% of the set frame (51.8x15.3 of 103x30)
