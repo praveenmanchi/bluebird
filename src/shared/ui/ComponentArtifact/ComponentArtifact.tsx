@@ -32,7 +32,7 @@ export interface ComponentArtifactProps extends Omit<JSX.HTMLAttributes<HTMLElem
   properties?: readonly ComponentChildren[]
   /** The "Code" Citation chip — where the component lives in code. */
   code?: ComponentChildren
-  /** Header link label (Figma override "Go to component ↗"). */
+  /** Header link label (Figma override "Go to component ↗"; the arrow is the link glyph here). */
   actionLabel?: ComponentChildren
   /** Fired by the header link. */
   onOpen?: () => void
@@ -46,7 +46,7 @@ export function ComponentArtifact({
   children,
   properties = PROPERTIES,
   code = 'src/shared/ui/Button · Code Connect ✓',
-  actionLabel = 'Go to component ↗',
+  actionLabel = 'Go to component',
   onOpen,
   class: cls,
   ...rest

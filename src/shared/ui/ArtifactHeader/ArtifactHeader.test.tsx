@@ -12,14 +12,14 @@ describe('ArtifactHeader', () => {
   it('renders the open action as a real Link Button and fires onOpen', () => {
     const calls: string[] = []
     const { container } = render(<ArtifactHeader onOpen={() => calls.push('open')} />)
-    const open = screen.getByRole('button', { name: 'Open in Figma ↗' })
+    const open = screen.getByRole('button', { name: 'Open in Figma' })
     expect(container.querySelector('.bb-link-button')).toBe(open)
     open.click()
     expect(calls).toEqual(['open'])
   })
   it('swaps the icon and the action label like the Figma instance overrides', () => {
-    const { container } = render(<ArtifactHeader icon="component" title="Button" actionLabel="Go to component ↗" />)
+    const { container } = render(<ArtifactHeader icon="component" title="Button" actionLabel="Go to component" />)
     expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('component')
-    expect(screen.getByRole('button', { name: 'Go to component ↗' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Go to component' })).toBeInTheDocument()
   })
 })

@@ -1,5 +1,5 @@
 import {
-  Button, Checkbox, FieldRow, FigmaLinkCard, Icon, IssueType, LinkButton, PriorityIcon, SectionTitle, useRpc,
+  Button, Checkbox, EXTERNAL_LINK_ICON, FieldRow, FigmaLinkCard, Icon, IssueType, LinkButton, PriorityIcon, SectionTitle, useRpc,
 } from '@shared/ui'
 import { openExternal, write } from '../actions'
 import { PRIORITY_LABEL, STATUS_META, STATUS_ORDER, subtaskProgress } from '../board'
@@ -62,7 +62,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
           <button type="button" class="bb-jira-board__icon-button" aria-label="Copy issue link" onClick={() => { void copyText(url, `the link to ${key}`) }}>
             <Icon name="copy" class="bb-jira-board__action-icon" />
           </button>
-          <LinkButton onClick={() => openInJira()}>Open in Jira ↗</LinkButton>
+          <LinkButton icon={EXTERNAL_LINK_ICON} onClick={() => openInJira()}>Open in Jira</LinkButton>
         </div>
       </div>
 

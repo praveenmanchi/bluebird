@@ -97,7 +97,7 @@ describe('uxai Tab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show me the Button atom' }))
     finishThinking()
     expect(screen.getByText(/Button is an atom on the Components page/)).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Go to component ↗' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Go to component' }))
     await act(async () => { await vi.runAllTimersAsync() })
     expect(focus).toHaveBeenCalledWith({ nodeId: NODES.button }, expect.anything())
   })

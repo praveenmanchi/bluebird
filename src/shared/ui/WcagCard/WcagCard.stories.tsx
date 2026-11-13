@@ -20,7 +20,7 @@ const meta = {
     rating: 'A',
     principle: 'perceivable',
     disabilities: ['auditory', 'cognitive', 'physical', 'visual'],
-    link: { label: 'Understanding SC 1.4.3 ↗', href: 'https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum' },
+    link: { label: 'Understanding SC 1.4.3', href: 'https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum' },
     node: 'Label (TEXT)',
     colors: { fg: '#8FB7E8', bg: '#0C8CE9' },
     actual: '2.4:1',
@@ -100,7 +100,7 @@ export const TouchMode: Story = {
     howToFix: 'Pad the button to 24 × 24 (3px each side) or move Info 24px away.',
     themes: ['gestures'],
     target: { width: 18, height: 18, spacing: 4 },
-    link: { label: 'Understanding SC 2.5.8 ↗', href: 'https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html' },
+    link: { label: 'Understanding SC 2.5.8', href: 'https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html' },
   },
 }
 
@@ -122,7 +122,7 @@ export const VisionMode: Story = {
     whyItFails: 'Red and green badges look the same with protanopia, deuteranopia and achromatopsia.',
     howToFix: 'Add ✕ / ✓ icons or the words Error / Success to each badge.',
     vision: { colors: { a: '#D93025', b: '#1E8E3E', bg: '#FFFFFF' } },
-    link: { label: 'Understanding SC 1.4.1 ↗', href: 'https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html' },
+    link: { label: 'Understanding SC 1.4.1', href: 'https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html' },
   },
 }
 

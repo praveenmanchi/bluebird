@@ -10,4 +10,7 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.bb-link-button[data-icon] { display: inline-flex; align-items: center; gap: var(--bb-space-inset-xs); }
+/* The glyph is drawn on a 24 grid; here it is as tall as the label's line. */
+.bb-link-button__icon { flex: none; width: var(--bb-type-line-11); height: var(--bb-type-line-11); }
 .bb-link-button:disabled { color: var(--bb-text-tertiary); cursor: not-allowed; }

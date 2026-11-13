@@ -16,3 +16,14 @@ describe('LinkButton', () => {
     expect(calls).toEqual(['hit'])
   })
 })
+
+describe('LinkButton icon', () => {
+  it('draws a trailing glyph that stays out of the accessible name', async () => {
+    const { render, screen } = await import('@testing-library/preact')
+    const { EXTERNAL_LINK_ICON, LinkButton } = await import('./LinkButton')
+    render(<LinkButton icon={EXTERNAL_LINK_ICON}>Open in Jira</LinkButton>)
+    const link = screen.getByRole('button', { name: 'Open in Jira' })
+    expect(link.querySelector('.bb-link-button__icon')).toHaveAttribute('data-icon', EXTERNAL_LINK_ICON)
+    expect(link).toHaveAttribute('data-icon')
+  })
+})

@@ -31,7 +31,7 @@ describe('ColorArtifact', () => {
   it('fires onOpen from the header link', () => {
     const calls: string[] = []
     render(<ColorArtifact onOpen={() => calls.push('open')} />)
-    screen.getByRole('button', { name: 'Open in Figma ↗' }).click()
+    screen.getByRole('button', { name: 'Open in Figma' }).click()
     expect(calls).toEqual(['open'])
   })
 })

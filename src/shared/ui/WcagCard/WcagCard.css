@@ -110,6 +110,8 @@
   text-align: right;
   text-decoration: none;
 }
+.bb-wcag-card__link { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--bb-space-inset-xs); }
+.bb-wcag-card__link-icon { flex: none; width: var(--bb-font-line-caption); height: var(--bb-font-line-caption); }
 .bb-wcag-card__link:is(:hover, :focus-visible) { text-decoration: underline; }
 
 .bb-wcag-card__sections {
