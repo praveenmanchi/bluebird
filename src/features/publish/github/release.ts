@@ -3,7 +3,8 @@
 // fast-forward of the branch, an optional tag, a short watch of the GitHub Actions
 // run it starts, and the Teams post when the designer asked for one.
 import type { IntegrationValues } from '@shared/integrations'
-import { allowedWebhook, hostOf } from '@shared/integrations/webhooks'
+import { allowedWebhook, hostOf, normalizeWebhook } from '@shared/integrations/webhooks'
+import { cardPayload } from '@shared/integrations/card'
 
 export { allowedWebhook }
 import { changelogMarkdown } from '../notes'
@@ -122,17 +123,24 @@ export function configuredWebhooks(n: IntegrationValues<'notifications'>): strin
 
 /**
  * The Teams message: a MessageCard, which an Incoming Webhook renders as a card and a
- * Power Automate flow receives as plain JSON (title, text and the link are top-level keys).
+ * Power Automate flow receives as plain JSON — the prose first, then per-kind counts and
+ * the table rows of the changes it published (see @shared/integrations/card).
  */
-export function teamsCard(release: ReleaseSummary, repo: string, changelog: string, link?: string, linkLabel?: string): string {
-  return JSON.stringify({
-    '@type': 'MessageCard',
-    '@context': 'https://schema.org/extensions',
-    summary: `${release.version} — ${release.title}`,
-    themeColor: '0C8CE9',
+export function teamsCard(release: ReleaseSummary, repo: string, changelog: string, entries: ReadonlyArray<{ change: Change }>, link?: string, linkLabel?: string): string {
+  const changes = entries.map((e) => e.change)
+  const count = (kind: Change['kind']) => changes.filter((c) => c.kind === kind).length
+  const added = count('added'), removed = count('removed')
+  return cardPayload({
     title: `${release.version} — ${release.title}`,
-    text: `${release.changes} design-system change${release.changes === 1 ? '' : 's'} published from Figma to ${repo} with Bluebird.\n\n${changelog}`,
-    ...(link ? { potentialAction: [{ '@type': 'OpenUri', name: linkLabel ?? 'Open on GitHub', targets: [{ os: 'default', uri: link }] }] } : {}),
+    lines: [`${release.changes} design-system change${release.changes === 1 ? '' : 's'} published from Figma to ${repo} with Bluebird.`, changelog],
+    facts: {
+      kind: 'release', actor: '', repo, ref: release.version,
+      added, modified: changes.length - added - removed, removed,
+      breaking: changes.filter((c) => c.breaking).length,
+      impacted: [...new Set(changes.flatMap((c) => c.usedIn))].sort(),
+    },
+    changes,
+    link, linkLabel,
   })
 }
 
@@ -142,6 +150,8 @@ export interface NotifyInput {
   release: ReleaseSummary
   repo: string
   changelog: string
+  /** The changes the release publishes; the card tabulates them. */
+  entries: ReadonlyArray<{ change: Change }>
   link?: string
   linkLabel?: string
 }
@@ -150,11 +160,11 @@ export interface NotifyInput {
 export async function notifyTeams(input: NotifyInput): Promise<{ posted: number; failed: string[] }> {
   let posted = 0
   const failed: string[] = []
-  const body = teamsCard(input.release, input.repo, input.changelog, input.link, input.linkLabel)
+  const body = teamsCard(input.release, input.repo, input.changelog, input.entries, input.link, input.linkLabel)
   for (const url of input.webhooks) {
     if (!allowedWebhook(url)) { failed.push(`${hostOf(url)}: not a Teams or Power Automate webhook host`); continue }
     try {
-      const res = await input.fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+      const res = await input.fetch(normalizeWebhook(url), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
       if (res.status >= 200 && res.status < 300) posted += 1
       else failed.push(`${hostOf(url)}: HTTP ${res.status}`)
     } catch {
@@ -223,7 +233,7 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
     }
     set('notify', { status: 'running', detail: `Posting to ${input.webhooks.length} Teams webhook${input.webhooks.length === 1 ? '' : 's'}`, time: '…' })
     const t0 = now().getTime()
-    const { posted, failed } = await notifyTeams({ fetch: client.fetch, webhooks: input.webhooks, release, repo, changelog: section, link, linkLabel })
+    const { posted, failed } = await notifyTeams({ fetch: client.fetch, webhooks: input.webhooks, release, repo, changelog: section, entries: input.entries, link, linkLabel })
     const took = seconds(now().getTime() - t0)
     if (failed.length) {
       set('notify', { status: 'failed', detail: failed.join(' · '), time: took })

@@ -29,13 +29,14 @@
       "https://api.github.com",
       "https://github.gapinc.com",
       "https://*.webhook.office.com",
-      "https://*.logic.azure.com"
+      "https://*.logic.azure.com",
+      "https://*.environment.api.powerplatform.com"
     ],
     "devAllowedDomains": [
       "http://localhost:5173",
       "ws://localhost:4001",
       "http://localhost:8787"
     ],
-    "reasoning": "Loads the Noto Sans web font for the brand type ramp. Dual File Mode reads the library files the user configures from the Figma REST API. UX AI and its agents send questions, reviewed layer text and matching library context to the provider the user picks in Settings (Claude at api.anthropic.com, OpenAI at api.openai.com, Gemini at generativelanguage.googleapis.com) with the user’s own API key. Publish commits releases to the GitHub repository the user configures, opens the pull request and follows its Actions run; the History tab reads and writes the team changelog. Both use the user’s own token on api.github.com or the Enterprise host set in Settings (github.gapinc.com). With \"Post the changelog to Teams\" ticked, Publish posts the changelog to the Teams webhook (*.webhook.office.com) or Power Automate trigger (*.logic.azure.com) set in Settings › Notifications. In development the Jira tab calls the local Jira proxy on localhost:8787."
+    "reasoning": "Loads the Noto Sans web font for the brand type ramp. Dual File Mode reads the library files the user configures from the Figma REST API. UX AI and its agents send questions, reviewed layer text and matching library context to the provider picked in Settings (api.anthropic.com, api.openai.com or generativelanguage.googleapis.com) with the user’s own API key. Publish, Extraction and History commit to and read from the GitHub repository the user configures, open pull requests and follow Actions runs, with the user’s own token on api.github.com or the Enterprise host set in Settings (github.gapinc.com). When the user asks, they post a change summary to the Teams webhook (*.webhook.office.com) or Power Automate trigger (*.logic.azure.com, *.environment.api.powerplatform.com) set in Settings › Notifications. In development the Jira tab calls the local Jira proxy on localhost:8787."
   }
 }

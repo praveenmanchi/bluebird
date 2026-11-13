@@ -6,7 +6,8 @@
 // compares against the same files.
 import type { HandlerMap } from '@shared/bridge'
 import type { IntegrationValues } from '@shared/integrations'
-import { allowedWebhook, channelCard } from '@shared/integrations/webhooks'
+import { allowedWebhook, normalizeWebhook } from '@shared/integrations/webhooks'
+import { cardPayload, type CardFacts, type CardInput } from '@shared/integrations/card'
 import { GithubError, configFromSettings, createGithubClient, isProblem, type GithubClient, type GithubFetch } from '@shared/github/client'
 import type { Change, Snapshot } from '@shared/design/types'
 import { recordHistory } from '@shared/history/record'
@@ -16,7 +17,7 @@ import {
   type BranchInfo, type ExtractResult, type ImpactedComponent, type PushResult, type StatusResult,
 } from '../messages'
 import {
-  INDEX_PATH, LATEST_PATH, draftMessage, impactedComponents, modeCounts, nextIndex, parseExtraction, parseIndex, stampPath, summaryLines, variableChanges,
+  INDEX_PATH, LATEST_PATH, countKinds, draftMessage, impactedComponents, modeCounts, nextIndex, parseExtraction, parseIndex, stampPath, summaryLines, variableChanges,
   type ExtractionFile, type IndexEntry,
 } from '../model'
 
@@ -51,8 +52,10 @@ function problemOf(github: IntegrationValues<'github'>): string | null {
   return `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${fields} in Settings › GitHub`
 }
 
-/** The Teams / Power Automate message for a pushed extraction (shared with History). */
-export { channelCard }
+/** The Teams / Power Automate message for a pushed extraction: prose plus the counts and table rows a flow reads. */
+export function channelCard(input: CardInput & { facts: CardFacts; changes: readonly Change[] }): string {
+  return cardPayload(input)
+}
 
 export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
   /** The extraction behind the last compare; a push must name it so it never sends something the designer did not see. */
@@ -122,7 +125,8 @@ export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
       // Only Teams / Power Automate hosts: the URL comes from Settings and carries the change summary.
       if (!allowedWebhook(url)) { failed += 1; continue }
       try {
-        const res = await deps.fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+        // Normalised here, not when Settings is read: nameOf compares against the saved URL.
+        const res = await deps.fetch(normalizeWebhook(url), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
         if (res.status >= 200 && res.status < 300) { posted += 1; names.push(nameOf(url)) }
         else failed += 1
       } catch {
@@ -201,7 +205,13 @@ export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
     }
     let notified: string[] = []
     if (req.notify.designSystem || req.notify.devTeam) {
-      const { posted, failed, names } = await notify(req.notify, channelCard(`${reviewed.file.extractedBy} pushed an extraction to ${gh.config.repo} · ${req.target}`, [message, ...lines], result.link, result.linkLabel))
+      const facts: CardFacts = {
+        kind: 'extraction', actor: reviewed.file.extractedBy, repo: gh.config.repo, ref: req.target,
+        ...countKinds(reviewed.changes), breaking: reviewed.changes.filter((c) => c.breaking).length,
+        impacted: reviewed.impacted.map((c) => c.name),
+      }
+      const card = channelCard({ title: `${reviewed.file.extractedBy} pushed an extraction to ${gh.config.repo} · ${req.target}`, lines: [message, ...lines], facts, changes: reviewed.changes, link: result.link, linkLabel: result.linkLabel })
+      const { posted, failed, names } = await notify(req.notify, card)
       const told = posted ? ` ${posted === 1 ? '1 channel was' : `${posted} channels were`} notified.` : ''
       const missed = failed ? ` ${failed === 1 ? '1 channel' : `${failed} channels`} could not be reached.` : ''
       result = { ...result, message: `${result.message}${told}${missed}` }

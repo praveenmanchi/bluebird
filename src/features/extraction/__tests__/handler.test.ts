@@ -95,14 +95,14 @@ const extractionOn = (snapshot: Snapshot, by = 'Anita Rao', at = '2026-11-08T14:
   return { [LATEST_PATH]: file, [INDEX_PATH]: JSON.stringify({ schema: 1, latest: entry, history: [entry] }) }
 }
 
-function setup(options: FakeOptions & { connected?: boolean; webhooks?: boolean; snapshot?: Snapshot } = {}) {
-  const { connected = true, webhooks = false, snapshot = CURRENT, ...fake } = options
+function setup(options: FakeOptions & { connected?: boolean; webhooks?: boolean; devHook?: string; snapshot?: Snapshot } = {}) {
+  const { connected = true, webhooks = false, devHook = HOOK, snapshot = CURRENT, ...fake } = options
   const github = fakeGithub(fake)
   const opened: string[] = []
   const handlers = createExtractionHandlers({
     readSnapshot: async () => snapshot,
     readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: connected ? 'ghp_test' : '' }),
-    readNotifications: async () => ({ ...DEFAULT_INTEGRATIONS.notifications, devTeamWebhook: webhooks ? HOOK : '', designSystemWebhook: webhooks ? 'https://evil.example.com/hook' : '' }),
+    readNotifications: async () => ({ ...DEFAULT_INTEGRATIONS.notifications, devTeamWebhook: webhooks ? devHook : '', designSystemWebhook: webhooks ? 'https://evil.example.com/hook' : '' }),
     fetch: github.fetch,
     sleep: async () => undefined,
     openExternal: (url) => opened.push(url),
@@ -220,6 +220,19 @@ describe('extraction handlers', () => {
     expect(t.github.posts.map((p) => p.url)).toEqual([HOOK])
     expect(JSON.parse(t.github.posts[0]!.body)).toMatchObject({ '@type': 'MessageCard', title: expect.stringContaining('Praveen Manchi pushed an extraction') })
     expect(result.message).toMatch(/1 channel was notified\. 1 channel could not be reached\./)
+    const body = JSON.parse(t.github.posts[0]!.body) as Record<string, unknown>
+    expect(body).toMatchObject({ kind: 'extraction', actor: 'Praveen Manchi', ref: 'develop', themeColor: expect.stringMatching(/^[0-9A-F]{6}$/) })
+    expect(Number(body.added) + Number(body.modified) + Number(body.removed)).toBe(body.changesTotal ?? 0)
+    expect(body).not.toHaveProperty('potentialAction')
+  })
+
+  it('posts to a Power Platform trigger without its :443, and still names the channel from the saved URL', async () => {
+    const PLATFORM = 'https://default0123.ef.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a/triggers/manual/paths/invoke?sig=x'
+    const t = setup({ branches: { main: {}, develop: {} }, webhooks: true, devHook: PLATFORM })
+    const { extractId } = await t.extract('develop')
+    const result = await t.push(t.request(extractId, { notify: { designSystem: false, devTeam: true } }))
+    expect(t.github.posts.map((p) => p.url)).toEqual([PLATFORM.replace(':443', '')])
+    expect(result.message).toMatch(/1 channel was notified\./)
   })
 
   it('refuses a stale extraction, a pull request from the default branch, and a branch that already exists', async () => {
