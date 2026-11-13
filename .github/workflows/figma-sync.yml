@@ -1,0 +1,252 @@
+name: Figma sync
+
+# Figma is the source of truth. On a schedule (and on demand) this pulls the live file over REST,
+# regenerates the tokens, runs the drift gate and the tests against the new snapshot, builds
+# Storybook, and opens a pull request when anything in figma/*.json moved.
+#
+# - A variable-only change passes on its own: the PR is ready to merge.
+# - A structural change (new variant, property, layer or binding) fails the gate. The PR is still
+#   opened, as a draft, with the gate output naming each component that has to be updated.
+#
+# Needs the repository secret FIGMA_TOKEN: a Figma personal access token with file_content:read and
+# file_variables:read, from an account that can open the file in figma/manifest.json. A token whose
+# account cannot open the file gets a 404, and this job fails saying so rather than reporting "no drift".
+#
+# Pull requests opened with GITHUB_TOKEN do not start other workflows, so everything the Verify
+# workflow would say about the new snapshot is checked here.
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Figma file version id to pull (empty = latest)
+        required: false
+        default: ''
+
+concurrency:
+  group: figma-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  SYNC_BRANCH: figma-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The registries are git-ignored and the scripts import them.
+      - run: npm run gen
+
+      - name: Require the Figma token
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          if [ -z "$FIGMA_TOKEN" ]; then
+            echo "::error::The FIGMA_TOKEN secret is not set. Add a Figma personal access token (file_content:read, file_variables:read) from an account that can open the file in figma/manifest.json."
+            exit 1
+          fi
+
+      # Before the pull, while figma/*.json is still the committed snapshot: what moved, per component.
+      # Exit 2 means the pull itself failed (token, access, network) and must never read as "no drift".
+      - name: Drift report
+        id: diff
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          set +e
+          npm run --silent figma:diff -- --rest --no-write > drift-report.txt 2> drift-errors.txt
+          code=$?
+          set -e
+          cat drift-errors.txt
+          tail -n 5 drift-report.txt
+          if [ "$code" -eq 2 ]; then
+            echo "::error::Could not read the Figma file. $(tail -n 2 drift-errors.txt | tr '\n' ' ')"
+            exit 1
+          fi
+
+      - name: Pull the snapshot
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "$FIGMA_VERSION" ]; then
+            npm run figma:pull -- --rest --tier enterprise --version "$FIGMA_VERSION"
+          else
+            npm run figma:pull -- --rest --tier enterprise
+          fi
+
+      - name: Did the snapshot change?
+        id: changed
+        # pulledAt moves every day and version on every save of the file, design change or not.
+        run: |
+          if git diff --quiet -I '^ *"pulledAt":' -I '^ *"version":' -I '^ *"source":' -- figma; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "figma/*.json already matches the live file."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- figma
+          fi
+
+      - name: Regenerate tokens
+        if: steps.changed.outputs.changed == 'true'
+        run: npm run gen:tokens
+
+      # The three checks below record their result instead of stopping the job, so the pull request
+      # is opened either way and says which of them failed.
+      - name: Drift gate
+        id: gate
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          set +e
+          npm run --silent tokens:check > gate-all.txt 2>&1
+          code=$?
+          set -e
+          grep -v 'derived-layer-collision' gate-all.txt > gate.txt || true
+          tail -n 40 gate.txt
+          echo "ok=$([ "$code" -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Typecheck
+        id: types
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          set +e
+          npm run --silent typecheck > typecheck.txt 2>&1
+          code=$?
+          set -e
+          tail -n 40 typecheck.txt
+          echo "ok=$([ "$code" -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Tests
+        id: tests
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          set +e
+          npm run --silent test > tests.txt 2>&1
+          code=$?
+          set -e
+          tail -n 40 tests.txt
+          echo "ok=$([ "$code" -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      # Storybook is the review surface for the change: download it from the run and open index.html.
+      - name: Build Storybook
+        id: storybook
+        if: steps.changed.outputs.changed == 'true' && steps.types.outputs.ok == 'true'
+        continue-on-error: true
+        run: npm run build-storybook
+
+      - name: Upload Storybook
+        if: steps.changed.outputs.changed == 'true' && steps.storybook.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook
+          path: storybook-static
+          retention-days: 14
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: figma-sync-reports
+          path: |
+            drift-report.txt
+            drift-errors.txt
+            gate.txt
+            typecheck.txt
+            tests.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Open or update the pull request
+        if: steps.changed.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GATE_OK: ${{ steps.gate.outputs.ok }}
+          TYPES_OK: ${{ steps.types.outputs.ok }}
+          TESTS_OK: ${{ steps.tests.outputs.ok }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          mark() { [ "$1" = "true" ] && echo "passed" || echo "FAILED"; }
+          clip() { head -c "$2" "$1" 2>/dev/null; }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$SYNC_BRANCH"
+          git add figma src/shared/brand/generated src/shared/ui/Icon/generated.ts src/shared/ui/Icon/generated.active.ts src/shared/ui/BrandLogo/generated.ts src/shared/ui/BrandLogo/generated.active.ts
+          git commit -m "chore(tokens): sync the Figma snapshot"
+          git push --force origin "$SYNC_BRANCH"
+
+          {
+            echo "Figma moved since the last snapshot. This pull request carries the new \`figma/*.json\` and the files generated from it."
+            echo
+            echo "| Check | Result |"
+            echo "|---|---|"
+            echo "| Drift gate (\`npm run tokens:check\`) | $(mark "$GATE_OK") |"
+            echo "| Typecheck | $(mark "$TYPES_OK") |"
+            echo "| Unit tests | $(mark "$TESTS_OK") |"
+            echo
+            if [ "$GATE_OK" = "true" ] && [ "$TYPES_OK" = "true" ] && [ "$TESTS_OK" = "true" ]; then
+              echo "Only values moved: the code already reads every token involved, so this can be merged as it is."
+            else
+              echo "Figma changed something the code does not follow yet. Update the components named below on this branch, then mark the pull request ready."
+            fi
+            echo
+            echo "Storybook built from this snapshot and the full reports are artifacts of [the run]($RUN_URL)."
+            echo
+            echo "<details><summary>What moved in Figma</summary>"
+            echo
+            echo '```'
+            clip drift-report.txt 30000
+            echo '```'
+            echo "</details>"
+            if [ "$GATE_OK" != "true" ]; then
+              echo
+              echo "<details open><summary>Drift gate findings</summary>"
+              echo
+              echo '```'
+              clip gate.txt 20000
+              echo '```'
+              echo "</details>"
+            fi
+            if [ "$TYPES_OK" != "true" ]; then
+              echo
+              echo "<details><summary>Typecheck</summary>"
+              echo
+              echo '```'
+              clip typecheck.txt 5000
+              echo '```'
+              echo "</details>"
+            fi
+            if [ "$TESTS_OK" != "true" ]; then
+              echo
+              echo "<details><summary>Tests</summary>"
+              echo
+              echo '```'
+              tail -c 5000 tests.txt
+              echo '```'
+              echo "</details>"
+            fi
+          } > pr-body.md
+
+          draft=""
+          if [ "$GATE_OK" != "true" ] || [ "$TYPES_OK" != "true" ] || [ "$TESTS_OK" != "true" ]; then draft="--draft"; fi
+
+          if gh pr view "$SYNC_BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$SYNC_BRANCH" --body-file pr-body.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$SYNC_BRANCH" --title "chore(tokens): sync the Figma snapshot" --body-file pr-body.md $draft
+          fi
