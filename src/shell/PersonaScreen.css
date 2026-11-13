@@ -7,6 +7,8 @@
   --pp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pp-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
   --pp-hero: 1.2;
+  /* How much the picked bird grows as it comes towards the viewer on Continue. It has faded out by then. */
+  --pp-near: 2;
   position: relative;
   display: flex;
   flex: 1 1 auto;
@@ -156,7 +158,6 @@
   transition: transform 460ms var(--pp-ease-back), opacity 200ms ease;
 }
 .bb-pick.has-selection .bb-pick__sun::before { opacity: 1; transform: translateY(5%); }
-.bb-pick.is-leaving .bb-pick__sun::before { opacity: 0; transform: translateY(5%) scale(0.3); }
 .bb-pick__label {
   font-size: var(--bb-onboarding-font-tab-size);
   font-weight: var(--bb-onboarding-font-weight-medium);
@@ -272,19 +273,19 @@
 .bb-pick__footer { display: flex; gap: var(--bb-onboarding-gap-sm); }
 .bb-pick__continue { flex: 1 1 auto; }
 
-/* Take-off: the picked bird flaps away in a puff of feathers. */
-.bb-pick.is-leaving .bb-pick__bird.is-selected .bb-pick__figure { animation: bb-pick-take-off 900ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards; }
-.bb-pick__feather {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 9%;
-  height: 16%;
-  border-radius: 100% 0;
-  background: var(--bb-persona-feather);
-  opacity: 0;
-  animation: bb-pick-feather 800ms ease-out forwards;
-}
+/* Continue: the picked bird starts flapping at once, and the flight itself plays in the hand-over below. */
+
+/* Hand-over (PersonaHandOver): the same picker laid over the screen that opens next. The backdrop fades as
+ * the bird lifts off, and the bird comes a little towards the viewer, under the banner, fading as it nears,
+ * so the next screen is already there. The scale is from the bird's middle here (it rests on its feet),
+ * so 0% restates the picked pose for that origin. */
+.bb-pick-handover { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; pointer-events: none; }
+.bb-pick.is-departing { overflow: hidden; background: none; }
+.bb-pick.is-departing::before { content: ''; position: absolute; inset: 0; background: var(--bb-persona-surface-stage); animation: bb-pick-fade-out 360ms 120ms ease-out forwards; }
+.bb-pick.is-departing .bb-pick__header { position: relative; z-index: 3; animation: bb-pick-banner-out 700ms ease-in forwards; }
+.bb-pick.is-departing .bb-pick__bubble * { animation: none; }
+.bb-pick.is-departing :is(.bb-pick__sky, .bb-pick__heading, .bb-pick__sun, .bb-pick__branch, .bb-pick__label, .bb-pick__panel) { animation: bb-pick-fade-out 360ms 120ms ease-out forwards; }
+.bb-pick.is-departing .bb-pick__bird.is-selected .bb-pick__figure { transform-origin: 50% 50%; animation: bb-pick-take-off 700ms cubic-bezier(0.4, 0, 0.6, 1) forwards; }
 
 @keyframes bb-pick-drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
 @keyframes bb-pick-curtain { from { transform: translateY(0); } }
@@ -311,14 +312,13 @@
 @keyframes bb-pick-chip { from { opacity: 0; transform: scale(0.6) translateY(30%); } }
 @keyframes bb-pick-nudge { 50% { transform: translateY(-14%); } }
 @keyframes bb-pick-take-off {
-  0% { transform: translateY(-4%) scale(var(--pp-hero)); }
-  18% { transform: translateY(4%) scale(calc(var(--pp-hero) + 0.1), calc(var(--pp-hero) - 0.12)); }
-  100% { transform: translate(120%, -420%) scale(0.7) rotate(16deg); opacity: 0.9; }
+  0% { opacity: 1; transform: translateY(calc(-4% - 40% * (var(--pp-hero) - 1))) scale(var(--pp-hero)); }
+  16% { transform: translateY(calc(2% - 40% * (var(--pp-hero) - 1))) scale(calc(var(--pp-hero) + 0.1), calc(var(--pp-hero) - 0.12)); }
+  45% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(calc(6% - 40% * (var(--pp-hero) - 1))) scale(calc(var(--pp-hero) * var(--pp-near))); }
 }
-@keyframes bb-pick-feather {
-  0% { opacity: 1; transform: rotate(var(--pp-a)) translateY(0) scale(0.6); }
-  100% { opacity: 0; transform: rotate(calc(var(--pp-a) + 90deg)) translateY(-420%) scale(1); }
-}
+@keyframes bb-pick-fade-out { to { opacity: 0; } }
+@keyframes bb-pick-banner-out { 80% { opacity: 1; } to { opacity: 0; } }
 
 /* Room above the birds: the picked one grows into it. */
 @container (min-height: 36rem) {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/preact'
 import { PersonaScreen } from './PersonaScreen'
+import { HAND_OVER_MS, PersonaHandOver } from './persona/HandOver'
 
 const personas = [
   { id: 'design-system', label: 'Design System', tabs: [{ id: 'tokens', label: 'Design tokens', icon: 'variables' }] },
@@ -125,5 +126,40 @@ describe('PersonaScreen', () => {
   it('ignores an initial persona this brand does not have', () => {
     mount({ initialId: 'gone' })
     expect(screen.getByRole('button', { name: 'Continue' })).toBeDisabled()
+  })
+
+  it('replays the picked state with the bird flapping when laid over the next screen', () => {
+    const { container } = mount({ initialId: 'developer', departing: true, still: false })
+    const root = container.querySelector('.bb-pick')
+    expect(root).toHaveClass('is-departing')
+    expect(root).toHaveClass('has-selection')
+    expect(root).not.toHaveClass('is-instant')
+    expect(root).not.toHaveClass('has-intro')
+    expect(container.querySelector('.bb-pick__bird.is-selected .bb-bird')).toHaveClass('is-flapping')
+  })
+})
+
+describe('PersonaHandOver', () => {
+  it('lays the departing bird over the next screen, out of reach, then goes', () => {
+    vi.useFakeTimers()
+    try {
+      const onDone = vi.fn()
+      const { container } = render(<PersonaHandOver personas={personas} personaId="developer" onDone={onDone} />)
+      const layer = container.querySelector('.bb-pick-handover')
+      expect(layer).toHaveAttribute('aria-hidden', 'true')
+      expect(layer).toHaveAttribute('inert')
+      expect(layer?.querySelector('.bb-pick')).toHaveClass('is-departing')
+      vi.advanceTimersByTime(HAND_OVER_MS - 1)
+      expect(onDone).not.toHaveBeenCalled()
+      vi.advanceTimersByTime(1)
+      expect(onDone).toHaveBeenCalledOnce()
+    } finally { vi.useRealTimers() }
+  })
+
+  it('shows nothing for a persona this brand does not have', async () => {
+    const onDone = vi.fn()
+    const { container } = render(<PersonaHandOver personas={personas} personaId="ghost" onDone={onDone} />)
+    expect(container.querySelector('.bb-pick-handover')).toBeNull()
+    await waitFor(() => expect(onDone).toHaveBeenCalledOnce())
   })
 })
