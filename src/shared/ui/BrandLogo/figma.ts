@@ -32,6 +32,7 @@ export const figma = {
     ...Object.fromEntries(['group-brand-gap-width', 'group-brand-gap-height', 'vector-brand-gap-width', 'vector-brand-gap-height']
       .map((t) => [`--bb-derived-brand-logo-${t}`, 'Gap Inc. stacked wordmark inside gap.svg; the box is its Frame plus root padding.'])),
     '--bb-derived-brand-logo-vector-brand-gap-fill': 'Logo artwork colour (white, reversed for the Bridge-style blue banner). Colours live in figma/logos/gap.svg, not in tokens.',
+    '--bb-derived-brand-logo-vector--2-fill': 'Logo artwork colour (Richemont gold #a8996e, the second of its three "Vector" layers). Colours live in figma/logos/richemont.svg, not in tokens.',
     '--bb-derived-brand-logo-vector--2-width':'Richemont artwork part (second of three "Vector" layers); richemont.svg draws it and the fixed root frame sizes the logo.',
     '--bb-derived-brand-logo-vector--2-height': 'Richemont artwork part (second of three "Vector" layers); richemont.svg draws it and the fixed root frame sizes the logo.',
     '--bb-derived-brand-logo-vector--1-brand-fiskars-fill': 'Logo artwork colour (the black 140.4x29.6 box behind the Fiskars wordmark; both are named "Vector"). Colours live in figma/logos/fiskars.svg.',

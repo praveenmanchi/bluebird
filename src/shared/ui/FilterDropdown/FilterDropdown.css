@@ -1,6 +1,7 @@
-/* FilterDropdown — Figma "filters" set (7:44569), one Default variant. Bound
- * tokens: chip-filter/*. The 133×32 box, its 8/4 padding, the stroke and the
- * chevron geometry are raw in Figma → --bb-derived-filter-dropdown-*. */
+/* FilterDropdown — Figma "filters" set (7:44569): Default / Focus. Bound
+ * tokens: chip-filter/*. The 133×32 box, the Focus stroke weight and the
+ * chevron geometry are raw in Figma → --bb-derived-filter-dropdown-*. Focus is
+ * a border/focus stroke inside the frame; data-state="focus" forces it. */
 .bb-filter-dropdown {
   display: inline-flex;
   align-items: center;
@@ -24,9 +25,9 @@
   appearance: none;
   transition: background-color 120ms ease, border-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
-.bb-filter-dropdown:focus-visible {
-  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
-  outline-offset: var(--bb-space-inset-xs);
+.bb-filter-dropdown:is(:focus-visible, [data-state="focus"]) {
+  outline: var(--bb-derived-filter-dropdown-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-filter-dropdown-root-stroke-width));
 }
 .bb-filter-dropdown__icon {
   display: inline-flex;

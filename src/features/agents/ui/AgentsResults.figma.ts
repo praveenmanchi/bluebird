@@ -23,6 +23,8 @@ export const figma = {
   derivedGaps: {
     ...tabSubMenuDerived('--bb-derived-agents-results-tab-sub-menu'),
     '--bb-derived-agents-results-root-height': ROOT_HEIGHT,
+    '--bb-derived-agents-results--font-family': 'The "!" text inside the icon artwork of the nested Tab sub menu items (Filters › Item 2–5 › Icon › Union); the composed SegmentedControl draws that icon as a glyph, not as text.',
+    '--bb-derived-agents-results--font-weight': 'The "!" text inside the icon artwork of the nested Tab sub menu items (Filters › Item 2–5 › Icon › Union); the composed SegmentedControl draws that icon as a glyph, not as text.',
     ...segmentTabs('results', ['tab-selecters'], ['tab-selecters'], ['tab-selecters--1', 'tab-selecters--2', 'tab-selecters--3', 'tab-selecters--4', 'tab-selecters--5', 'tab-selecters-agents-body']),
     ...measured([
       '--bb-derived-agents-results-button--1-width', '--bb-derived-agents-results-button-agents-body-width',

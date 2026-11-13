@@ -52,7 +52,7 @@
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-6-03);
   font-weight: var(--bb-font-weight-regular);
-  line-height: var(--bb-derived-banner-connecting-gap-between-design-workflow-line-height);
+  line-height: var(--bb-derived-banner-connecting-design-and-development-line-height);
   color: var(--bb-banner-text);
   white-space: nowrap;
 }

@@ -1,6 +1,8 @@
 /* Checkbox — Figma "Checkbox" set (40000046:5237): Unchecked / Checked /
- * Indeterminate × Default / Hover / Disabled. Root opacity for Disabled and
- * the mark geometry are raw in Figma today → --bb-derived-checkbox-*. */
+ * Indeterminate × Default / Hover / Disabled / Focus. Root opacity for Disabled,
+ * the mark geometry and the Focus stroke weight are raw in Figma today →
+ * --bb-derived-checkbox-*. Focus is a border/focus stroke inside the Box;
+ * data-state="focus" forces it for stories and visual diffs. */
 .bb-checkbox {
   display: inline-flex;
   align-items: center;
@@ -42,9 +44,10 @@
   background: var(--bb-checkbox-box-bg-checked);
   border-color: var(--bb-checkbox-box-border-checked);
 }
-.bb-checkbox__input:focus-visible + .bb-checkbox__box {
-  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
-  outline-offset: var(--bb-space-inset-xs);
+.bb-checkbox__input:focus-visible + .bb-checkbox__box,
+.bb-checkbox[data-state="focus"] .bb-checkbox__box {
+  outline: var(--bb-derived-checkbox-box-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-checkbox-box-stroke-width));
 }
 .bb-checkbox__mark {
   width: var(--bb-checkbox-mark-size);

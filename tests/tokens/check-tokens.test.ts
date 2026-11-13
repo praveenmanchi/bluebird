@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { findRawValues, findUnknownVars, layerCollisionWarnings, runChecks } from '../../scripts/check-tokens'
+import { findRawInSource, findRawValues, findUnknownVars, layerCollisionWarnings, runChecks } from '../../scripts/check-tokens'
 import type { ComponentsSnapshot } from '../../src/shared/brand/snapshot'
 
 describe('check-tokens rules', () => {
@@ -14,6 +14,34 @@ describe('check-tokens rules', () => {
     ].join('\n')
     const rules = findRawValues(css, 'x.css').map((f) => `${f.line}:${f.message.split(' in ')[0]}`)
     expect(rules).toEqual(['1:hex colour', '2:px length', '3:rgb/hsl colour', '4:named colour'])
+  })
+  it('flags durations, rem lengths, fractional opacity and fractional multipliers in component css', () => {
+    const css = [
+      '.a { transition: opacity 120ms ease; }',
+      '.b { min-width: 9rem; }',
+      '.c { opacity: 0.55; }',
+      '.d { width: calc(var(--bb-x) * 0.7); }',
+      '.ok { opacity: 0; transform: scale(1); width: calc(var(--bb-x) * 2); opacity: var(--bb-dimension-opacity-55); }',
+      '.motion { animation: spin 2s linear; } /* allow-raw: motion is not tokenised in Figma */',
+    ].join('\n')
+    const rules = findRawValues(css, 'x.css').map((f) => `${f.line}:${f.message.split(' in ')[0]}`)
+    expect(rules).toEqual(['1:duration', '2:rem/em length', '3:raw opacity', '4:fractional multiplier'])
+  })
+  it('flags raw colours and px lengths in component and canvas source, with a reasoned escape', () => {
+    const source = [
+      "const INK = '#18181B'",
+      "const fill = 'rgb(12, 140, 233)'",
+      "const frame = { width: '600px' }",
+      "const size = `${width}px`",
+      "// a comment naming #FFFFFF is fine",
+      "const sample = '#0C8CE9' // allow-raw: sample content shown as data",
+      "const HEX = /^#([0-9a-f]{6})$/i",
+    ].join('\n')
+    const rules = (file: string) => findRawInSource(source, file).map((f) => `${f.line}:${f.message.split(' in ')[0]}`)
+    expect(rules('src/features/history/sandbox/changelog-canvas.ts')).toEqual(['1:hex colour', '2:rgb/hsl colour', '3:px length'])
+    expect(rules('src/features/publish/fixtures.ts')).toEqual([])
+    expect(rules('src/shared/ui/Button/Button.stories.tsx')).toEqual([])
+    expect(findRawInSource("// allow-raw-file: colour maths, the values are the subject\nconst WHITE = '#ffffff'", 'src/features/a11y/contrast.ts')).toEqual([])
   })
   it('flags css variables that are not generated tokens', () => {
     const findings = findUnknownVars('a{color:var(--bb-nope)} b{color:var(--bb-known)}', 'x.css', new Set(['--bb-known']))

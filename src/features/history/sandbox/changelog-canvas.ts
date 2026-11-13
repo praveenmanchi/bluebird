@@ -8,9 +8,9 @@ import type { HistoryEntry } from '@shared/history/types'
 /** Rows drawn per group before "+ N more"; the full list is in History. */
 export const CARD_ROWS = 12
 const WIDTH = 520
-const INK = '#18181B', BODY = '#52525B', META = '#71717A', LINE = '#E4E4E7', PAPER = '#FFFFFF', WASH = '#FAFAFA'
-const TONE = { added: ['#16A34A', '#F0FDF4', 'Added'], modified: ['#0052CC', '#E8F0FF', 'Updated'], removed: ['#DC2626', '#FEF2F2', 'Deleted'] } as const
-const STATUS = { review: ['#B45309', '#FFFBEB', 'Under review'], done: ['#16A34A', '#F0FDF4', 'Approved'], failed: ['#DC2626', '#FEF2F2', 'Failed'] } as const
+const INK = '#18181B', BODY = '#52525B', META = '#71717A', LINE = '#E4E4E7', PAPER = '#FFFFFF', WASH = '#FAFAFA' // allow-raw: the changelog card has no Figma variables yet; fixed light palette drawn on the canvas
+const TONE = { added: ['#16A34A', '#F0FDF4', 'Added'], modified: ['#0052CC', '#E8F0FF', 'Updated'], removed: ['#DC2626', '#FEF2F2', 'Deleted'] } as const // allow-raw: the changelog card has no Figma variables yet; fixed light palette drawn on the canvas
+const STATUS = { review: ['#B45309', '#FFFBEB', 'Under review'], done: ['#16A34A', '#F0FDF4', 'Approved'], failed: ['#DC2626', '#FEF2F2', 'Failed'] } as const // allow-raw: the changelog card has no Figma variables yet; fixed light palette drawn on the canvas
 
 type Weight = 'regular' | 'medium' | 'bold'
 const FONTS: Readonly<Record<Weight, FontName>> = { regular: { family: 'Inter', style: 'Regular' }, medium: { family: 'Inter', style: 'Medium' }, bold: { family: 'Inter', style: 'Semi Bold' } }

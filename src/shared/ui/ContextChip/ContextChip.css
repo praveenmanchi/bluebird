@@ -1,6 +1,9 @@
 /* ContextChip — Figma "Context Chip" (40000283:8207). Type=Selection is the
  * accent chip (the user's bubble colours); Source and Citation share the
- * neutral chip surface and differ only in glyph. */
+ * neutral chip surface and differ only in glyph. State=Focus is a border/focus
+ * stroke inside the frame at the set's raw stroke weight; data-state="focus"
+ * forces it for stories and visual diffs (the chip itself is not focusable
+ * unless a caller gives it a tabindex). */
 .bb-context-chip {
   display: inline-flex;
   align-items: center;
@@ -14,6 +17,10 @@
 .bb-context-chip[data-type='selection'] {
   background: var(--bb-uxai-bubble-user-bg);
   border-color: var(--bb-uxai-bubble-user-border);
+}
+.bb-context-chip:is(:focus-visible, [data-state='focus']) {
+  outline: var(--bb-derived-context-chip-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-context-chip-root-stroke-width));
 }
 .bb-context-chip__icon {
   width: var(--bb-uxai-size-icon);

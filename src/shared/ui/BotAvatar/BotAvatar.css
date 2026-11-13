@@ -94,7 +94,7 @@
 }
 @keyframes bb-bot-avatar-flicker {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  50% { opacity: var(--bb-dimension-opacity-35); }
 }
 @keyframes bb-bot-avatar-doze {
   0%, 100% { opacity: 1; transform: translate(0, 0); }

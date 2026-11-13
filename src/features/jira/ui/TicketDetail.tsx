@@ -106,7 +106,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
       <SectionTitle title="Description" showCount={false} actionLabel="Edit" onAction={() => openInJira('Edit the description in Jira; Refresh to see it here.')} />
       <p class="bb-jira-board__description">{ticket.description || 'No description.'}</p>
 
-      <SectionTitle title="Figma links" count={String(ticket.links.length)} actionLabel="+ Attach Figma link" onAction={() => { void write(rpc, MSG.link, { key }, 'Attaching the Figma frame…', 'Couldn’t attach the Figma frame.') }} />
+      <SectionTitle title="Figma links" count={String(ticket.links.length)} actionLabel="Attach Figma link" onAction={() => { void write(rpc, MSG.link, { key }, 'Attaching the Figma frame…', 'Couldn’t attach the Figma frame.') }} />
       {ticket.links.length > 0 && (
         <div class="bb-jira-board__links">
           {ticket.links.map((link) => (
@@ -122,7 +122,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
         </div>
       )}
 
-      <SectionTitle title="Subtasks" count={subtaskProgress(ticket)} actionLabel="+ Add subtask" onAction={() => openInJira('Add the subtask in Jira; Refresh to see it here.')} />
+      <SectionTitle title="Subtasks" count={subtaskProgress(ticket)} actionLabel="Add subtask" onAction={() => openInJira('Add the subtask in Jira; Refresh to see it here.')} />
       {ticket.subtasks.length > 0 && (
         <div class="bb-jira-board__subtasks">
           {subtaskColumns.filter((c) => c.length > 0).map((column, i) => (

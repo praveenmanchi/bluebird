@@ -19,6 +19,7 @@ export const figma = {
     '--bb-derived-team-banner-vector-height': 'The version-pill glyph\'s vector (204:7263, 9.4 × 7.5) inside its 10 × 10 "Frame"; the Icon draws the `version` glyph from its own viewBox at the Frame size (frame-width/height).',
   },
   notes: [
+    '2026-11-13 pull: the tagline (204:7255) lost its font/family-brand, font/size-title and font/weight-regular bindings and is now raw MuseoModerno Black 20 at dimension/opacity/72 (was opacity/20); code reads the three derived tokens and the opacity variable, with AUTO line height. The raw family is the same on every brand — designer to rebind it if that was not intended. The Settings instances no longer override the size to 24, so taglineSize "lg" / "auto" are code-only now; notes below that mention Archivo Black, 16/17 and the 24 override describe the earlier design.',
     '2026-11-06: the fill, text and version glyph were raw (#0048b7 and white on every brand). They are now bound to Banner/bg and Banner/Text, the app Banner\'s pair. surface/brand-banner was rejected: white text on it is 2.3:1 on Fiskars.',
     '2026-10-28: the version pill sits in a right-aligned "Release" stack (2 gap) with an "Updated <date>" line under it, Noto Sans Light 10/12 on font/family-ui at 0.72 opacity (Museo Sans is not installed for the Figma plugin API). The Figma copy is sample text; code reads build-info.json, which scripts/bump-build.ts stamps on every build (patch + 1, ISO date).',
     'The set has no component properties; every text is a plain layer, so the code props mirror the layers.',

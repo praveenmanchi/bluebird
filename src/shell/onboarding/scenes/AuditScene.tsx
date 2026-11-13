@@ -18,8 +18,8 @@ export function AuditScene({ still }: SceneProps) {
         </div>
         <div ref={card}>
           <Swap enter={900} at={2600} kind="fade"
-            before={<VariableCard kind="variable" name="#26262B" meta={META} changeCount={19} changeLabel="Layers" expanded={false} />}
-            after={<VariableCardExpanded kind="variable" name="#26262B" meta={META} changeCount={19} changeLabel="Layers" sectionTitle="Where it is used" rows={ROWS} />}
+            before={<VariableCard kind="variable" name="#26262B" meta={META} changeCount={19} changeLabel="Layers" expanded={false} />} // allow-raw: sample content mirroring the Figma component, shown as data
+            after={<VariableCardExpanded kind="variable" name="#26262B" meta={META} changeCount={19} changeLabel="Layers" sectionTitle="Where it is used" rows={ROWS} />} // allow-raw: sample content mirroring the Figma component, shown as data
           />
         </div>
         <ContextChip type="selection" {...reveal(3600, 'pop')}>Selected 12 layers in Access code flow</ContextChip>

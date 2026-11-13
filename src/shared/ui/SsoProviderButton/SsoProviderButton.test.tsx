@@ -46,6 +46,11 @@ describe('SsoProviderButton', () => {
       }
     }
   })
+  it('exposes a forced focus state and draws it with border/focus', () => {
+    render(<SsoProviderButton provider="okta" state="focus" />)
+    expect(screen.getByRole('button')).toHaveAttribute('data-state', 'focus')
+    expect(css).toMatch(/\.bb-sso-provider:is\(:focus-visible, \[data-state='focus'\]\) \{[^}]*solid var\(--bb-border-focus\)/)
+  })
   it('is a plain button that reports clicks', () => {
     const onClick = vi.fn()
     render(<SsoProviderButton provider="google" onClick={onClick} />)

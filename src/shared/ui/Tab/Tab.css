@@ -1,6 +1,8 @@
-/* Tab — Figma "Tab" set (91:1989): Default / Active / Variant3. Bound tokens:
- * tab/*. Variant3 (compact square icon tab) geometry, the indicator stroke
- * and the MuseoModerno label weight are raw in Figma → --bb-derived-tab-*. */
+/* Tab — Figma "Tab" set (91:1989): Default / Active / Variant3 / Focus. Bound
+ * tokens: tab/*. Variant3 (compact square icon tab) geometry, the indicator
+ * stroke, the Focus stroke weight and the Noto Sans label font are raw in Figma
+ * → --bb-derived-tab-*. The label font is read as font/family-ui. Focus is a
+ * border/focus stroke inside the frame; data-state="focus" forces it. */
 .bb-tab {
   display: inline-flex;
   align-items: center;
@@ -23,9 +25,9 @@
   appearance: none;
   transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
-.bb-tab:focus-visible {
-  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
-  outline-offset: var(--bb-space-inset-xs);
+.bb-tab:is(:focus-visible, [data-state="focus"]) {
+  outline: var(--bb-derived-tab-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-tab-root-stroke-width));
 }
 .bb-tab__icon {
   display: inline-flex;

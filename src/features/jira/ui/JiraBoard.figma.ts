@@ -32,6 +32,7 @@ export const figma = {
     'button/secondary/height': composed('Button ("Log work")'),
     'jira/surface/field': composed('FigmaLinkCard'), 'jira/radius/control': composed('FigmaLinkCard'),
     'checkbox/gap': composed('Checkbox'),
+    'feedback/danger': 'Instance override on the Delete Link Button label inside the composed Comment; Comment.css colours its delete action with --bb-feedback-danger (.bb-comment__delete).',
     'icon/glyph/default': 'Bound on the "Search toggle" glyph override; Button.css colours its icon with currentColor from the same token.',
   },
   derivedGaps: {

@@ -27,6 +27,10 @@ describe('Tab', () => {
     rerender(<Tab variant="variant3" icon="uxai" showVariant3Text>UXAI</Tab>)
     expect(container.querySelector('.bb-tab__label')?.textContent).toBe('UXAI')
   })
+  it('exposes a forced focus state for the Figma Focus variant', () => {
+    render(<Tab state="focus">x</Tab>)
+    expect(screen.getByRole('tab').dataset.state).toBe('focus')
+  })
   it('calls onClick and respects disabled', () => {
     const onClick = vi.fn()
     const { rerender } = render(<Tab onClick={onClick}>x</Tab>)

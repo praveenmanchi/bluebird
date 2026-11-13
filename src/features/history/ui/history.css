@@ -4,10 +4,10 @@
 .bb-history {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-publish-space-section);
+  gap: var(--bb-mcp-space-section);
   box-sizing: border-box;
   height: 100%;
-  padding: var(--bb-publish-space-panel);
+  padding: var(--bb-mcp-space-panel);
   overflow-y: auto;
   font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
   color: var(--bb-publish-text-body);
@@ -36,6 +36,7 @@
 .bb-history__group-head,
 .bb-history__person,
 .bb-history__actions { display: flex; align-items: center; gap: var(--bb-publish-space-inline); min-width: 0; }
+.bb-history__header { gap: var(--bb-derived-history-timeline-header-gap); }
 .bb-history__header > :first-child { flex: 1 1 0; min-width: 0; }
 .bb-history__badges { flex-wrap: wrap; gap: var(--bb-publish-space-tight); }
 .bb-history__actions { flex-wrap: wrap; }
@@ -62,13 +63,13 @@
 .bb-history__refresh:focus-visible { outline: var(--bb-publish-border-width) solid var(--bb-publish-text-accent); outline-offset: var(--bb-publish-space-hair); }
 .bb-history__refresh:disabled { cursor: default; }
 .bb-history__refresh > svg { width: var(--bb-publish-size-icon); height: var(--bb-publish-size-icon); }
-.bb-history__refresh[data-busy='true'] > svg { animation: bb-history-spin 0.9s linear infinite; }
+.bb-history__refresh[data-busy='true'] > svg { animation: bb-history-spin 0.9s linear infinite; } /* allow-raw: motion is not tokenised in Figma */
 @keyframes bb-history-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .bb-history__refresh[data-busy='true'] > svg { animation: none; } }
 .bb-history__menu { position: absolute; z-index: 2; top: calc(100% + var(--bb-publish-space-tight)); left: 0; right: 0; }
 .bb-history__features { min-width: 0; overflow-x: auto; }
 
-.bb-history__list { display: flex; flex-direction: column; gap: var(--bb-publish-space-inline); margin: 0; padding: 0; list-style: none; }
+.bb-history__list { display: flex; flex-direction: column; gap: var(--bb-derived-history-timeline-entries-gap); margin: 0; padding: 0; list-style: none; }
 .bb-history__more,
 .bb-history__back { align-self: flex-start; }
 

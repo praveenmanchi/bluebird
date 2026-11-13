@@ -43,7 +43,7 @@ const DEFAULTS: Record<PublishEmptyStateKind, StateDefaults> = {
     icon: 'status-error',
     iconKind: 'status',
     title: 'Site build failed',
-    body: 'GitHub Actions run #482 failed at "Build docs". Nothing was deployed; v2.4.0 is still live.',
+    body: 'GitHub Actions run #482 failed at "Build docs". Nothing was deployed; v2.4.0 is still live.', // allow-raw: a run number in sample copy, not a colour
     actions: [{ label: 'View log', variant: 'secondary' }, { label: 'Retry build', variant: 'primary' }],
   },
   'first-release': {

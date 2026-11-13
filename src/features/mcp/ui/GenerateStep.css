@@ -9,7 +9,7 @@
 .bb-mcp-handoff__select {
   position: relative;
   flex: 1 1 0;
-  min-width: 9rem;
+  min-width: 9rem; /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
 }
 .bb-mcp-handoff__select > .bb-dropdown { width: 100%; }
 .bb-mcp-handoff__menu {

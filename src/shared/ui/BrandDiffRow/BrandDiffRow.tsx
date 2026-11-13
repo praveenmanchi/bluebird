@@ -28,11 +28,11 @@ export function BrandDiffRow({
   brand = 'Bridge',
   state = 'changed',
   kind = 'color',
-  old = '#0C8CE9',
-  new: next = '#0560A3',
+  old = '#0C8CE9', // allow-raw: sample content mirroring the Figma component, shown as data
+  new: next = '#0560A3', // allow-raw: sample content mirroring the Figma component, shown as data
   oldColor,
   newColor,
-  value = '#0C8CE9',
+  value = '#0C8CE9', // allow-raw: sample content mirroring the Figma component, shown as data
   class: cls,
   ...rest
 }: BrandDiffRowProps) {

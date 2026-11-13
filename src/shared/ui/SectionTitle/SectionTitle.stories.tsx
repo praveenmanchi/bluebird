@@ -8,7 +8,7 @@ const meta = {
   component: SectionTitle,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
   argTypes: { onAction: { action: 'action' } },
-  args: { title: 'Figma links', showCount: true, count: '2', showAction: true, actionLabel: '+ Attach link' },
+  args: { title: 'Figma links', showCount: true, count: '2', showAction: true, actionLabel: 'Attach link' },
 } satisfies Meta<typeof SectionTitle>
 export default meta
 type Story = StoryObj<typeof meta>

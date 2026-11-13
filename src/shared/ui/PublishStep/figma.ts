@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for PublishStep ("Publish Step" 40000341:8605). */
 export const figma = {
   setId: '40000341:8605',
@@ -9,7 +10,7 @@ export const figma = {
     Status: 'status (Done / Running / Queued / Failed)',
     'Indicator (Status error icons / Spinner / Queued ring)': 'status → Icon status-good / Spinner accent / ring / Icon status-error',
   },
-  figmaGaps: {},
+  figmaGaps: { ...scaleGaps('icon/size/sm') },
   derivedGaps: {
     '--bb-derived-publish-step-root-width': 'FIXED 600 in Figma (a wide sample); in code the step fills its parent column and the Text frame (FILL) absorbs the width.',
   },

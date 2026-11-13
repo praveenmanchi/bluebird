@@ -1,5 +1,5 @@
 /* SegmentTab — Figma "Tab selecters" set (308:51054): State = Default / Hover / Selected /
- * Disabled. Every state is the same row: the Icon instance (dimension/size/icon-18) then the
+ * Disabled / Focus (a border/focus stroke inside the frame; data-state="focus" forces it). Every state is the same row: the Icon instance (dimension/size/icon-18) then the
  * Label, dimension/space/3 apart, at least chip-filter/icon/size (24) high with
  * dimension/space/4 · dimension/space/8 side insets and a dimension/radius/4 corner.
  * Fills: Hover dropdown/item/bg-hover, Selected surface/accent-strong. Label: input/fg/helper,
@@ -30,9 +30,9 @@
 }
 /* Show icon = false: no glyph to carry the left inset, so the label sits on space/8 both sides. */
 .bb-segment-tab--text-only { padding-left: var(--bb-dimension-space-8); }
-.bb-segment-tab:focus-visible {
-  outline: var(--bb-border-width-default) solid var(--bb-border-focus);
-  outline-offset: var(--bb-space-inset-xs);
+.bb-segment-tab:is(:focus-visible, [data-state="focus"]) {
+  outline: var(--bb-derived-segment-tab-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-segment-tab-root-stroke-width));
 }
 .bb-segment-tab__container {
   display: inline-flex;

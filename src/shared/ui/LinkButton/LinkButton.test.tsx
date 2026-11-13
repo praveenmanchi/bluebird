@@ -26,4 +26,20 @@ describe('LinkButton icon', () => {
     expect(link.querySelector('.bb-link-button__icon')).toHaveAttribute('data-icon', EXTERNAL_LINK_ICON)
     expect(link).toHaveAttribute('data-icon')
   })
+  it('picks the glyph from the label when none is given', async () => {
+    const { render, screen } = await import('@testing-library/preact')
+    const { LinkButton } = await import('./LinkButton')
+    render(<LinkButton>Delete</LinkButton>)
+    expect(screen.getByRole('button', { name: 'Delete' }).querySelector('.bb-link-button__icon')).toHaveAttribute('data-icon', 'ui-general-trash')
+  })
+  it('draws no glyph for icon={null} or a back link', async () => {
+    const { render, screen } = await import('@testing-library/preact')
+    const { LinkButton } = await import('./LinkButton')
+    render(<><LinkButton icon={null}>Delete</LinkButton><LinkButton>← Back to history</LinkButton></>)
+    for (const name of ['Delete', '← Back to history']) {
+      const link = screen.getByRole('button', { name })
+      expect(link.querySelector('.bb-link-button__icon')).toBeNull()
+      expect(link).not.toHaveAttribute('data-icon')
+    }
+  })
 })

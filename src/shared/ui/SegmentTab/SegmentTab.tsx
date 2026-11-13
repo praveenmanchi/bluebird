@@ -9,8 +9,8 @@ export interface SegmentTabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButto
   children?: ComponentChildren
   /** Figma "Icon" (swap any UI Icons glyph). Omit for "Show icon" = false. */
   icon?: IconName
-  /** Force State=Hover (stories, visual regression). Disabled is the native `disabled`. */
-  state?: 'default' | 'hover'
+  /** Force State=Hover or State=Focus (stories, visual regression). Disabled is the native `disabled`. */
+  state?: 'default' | 'hover' | 'focus'
 }
 
 /** Figma "Tab selecters" (308:51054): one segment of the Tab sub menu. Renders <button role="tab">. */

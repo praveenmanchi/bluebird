@@ -7,6 +7,6 @@
   gap: var(--bb-mcp-space-inline);
 }
 .bb-mcp-handoff__field {
-  flex: 1 1 12rem;
+  flex: 1 1 12rem; /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
   min-width: 0;
 }

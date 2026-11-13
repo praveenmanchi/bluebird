@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for VariableCardExpanded. */
 export const figma = {
   setId: '84:1043',
@@ -11,6 +12,7 @@ export const figma = {
     'Tab Icons=show': 'onShow',
   },
   figmaGaps: {
+    ...scaleGaps('icon/size/lg'),
     'card-variable/title/font-size': 'consumed by the composed VariableCard (header row title)',
   },
   derivedGaps: {

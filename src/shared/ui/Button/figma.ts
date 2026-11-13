@@ -3,7 +3,7 @@ export const figma = {
   setId: '40000040:5139',
   name: 'Button',
   /** Figma prop → code prop. */
-  props: { Type: 'variant (primary | secondary | danger)', State: 'state | disabled', Size: 'size (md | lg)', 'width-md / width-lg': 'width="fixed"', Label: 'children', 'Leading icon': 'leadingIcon', 'Show leading icon': 'leadingIcon (presence)', 'Trailing icon': 'trailingIcon', 'Show trailing icon': 'trailingIcon (presence)' },
+  props: { Type: 'variant (primary | secondary | danger)', State: 'state (hover | focus) | disabled', Size: 'size (md | lg)', 'width-md / width-lg': 'width="fixed"', Label: 'children', 'Leading icon': 'leadingIcon', 'Show leading icon': 'leadingIcon (presence)', 'Trailing icon': 'trailingIcon', 'Show trailing icon': 'trailingIcon (presence)' },
   /** Tokens the Figma set binds that the code deliberately does not read, with the reason. */
   figmaGaps: {
     'icon/glyph/default': 'The icon instance inside the set is bound to the generic glyph colour; code uses button/<type>/icon/color (+ -disabled), which exist in the Brand collection for this purpose. Rebind the icon vector in Figma to close the gap.',

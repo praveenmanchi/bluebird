@@ -30,6 +30,7 @@ const SHELL_TOKENS = new Set([
 
 const PREFIXES: ReadonlyArray<readonly [string, string]> = [
   ['button/', 'Button'],
+  ['icon/size/', 'Icon'],
   ['checkbox/', 'Checkbox'],
   ['dropdown/', 'Dropdown'],
   ['input/', 'Input'],

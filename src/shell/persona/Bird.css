@@ -19,18 +19,18 @@
 .bb-bird__wing { filter: brightness(0.86); transform-box: fill-box; }
 .bb-bird__wing--left { transform-origin: 90% 10%; }
 .bb-bird__wing--right { transform-origin: 10% 10%; }
-.bb-bird__belly { fill: var(--bb-persona-bird-eye); opacity: 0.88; }
+.bb-bird__belly { fill: var(--bb-persona-bird-eye); opacity: var(--bb-dimension-opacity-88); }
 .bb-bird__eye { fill: var(--bb-persona-bird-eye); }
 .bb-bird__eyes {
   transform-box: fill-box;
   transform-origin: center;
-  animation: bb-bird-blink 5s var(--pp-blink, 0s) infinite;
+  animation: bb-bird-blink 5s var(--pp-blink, 0s) infinite; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-bird__pupils {
   fill: var(--bb-persona-bird-pupil);
   transform-box: fill-box;
   transform: translateX(calc(var(--pp-look, 0) * 12%));
-  transition: transform 240ms ease;
+  transition: transform 240ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-bird__beak { fill: var(--bb-persona-bird-beak); }
 .bb-bird--content .bb-bird__beak, .bb-bird--plain .bb-bird__beak { fill: var(--bb-persona-bird-beak-alt); }
@@ -94,15 +94,15 @@
 @keyframes bb-bird-cursor { 50% { opacity: 0; } }
 
 /* Flapping and prop loops switch on with these two classes. */
-.bb-bird.is-flapping .bb-bird__wing--left { animation: bb-bird-flap-left 200ms ease-in-out infinite; }
-.bb-bird.is-flapping .bb-bird__wing--right { animation: bb-bird-flap-right 200ms ease-in-out infinite; }
-.bb-bird.is-playing .bb-bird__block { animation: bb-bird-block-drop 600ms ease-out backwards; }
-.bb-bird.is-playing .bb-bird__block--2 { animation-delay: 200ms; }
-.bb-bird.is-playing .bb-bird__block--3 { animation-delay: 400ms; }
-.bb-bird.is-playing .bb-bird__curve { animation: bb-bird-draw 900ms ease-out backwards; }
-.bb-bird.is-playing .bb-bird__text { animation: bb-bird-draw 900ms 200ms linear backwards; }
-.bb-bird.is-playing.bb-bird--ux-designer .bb-bird__prop { animation: bb-bird-sweep 1.6s ease-in-out infinite; }
-.bb-bird.is-playing .bb-bird__cursor { animation: bb-bird-cursor 900ms steps(1) infinite; }
+.bb-bird.is-flapping .bb-bird__wing--left { animation: bb-bird-flap-left 200ms ease-in-out infinite; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-flapping .bb-bird__wing--right { animation: bb-bird-flap-right 200ms ease-in-out infinite; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__block { animation: bb-bird-block-drop 600ms ease-out backwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__block--2 { animation-delay: 200ms; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__block--3 { animation-delay: 400ms; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__curve { animation: bb-bird-draw 900ms ease-out backwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__text { animation: bb-bird-draw 900ms 200ms linear backwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing.bb-bird--ux-designer .bb-bird__prop { animation: bb-bird-sweep 1.6s ease-in-out infinite; } /* allow-raw: motion is not tokenised in Figma */
+.bb-bird.is-playing .bb-bird__cursor { animation: bb-bird-cursor 900ms steps(1) infinite; } /* allow-raw: motion is not tokenised in Figma */
 
 @media (prefers-reduced-motion: reduce) {
   .bb-bird *, .bb-bird.is-playing *, .bb-bird.is-flapping * { animation: none; transition: none; }

@@ -8,7 +8,7 @@ const meta = {
   title: 'Atoms/Checkbox',
   component: Checkbox,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  argTypes: { checked: { control: 'inline-radio', options: [false, true, 'mixed'] } },
+  argTypes: { checked: { control: 'inline-radio', options: [false, true, 'mixed'] }, state: { control: 'inline-radio', options: ['default', 'hover', 'focus'] } },
   args: { label: 'Checkbox label', checked: false },
 } satisfies Meta<typeof Checkbox>
 export default meta
@@ -24,6 +24,9 @@ export const CheckedDisabled: Story = { args: { checked: true, disabled: true },
 export const IndeterminateDefault: Story = { args: { checked: 'mixed' }, parameters: v('Selected=Indeterminate, State=Default') }
 export const IndeterminateHover: Story = { args: { checked: 'mixed', state: 'hover' }, parameters: v('Selected=Indeterminate, State=Hover') }
 export const IndeterminateDisabled: Story = { args: { checked: 'mixed', disabled: true }, parameters: v('Selected=Indeterminate, State=Disabled') }
+export const UncheckedFocus: Story = { args: { state: 'focus' }, parameters: v('Selected=Unchecked, State=Focus') }
+export const CheckedFocus: Story = { args: { checked: true, state: 'focus' }, parameters: v('Selected=Checked, State=Focus') }
+export const IndeterminateFocus: Story = { args: { checked: 'mixed', state: 'focus' }, parameters: v('Selected=Indeterminate, State=Focus') }
 
 export const Interactive: Story = {
   render: (args) => {
@@ -34,8 +37,8 @@ export const Interactive: Story = {
 
 export const Matrix: Story = {
   render: (args) => (
-    <VariantGrid columns={['Default', 'Hover', 'Disabled']} rows={['Unchecked', 'Checked', 'Indeterminate']}>
-      {(row, col) => <Checkbox {...args} checked={row === 'Checked' ? true : row === 'Indeterminate' ? 'mixed' : false} state={col === 'Hover' ? 'hover' : undefined} disabled={col === 'Disabled'} />}
+    <VariantGrid columns={['Default', 'Hover', 'Disabled', 'Focus']} rows={['Unchecked', 'Checked', 'Indeterminate']}>
+      {(row, col) => <Checkbox {...args} checked={row === 'Checked' ? true : row === 'Indeterminate' ? 'mixed' : false} state={col === 'Hover' ? 'hover' : col === 'Focus' ? 'focus' : undefined} disabled={col === 'Disabled'} />}
     </VariantGrid>
   ),
 }

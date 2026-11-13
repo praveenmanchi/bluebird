@@ -7,7 +7,10 @@ const meta = {
   title: 'Molecules/SegmentTab',
   component: SegmentTab,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  argTypes: { icon: { control: 'select', options: [undefined, 'ui-variable-text', 'ui-toolbar-dev-brackets', 'ui-toolbar-component'] } },
+  argTypes: {
+    icon: { control: 'select', options: [undefined, 'ui-variable-text', 'ui-toolbar-dev-brackets', 'ui-toolbar-component'] },
+    state: { control: 'inline-radio', options: ['default', 'hover', 'focus'] },
+  },
   // The set's Icon default is UI Icons / Variable › text.
   args: { children: 'Label', icon: 'ui-variable-text' },
 } satisfies Meta<typeof SegmentTab>
@@ -18,17 +21,18 @@ export const Default: Story = { parameters: { figma: { variant: 'State=Default' 
 export const Hover: Story = { args: { state: 'hover' }, parameters: { figma: { variant: 'State=Hover' } } }
 export const Selected: Story = { args: { selected: true }, parameters: { figma: { variant: 'State=Selected' } } }
 export const Disabled: Story = { args: { disabled: true }, parameters: { figma: { variant: 'State=Disabled' } } }
+export const Focus: Story = { args: { state: 'focus' }, parameters: { figma: { variant: 'State=Focus' } } }
 export const TextOnly: Story = { args: { icon: undefined } }
 
 /** State × Show icon. */
 export const Matrix: Story = {
   render: (args) => (
-    <VariantGrid columns={['Icon', 'Text only']} rows={['Default', 'Hover', 'Selected', 'Disabled']}>
+    <VariantGrid columns={['Icon', 'Text only']} rows={['Default', 'Hover', 'Selected', 'Disabled', 'Focus']}>
       {(row, col) => (
         <SegmentTab
           {...args}
           selected={row === 'Selected'}
-          state={row === 'Hover' ? 'hover' : undefined}
+          state={row === 'Hover' ? 'hover' : row === 'Focus' ? 'focus' : undefined}
           disabled={row === 'Disabled'}
           icon={col === 'Icon' ? args.icon : undefined}
         />

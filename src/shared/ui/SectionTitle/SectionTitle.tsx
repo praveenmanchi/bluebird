@@ -20,7 +20,7 @@ export interface SectionTitleProps extends Omit<JSX.HTMLAttributes<HTMLDivElemen
 /** Figma "Section Title" (40000267:8062): a ticket-detail section heading with a count and an inline action. */
 export function SectionTitle({
   title = 'Figma links', showCount = true, count = '2',
-  showAction = true, actionLabel = '+ Attach link', onAction, class: cls, ...rest
+  showAction = true, actionLabel = 'Attach link', onAction, class: cls, ...rest
 }: SectionTitleProps) {
   return (
     <div {...rest} class={`bb-section-title ${cls ?? ''}`}>

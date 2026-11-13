@@ -4,6 +4,7 @@ export const figma = {
   name: 'Context Chip',
   props: {
     Type: 'type (Selection / Source / Citation)',
+    State: 'state (Default / Focus)',
     Label: 'children',
   },
   figmaGaps: {},

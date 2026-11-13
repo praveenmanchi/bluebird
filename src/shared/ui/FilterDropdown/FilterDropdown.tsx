@@ -9,8 +9,8 @@ export interface FilterDropdownProps extends Omit<JSX.ButtonHTMLAttributes<HTMLB
   icon?: boolean
   /** Menu is open: chevron flipped, aria-expanded. */
   open?: boolean
-  /** Force the Hover visuals (stories, visual regression). Real hover comes from :hover. */
-  state?: 'default' | 'hover'
+  /** Figma "Property 1" (Default | Focus) plus a code-only Hover: forces the visuals (stories, visual regression). Real hover comes from :hover, real focus from :focus-visible. */
+  state?: 'default' | 'hover' | 'focus'
 }
 
 /** Figma "filters" (7:44569): a filter trigger chip with an optional component mark, a name and a small chevron. */

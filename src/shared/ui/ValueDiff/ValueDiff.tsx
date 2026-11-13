@@ -25,8 +25,8 @@ function Swatch({ color }: { color: string }) {
 /** Figma "Value Diff" (40000341:8469): old value (struck through) → new value, with swatches for colours. */
 export function ValueDiff({
   kind = 'color',
-  old = '#0C8CE9',
-  new: next = '#0560A3',
+  old = '#0C8CE9', // allow-raw: sample content mirroring the Figma component, shown as data
+  new: next = '#0560A3', // allow-raw: sample content mirroring the Figma component, shown as data
   oldColor,
   newColor,
   class: cls,

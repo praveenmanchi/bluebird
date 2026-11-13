@@ -13,6 +13,8 @@ export const figma = {
     'uxai/chip/bg': 'Bound on the composed PromptChip instance; PromptChip.css consumes it.',
   },
   derivedGaps: {
+    '--bb-derived-uxai-sources-ux-ai-bot-width': 'Box of the nested UX AI Bot instance (40 × 40, Welcome); UxaiBot.css sizes the bot from uxai/size/orb-lg, the same 40.',
+    '--bb-derived-uxai-sources-ux-ai-bot-height': 'Box of the nested UX AI Bot instance (40 × 40, Welcome); UxaiBot.css sizes the bot from uxai/size/orb-lg, the same 40.',
     '--bb-derived-uxai-sources-chat-input-height': 'Hug height / state stroke of the Chat Input instance; ChatInput.css owns both (its width is read as the composer max-width).',
     '--bb-derived-uxai-sources-prompt-chip--1-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',
     '--bb-derived-uxai-sources-prompt-chip--2-width': 'Hug size / stroke of a Prompt Chip instance; the chip sizes itself from its label (PromptChip.css).',

@@ -1,24 +1,37 @@
-/* Disclosure Toggle — Figma "Disclosure Toggle" (40000446:8631). */
+/* Disclosure Toggle — Figma "Disclosure Toggle" (40000446:8631).
+ * No fill; a border/default stroke, padding a11y/space/hair × a11y/space/tight, gap a11y/space/tight,
+ * label in a11y/text/title, then the down-arrow-small glyph at icon/size/md.
+ * State=Focus swaps the stroke for border/focus at the focus weight; it is drawn as an inset outline
+ * over the border so the control does not change size when it takes focus. */
 .bb-disclosure-toggle {
   display: inline-flex;
   align-items: center;
   gap: var(--bb-a11y-space-tight);
-  padding: var(--bb-a11y-space-hair) var(--bb-a11y-space-inline);
-  border: 0;
+  padding: var(--bb-a11y-space-hair) var(--bb-a11y-space-tight);
+  border: var(--bb-derived-disclosure-toggle-root-expanded-no-state-default-stroke-width) solid var(--bb-border-default);
   border-radius: var(--bb-a11y-radius-control);
-  background: var(--bb-a11y-surface-sunken);
-  color: var(--bb-a11y-text-accent);
+  background: none;
+  color: var(--bb-a11y-text-title);
   font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-a11y-font-size-body);
   line-height: var(--bb-a11y-font-line-body);
   font-weight: var(--bb-a11y-font-weight-medium);
   cursor: pointer;
 }
-.bb-disclosure-toggle:focus-visible { outline: var(--bb-a11y-border-width) solid var(--bb-a11y-text-accent); outline-offset: var(--bb-a11y-space-hair); }
+.bb-disclosure-toggle[data-expanded] { border-width: var(--bb-derived-disclosure-toggle-root-expanded-yes-state-default-stroke-width); }
+.bb-disclosure-toggle:is(:focus-visible, [data-state="focus"]) {
+  border-color: var(--bb-border-focus);
+  outline: var(--bb-derived-disclosure-toggle-root-expanded-no-state-focus-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-disclosure-toggle-root-expanded-no-state-focus-stroke-width));
+}
+.bb-disclosure-toggle[data-expanded]:is(:focus-visible, [data-state="focus"]) {
+  outline-width: var(--bb-derived-disclosure-toggle-root-expanded-yes-state-focus-stroke-width);
+  outline-offset: calc(-1 * var(--bb-derived-disclosure-toggle-root-expanded-yes-state-focus-stroke-width));
+}
 .bb-disclosure-toggle__chevron {
-  width: var(--bb-a11y-size-chevron);
-  height: var(--bb-a11y-size-chevron);
-  transition: transform 150ms ease-out;
+  width: var(--bb-icon-size-md);
+  height: var(--bb-icon-size-md);
+  transition: transform 150ms ease-out; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-disclosure-toggle[data-expanded] .bb-disclosure-toggle__chevron { transform: rotate(180deg); }
 @media (prefers-reduced-motion: reduce) { .bb-disclosure-toggle__chevron { transition: none; } }

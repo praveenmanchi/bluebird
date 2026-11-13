@@ -128,7 +128,7 @@ export function mergeCommitted(snapshot: Snapshot, root = ROOT): Snapshot {
   const byCode = new Map(existingComponents.sets.map((s) => [s.code, s]))
   const sets = snapshot.components.sets.map((s) => {
     const prev = bookkeeping.get(s.id) ?? byCode.get(s.code)
-    return { ...s, ...(prev?.status ? { status: prev.status } : {}), ...(prev?.aliasOf ? { aliasOf: prev.aliasOf } : {}), ...(prev?.dir ? { dir: prev.dir } : {}) }
+    return { ...s, ...(prev?.status ? { status: prev.status } : {}), ...(prev?.aliasOf ? { aliasOf: prev.aliasOf } : {}), ...(prev?.dir ? { dir: prev.dir } : {}), ...(prev?.css ? { css: prev.css } : {}) }
   })
   const components = {
     ...snapshot.components,

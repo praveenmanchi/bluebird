@@ -7,8 +7,8 @@ export type SsoProvider = 'microsoft' | 'okta' | 'google'
 export interface SsoProviderButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   /** Figma "Provider". */
   provider?: SsoProvider
-  /** Force the Figma "State" look (stories). Real hover comes from :hover. */
-  state?: 'default' | 'hover'
+  /** Force the Figma "State" look, Hover or Focus (stories). Real hover comes from :hover, real focus from :focus-visible. */
+  state?: 'default' | 'hover' | 'focus'
   /** Label; defaults to "Continue with <provider>". */
   children?: ComponentChildren
 }

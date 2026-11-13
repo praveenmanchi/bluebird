@@ -1,0 +1,48 @@
+import { SCREEN, composedBy, instanceBox } from '../../../shared/brand/screenGaps'
+
+// Figma ↔ code contract for the Extraction tab's "Extraction v2 · 3 Results" screen: a frame, not a component set.
+// The tab renders it from state (Tab.tsx) and it is checked against extraction.css.
+export const figma = {
+  setId: '40002702:9537',
+  name: 'Extraction',
+  props: {},
+  figmaGaps: {
+    ...composedBy('Button', ['button/primary/bg/default', 'button/primary/border-width', 'button/primary/border/default', 'button/primary/gap', 'button/primary/height', 'button/primary/padding-x', 'button/primary/radius', 'button/primary/width-md', 'button/secondary/bg/default', 'button/secondary/border-width', 'button/secondary/border/default', 'button/secondary/gap', 'button/secondary/height', 'button/secondary/padding-x', 'button/secondary/radius', 'button/secondary/width-md']),
+    ...composedBy('Change Item, Change Row', ['publish/radius/control', 'publish/surface/field']),
+    ...composedBy('Change Item', ['border/accent', 'border/default', 'surface/raised']),
+    ...composedBy('Change Row', ['publish/space/row-x', 'publish/space/row-y']),
+    ...composedBy('Checkbox', ['checkbox/gap']),
+    ...composedBy('Connection Row', ['mcp/border-width', 'mcp/radius/control', 'mcp/space/inline', 'mcp/space/row-x', 'mcp/space/row-y', 'mcp/surface/field', 'mcp/surface/panel-border']),
+    ...composedBy('Dropdown, Meta Badge, Tab sub menu', ['border-width/default']),
+    ...composedBy('Dropdown, Tab sub menu', ['dropdown/border/default']),
+    ...composedBy('Dropdown', ['dropdown/bg/default', 'dropdown/gap', 'dropdown/height', 'dropdown/padding-x', 'dropdown/radius']),
+    ...composedBy('Meta Badge', ['border/subtle', 'feedback/danger', 'feedback/success', 'feedback/warning', 'radius/pill', 'space/inline-sm', 'space/inline-xs', 'space/inset-xs']),
+    ...composedBy('Switch', ['Primary/Blue/600']),
+    ...composedBy('Tab sub menu', ['dimension/radius/8', 'dimension/space/2', 'dimension/space/4', 'dropdown/menu/bg']),
+    ...composedBy('Text Area', ['input/gap/label']),
+    ...composedBy('Ticket Row', ['jira/border-width', 'jira/radius/row', 'jira/row/bg/selected', 'jira/row/border/selected', 'jira/space/row-x', 'jira/space/row-y', 'jira/space/tight']),
+  },
+  derivedGaps: {
+    '--bb-derived-extraction-results-root-width': SCREEN.root,
+    '--bb-derived-extraction-results-root-height': SCREEN.root,
+    '--bb-derived-extraction-results-filters-gap': 'The Filters row holds one composed Tab sub menu, so its gap never shows.',
+    '--bb-derived-extraction-results-by-level-gap': 'Same badge row as By brand mode: .bb-extraction__badges reads the modes gap, which carries the same value in Figma.',
+    '--bb-derived-extraction-results-branch-mode-gap': 'The Branch mode row holds one composed Tab sub menu, so its gap never shows.',
+    '--bb-derived-extraction-results-channels-gap': 'Same list as the component list: .bb-extraction__list reads the component-list gap, which carries the same value in Figma.',
+    '--bb-derived-extraction-results-channel-design-system-gap': 'Second channel row: .bb-extraction__channel reads the first row\'s gap (channel-dev-team), the same value in Figma.',
+    '--bb-derived-extraction-results-actions-width': SCREEN.fill,
+    ...instanceBox('Button', ['--bb-derived-extraction-results-button--1-width', '--bb-derived-extraction-results-button-extraction-width']),
+    ...instanceBox('Change Item', ['--bb-derived-extraction-results-control-height', '--bb-derived-extraction-results-control-width', '--bb-derived-extraction-results-info-height', '--bb-derived-extraction-results-info-width', '--bb-derived-extraction-results-primary-height', '--bb-derived-extraction-results-primary-width', '--bb-derived-extraction-results-secondary-height', '--bb-derived-extraction-results-secondary-width', '--bb-derived-extraction-results-translucent-height', '--bb-derived-extraction-results-translucent-width']),
+    ...instanceBox('Change Row', ['--bb-derived-extraction-results-change-row-height', '--bb-derived-extraction-results-change-row-width']),
+    ...instanceBox('Checkbox', ['--bb-derived-extraction-results-checkbox-height', '--bb-derived-extraction-results-checkbox-width']),
+    ...instanceBox('Connection Row', ['--bb-derived-extraction-results-connection-row-height', '--bb-derived-extraction-results-connection-row-width']),
+    ...instanceBox('Dropdown', ['--bb-derived-extraction-results-dropdown--1-width', '--bb-derived-extraction-results-dropdown-extraction-width']),
+    ...instanceBox('Meta Badge', ['--bb-derived-extraction-results-compare-status-height', '--bb-derived-extraction-results-compare-status-width', '--bb-derived-extraction-results-github-status-height', '--bb-derived-extraction-results-github-status-width', '--bb-derived-extraction-results-meta-badge--1-width', '--bb-derived-extraction-results-meta-badge--2-width', '--bb-derived-extraction-results-meta-badge--3-width', '--bb-derived-extraction-results-meta-badge--4-width', '--bb-derived-extraction-results-meta-badge--5-width', '--bb-derived-extraction-results-meta-badge--6-width', '--bb-derived-extraction-results-meta-badge--7-width', '--bb-derived-extraction-results-meta-badge--8-width', '--bb-derived-extraction-results-meta-badge-extraction-width', '--bb-derived-extraction-results-meta-badge-height']),
+    ...instanceBox('Section Title', ['--bb-derived-extraction-results-section-title--1-width', '--bb-derived-extraction-results-section-title-extraction-width', '--bb-derived-extraction-results-section-title-height']),
+    ...instanceBox('Switch', ['--bb-derived-extraction-results-switch-height', '--bb-derived-extraction-results-switch-radius', '--bb-derived-extraction-results-switch-width']),
+    ...instanceBox('Tab sub menu', ['--bb-derived-extraction-results-tab-sub-menu--1-width', '--bb-derived-extraction-results-tab-sub-menu-extraction-width', '--bb-derived-extraction-results-tab-sub-menu-height']),
+    ...instanceBox('Text Area', ['--bb-derived-extraction-results-text-area-height', '--bb-derived-extraction-results-text-area-width']),
+    ...instanceBox('Ticket Row', ['--bb-derived-extraction-results-ticket-row-height', '--bb-derived-extraction-results-ticket-row-width']),
+  },
+  notes: 'Body of \'Extraction v2 · 3 Results\' on the Extraction page. Top-level layers: Panels, Actions.',
+} as const

@@ -1,7 +1,9 @@
 /* Button — Figma "Button" set (40000040:5139). Variant = Figma "Type", state
  * = Figma "State", data-size = Figma "Size" (Medium / Large). Every value is a
  * Brand token; hover/disabled follow the Hover/Disabled variants.
- * data-state="hover" forces the hover variant for stories and visual diffs.
+ * data-state="hover" / "focus" force those variants for stories and visual diffs.
+ * Focus is the Figma Focus variant: a border/focus stroke drawn inside the frame
+ * at the set's raw stroke weight (--bb-derived-button-root-stroke-width).
  * The set's frames are fixed at width-md / width-lg but every instance in the
  * screens hugs its label, so the frame width is opt-in (data-width="fixed"). */
 .bb-button {
@@ -16,9 +18,9 @@
   appearance: none;
   transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
-.bb-button:focus-visible {
-  outline: calc(var(--bb-border-width-default) * 2) solid var(--bb-border-focus);
-  outline-offset: 0;
+.bb-button:is(:focus-visible, [data-state="focus"]) {
+  outline: var(--bb-derived-button-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-button-root-stroke-width));
 }
 .bb-button__label { display: inline-block; }
 .bb-button__icon { display: inline-flex; flex: none; }

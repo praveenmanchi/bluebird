@@ -4,7 +4,7 @@ import type { HandoffScenarioId } from '../fixtures'
 import { goTo, reset, selectScenario, type FlowStep } from '../state'
 
 /** Figma "MCP flow v2 · 600" bodies are 600×616; the shell's <main> gives the body its height. */
-const frame = { width: '600px', height: '616px', overflow: 'auto', display: 'flex', flexDirection: 'column' as const }
+const frame = { width: '600px', height: '616px', overflow: 'auto', display: 'flex', flexDirection: 'column' as const } // allow-raw: the 600×616 Figma body frame, for stories and visual diffs only
 
 export interface ScreenFixtureProps {
   id?: HandoffScenarioId

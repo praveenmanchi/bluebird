@@ -60,9 +60,9 @@ export function ChangeRow({
   kind = 'color',
   state = 'default',
   name = 'button/bg/primary',
-  detail = '#0C8CE9 → #0978C8 · 2 of 8 brands',
+  detail = '#0C8CE9 → #0978C8 · 2 of 8 brands', // allow-raw: sample content mirroring the Figma component, shown as data
   change = 'modified',
-  swatch = '#0560A3',
+  swatch = '#0560A3', // allow-raw: sample content mirroring the Figma component, shown as data
   included,
   onIncludedChange,
   showInclude = true,

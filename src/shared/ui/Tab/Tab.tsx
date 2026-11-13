@@ -5,7 +5,7 @@ import './Tab.css'
 export type TabVariant = 'default' | 'active' | 'variant3'
 
 export interface TabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'icon' | 'label'> {
-  /** Figma "Property 1": Default / Active / Variant3 (the compact 28×28 icon-only tab used in Navbar and PersonaCard). */
+  /** Figma "Property 1": Default / Active / Variant3 (the compact 28×28 icon-only tab used in Navbar and PersonaCard). "Property 1=Focus" is `state="focus"`. */
   variant?: TabVariant
   /** Figma "Label". */
   children?: ComponentChildren
@@ -15,8 +15,8 @@ export interface TabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElemen
   showIcon?: boolean
   /** Figma "Variant 3 text": show the label inside the compact variant (hidden in Figma by default). */
   showVariant3Text?: boolean
-  /** Force the Hover visuals (stories, visual regression). Figma has no Hover variant for Tab. */
-  state?: 'default' | 'hover'
+  /** Force the Hover or Focus visuals (stories, visual regression). Focus is Figma "Property 1=Focus"; Figma has no Hover variant for Tab. */
+  state?: 'default' | 'hover' | 'focus'
 }
 
 /** Figma "Tab" (91:1989); "Tab" 419:39986 (TabLegacy) is an older alias. Renders <button role="tab">. */

@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for ValueDiff ("Value Diff" 40000341:8469). */
 const sample = 'Sample swatch fill in Figma (the Bridge primary the default diff shows). In code the swatch paints the scanned value itself — oldColor ?? old / newColor ?? new — so no design token is read.'
 
@@ -10,6 +11,7 @@ export const figma = {
     Kind: 'kind (Color / Number)',
   },
   figmaGaps: {
+    ...scaleGaps('icon/size/sm'),
     'surface/accent': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.', 'surface/accent-strong': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.',
     'bridge/color/primary/400-brand': sample,
     'bridge/color/primary/600': sample,

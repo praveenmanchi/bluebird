@@ -6,10 +6,10 @@
 .bb-extraction {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-publish-space-section);
+  gap: var(--bb-mcp-space-section);
   box-sizing: border-box;
   height: 100%;
-  padding: var(--bb-publish-space-panel);
+  padding: var(--bb-mcp-space-panel);
   overflow-y: auto;
   font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
   color: var(--bb-publish-text-body);
@@ -44,7 +44,11 @@
 .bb-extraction__header > :first-child,
 .bb-extraction__grow,
 .bb-extraction__compare > .bb-extraction__select { flex: 1 1 0; min-width: 0; }
-.bb-extraction__compare { align-items: flex-end; }
+/* Each row reads the gap its Figma frame carries. */
+.bb-extraction__header { gap: var(--bb-derived-extraction-results-header-gap); }
+.bb-extraction__compare { align-items: flex-end; gap: var(--bb-derived-extraction-results-compare-gap); }
+.bb-extraction__channel { gap: var(--bb-derived-extraction-results-channel-dev-team-gap); }
+.bb-extraction__actions { gap: var(--bb-derived-extraction-results-actions-gap); }
 .bb-extraction__actions { justify-content: flex-end; flex-wrap: wrap; }
 
 /* The menu hangs under its trigger and floats over the cards below. */
@@ -61,7 +65,7 @@
 .bb-extraction__list {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-publish-space-tight);
+  gap: var(--bb-derived-extraction-results-component-list-gap);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -69,7 +73,7 @@
 .bb-extraction__badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bb-publish-space-tight);
+  gap: var(--bb-derived-extraction-results-modes-gap);
 }
 .bb-extraction__filters,
 .bb-extraction__more { align-self: flex-start; }
@@ -78,6 +82,7 @@
   margin: 0;
   font-size: var(--bb-publish-font-size-caption);
   line-height: var(--bb-publish-font-line-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
   color: var(--bb-publish-text-meta);
 }
 

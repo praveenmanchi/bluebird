@@ -1,6 +1,7 @@
 @import "tailwindcss";
-/* Generated from figma/tokens.json: primitives + semantics + every brand ([data-brand] scoped). The access code picks the brand at runtime. */
-@import "../shared/brand/generated/all.css";
+/* Generated from figma/tokens.json: primitives + semantics + every brand ([data-brand] scoped). The access code picks the brand at runtime.
+   plugin.css is all.css with only the derived tokens src reads; Storybook and dev.html load all.css. */
+@import "../shared/brand/generated/plugin.css";
 @import "../shared/brand/theme.css";
 @import "../shell/shell.css";
 

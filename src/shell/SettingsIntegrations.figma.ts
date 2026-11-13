@@ -29,6 +29,8 @@ export const figma = {
     'Team Banner': 'TeamBanner, rendered by SettingsScreen',
   },
   figmaGaps: {
+    // Bound on the size-step instances inside the shell Footer's size expander; Footer.css reads --bb-footer-segment-radius.
+    ...scaleGaps('footer/segment/radius'),
     ...scaleGaps('dimension/space/10', 'space/inset-xs', 'space/inset-lg-alt', 'dimension/space/6', 'dimension/space/8', 'space/stack-xs', 'dimension/space/9', 'dimension/space/45', 'text/placeholder', 'dimension/radius/12'),
     Background: 'The SettingsScreen root (.bb-settings) paints Background around the sections.',
     'Banner/bg': chrome, Border: chrome, 'tab/gap': chrome, 'tab/padding-x': chrome, 'tab/padding-y': chrome,

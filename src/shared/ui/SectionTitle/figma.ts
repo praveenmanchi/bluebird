@@ -13,7 +13,7 @@ export const figma = {
     'Action (Link Button instance) › Label': 'actionLabel (+ onAction)',
   },
   figmaGaps: {
-    ...scaleGaps('border-width/default'),
+    ...scaleGaps('dimension/space/2', 'border-width/default'),
     'border/subtle': count,
     'radius/pill': count,
     'space/inline-xs': count,

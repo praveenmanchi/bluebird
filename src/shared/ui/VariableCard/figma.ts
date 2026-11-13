@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 /** Figma ↔ code contract for VariableCard. */
 export const figma = {
   setId: '83:940',
@@ -11,7 +12,7 @@ export const figma = {
     'Tab Icons=Research': 'onInspect',
     'Tab Icons=Dropdown- down': 'expanded | onToggle',
   },
-  figmaGaps: {},
+  figmaGaps: { ...scaleGaps('icon/size/lg') },
   notes: [
     'Figma has no fill on the root; the card is transparent over the canvas.',
     'The chip "Frame 1430102562" is an instance of "change status" → composed ChangeStatus (change-status/* tokens live in ChangeStatus.css).',

@@ -1,7 +1,8 @@
 /* SsoProviderButton — Figma "SSO Provider Button" (40000324:8451).
  * Logo · Label, centred. Each logo keeps its Figma frame, so the visible mark and the label gap differ
  * by provider. Microsoft and Okta are single-colour marks drawn in login/provider/glyph; Google keeps
- * its colours (figma/logos/*.svg). */
+ * its colours (figma/logos/*.svg). State=Focus is a border/focus stroke inside the frame at
+ * the set's raw stroke weight; data-state='focus' forces it for stories and visual diffs. */
 .bb-sso-provider {
   display: flex;
   align-items: center;
@@ -25,7 +26,10 @@
   border-color: var(--bb-login-provider-border-hover);
   background: var(--bb-login-provider-bg-hover);
 }
-.bb-sso-provider:focus-visible { outline: var(--bb-input-border-width) solid var(--bb-input-border-focus); outline-offset: var(--bb-input-border-width); }
+.bb-sso-provider:is(:focus-visible, [data-state='focus']) {
+  outline: var(--bb-derived-sso-provider-button-root-stroke-width) solid var(--bb-border-focus);
+  outline-offset: calc(-1 * var(--bb-derived-sso-provider-button-root-stroke-width));
+}
 .bb-sso-provider:disabled { cursor: default; }
 .bb-sso-provider__label { font-weight: var(--bb-login-font-weight-medium); white-space: nowrap; }
 .bb-sso-provider__logo { color: var(--bb-login-provider-glyph); }
@@ -52,4 +56,16 @@
 .bb-sso-provider[data-provider='google']:hover:not(:disabled) .bb-sso-provider__logo, .bb-sso-provider[data-provider='google'][data-state='hover'] .bb-sso-provider__logo {
   width: var(--bb-derived-sso-provider-button-frame-provider-google-state-hover-width);
   height: var(--bb-derived-sso-provider-button-frame-provider-google-state-hover-height);
+}
+.bb-sso-provider[data-provider='microsoft']:is(:focus-visible, [data-state='focus']) .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-focus-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-microsoft-state-focus-height);
+}
+.bb-sso-provider[data-provider='okta']:is(:focus-visible, [data-state='focus']) .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-okta-state-focus-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-okta-state-focus-height);
+}
+.bb-sso-provider[data-provider='google']:is(:focus-visible, [data-state='focus']) .bb-sso-provider__logo {
+  width: var(--bb-derived-sso-provider-button-frame-provider-google-state-focus-width);
+  height: var(--bb-derived-sso-provider-button-frame-provider-google-state-focus-height);
 }

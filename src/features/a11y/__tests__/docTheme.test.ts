@@ -41,3 +41,23 @@ describe('documentId and createdLabel', () => {
     expect(createdLabel(at)).toBe('10 Nov 2026, 14:32')
   })
 })
+
+describe('docTheme fallback colours', () => {
+  it('match the generated a11y/report/* tokens in every brand, so a Figma change cannot leave them behind', async () => {
+    const { readFileSync, readdirSync } = await import('node:fs')
+    const { resolve } = await import('node:path')
+    const { FALLBACK } = await import('../ui/docTheme')
+    const dir = resolve(import.meta.dirname, '../../../shared/brand/generated')
+    const brands = readdirSync(dir).filter((f) => /^brand\..+\.css$/.test(f))
+    expect(brands.length).toBeGreaterThan(0)
+    const reportTokens = Object.entries(FALLBACK).filter(([name]) => name.startsWith('a11y-report-'))
+    expect(reportTokens.length).toBeGreaterThan(0)
+    for (const file of brands) {
+      const css = readFileSync(resolve(dir, file), 'utf8')
+      for (const [name, hex] of reportTokens) {
+        const value = new RegExp(`--bb-${name}:\\s*([^;]+);`).exec(css)?.[1]
+        expect(`${file} ${name} ${normalizeHex(value ?? '')}`).toBe(`${file} ${name} ${hex}`)
+      }
+    }
+  })
+})

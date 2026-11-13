@@ -32,6 +32,8 @@ export const figma = {
   },
 
   derivedGaps: {
+    '--bb-derived-wcag-card-frame-1430102700-width': 'The frame that wraps the "Understanding SC 1.4.3" label in the Mode=colors link row; the link label hugs its own text in code.',
+    '--bb-derived-wcag-card-frame-1430102700-height': 'The frame that wraps the "Understanding SC 1.4.3" label in the Mode=colors link row; its height is the label line (font/line-caption), which the link already reads.',
     '--bb-derived-wcag-card-root-width': 'Desktop-mock width (465). The card is fluid: it fills its column at every plugin window size, and stacks row labels over values below 400 px (container query).',
     '--bb-derived-wcag-card-row-label-mode-touch-target-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
     '--bb-derived-wcag-card-row-value-mode-touch-target-height': 'Rows size from the text line-height and values fill the row, as for the Mode=colors row-label / row-value tokens.',
@@ -48,6 +50,8 @@ export const figma = {
     '--bb-derived-wcag-card-row-value--1-height': 'Row Colors\' value box (419:45060, 166x12.6; five layers are named "Row value"). Values fill the row (flex) and size from the text line-height, like the baselined row-value sizes.',
   },
   figmaGaps: {
+    ...scaleGaps('icon/size/sm'),
+    'icon/size/lg': 'Bound on the go-to-main-component icon after the Mode=colors "Understanding SC" link (24 × 24). Open mismatch: code draws the open-link glyph at the label line height (font/line-caption) through .bb-wcag-card__link-icon.',
     ...scaleGaps('type/size/24', 'type/line/32', 'space/inset-lg-alt', 'font/weight-regular', 'font/weight-strong', 'type/line/15', 'font/weight-medium', 'dimension/stroke/0_7', 'dimension/radius/2_79', 'dimension/space/2_79', 'dimension/space/5_57', 'dimension/space/28', 'dimension/space/20', 'type/size/20', 'type/line/20', 'font/line-body', 'dimension/space/3'),
     'a11y/space/section': 'consumed by the composed TypeCompare / TargetPreview / VisionSimGrid "Check preview"',
     'a11y/space/inline': 'consumed by the composed TypeCompare / TargetPreview / VisionSimGrid "Check preview"',

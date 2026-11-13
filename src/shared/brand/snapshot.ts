@@ -104,6 +104,8 @@ export interface ComponentSetSnapshot {
   aliasOf?: string
   /** Folder holding <code>.css and <code>.figma.ts when the code does not live in src/shared/ui/<code> (shell screens). */
   dir?: string
+  /** Stylesheet inside `dir` when it is not <code>.css: a tab screen is checked against the tab's own stylesheet (audit.css). */
+  css?: string
 }
 
 export interface CoverageRow {

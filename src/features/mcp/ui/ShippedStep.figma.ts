@@ -8,6 +8,7 @@ export const figma = {
     body: 'ShippedStep (Success block, PR link Input, Also updated ConnectionRows, Ship steps)',
   },
   figmaGaps: bindingGaps([
+    'icon/size/sm',
     'button/primary/border-width',
     'button/secondary/border-width',
     'button/primary/bg/default',
