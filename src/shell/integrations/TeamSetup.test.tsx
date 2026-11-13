@@ -13,7 +13,15 @@ const LEAD: IntegrationSettings = {
 const fileOf = (text: string, name = 'bridge-settings.json') => ({ name, size: text.length, text: async () => text }) as unknown as File
 const textOf = (blob: Blob) => new Promise<string>((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.readAsText(blob) })
 const exported = () => fileOf(serializeSettingsFile(buildSettingsFile(LEAD, { sections: ['github', 'storybook', 'dualFile'], includeKeys: true, brand: 'Bridge' })))
-const pick = (file: File) => fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [file] } })
+const menu = (item: 'Import settings' | 'Export settings') => {
+  fireEvent.click(screen.getByRole('button', { name: 'Import / export' }))
+  fireEvent.click(screen.getByRole('option', { name: item }))
+}
+/** Opens the import pop-up and picks a file in it. */
+const pick = (file: File) => {
+  menu('Import settings')
+  fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [file] } })
+}
 
 /** jsdom has no Blob URLs; give it them and catch what the download link carried. */
 function captureDownload() {
@@ -29,7 +37,9 @@ describe('TeamSetup export', () => {
   it('offers the configured sections, with keys included by default, and saves the file', async () => {
     const { blobs } = captureDownload()
     render(<TeamSetup settings={LEAD} brandId="bridge" brandLabel="Bridge" importFile={vi.fn()} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Export settings' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    menu('Export settings')
+    expect(screen.getByRole('dialog', { name: 'Export settings' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'GitHub output configuration' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Zeroheight' })).toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Jira integration' })).toBeDisabled()
@@ -39,12 +49,15 @@ describe('TeamSetup export', () => {
     const file = JSON.parse(await textOf(blobs[0]!))
     expect(file.sections.github.apiKey).toBe('ghp_team')
     expect(JSON.stringify(file)).not.toContain('figd_mine')
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('leaves keys and unticked sections out when asked', async () => {
     const { blobs } = captureDownload()
     render(<TeamSetup settings={LEAD} />)
-    expect(screen.queryByRole('button', { name: 'Import settings' })).toBeNull()
+    // Without a store to import into there is no menu, just the export.
+    expect(screen.queryByRole('button', { name: 'Import / export' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Export settings' }))
     fireEvent.click(screen.getByRole('switch', { name: 'Include API keys and tokens' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Storybook' }))
@@ -56,14 +69,31 @@ describe('TeamSetup export', () => {
     expect(await screen.findByText(/API keys left out/)).toBeInTheDocument()
   })
 
-  it('says so when the download is blocked, and Cancel closes the options', () => {
-    render(<TeamSetup settings={LEAD} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Export settings' }))
+  it('says so when the download is blocked, and Cancel or Escape closes the pop-up', () => {
+    render(<TeamSetup settings={LEAD} importFile={vi.fn()} />)
+    menu('Export settings')
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByText('What goes in the file')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'Export settings' }))
-    fireEvent.click(screen.getByRole('button', { name: /^Export/ }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    menu('Export settings')
+    fireEvent.click(screen.getByRole('button', { name: /^Export \d/ }))
     expect(screen.getByText('The file couldn’t be saved')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(screen.getByText('What goes in the file')).toBeInTheDocument()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('opens a menu with both actions that closes on Escape or a click elsewhere', () => {
+    render(<TeamSetup settings={LEAD} importFile={vi.fn()} />)
+    const button = screen.getByRole('button', { name: 'Import / export' })
+    fireEvent.click(button)
+    expect(button).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Import settings', 'Export settings'])
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('option')).toBeNull()
+    fireEvent.click(button)
+    fireEvent.mouseDown(document.body)
+    expect(screen.queryByRole('option')).toBeNull()
   })
 })
 
@@ -73,7 +103,10 @@ describe('TeamSetup import', () => {
     const importFile = vi.fn(async () => applied)
     const onImported = vi.fn()
     render(<TeamSetup settings={DEFAULT_INTEGRATIONS} importFile={importFile} onImported={onImported} />)
-    pick(exported())
+    menu('Import settings')
+    expect(screen.getByRole('dialog', { name: 'Import settings' })).toBeInTheDocument()
+    expect(screen.getByText('Drop your team settings file here')).toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [exported()] } })
     const rows = await screen.findByRole('list', { name: 'Sections in the file' })
     expect(within(rows).getAllByRole('listitem')).toHaveLength(3)
     expect(screen.getByText(/Bridge · 3 sections · API keys included/)).toBeInTheDocument()
@@ -84,7 +117,8 @@ describe('TeamSetup import', () => {
     expect(importFile).toHaveBeenCalledWith(expect.objectContaining({ kind: 'bluebird-settings' }), false)
     expect(onImported).toHaveBeenCalledWith(applied)
     expect(within(screen.getByRole('list', { name: 'Sections that still need you' })).getByText('Dual File Mode')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Import settings' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('rejects a file that is not a settings file and lets the person cancel', async () => {
@@ -94,8 +128,10 @@ describe('TeamSetup import', () => {
     expect(await screen.findByText('This file can’t be imported')).toBeInTheDocument()
     expect(screen.getByText('team-notes.json')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Choose another file' })).toBeInTheDocument()
+    fireEvent.drop(screen.getByText('Drop the right file here').parentElement!, { dataTransfer: { files: [exported()] } })
+    expect(await screen.findByRole('button', { name: 'Apply settings' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(screen.queryByText('This file can’t be imported')).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
     expect(importFile).not.toHaveBeenCalled()
   })
 

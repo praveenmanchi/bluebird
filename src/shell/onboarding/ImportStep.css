@@ -1,6 +1,5 @@
-/* Onboarding import step — Figma "Onboarding · 12 · Import settings" (40002766:16928) and its
- * Review / All set / File not valid states. Sits in the media frame where the other steps play a
- * demo; content is centred vertically and scrolls when a file lists many sections. */
+/* Team setup screen card — Figma "Team setup · 1 Import settings" (40002766:16928) and its
+ * Review / All set / File not valid states. Sits in the same media frame the tour plays demos in; content is centred vertically and scrolls when a file lists many sections. */
 .bb-ob-import {
   display: flex;
   flex: 1 1 auto;
@@ -13,18 +12,6 @@
   overflow-y: auto;
 }
 .bb-ob-import > .bb-notice { width: 100%; max-width: none; box-sizing: border-box; }
-.bb-ob-import__drop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--bb-onboarding-gap-md);
-  padding: var(--bb-onboarding-gap-lg) var(--bb-onboarding-gap-md);
-  border: var(--bb-onboarding-border-width) dashed var(--bb-border-default);
-  border-radius: var(--bb-card-variable-radius);
-  background: var(--bb-tab-bar-bg);
-  text-align: center;
-}
-.bb-ob-import__drop.is-over { border-color: var(--bb-onboarding-field-ring); }
 .bb-ob-import__heading {
   color: var(--bb-onboarding-text-title);
   font-size: var(--bb-onboarding-font-text-size);

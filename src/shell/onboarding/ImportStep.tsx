@@ -1,8 +1,6 @@
-import type { JSX } from 'preact'
-import { useState } from 'preact/hooks'
-import { Button, Icon, Notice } from '@shared/ui'
+import { Notice } from '@shared/ui'
 import type { IntegrationSettings } from '@shared/integrations'
-import { FileRow, ImportRows } from '../integrations/SettingsFileParts'
+import { DropZone, FileRow, ImportRows } from '../integrations/SettingsFileParts'
 import { appliedMessage, fileMeta, summarizeImport } from '../integrations/settingsFileView'
 import type { ImportState } from '../integrations/useSettingsImport'
 import './ImportStep.css'
@@ -31,30 +29,7 @@ export function importCopy(state: ImportState, fallback: Pick<ImportCopy, 'title
   return { ...fallback, next: 'Choose file' }
 }
 
-interface DropZoneProps { heading: string; action: string; onChoose: () => void; onFile: (file: File) => void }
-
-function DropZone({ heading, action, onChoose, onFile }: DropZoneProps) {
-  const [over, setOver] = useState(false)
-  const onDrop = (event: JSX.TargetedDragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    setOver(false)
-    const file = event.dataTransfer?.files?.[0]
-    if (file) onFile(file)
-  }
-  return (
-    <div
-      class={`bb-ob-import__drop${over ? ' is-over' : ''}`}
-      onDragOver={(event) => { event.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
-    >
-      <Icon name="json" />
-      <span class="bb-ob-import__heading">{heading}</span>
-      <span class="bb-ob-import__hint">A .json file exported from Settings › Team setup file</span>
-      <Button variant="secondary" onClick={onChoose}>{action}</Button>
-    </div>
-  )
-}
-
-/** Figma "Onboarding · 12 · Import settings" and its Review / All set / File not valid states (40002766:16928 …17874). */
+/** Figma "Team setup · 1 Import settings" and its Review / All set / File not valid states (40002766:16928 …17874). */
 export function ImportStep({ state, current, onChoose, onFile }: ImportStepProps) {
   return (
     <div class="bb-ob-import">

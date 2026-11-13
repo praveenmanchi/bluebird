@@ -133,13 +133,17 @@ describe('access-code session', () => {
 })
 
 describe('first-run tour', () => {
-  it('follows the first sign-in, and Skip opens the app for good', async () => {
+  it('follows the first sign-in, then the team setup screen, and never shows again', async () => {
     mount(null, false)
     fireEvent.input(await dom.findByLabelText('Access code'), { target: { value: 'bridge-2026' } })
     fireEvent.click(dom.getByRole('button', { name: 'Sign in' }))
     await waitFor(() => expect(screen.value).toBe('onboarding'))
     expect(dom.getByRole('heading', { name: 'Welcome to Design Studio' })).toBeInTheDocument()
     fireEvent.click(dom.getByRole('button', { name: 'Skip' }))
+    // The team setup file gets a screen of its own after the tour, skipped or finished.
+    await waitFor(() => expect(screen.value).toBe('team-setup'))
+    expect(dom.getByRole('heading', { name: 'Set up from your team’s file' })).toBeInTheDocument()
+    fireEvent.click(dom.getByRole('button', { name: 'Skip for now' }))
     await waitFor(() => expect(screen.value).toBe('app'))
     fireEvent.click(dom.getByRole('button', { name: 'Settings' }))
     fireEvent.click(await dom.findByRole('button', { name: 'Sign out' }))
@@ -149,7 +153,7 @@ describe('first-run tour', () => {
     await waitFor(() => expect(screen.value).toBe('app'))
   })
 
-  it('can be replayed from Settings and left at the import step', async () => {
+  it('can be replayed from Settings and goes straight back to the app', async () => {
     mount('ikea')
     await waitFor(() => expect(screen.value).toBe('app'))
     fireEvent.click(dom.getByRole('button', { name: 'Settings' }))
@@ -157,9 +161,7 @@ describe('first-run tour', () => {
     await waitFor(() => expect(screen.value).toBe('onboarding'))
     const steps = dom.getAllByRole('button', { name: /^Step \d+ of/ })
     fireEvent.click(steps.at(-1)!)
-    // The tour ends on importing a team setup file; without one the person moves on.
-    expect(dom.getByRole('heading', { level: 2 }).textContent).toBe('Got a team settings file?')
-    fireEvent.click(dom.getByRole('button', { name: 'Skip for now' }))
+    fireEvent.click(dom.getByRole('button', { name: 'Get started' }))
     await waitFor(() => expect(screen.value).toBe('app'))
   })
 

@@ -98,7 +98,10 @@ import { resolve } from 'node:path'
 // the storage repository, neither of which is bundled — but the build sits at 1516.4 KB, 8.6 KB under the old
 // 1525 KB ceiling, so the next glyph or token pull would have tripped the gate. Same levers as above:
 // one-brand builds, per-tab code splitting, pruning unread tokens.
-const BUDGET_KB = 1540
+// 2026-11-13 (Team setup file): user raised the budget to 1560 KB. Exporting and importing Settings as one
+// JSON (the file format, the Import / export menu and pop-ups, and the team setup screen after the tour)
+// added ~25 KB; build 1541.5 KB.
+const BUDGET_KB = 1560
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

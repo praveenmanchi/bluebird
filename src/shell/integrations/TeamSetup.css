@@ -1,6 +1,7 @@
 /* Team setup file — Figma "Settings · Team setup file" (40002763:18616). The last block of
- * Settings › Integrations: the same top rule and stack as a section, with the Product tour
- * row's layout for its header (text left, buttons right). */
+ * Settings › Integrations: the same top rule as a section, with the Product tour row's layout
+ * (text left, one Import / export button right). Its menu opens upward-safe below the button;
+ * the export checklist and import review live in the pop-ups (SettingsFileParts.css). */
 .bb-team-setup {
   position: relative;
   display: flex;
@@ -18,7 +19,16 @@
   gap: var(--bb-space-stack-sm);
 }
 .bb-team-setup__head > .bb-toggle { flex: 1 1 0; width: auto; min-width: min(100%, var(--bb-derived-check-item-root-width)); max-width: none; }
-.bb-team-setup__buttons { display: flex; flex: none; gap: var(--bb-space-stack-sm); }
+.bb-team-setup__anchor { position: relative; flex: none; }
+/* Dropdown menu instance under the button, right edges aligned. */
+.bb-dropdown-menu.bb-team-setup__menu {
+  position: absolute;
+  top: calc(100% + var(--bb-space-inset-xs));
+  right: 0;
+  z-index: 10;
+  width: max-content;
+  min-width: 100%;
+}
 .bb-team-setup__label {
   padding: 0;
   color: var(--bb-toggle-label-fg);

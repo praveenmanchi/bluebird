@@ -9,9 +9,10 @@ import { activePersonaId, activeTabId, brandPersonas, brandStatus, changingPerso
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
 import { OnboardingScreen } from './OnboardingScreen'
+import { TeamSetupScreen } from './TeamSetupScreen'
 import { SplashScreen } from './SplashScreen'
 import { PersonaScreen } from './PersonaScreen'
-import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
+import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, finishTeamSetup, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
 import { DEFAULT_INTEGRATIONS, INTEGRATIONS_MSG, refreshMs, type IntegrationSettings } from '@shared/integrations'
 import { historyUnseen, watchHistory } from '@shared/history/watch'
@@ -142,7 +143,16 @@ export function App({ client, transport }: AppProps) {
     return (
       <RpcProvider client={client}>
         <div class="h-full flex flex-col bb-canvas">
-          <OnboardingScreen tabs={tabs} brand={session.value?.brandId as BrandId | undefined} onFinish={(skipped) => { void completeOnboarding(client, skipped) }} settingsFile={integrations} />
+          <OnboardingScreen tabs={tabs} brand={session.value?.brandId as BrandId | undefined} onFinish={(skipped) => { void completeOnboarding(client, skipped) }} />
+        </div>
+      </RpcProvider>
+    )
+  }
+  if (current === 'team-setup') {
+    return (
+      <RpcProvider client={client}>
+        <div class="h-full flex flex-col bb-canvas">
+          <TeamSetupScreen brand={session.value?.brandId as BrandId | undefined} load={integrations.load} importFile={integrations.importFile} onFinish={finishTeamSetup} />
         </div>
       </RpcProvider>
     )

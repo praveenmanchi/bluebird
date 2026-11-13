@@ -1,0 +1,4 @@
+/* Team setup screen — Figma "After the tour · Team setup file" (40002775:14751). It borrows the
+ * tour's header, card and footer (OnboardingScreen.css) but is a screen of its own: no entrance
+ * choreography, and the copy sits above the card instead of under it. */
+.bb-team-setup-screen :is(.bb-onboarding__media, .bb-onboarding__counter, .bb-onboarding__title, .bb-onboarding__text, .bb-onboarding__next) { animation: none; }

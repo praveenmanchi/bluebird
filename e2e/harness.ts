@@ -58,12 +58,15 @@ export async function openPlugin(page: Page, { brand, persona, signedIn = true, 
   return problems
 }
 
-/** Signed-in sessions start on the first-run tour; skip it and wait for the tab bar. */
+/** Signed-in sessions start on the first-run tour, then the team setup screen; skip both and wait for the tab bar. */
 export async function skipTour(page: Page): Promise<void> {
   const tabBar = page.getByRole('navigation', { name: 'Sections' })
   const skip = page.getByRole('button', { name: 'Skip', exact: true })
   await expect(tabBar.or(skip).first()).toBeVisible()
-  if (await skip.isVisible()) await skip.click()
+  if (await skip.isVisible()) {
+    await skip.click()
+    await page.getByRole('button', { name: 'Skip for now', exact: true }).click()
+  }
   await expect(tabBar).toBeVisible()
 }
 

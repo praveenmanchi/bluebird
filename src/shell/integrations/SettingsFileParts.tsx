@@ -1,6 +1,7 @@
 import type { JSX } from 'preact'
-import { useRef } from 'preact/hooks'
-import { CheckItem, Icon } from '@shared/ui'
+import type { ComponentChildren } from 'preact'
+import { useEffect, useId, useRef, useState } from 'preact/hooks'
+import { Button, CheckItem, Icon } from '@shared/ui'
 import type { ImportRow } from './settingsFileView'
 import './SettingsFileParts.css'
 
@@ -53,5 +54,69 @@ export function FilePicker({ onFile, children }: FilePickerProps) {
       />
       {children(() => input.current?.click())}
     </>
+  )
+}
+
+export interface DropZoneProps {
+  heading: string
+  /** Label of the button that opens the file picker. */
+  action: string
+  onChoose: () => void
+  /** A file dropped on the zone. */
+  onFile: (file: File) => void
+}
+
+/** Figma "Drop zone": drop the settings file here, or open the picker. */
+export function DropZone({ heading, action, onChoose, onFile }: DropZoneProps) {
+  const [over, setOver] = useState(false)
+  const onDrop = (event: JSX.TargetedDragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setOver(false)
+    const file = event.dataTransfer?.files?.[0]
+    if (file) onFile(file)
+  }
+  return (
+    <div
+      class={`bb-settings-file__drop${over ? ' is-over' : ''}`}
+      onDragOver={(event) => { event.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={onDrop}
+    >
+      <Icon name="json" />
+      <span class="bb-settings-file__heading">{heading}</span>
+      <span class="bb-settings-file__meta">A .json file exported from Settings › Team setup file</span>
+      <Button variant="secondary" onClick={onChoose}>{action}</Button>
+    </div>
+  )
+}
+
+export interface SettingsDialogProps {
+  title: string
+  description: string
+  /** Escape or a click on the scrim; omit while the dialog must stay open (saving). */
+  onClose?: () => void
+  children: ComponentChildren
+}
+
+/** Figma "Dialog · Export settings / Import settings": a pop-up over a scrim, centred in the plugin window. */
+export function SettingsDialog({ title, description, onClose, children }: SettingsDialogProps) {
+  const root = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  const descId = useId()
+  useEffect(() => { root.current?.focus() }, [])
+  useEffect(() => {
+    if (!onClose) return undefined
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
+  return (
+    <div class="bb-settings-dialog__scrim" onClick={(event) => { if (event.target === event.currentTarget) onClose?.() }}>
+      <div ref={root} class="bb-settings-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descId} tabIndex={-1}>
+        <div class="bb-settings-dialog__header">
+          <h2 id={titleId} class="bb-settings-dialog__title">{title}</h2>
+          <p id={descId} class="bb-settings-file__meta">{description}</p>
+        </div>
+        {children}
+      </div>
+    </div>
   )
 }

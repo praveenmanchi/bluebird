@@ -5,7 +5,7 @@ import { applyTokens, clearTokens, type BrandTokensResult } from '@shared/brand'
 import { config, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
 import { ONBOARDING_MSG, PERSONA_MSG, SESSION_MSG, type OnboardingStatus, type PersonaStatus, type Session } from '@shared/session'
 import { loadLibraryState } from '@shared/libraries/status'
-import { brandPersonas, brandStatus, changingPersona, screen, session, selectPersona, syncTabs, windowSize } from './state'
+import { brandPersonas, brandStatus, changingPersona, replayingTour, screen, session, selectPersona, syncTabs, windowSize } from './state'
 
 /** Point the UI at a brand: generated [data-brand] CSS first, then the tokens resolved from the Figma document. */
 export async function activateBrand(client: RpcClient, brandId: string): Promise<void> {
@@ -93,12 +93,14 @@ async function tourPending(client: RpcClient): Promise<boolean> {
 }
 
 /**
- * Finish or skip the tour. The app opens first, whatever happens to the save; resolves
+ * Finish or skip the tour. The next screen opens first, whatever happens to the save; resolves
  * to whether the flag was stored. A failed save has one consequence — the tour shows
  * again on the next sign-in — so callers may ignore it.
  */
 export async function completeOnboarding(client: RpcClient, skipped: boolean): Promise<boolean> {
-  screen.value = 'app'
+  // First run: the team setup screen follows the tour, finished or skipped. A replay goes back to the app.
+  screen.value = replayingTour.value ? 'app' : 'team-setup'
+  replayingTour.value = false
   try {
     await client.call(ONBOARDING_MSG.complete, { skipped })
     return true
@@ -107,8 +109,14 @@ export async function completeOnboarding(client: RpcClient, skipped: boolean): P
   }
 }
 
+/** Leaves the team setup screen, with or without a file imported. */
+export function finishTeamSetup(): void {
+  screen.value = 'app'
+}
+
 /** Settings › "Replay product tour". */
 export function replayOnboarding(): void {
+  replayingTour.value = true
   screen.value = 'onboarding'
 }
 
