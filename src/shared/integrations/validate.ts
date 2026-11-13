@@ -54,7 +54,7 @@ const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') 
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
   github: { repo, baseUrl: url },
-  notifications: { designSystemWebhook: url, devTeamWebhook: url, emails },
+  notifications: { designSystemWebhook: url, devTeamWebhook: url, outlookWebhook: url, emails },
   storybook: { baseUrl: url, indexUrl: url, storyPathTemplate: storyTemplate },
   zeroheight: { publicBaseUrl: url },
   dualFile: { file1Id: fileId, file2Id: fileId, file1Key: token, file2Key: token, file1Role: oneOf(FILE_ROLES), file2Role: oneOf(FILE_ROLES) },

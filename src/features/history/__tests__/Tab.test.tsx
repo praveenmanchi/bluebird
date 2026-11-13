@@ -20,7 +20,9 @@ describe('History tab', () => {
     renderTab()
     expect(await find('GitHub connected')).toBeInTheDocument()
     const today = screen.getByRole('region', { name: 'Today' })
-    expect(within(today).getAllByRole('article')).toHaveLength(3)
+    // Code Connect entries are no longer listed in History.
+    expect(within(today).getAllByRole('article')).toHaveLength(2)
+    expect(screen.queryByRole('article', { name: /^Code Connect:/ })).toBeNull()
     const card = screen.getByRole('article', { name: 'Extraction: Button refresh' })
     expect(within(card).getByRole('button', { name: 'Open BB-342 in Jira' })).toBeInTheDocument()
     expect(within(card).getByText('DS')).toHaveAttribute('title', 'Design System')
@@ -39,6 +41,23 @@ describe('History tab', () => {
     expect(screen.getByRole('region', { name: 'Extraction' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('tab', { name: 'UX AI 1' }))
     expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(screen.queryByRole('tab', { name: /Code Connect/ })).toBeNull()
+  })
+
+  it('shows the open file’s versions and what one changed', async () => {
+    renderTab()
+    await find('GitHub connected')
+    fireEvent.click(screen.getByRole('tab', { name: 'Versioning' }))
+    const version = await screen.findByRole('article', { name: 'Version: Button refresh ready for review' })
+    expect(within(version).getByText('Praveen Manchi')).toBeInTheDocument()
+    expect(screen.getAllByRole('article', { name: /^Autosave:/ })).toHaveLength(2)
+    expect(screen.getByRole('tab', { name: 'Versioning 5' })).toBeInTheDocument()
+    fireEvent.click(within(version).getByRole('button', { name: 'View details: Button refresh ready for review' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Button refresh ready for review' })
+    expect(await within(dialog).findByText('Filter chip')).toBeInTheDocument()
+    expect(within(dialog).getByText('Component set · New component set on Molecules')).toBeInTheDocument()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('opens an entry with its full changelog and comes back', async () => {

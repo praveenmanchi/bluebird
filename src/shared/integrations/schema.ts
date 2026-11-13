@@ -61,7 +61,7 @@ export const MAX_EXTRA_FILES = 8
 
 export const sectionSchemas = {
   github: z.object({ apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean() }),
-  notifications: z.object({ designSystemWebhook: text(), devTeamWebhook: text(), emails: text() }),
+  notifications: z.object({ designSystemWebhook: text(), devTeamWebhook: text(), outlookWebhook: text(), emails: text() }),
   storybook: z.object({ baseUrl: text(), storyPathTemplate: text(), indexUrl: text(), linksEnabled: z.boolean() }),
   zeroheight: z.object({ apiKey: text(), styleguideId: text(), publicBaseUrl: text(), linksEnabled: z.boolean() }),
   dualFile: z.object({
@@ -103,7 +103,7 @@ export const INTEGRATION_IDS = Object.keys(sectionSchemas) as IntegrationId[]
 export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof IntegrationValues<K>)[] } = {
   github: ['apiKey'],
   // Power Automate / Teams workflow URLs carry a sig= signature: anyone holding one can post.
-  notifications: ['designSystemWebhook', 'devTeamWebhook'],
+  notifications: ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook'],
   storybook: [],
   zeroheight: ['apiKey'],
   // extraFiles carry each file's key, so the whole list stays with the person.
@@ -135,7 +135,7 @@ export function applyManaged(settings: IntegrationSettings, managed: ManagedInte
 /** First-run values: switches as the Figma screen shows them, selects on the Figma value, text empty. */
 export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true },
-  notifications: { designSystemWebhook: '', devTeamWebhook: '', emails: '' },
+  notifications: { designSystemWebhook: '', devTeamWebhook: '', outlookWebhook: '', emails: '' },
   storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true },
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
   dualFile: { enabled: true, file1Id: '', file1Key: '', file1Role: 'Variables', file2Id: '', file2Key: '', file2Role: 'Components', extraFiles: [] },

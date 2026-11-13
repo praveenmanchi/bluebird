@@ -97,10 +97,11 @@ export const SECTIONS: readonly SectionSpec[] = [
   },
   {
     id: 'notifications', logo: 'teams', title: 'Notifications',
-    description: 'Configure Power Automate workflow URLs to receive Teams notifications when Pull Requests are created. Toggle notifications in the Publish tab.',
+    description: 'Configure Power Automate workflow URLs to receive Teams and Outlook notifications when pull requests are created or changelogs are sent for review. Toggle notifications where you send.',
     blocks: [
       { kind: 'text', key: 'designSystemWebhook', label: 'Power Automate — Design System Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
       { kind: 'text', key: 'devTeamWebhook', label: 'Power Automate — Dev Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
+      { kind: 'text', key: 'outlookWebhook', label: 'Outlook webhook — Reviewers', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...', helper: 'A Power Automate flow that emails the reviewers in Outlook, or an Outlook connector URL (*.webhook.office.com). Used when a changelog is sent for review.' },
       { kind: 'text', key: 'emails', label: 'Email Notifications', icon: 'message', placeholder: 'team@company.com', helper: 'Comma-separated addresses for PR summary emails (requires backend mail service).' },
     ],
   },

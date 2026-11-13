@@ -9,6 +9,7 @@ import { PERSONA_KEY } from '@shared/session/persona-key'
 import { createHistoryHandlers } from './history-handlers'
 import { createChangelogHandlers } from './changelog-handlers'
 import { drawChangelogCard } from './changelog-canvas'
+import { createVersionsHandlers } from './versions-handlers'
 
 const SEEN_KEY = 'bluebird:history:seen'
 
@@ -42,6 +43,8 @@ const changelog: HandlerMap = createChangelogHandlers({
   readDualFile: async () => (await readIntegrations(clientStorageRead)).dualFile,
   readGithub: async () => (await readIntegrations(clientStorageRead)).github,
   readStorage: async () => (await readIntegrations(clientStorageRead)).storage,
+  readJira: async () => (await readIntegrations(clientStorageRead)).jira,
+  readNotifications: async () => (await readIntegrations(clientStorageRead)).notifications,
   fetch: (url, init) => fetch(url, init),
   sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   now: () => new Date(),
@@ -56,4 +59,14 @@ const changelog: HandlerMap = createChangelogHandlers({
   drawCard: drawChangelogCard,
 })
 
-export const handlers: HandlerMap = { ...history, ...changelog }
+/** Versioning: the open file's Figma version history. */
+const versions: HandlerMap = createVersionsHandlers({
+  readDualFile: async () => (await readIntegrations(clientStorageRead)).dualFile,
+  fetch: (url, init) => fetch(url, init),
+  sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  now: () => new Date(),
+  fileKey: () => figma.fileKey ?? null,
+  fileName: () => figma.root.name,
+})
+
+export const handlers: HandlerMap = { ...history, ...changelog, ...versions }

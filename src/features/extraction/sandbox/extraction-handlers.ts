@@ -6,7 +6,7 @@
 // compares against the same files.
 import type { HandlerMap } from '@shared/bridge'
 import type { IntegrationValues } from '@shared/integrations'
-import { allowedWebhook } from '@shared/integrations/webhooks'
+import { allowedWebhook, channelCard } from '@shared/integrations/webhooks'
 import { GithubError, configFromSettings, createGithubClient, isProblem, type GithubClient, type GithubFetch } from '@shared/github/client'
 import type { Change, Snapshot } from '@shared/design/types'
 import { recordHistory } from '@shared/history/record'
@@ -51,17 +51,8 @@ function problemOf(github: IntegrationValues<'github'>): string | null {
   return `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${fields} in Settings › GitHub`
 }
 
-/** The Teams / Power Automate message for a pushed extraction. */
-export function channelCard(title: string, lines: readonly string[], link?: string, linkLabel?: string): string {
-  return JSON.stringify({
-    '@type': 'MessageCard',
-    '@context': 'https://schema.org/extensions',
-    summary: title,
-    title,
-    text: lines.join('\n\n'),
-    ...(link ? { potentialAction: [{ '@type': 'OpenUri', name: linkLabel ?? 'Open on GitHub', targets: [{ os: 'default', uri: link }] }] } : {}),
-  })
-}
+/** The Teams / Power Automate message for a pushed extraction (shared with History). */
+export { channelCard }
 
 export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
   /** The extraction behind the last compare; a push must name it so it never sends something the designer did not see. */

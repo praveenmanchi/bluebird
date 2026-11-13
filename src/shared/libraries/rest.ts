@@ -32,9 +32,9 @@ export class LibraryError extends Error {
 }
 
 /** What a request is for, so a 403 can name the scope or plan it needs. */
-export type Need = 'variables' | 'components' | 'styles' | 'nodes' | 'meta' | 'analytics'
+export type Need = 'variables' | 'components' | 'styles' | 'nodes' | 'meta' | 'analytics' | 'versions'
 
-const SCOPE: Record<Need, string> = { variables: 'file_variables:read', components: 'library_content:read', styles: 'library_content:read', nodes: 'file_content:read', meta: 'file_metadata:read', analytics: 'library_analytics:read' }
+const SCOPE: Record<Need, string> = { variables: 'file_variables:read', components: 'library_content:read', styles: 'library_content:read', nodes: 'file_content:read', meta: 'file_metadata:read', analytics: 'library_analytics:read', versions: 'file_versions:read' }
 
 /** Figma's own explanation from an error body ({ err } or { message }). */
 function figmaDetail(body: string): string {

@@ -8,7 +8,7 @@ import {
 const CONFIGURED: IntegrationSettings = {
   ...DEFAULT_INTEGRATIONS,
   github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/design-tokens' },
-  notifications: { designSystemWebhook: 'https://prod.logic.azure.com/workflows/a?sig=1', devTeamWebhook: '', emails: 'ds@acme.com' },
+  notifications: { designSystemWebhook: 'https://prod.logic.azure.com/workflows/a?sig=1', devTeamWebhook: '', outlookWebhook: '', emails: 'ds@acme.com' },
   storybook: { ...DEFAULT_INTEGRATIONS.storybook, baseUrl: 'https://ds.acme.com/storybook' },
   dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123', file1Key: 'figd_mine', extraFiles: [{ id: 'Zz9', role: 'Components', key: 'figd_extra' }] },
   ai: { ...DEFAULT_INTEGRATIONS.ai, claudeKey: 'sk-ant-team', instructions: 'Use sentence case.' },

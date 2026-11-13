@@ -28,6 +28,6 @@ export function sectionStatus(id: IntegrationId, values: IntegrationValues, othe
     if (bag.sameAsGithub !== true) return ['apiKey', 'repo'].every((k) => filled(bag, k)) ? 'configured' : 'missing'
     return others?.github ? sectionStatus('github', others.github) : 'configured'
   }
-  if (id === 'notifications') return ['designSystemWebhook', 'devTeamWebhook', 'emails'].some((k) => filled(bag, k)) ? 'configured' : 'missing'
+  if (id === 'notifications') return ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook', 'emails'].some((k) => filled(bag, k)) ? 'configured' : 'missing'
   return (REQUIRED[id] ?? []).every((k) => filled(bag, k)) ? 'configured' : 'missing'
 }

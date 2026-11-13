@@ -1,12 +1,16 @@
 // The tab's round trips to the sandbox.
 import type { RpcClient } from '@shared/bridge'
 import { historyUnseen } from '@shared/history/watch'
-import { CHANGELOG, MSG, isTicket, type ApproveResult, type ChangelogContext, type ChangelogDraft, type ListResult, type RangeDays, type SubmitResult } from './messages'
 import {
-  approveError, approving, changelogCard, changelogContext, changelogDraft, changelogError, changelogNotes, changelogPhase, changelogTicket, changelogTitle,
-  closeChangelog, days, error, flash, loadResult, loading, polling, selected,
+  CHANGELOG, MSG, isTicket, type ApproveResult, type ChangelogContext, type ChangelogDraft, type FileVersion, type ListResult, type RangeDays, type SubmitResult, type TicketsResult, type VersionDiff, type VersionsResult,
+} from './messages'
+import {
+  approveError, approvePostToJira, approving, changelogCard, changelogContext, changelogDraft, changelogError, changelogNotes, changelogPhase, changelogPostToJira, changelogTicket, changelogTitle,
+  closeChangelog, days, error, flash, loadResult, loading, notifyOutlook, notifyTeams, openVersion, polling, selected, ticketMode, ticketOptions,
+  versionDiff, versionDiffError, versionsError, versionsLoading, versionsResult,
 } from './state'
 import type { HistoryEntry } from '@shared/history/types'
+import { inDevMode } from '@shared/editor'
 
 /** Reading a 90-day range can mean many day files. */
 const LIST_TIMEOUT_MS = 60_000
@@ -41,6 +45,8 @@ const text = (e: unknown, fallback: string) => e instanceof Error && e.message ?
 /** Comparing reads every page of the file and the main file over REST. */
 const GENERATE_TIMEOUT_MS = 180_000
 const WRITE_TIMEOUT_MS = 60_000
+/** Saving, then the Jira comment and the webhooks. */
+const SUBMIT_TIMEOUT_MS = 120_000
 
 /** Opens the "New changelog" pop-up and looks up where the person is. */
 export async function openChangelog(rpc: RpcClient): Promise<void> {
@@ -65,11 +71,23 @@ export async function generateChangelog(rpc: RpcClient): Promise<void> {
     changelogContext.value = draft.context
     changelogTitle.value = draft.title
     changelogPhase.value = 'preview'
+    void loadTickets(rpc)
   } catch (e) {
     if (changelogPhase.value !== 'generating') return
     changelogError.value = text(e, 'The compare stopped before it finished. Try again.')
     changelogPhase.value = 'ready'
   }
+}
+
+/** The open tickets for the picker; with Jira not connected the pop-up switches to typing the key. */
+export async function loadTickets(rpc: RpcClient): Promise<void> {
+  if (!changelogContext.value?.jira.connected) { ticketMode.value = 'type'; return }
+  try {
+    ticketOptions.value = await rpc.call<TicketsResult>(CHANGELOG.tickets, undefined, WRITE_TIMEOUT_MS)
+  } catch (e) {
+    ticketOptions.value = { tickets: [], problem: text(e, 'Couldn’t read the Jira tickets.') }
+  }
+  if (!ticketOptions.value.tickets.length && ticketMode.value === 'pick') ticketMode.value = 'type'
 }
 
 export const canSubmit = (): boolean => !!changelogDraft.value && changelogTitle.value.trim().length > 0 && (changelogTicket.value.trim() === '' || isTicket(changelogTicket.value.trim()))
@@ -81,8 +99,10 @@ export async function submitChangelog(rpc: RpcClient): Promise<void> {
   changelogError.value = null
   try {
     const done = await rpc.call<SubmitResult>(CHANGELOG.submit, {
-      draftId: draft.draftId, title: changelogTitle.value.trim(), notes: changelogNotes.value.trim(), ticket: changelogTicket.value.trim(), addCard: changelogCard.value,
-    }, WRITE_TIMEOUT_MS)
+      draftId: draft.draftId, title: changelogTitle.value.trim(), notes: changelogNotes.value.trim(), ticket: changelogTicket.value.trim(), addCard: changelogCard.value && !inDevMode.value,
+      postToJira: changelogPostToJira.value && !!changelogContext.value?.jira.connected && changelogTicket.value.trim() !== '',
+      notify: { teams: notifyTeams.value && !!changelogContext.value?.channels.teams, outlook: notifyOutlook.value && !!changelogContext.value?.channels.outlook },
+    }, SUBMIT_TIMEOUT_MS)
     closeChangelog()
     flash.value = done.message
     await refresh(rpc)
@@ -97,7 +117,7 @@ export async function approveChangelog(rpc: RpcClient, entry: HistoryEntry): Pro
   approving.value = entry.id
   approveError.value = null
   try {
-    const done = await rpc.call<ApproveResult>(CHANGELOG.approve, { id: entry.id, at: entry.at }, WRITE_TIMEOUT_MS)
+    const done = await rpc.call<ApproveResult>(CHANGELOG.approve, { id: entry.id, at: entry.at, postToJira: approvePostToJira.value && !!entry.ticket }, SUBMIT_TIMEOUT_MS)
     flash.value = done.message
     selected.value = null
     await refresh(rpc)
@@ -105,5 +125,32 @@ export async function approveChangelog(rpc: RpcClient, entry: HistoryEntry): Pro
     approveError.value = text(e, 'The changelog could not be approved. Try again.')
   } finally {
     approving.value = null
+  }
+}
+
+/** Versioning: the open file's versions for the current range. */
+export async function loadVersions(rpc: RpcClient, range: RangeDays = days.value): Promise<void> {
+  if (versionsLoading.value) return
+  versionsLoading.value = true
+  versionsError.value = null
+  try {
+    versionsResult.value = await rpc.call<VersionsResult>(MSG.versions, { days: range }, LIST_TIMEOUT_MS)
+  } catch (e) {
+    versionsError.value = text(e, 'Couldn’t read this file’s versions.')
+  } finally {
+    versionsLoading.value = false
+  }
+}
+
+/** Opens Version details and compares the version with the one before it in the list. */
+export async function showVersion(rpc: RpcClient, version: FileVersion, previous: FileVersion | null): Promise<void> {
+  openVersion.value = version
+  versionDiff.value = null
+  versionDiffError.value = null
+  try {
+    const diff = await rpc.call<VersionDiff>(MSG.versionDiff, { id: version.id, previousId: previous?.id ?? null }, GENERATE_TIMEOUT_MS)
+    if (openVersion.value?.id === version.id) versionDiff.value = diff
+  } catch (e) {
+    if (openVersion.value?.id === version.id) versionDiffError.value = text(e, 'Couldn’t compare this version.')
   }
 }

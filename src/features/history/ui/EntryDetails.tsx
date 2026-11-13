@@ -2,6 +2,8 @@ import { Avatar, Button, CheckItem, CodeSnippet, LinkButton, Message, MetaBadge,
 import { copyText } from '@shared/clipboard'
 import type { HistoryEntry, HistorySection } from '@shared/history/types'
 import { STATUS_TONE, TYPE_LABEL, initials, longDate, statusLabel, typeTone } from '../format'
+import { approvalComment, entryBranchUrl } from '../review'
+import { JiraComment } from './ReviewOptions'
 
 export interface EntryDetailsProps {
   entry: HistoryEntry
@@ -13,6 +15,9 @@ export interface EntryDetailsProps {
   /** The approval is being saved. */
   approving?: boolean
   approveError?: string | null
+  /** The reviewer posts the approval to the changelog's ticket. */
+  postToJira?: boolean
+  onPostToJiraChange?: (on: boolean) => void
 }
 
 const CHANGE_TONE = { added: 'success', modified: 'accent', removed: 'danger' } as const
@@ -68,9 +73,11 @@ function Section({ section }: { section: HistorySection }) {
  * numbers, an optional notice, the type's own sections, the activity log and the links.
  * Everything comes from the entry, so every type renders through this one screen.
  */
-export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl, onApprove, approving = false, approveError }: EntryDetailsProps) {
+export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl, onApprove, approving = false, approveError, postToJira = true, onPostToJiraChange }: EntryDetailsProps) {
   const d = entry.details ?? {}
   const ticketUrl = entry.ticket && jiraSite ? `${jiraSite}/browse/${entry.ticket}` : ''
+  const branch = entryBranchUrl(entry)
+  const reviewing = entry.status === 'review' && !!onApprove
   return (
     <div class="bb-history__details">
       <LinkButton class="bb-history__back" onClick={onBack}>← Back to history</LinkButton>
@@ -100,7 +107,12 @@ export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl, onApprove, ap
         <p class="bb-history__body">{d.description ?? entry.summary}</p>
         {d.facts && d.facts.length > 0 && (
           <dl class="bb-history__facts">
-            {d.facts.map((f) => <div key={f.label} class="bb-history__fact"><dt class="bb-history__hint">{f.label}</dt><dd>{f.value}</dd></div>)}
+            {d.facts.map((f) => (
+              <div key={f.label} class="bb-history__fact">
+                <dt class="bb-history__hint">{f.label}</dt>
+                <dd>{f.value === branch && branch ? <LinkButton onClick={() => onOpenUrl(branch)}>Open the branch in Figma</LinkButton> : f.value}</dd>
+              </div>
+            ))}
           </dl>
         )}
         {d.stats && d.stats.length > 0 && (
@@ -115,6 +127,17 @@ export function EntryDetails({ entry, jiraSite, onBack, onOpenUrl, onApprove, ap
         <section class="bb-history__card" aria-label="Activity">
           <SectionTitle title="Activity" showCount count={d.activity.length} showAction={false} />
           <div class="bb-history__steps">{d.activity.map((a, i) => <PublishStep key={i} status="done" title={a.title} detail={a.detail} time={a.time} />)}</div>
+        </section>
+      )}
+      {reviewing && entry.ticket && onPostToJiraChange && (
+        <section class="bb-history__card" aria-label="Jira ticket">
+          <SectionTitle title="Jira ticket" showCount={false} showAction={false} />
+          <p class="bb-history__body">{ticketUrl ? <LinkButton onClick={() => onOpenUrl(ticketUrl)}>{entry.ticket}</LinkButton> : entry.ticket} · linked by {entry.by.name} when it was sent for review</p>
+          <JiraComment
+            ticket={entry.ticket} label={`Post the approval to ${entry.ticket} as a Jira comment`} checked={postToJira} disabled={approving}
+            author="You" time="Posted when you approve" body={approvalComment(entry, 'you', '').split('\nFigma branch:')[0]!} branch={branch}
+            onChange={onPostToJiraChange} onOpenUrl={onOpenUrl}
+          />
         </section>
       )}
       {approveError && <Notice tone="error" title="Not approved">{approveError}</Notice>}
