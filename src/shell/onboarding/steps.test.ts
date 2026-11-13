@@ -32,3 +32,11 @@ describe('stepCounter', () => {
     expect(stepCounter(10, 12)).toBe('11 / 12')
   })
 })
+
+describe('buildTour with the import step', () => {
+  it('ends on importing a team setup file, on the Settings tab', () => {
+    const tour = buildTour([{ id: 'jira' }], { importStep: true })
+    expect(tour.map((s) => s.id)).toEqual(['welcome', 'jira', 'setup', 'import'])
+    expect(tour.at(-1)).toMatchObject({ scene: 'import', tabId: SETTINGS_TAB, title: 'Got a team settings file?' })
+  })
+})

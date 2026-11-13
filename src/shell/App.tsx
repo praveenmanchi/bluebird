@@ -13,7 +13,7 @@ import { SplashScreen } from './SplashScreen'
 import { PersonaScreen } from './PersonaScreen'
 import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
-import { DEFAULT_INTEGRATIONS, refreshMs } from '@shared/integrations'
+import { DEFAULT_INTEGRATIONS, INTEGRATIONS_MSG, refreshMs, type IntegrationSettings } from '@shared/integrations'
 import { historyUnseen, watchHistory } from '@shared/history/watch'
 import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { OPEN_SETTINGS_EVENT, OPEN_TAB_EVENT } from '@shared/navigation'
@@ -60,6 +60,13 @@ export function App({ client, transport }: AppProps) {
         if (integrationSettings.value) integrationSettings.value = { ...integrationSettings.value, [section]: saved }
         if (section === 'dualFile') void loadLibraryState(client)
         return saved
+      },
+      // A team setup file can change every section at once.
+      importFile: async (file: unknown, keepExisting: boolean) => {
+        const settings = await client.call<IntegrationSettings>(INTEGRATIONS_MSG.import, { file, keepExisting })
+        integrationSettings.value = settings
+        void loadLibraryState(client)
+        return settings
       },
     }
   }, [client])
@@ -135,7 +142,7 @@ export function App({ client, transport }: AppProps) {
     return (
       <RpcProvider client={client}>
         <div class="h-full flex flex-col bb-canvas">
-          <OnboardingScreen tabs={tabs} brand={session.value?.brandId as BrandId | undefined} onFinish={(skipped) => { void completeOnboarding(client, skipped) }} />
+          <OnboardingScreen tabs={tabs} brand={session.value?.brandId as BrandId | undefined} onFinish={(skipped) => { void completeOnboarding(client, skipped) }} settingsFile={integrations} />
         </div>
       </RpcProvider>
     )

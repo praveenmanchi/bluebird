@@ -124,3 +124,59 @@ describe('OnboardingScreen', () => {
   })
 })
 
+
+describe('OnboardingScreen import step', () => {
+  const FILE = JSON.stringify({ kind: 'bluebird-settings', version: 1, brand: 'Bridge', includesKeys: true, sections: { github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { file1Id: 'AbC123' } } })
+  const fileOf = (text: string, name = 'bridge-settings.json') => ({ name, size: text.length, text: async () => text }) as unknown as File
+  const pick = (file: File) => fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [file] } })
+  const store = async () => {
+    const { DEFAULT_INTEGRATIONS } = await import('@shared/integrations')
+    const applied = { ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123' } }
+    return { load: vi.fn(async () => DEFAULT_INTEGRATIONS), importFile: vi.fn(async () => applied) }
+  }
+
+  it('adds a last step that asks for the file, and Skip for now leaves without importing', async () => {
+    const settingsFile = await store()
+    const { onFinish } = setup({ settingsFile, initialStep: 5 })
+    expect(screen.getByText('06 / 06')).toBeInTheDocument()
+    expect(title()).toBe('Got a team settings file?')
+    expect(screen.getByText('Drop your team settings file here')).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: 'Choose file' })).toHaveLength(2)
+    fireEvent.click(screen.getByRole('button', { name: 'Skip for now' }))
+    expect(onFinish).toHaveBeenCalledWith(true)
+    expect(settingsFile.importFile).not.toHaveBeenCalled()
+  })
+
+  it('reviews the chosen file, applies it and finishes from the confirmation', async () => {
+    const settingsFile = await store()
+    const { onFinish } = setup({ settingsFile, initialStep: 5 })
+    pick(fileOf(FILE))
+    expect(await screen.findByText('This file sets up 2 connections')).toBeInTheDocument()
+    expect(title()).toBe('Check what will be set up')
+    fireEvent.click(screen.getByRole('button', { name: 'Apply and finish' }))
+    expect(await screen.findByText('Settings imported')).toBeInTheDocument()
+    expect(settingsFile.importFile).toHaveBeenCalledWith(JSON.parse(FILE), true)
+    expect(title()).toBe('You’re set up')
+    expect(screen.getByText('Ready to use')).toBeInTheDocument()
+    expect(screen.getByText('Still needs you')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Skip for now' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Get started' }))
+    expect(onFinish).toHaveBeenCalledWith(false)
+  })
+
+  it('explains a file that is not a settings file and offers another try', async () => {
+    const settingsFile = await store()
+    setup({ settingsFile, initialStep: 5 })
+    pick(fileOf('{"notes":1}', 'team-notes.json'))
+    expect(await screen.findByText('This file can’t be imported')).toBeInTheDocument()
+    expect(title()).toBe('That file didn’t work')
+    expect(screen.getAllByRole('button', { name: 'Choose another file' })).toHaveLength(2)
+  })
+
+  it('takes a file dropped on the drop zone', async () => {
+    const settingsFile = await store()
+    setup({ settingsFile, initialStep: 5 })
+    fireEvent.drop(screen.getByText('Drop your team settings file here').parentElement!, { dataTransfer: { files: [fileOf(FILE)] } })
+    expect(await screen.findByText('This file sets up 2 connections')).toBeInTheDocument()
+  })
+})

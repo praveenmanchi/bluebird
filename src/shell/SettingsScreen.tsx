@@ -88,7 +88,7 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
           <Button variant="secondary" onClick={onReplayTour}>Replay tour</Button>
         </div>
       )}
-      {integrations && <SettingsIntegrations api={integrations} managed={managedFor(session?.brandId)} managedBy={label} />}
+      {integrations && <SettingsIntegrations api={integrations} managed={managedFor(session?.brandId)} managedBy={label} brandId={session?.brandId} />}
       <TeamBanner class="bb-settings__team" taglineSize="auto" />
     </section>
   )

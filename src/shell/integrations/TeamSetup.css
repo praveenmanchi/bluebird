@@ -1,0 +1,54 @@
+/* Team setup file — Figma "Settings · Team setup file" (40002763:18616). The last block of
+ * Settings › Integrations: the same top rule and stack as a section, with the Product tour
+ * row's layout for its header (text left, buttons right). */
+.bb-team-setup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+  padding: var(--bb-settings-space-section) 0;
+  border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
+}
+.bb-team-setup > :is(.bb-toggle, .bb-button-group, .bb-notice) { width: 100%; max-width: none; }
+.bb-team-setup__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-stack-sm);
+}
+.bb-team-setup__head > .bb-toggle { flex: 1 1 0; width: auto; min-width: min(100%, var(--bb-derived-check-item-root-width)); max-width: none; }
+.bb-team-setup__buttons { display: flex; flex: none; gap: var(--bb-space-stack-sm); }
+.bb-team-setup__label {
+  padding: 0;
+  color: var(--bb-toggle-label-fg);
+  font-family: var(--bb-toggle-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-toggle-label-font-size);
+  font-weight: var(--bb-toggle-label-font-weight);
+  line-height: var(--bb-toggle-label-line-height);
+}
+.bb-team-setup__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-sm);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.bb-team-setup__list > .bb-team-setup__label { margin-bottom: var(--bb-space-stack-sm); }
+.bb-team-setup__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-space-stack-md);
+}
+.bb-team-setup__row > .bb-checkbox { flex: none; }
+.bb-team-setup__detail {
+  min-width: 0;
+  color: var(--bb-toggle-description-fg);
+  font-family: var(--bb-toggle-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-toggle-description-font-size);
+  line-height: var(--bb-toggle-description-line-height);
+  text-align: right;
+}

@@ -1,0 +1,40 @@
+/* Team setup file parts — Figma "Settings · Team setup file" (40002763:18616) and the
+ * onboarding import step (40002766:16928): the file row and the per-section rows.
+ * The row is a plain frame bound to tab/bar/bg, border/default and card-variable/radius. */
+.bb-settings-file {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-stack-md);
+  padding: var(--bb-space-stack-md);
+  border: var(--bb-border-width-default) solid var(--bb-border-default);
+  border-radius: var(--bb-card-variable-radius);
+  background: var(--bb-tab-bar-bg);
+  font-family: var(--bb-toggle-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-settings-file__icon { flex: none; color: var(--bb-toggle-label-fg); }
+.bb-settings-file__text { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.bb-settings-file__name {
+  overflow: hidden;
+  color: var(--bb-toggle-label-fg);
+  font-size: var(--bb-toggle-label-font-size);
+  font-weight: var(--bb-toggle-label-font-weight);
+  line-height: var(--bb-toggle-label-line-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-settings-file__meta {
+  color: var(--bb-toggle-description-fg);
+  font-size: var(--bb-toggle-description-font-size);
+  line-height: var(--bb-toggle-description-line-height);
+}
+.bb-settings-file__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Check Item instances FILL the list and HUG their copy in the Figma screens. */
+.bb-settings-file__rows .bb-check-item { width: 100%; max-width: none; height: auto; }
+.bb-settings-file__input { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }

@@ -7,6 +7,8 @@ export interface IntegrationsApi {
   save: (section: IntegrationId, values: IntegrationValues) => Promise<IntegrationValues>
   /** Tries the connection with the form's current (unsaved) values; only for TESTABLE_INTEGRATIONS. */
   test?: (section: IntegrationId, values: IntegrationValues) => Promise<ConnectionTestResult>
+  /** Applies a team setup file (the parsed JSON) and answers with every section as it now stands. Omit to hide import. */
+  importFile?: (file: unknown, keepExisting: boolean) => Promise<IntegrationSettings>
 }
 
 /** A test reaches the service, which can be slow; long enough for a proxy + Jira round trip. */
@@ -16,6 +18,7 @@ export function integrationsApi(client: RpcClient): IntegrationsApi {
   return {
     load: () => client.call<IntegrationSettings>(INTEGRATIONS_MSG.get),
     save: (section, values) => client.call<IntegrationValues>(INTEGRATIONS_MSG.save, { section, values }),
+    importFile: (file, keepExisting) => client.call<IntegrationSettings>(INTEGRATIONS_MSG.import, { file, keepExisting }),
     test: (section, values) => client.call<ConnectionTestResult>(testMessage(section), values, TEST_TIMEOUT_MS),
   }
 }

@@ -7,11 +7,13 @@
 import * as z from 'zod/mini'
 import type { HandlerMap } from '@shared/bridge'
 import {
-  applyManaged, isSecretField, INTEGRATIONS_KEY, INTEGRATIONS_MSG, mergeIntegrations, normalizeIntegration, saveRequestSchema, sectionSchemas, validateIntegration,
+  applyManaged, applySettingsFile, blockingErrors, isSecretField, parseSettingsObject, INTEGRATION_IDS, INTEGRATIONS_KEY, INTEGRATIONS_MSG, mergeIntegrations, normalizeIntegration, saveRequestSchema, sectionSchemas, validateIntegration,
   type IntegrationId, type IntegrationSettings, type IntegrationValues,
 } from '@shared/integrations'
 import { readIntegrations, readManaged, type Brands } from '@shared/integrations/effective'
 import type { SessionStore } from './session'
+
+const importRequestSchema = z.object({ file: z.unknown(), keepExisting: z.boolean() })
 
 /** `brands` defaults to plugin.config.json; tests pass their own. */
 export function createIntegrationsHandlers(store: SessionStore, brands?: Brands): HandlerMap {
@@ -47,6 +49,30 @@ export function createIntegrationsHandlers(store: SessionStore, brands?: Brands)
         const effective = applyManaged(mine, managed)[section]
         const first = Object.values(validateIntegration(section, effective))[0]
         if (first) throw new Error(first)
+        await store.set(INTEGRATIONS_KEY, mine)
+        return effective
+      })
+    },
+    /**
+     * A team setup file, checked again here: the shell's review is a convenience, this is the gate.
+     * Writes the person's own values (brand-managed fields stay theirs) and answers with what the plugin now acts on.
+     */
+    [INTEGRATIONS_MSG.import]: async (payload: unknown): Promise<IntegrationSettings> => {
+      const request = z.safeParse(importRequestSchema, payload)
+      if (!request.success) throw new Error('That settings file can’t be read.')
+      const parsed = parseSettingsObject(request.data.file)
+      if (!parsed.ok) throw new Error(parsed.message)
+      return serial(async () => {
+        const managed = await readManaged((k) => store.get(k), brands)
+        const own = await stored()
+        const locked = Object.fromEntries(INTEGRATION_IDS.map((id) => [id, Object.keys(managed?.[id] ?? {}).filter((key) => !isSecretField(id, key))]))
+        const mine = applySettingsFile(own, parsed.file.sections, { keepExisting: request.data.keepExisting, locked })
+        const effective = applyManaged(mine, managed)
+        for (const id of INTEGRATION_IDS) {
+          if (!parsed.file.sections[id]) continue
+          const first = blockingErrors(id, effective[id])[0]
+          if (first) throw new Error(first)
+        }
         await store.set(INTEGRATIONS_KEY, mine)
         return effective
       })

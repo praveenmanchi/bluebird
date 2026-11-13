@@ -100,3 +100,47 @@ describe('brand-managed sections', () => {
   })
 })
 
+
+describe('integrations:import', () => {
+  const file = (sections: Record<string, unknown>) => ({ kind: 'bluebird-settings', version: 1, includesKeys: true, sections })
+
+  it('applies a team setup file over the stored settings and answers with every section', async () => {
+    const store = memoryStore()
+    const h = createIntegrationsHandlers(store)
+    await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'Old1', file1Key: 'figd_mine' } })
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: false, file: file({ github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { file1Id: 'New1', file1Key: 'figd_theirs' } }) }) as typeof DEFAULT_INTEGRATIONS
+    expect(all.github).toMatchObject({ apiKey: 'ghp_team', repo: 'acme/tokens', branch: 'main' })
+    expect(all.dualFile).toMatchObject({ file1Id: 'New1', file1Key: 'figd_mine' })
+    expect(await call(h, INTEGRATIONS_MSG.get)).toEqual(all)
+  })
+
+  it('stores Dual File IDs even though the person has not added a token yet', async () => {
+    const h = createIntegrationsHandlers(memoryStore())
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: true, file: file({ dualFile: { file1Id: 'New1' } }) }) as typeof DEFAULT_INTEGRATIONS
+    expect(all.dualFile).toMatchObject({ file1Id: 'New1', file1Key: '' })
+  })
+
+  it('only fills empty fields when asked to keep existing values', async () => {
+    const h = createIntegrationsHandlers(memoryStore())
+    await call(h, INTEGRATIONS_MSG.save, { section: 'github', values: github })
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: true, file: file({ github: { repo: 'acme/tokens', baseUrl: 'https://github.acme.com' } }) }) as typeof DEFAULT_INTEGRATIONS
+    expect(all.github).toMatchObject({ repo: github.repo, baseUrl: 'https://github.acme.com' })
+  })
+
+  it('writes nothing for a file that is not a settings file or a malformed request', async () => {
+    const store = memoryStore()
+    const h = createIntegrationsHandlers(store)
+    await expect(call(h, INTEGRATIONS_MSG.import, { keepExisting: false, file: { notes: 'hi' } })).rejects.toThrow('isn’t a settings file')
+    await expect(call(h, INTEGRATIONS_MSG.import, { file: file({}) })).rejects.toThrow('can’t be read')
+    expect(store.data.has(INTEGRATIONS_KEY)).toBe(false)
+  })
+
+  it('never overwrites a field the signed-in brand manages', async () => {
+    const store = memoryStore()
+    store.data.set('bluebird:session', { brandId: 'acme', since: '2026-11-13T00:00:00.000Z' })
+    const h = createIntegrationsHandlers(store, { acme: { integrations: { github: { repo: 'acme/managed' } } } })
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: false, file: file({ github: { repo: 'evil/fork', apiKey: 'ghp_team' } }) }) as typeof DEFAULT_INTEGRATIONS
+    expect(all.github).toMatchObject({ repo: 'acme/managed', apiKey: 'ghp_team' })
+    expect((store.data.get(INTEGRATIONS_KEY) as typeof DEFAULT_INTEGRATIONS).github.repo).toBe('')
+  })
+})

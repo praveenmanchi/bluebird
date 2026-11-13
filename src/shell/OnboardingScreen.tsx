@@ -2,7 +2,11 @@ import type { FunctionComponent, JSX } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { BrandLogo, Button, Icon } from '@shared/ui'
 import type { BrandId } from '@shared/brand'
-import { buildTour, stepCounter, SETTINGS_TAB, type SceneId } from './onboarding/steps'
+import { DEFAULT_INTEGRATIONS, type IntegrationSettings } from '@shared/integrations'
+import { buildTour, stepCounter, IMPORT_STEP, SETTINGS_TAB, type SceneId } from './onboarding/steps'
+import { ImportStep, importCopy } from './onboarding/ImportStep'
+import { FilePicker } from './integrations/SettingsFileParts'
+import { useSettingsImport, type ImportFile } from './integrations/useSettingsImport'
 import { usePrefersReducedMotion, useSceneLoop } from './onboarding/stage'
 import type { SceneProps, TourTabChip } from './onboarding/scenes/types'
 import { WelcomeScene } from './onboarding/scenes/WelcomeScene'
@@ -30,13 +34,15 @@ export interface OnboardingScreenProps {
   /** `skipped` is true when the user left before the last step. */
   onFinish: (skipped: boolean) => void
   initialStep?: number
+  /** The Settings store. With it the tour ends on a step that imports a team setup file. */
+  settingsFile?: { load: () => Promise<IntegrationSettings>; importFile: ImportFile }
   /** Freeze the demos on their end state (stories, visual diff). Reduced motion does this too. */
   still?: boolean
 }
 
 /** Figma "Onboarding flow" (page "onboarding screens"): one screen per step, a demo in the Video frame. */
-export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still = false }: OnboardingScreenProps) {
-  const steps = buildTour(tabs)
+export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still = false, settingsFile }: OnboardingScreenProps) {
+  const steps = buildTour(tabs, { importStep: settingsFile !== undefined })
   const [index, setIndex] = useState(() => Math.min(Math.max(0, initialStep), steps.length - 1))
   const root = useRef<HTMLElement>(null)
   const reduced = usePrefersReducedMotion()
@@ -44,7 +50,20 @@ export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still
   const step = steps[index]!
   const run = useSceneLoop(frozen, step.id)
   const last = index === steps.length - 1
-  const Scene = SCENES[step.scene]
+  const importing = step.scene === IMPORT_STEP
+  const Scene = step.scene === IMPORT_STEP ? null : SCENES[step.scene]
+  const imports = useSettingsImport(settingsFile?.importFile)
+  const [current, setCurrent] = useState<IntegrationSettings>(DEFAULT_INTEGRATIONS)
+  const load = settingsFile?.load
+  // What the person already has decides which sections the review marks as waiting for a key.
+  useEffect(() => {
+    let live = true
+    load?.().then((settings) => { if (live) setCurrent(settings) }, () => undefined)
+    return () => { live = false }
+  }, [load])
+  const copy = importing ? importCopy(imports.state, step) : { title: step.title, body: step.body, next: last ? 'Get started' : 'Next' }
+  const applying = imports.state.kind === 'review' && imports.state.applying
+  const applied = importing && imports.state.kind === 'applied'
 
   useEffect(() => { root.current?.focus() }, [])
   // Back disables on the first step; if the focused control went away, keep focus in the tour so the keys still work.
@@ -65,6 +84,17 @@ export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still
 
   return (
     <section ref={root} class="bb-onboarding" aria-label="Product tour" tabIndex={-1} onKeyDown={onKeyDown}>
+      <FilePicker onFile={(file) => { void imports.choose(file) }}>
+        {(openPicker) => {
+          // The import step's primary button follows the file: choose it, apply it, then finish.
+          const onNext = () => {
+            if (!importing) { if (last) onFinish(false); else go(index + 1); return }
+            if (imports.state.kind === 'review') void imports.apply(true)
+            else if (imports.state.kind === 'applied') onFinish(false)
+            else openPicker()
+          }
+          return (
+            <>
       <header class="bb-onboarding__header">
         <BrandLogo brand={brand} class="bb-onboarding__logo" />
       </header>
@@ -78,12 +108,14 @@ export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still
           <TourTab icon="api-key" label="Settings" showLabel active={step.tabId === SETTINGS_TAB} onClick={() => go(stepFor(SETTINGS_TAB))} />
         </nav>
         <div key={step.id} class="bb-onboarding__media">
-          <Scene key={run} still={frozen} tabs={tabs.filter((t) => stepFor(t.id) >= 0)} />
+          {Scene
+            ? <Scene key={run} still={frozen} tabs={tabs.filter((t) => stepFor(t.id) >= 0)} />
+            : <ImportStep state={imports.state} current={current} onChoose={openPicker} onFile={(file) => { void imports.choose(file) }} />}
         </div>
         <div class="bb-onboarding__copy" aria-live="polite">
           <span key={`${step.id}-count`} class="bb-onboarding__counter">{stepCounter(index, steps.length)}</span>
-          <h2 key={`${step.id}-title`} class="bb-onboarding__title">{step.title}</h2>
-          <p key={`${step.id}-text`} class="bb-onboarding__text">{step.body}</p>
+          <h2 key={`${step.id}-title`} class="bb-onboarding__title">{copy.title}</h2>
+          <p key={`${step.id}-text`} class="bb-onboarding__text">{copy.body}</p>
         </div>
       </div>
       <footer class="bb-onboarding__footer">
@@ -94,14 +126,18 @@ export function OnboardingScreen({ tabs, brand, onFinish, initialStep = 0, still
           ))}
         </div>
         <div class="bb-onboarding__nav">
-          <Button variant="secondary" onClick={() => onFinish(true)}>Skip</Button>
-          <Button variant="secondary" disabled={index === 0} onClick={() => go(index - 1)}>Back</Button>
+          {!applied && <Button variant="secondary" disabled={applying} onClick={() => onFinish(true)}>{importing ? 'Skip for now' : 'Skip'}</Button>}
+          <Button variant="secondary" disabled={index === 0 || applying} onClick={() => go(index - 1)}>Back</Button>
           {/* Alternating class names restart the pulse each step without remounting (and unfocusing) the button. */}
-          <Button class={`bb-onboarding__next bb-onboarding__next--${index % 2 ? 'odd' : 'even'}`} onClick={() => (last ? onFinish(false) : go(index + 1))}>
-            {last ? 'Get started' : 'Next'}
+          <Button class={`bb-onboarding__next bb-onboarding__next--${index % 2 ? 'odd' : 'even'}`} loading={applying} onClick={onNext}>
+            {copy.next}
           </Button>
         </div>
       </footer>
+            </>
+          )
+        }}
+      </FilePicker>
     </section>
   )
 }

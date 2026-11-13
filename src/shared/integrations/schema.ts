@@ -6,6 +6,8 @@ import * as z from 'zod/mini'
 export const INTEGRATIONS_MSG = {
   get: 'integrations:get',
   save: 'integrations:save',
+  /** Applies a team setup file (see transfer.ts) to the person's stored settings. */
+  import: 'integrations:import',
 } as const
 
 export const INTEGRATIONS_KEY = 'bluebird:integrations'

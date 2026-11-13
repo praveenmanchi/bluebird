@@ -9,10 +9,13 @@ export type SceneId = 'welcome' | 'a11y' | 'audit' | 'varsearch' | 'varmapper' |
 /** The Settings entry at the right end of the tour's tab list (Setup step). */
 export const SETTINGS_TAB = 'settings'
 
+/** The last step when the plugin can import a team setup file: not a demo, a real file picker. */
+export const IMPORT_STEP = 'import'
+
 export interface TourStep {
-  /** Stable id: the tab id for tab steps, `welcome` / `setup` otherwise. */
+  /** Stable id: the tab id for tab steps, `welcome` / `setup` / `import` otherwise. */
   id: string
-  scene: SceneId
+  scene: SceneId | typeof IMPORT_STEP
   title: string
   body: string
   /** Tab highlighted in the tour's tab list; null on Welcome. */
@@ -97,17 +100,31 @@ const SETUP: TourStep = {
   tabId: SETTINGS_TAB,
 }
 
+/** Figma "Onboarding · 12 · Import settings" (40002766:16928). */
+const IMPORT: TourStep = {
+  id: IMPORT_STEP,
+  scene: IMPORT_STEP,
+  title: 'Got a team settings file?',
+  body: 'Your design system lead can export every connection as one JSON file. Import it here and GitHub, Storybook, Jira and the rest are set up in one step.',
+  tabId: SETTINGS_TAB,
+}
+
+export interface TourOptions {
+  /** Ends the tour on the import step (the plugin has a Settings store to import into). */
+  importStep?: boolean
+}
+
 /** True when the tour has a demo scene for this tab id. */
 export function hasTourStep(tabId: string): boolean {
   return Object.prototype.hasOwnProperty.call(TAB_COPY, tabId)
 }
 
-export function buildTour(tabs: readonly Pick<ResolvedTab, 'id'>[]): TourStep[] {
+export function buildTour(tabs: readonly Pick<ResolvedTab, 'id'>[], options: TourOptions = {}): TourStep[] {
   const tabSteps = tabs.flatMap((tab): TourStep[] => {
     const copy = TAB_COPY[tab.id]
     return copy ? [{ id: tab.id, tabId: tab.id, ...copy }] : []
   })
-  return [WELCOME, ...tabSteps, SETUP]
+  return [WELCOME, ...tabSteps, SETUP, ...(options.importStep ? [IMPORT] : [])]
 }
 
 /** "02 / 07" — the Figma counter pads both numbers to two digits. */

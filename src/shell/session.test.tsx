@@ -149,7 +149,7 @@ describe('first-run tour', () => {
     await waitFor(() => expect(screen.value).toBe('app'))
   })
 
-  it('can be replayed from Settings and finished with Get started', async () => {
+  it('can be replayed from Settings and left at the import step', async () => {
     mount('ikea')
     await waitFor(() => expect(screen.value).toBe('app'))
     fireEvent.click(dom.getByRole('button', { name: 'Settings' }))
@@ -157,7 +157,9 @@ describe('first-run tour', () => {
     await waitFor(() => expect(screen.value).toBe('onboarding'))
     const steps = dom.getAllByRole('button', { name: /^Step \d+ of/ })
     fireEvent.click(steps.at(-1)!)
-    fireEvent.click(dom.getByRole('button', { name: 'Get started' }))
+    // The tour ends on importing a team setup file; without one the person moves on.
+    expect(dom.getByRole('heading', { level: 2 }).textContent).toBe('Got a team settings file?')
+    fireEvent.click(dom.getByRole('button', { name: 'Skip for now' }))
     await waitFor(() => expect(screen.value).toBe('app'))
   })
 

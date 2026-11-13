@@ -287,3 +287,18 @@ describe('SettingsIntegrations', () => {
     })
   })
 })
+
+describe('SettingsIntegrations team setup file', () => {
+  it('shows what an imported file set in the sections above it', async () => {
+    const imported: IntegrationSettings = { ...DEFAULT_INTEGRATIONS, storybook: { ...DEFAULT_INTEGRATIONS.storybook, baseUrl: 'https://ds.acme.com/storybook' } }
+    const api: IntegrationsApi = { ...fakeApi(), importFile: vi.fn(async () => imported) }
+    render(<SettingsIntegrations api={api} brandId="bridge" managedBy="Bridge" />)
+    const storybook = await screen.findByRole('region', { name: 'Storybook' })
+    expect(within(storybook).getByText('Not configured')).toBeInTheDocument()
+    const text = JSON.stringify({ kind: 'bluebird-settings', version: 1, includesKeys: true, sections: { storybook: { baseUrl: 'https://ds.acme.com/storybook' } } })
+    fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [{ name: 'bridge-settings.json', size: text.length, text: async () => text }] } })
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply settings' }))
+    await waitFor(() => expect(within(screen.getByRole('region', { name: 'Storybook' })).getByText('Configured')).toBeInTheDocument())
+    expect(within(screen.getByRole('region', { name: 'Team setup file' })).getByText('Settings imported')).toBeInTheDocument()
+  })
+})
