@@ -11,6 +11,15 @@
   padding: var(--bb-space-stack-md) var(--bb-space-inset-md);
   background: var(--bb-background);
 }
+/* Product tour and Session: sections of their own under the integrations, with the same top rule
+ * and stack as an integration section (settings/section/*). */
+.bb-settings__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+  padding: var(--bb-settings-space-section) 0;
+  border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
+}
 /* Toggle instance (Toggle=false) resized from the set's 960px to 1051px. */
 .bb-settings__row { max-width: var(--bb-derived-settings-screen-toggle-width); }
 .bb-settings__actions { width: 100%; }
