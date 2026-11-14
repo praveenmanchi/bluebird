@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = { parameters: { figma: { variant: 'Artifact Header' } } }
 export const Component: Story = {
-  args: { icon: 'component', title: 'Button', subtitle: 'Atom · Components page · 12 variants · 8 properties', actionLabel: 'Go to component ↗' },
+  args: { icon: 'component', title: 'Button', subtitle: 'Atom · Components page · 12 variants · 8 properties', actionLabel: 'Go to component' },
 }
 
 export const AcrossBrands: Story = {

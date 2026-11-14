@@ -5,7 +5,7 @@ export const figma = {
   name: 'UX AI body',
   props: {},
   figmaGaps: {
-    ...scaleGaps('uxai/border-width', 'uxai/beam-width'),
+    ...scaleGaps('dimension/space/2', 'uxai/border-width', 'uxai/beam-width'),
     'uxai/chip/bg': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
     'uxai/chip/border': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',
     'uxai/radius/chip': 'Bound on the composed ContextChip instance; ContextChip.css consumes it.',

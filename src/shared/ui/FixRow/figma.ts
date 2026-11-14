@@ -16,7 +16,7 @@ export const figma = {
     'Button › width FIXED (button/primary/width-md)': 'width="fixed" (Apply is 120 wide in Figma, not hugging its label)',
   },
   figmaGaps: {
-    ...scaleGaps('font/weight-regular', 'font/weight-strong', 'button/primary/border-width'),
+    ...scaleGaps('icon/size/md', 'font/weight-regular', 'font/weight-strong', 'button/primary/border-width'),
     'icon/glyph/default': 'consumed by the composed Icon (the icons "Fix" instance in Figma)',
     'button/primary/bg/default': composed,
     'button/primary/border/default': composed,

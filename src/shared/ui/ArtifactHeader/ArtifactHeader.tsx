@@ -1,6 +1,6 @@
 import type { ComponentChildren, JSX } from 'preact'
 import { Icon, type IconName } from '../Icon/Icon'
-import { LinkButton } from '../LinkButton/LinkButton'
+import { EXTERNAL_LINK_ICON, LinkButton } from '../LinkButton/LinkButton'
 import './ArtifactHeader.css'
 
 export interface ArtifactHeaderProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title' | 'icon'> {
@@ -21,7 +21,7 @@ export function ArtifactHeader({
   title = 'surface/accent',
   subtitle = 'Colour variable · Brand UI · used in 38 layers',
   icon = 'colors',
-  actionLabel = 'Open in Figma ↗',
+  actionLabel = 'Open in Figma',
   onOpen,
   class: cls,
   ...rest
@@ -35,7 +35,7 @@ export function ArtifactHeader({
         <span class="bb-artifact-header__title">{title}</span>
         <span class="bb-artifact-header__subtitle">{subtitle}</span>
       </div>
-      <LinkButton class="bb-artifact-header__open" onClick={onOpen}>{actionLabel}</LinkButton>
+      <LinkButton icon={EXTERNAL_LINK_ICON} class="bb-artifact-header__open" onClick={onOpen}>{actionLabel}</LinkButton>
     </div>
   )
 }

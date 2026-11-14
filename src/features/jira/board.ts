@@ -52,9 +52,13 @@ export const DEFAULT_FILTERS: BoardFilters = {
   scope: 'assigned', query: '', status: 'all', sprint: ALL_SPRINTS, priority: 'all',
 }
 
-/** The filters a fresh board starts on: the active sprint when there is one. */
-export function boardDefaults(activeSprint: string | null): BoardFilters {
-  return { ...DEFAULT_FILTERS, sprint: activeSprint ?? ALL_SPRINTS }
+/** The filters a fresh board starts on: the active sprint, but only when it has tickets to show. */
+export function boardDefaults(activeSprint: string | null, tickets: readonly Ticket[]): BoardFilters {
+  // Opening on a sprint none of `tickets` are in leaves the board empty with nothing to undo:
+  // `refined` measures against these defaults, so the Filters button stays unlit and the empty
+  // state reads "no tickets" rather than "no match". Show every sprint instead.
+  const sprint = activeSprint && tickets.some((t) => t.sprint === activeSprint) ? activeSprint : ALL_SPRINTS
+  return { ...DEFAULT_FILTERS, sprint }
 }
 
 const SCOPE_ORDER: readonly TicketScope[] = ['assigned', 'reported', 'watching']

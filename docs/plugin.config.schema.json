@@ -32,8 +32,7 @@
             "type": "object",
             "required": [
               "label",
-              "source",
-              "accessCodeHash"
+              "source"
             ],
             "properties": {
               "label": {
@@ -63,11 +62,11 @@
               "accessCodeHash": {
                 "type": "string",
                 "pattern": "^[0-9a-f]{64}$",
-                "description": "SHA-256 hex of the brand access code (trimmed, upper-cased). Generate with `npm run access-code -- <code>`."
+                "description": "SHA-256 hex of the brand access code (trimmed, upper-cased). Generate with `npm run access-code -- <code>`. Required for every brand in a multi-brand config; a single-brand build drops it."
               },
               "tabs": {
                 "type": "array",
-                "description": "This brand's tab bar: array order is tab order, enabled:false hides the tab. Tabs not listed follow in persona order. Edit in dev.html \u203a Plugin configuration.",
+                "description": "This brand's tab bar: array order is tab order, enabled:false hides the tab. Tabs not listed follow in persona order. Edit in dev.html › Plugin configuration.",
                 "items": {
                   "type": "object",
                   "required": [
@@ -88,7 +87,7 @@
               },
               "personas": {
                 "type": "object",
-                "description": "Which tabs each persona gets in this brand, by persona id. A persona not listed keeps personas.<id>.tabs; an empty list drops it from this brand. Edit in dev.html \u203a Plugin configuration.",
+                "description": "Which tabs each persona gets in this brand, by persona id. A persona not listed keeps personas.<id>.tabs; an empty list drops it from this brand. Edit in dev.html › Plugin configuration.",
                 "propertyNames": {
                   "pattern": "^[a-z0-9][a-z0-9-]*$"
                 },
@@ -144,12 +143,20 @@
                   },
                   "dualFile": {
                     "type": "object",
-                    "additionalProperties": {
-                      "type": [
-                        "string",
-                        "boolean"
-                      ]
-                    }
+                    "description": "enabled and files (up to 3 of { name, id, role }). The token is personal and never managed.",
+                    "properties": {
+                      "enabled": { "type": "boolean" },
+                      "files": {
+                        "type": "array",
+                        "maxItems": 3,
+                        "items": {
+                          "type": "object",
+                          "properties": { "name": { "type": "string" }, "id": { "type": "string" }, "role": { "enum": ["Variables", "Components", "Variables + Components"] } },
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "additionalProperties": false
                   },
                   "ai": {
                     "type": "object",
@@ -177,6 +184,23 @@
                         "boolean"
                       ]
                     }
+                  }
+                }
+              },
+              "figmaPlugin": {
+                "type": "object",
+                "description": "The plugin as published in this brand's own Figma organisation. `npm run package` writes these into a single-brand package's manifest.json. Edit in dev.html › Plugin configuration › Deployment.",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[0-9]{6,25}$",
+                    "description": "The plugin id that organisation's Figma created (Plugins › Development › New plugin)."
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The plugin name shown in that organisation."
                   }
                 }
               }
@@ -248,6 +272,29 @@
           "minimum": 400,
           "maximum": 960
         }
+      }
+    },
+    "deploy": {
+      "type": "object",
+      "description": "multi: every brand in one plugin, the access code picks the brand. single: one brand only, opens without sign-in, other brands stripped from the build. BB_DEPLOY=<brand|multi> overrides it for one build.",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "multi",
+            "single"
+          ]
+        },
+        "brand": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "The brand a single-brand build ships."
+        }
+      },
+      "default": {
+        "mode": "multi"
       }
     }
   }

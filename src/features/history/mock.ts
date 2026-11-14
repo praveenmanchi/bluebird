@@ -6,8 +6,11 @@ import { SAMPLE_JIRA, SAMPLE_REPO, sampleEntries } from './fixtures'
 import { HISTORY_CHECK, type HistoryCheckResult } from '@shared/history/watch'
 import type { HistoryEntry } from '@shared/history/types'
 import { approveEntry, changelogEntry, draftTitle, isPending } from './changelog'
-import { CHANGELOG, MSG, approveRequestSchema, listRequestSchema, submitRequestSchema, type ApproveResult, type ChangelogContext, type ChangelogDraft, type ListResult, type SubmitResult } from './messages'
-import { SAMPLE_CHANGES } from './fixtures'
+import {
+  CHANGELOG, MSG, approveRequestSchema, listRequestSchema, submitRequestSchema, versionDiffRequestSchema, versionsRequestSchema,
+  type ApproveResult, type ChangelogContext, type ChangelogDraft, type ListResult, type SubmitResult, type TicketsResult, type VersionDiff, type VersionsResult,
+} from './messages'
+import { SAMPLE_CHANGES, SAMPLE_TICKETS, SAMPLE_VERSIONS, SAMPLE_VERSION_DIFF } from './fixtures'
 
 /** Matches the dev harness "data" knob. */
 export type MockScenario = 'default' | 'empty' | 'many' | 'slow' | 'error'
@@ -33,9 +36,11 @@ export function createMockHandlers(options: HistoryMockOptions | MockScenario = 
   let calls = 0
   /** Changelogs submitted (and approved) in this session, on top of the samples. */
   let own: HistoryEntry[] = []
+  const reach = { channels: { teams: true, outlook: true }, jira: { connected: true } }
   const context: ChangelogContext = notBranch
-    ? { file: 'Project Bluebird UI', page: 'Atoms', user: 'Praveen Manchi', main: null, problem: 'This file is not a branch. Open the branch you made your changes in, then generate the changelog there.' }
-    : { file: 'button-refresh', page: 'Atoms', user: 'Praveen Manchi', main: 'Project Bluebird UI' }
+    ? { file: 'Project Bluebird UI', page: 'Atoms', user: 'Praveen Manchi', main: null, problem: 'This file is not a branch. Open the branch you made your changes in, then generate the changelog there.', ...reach }
+    : { file: 'button-refresh', page: 'Atoms', user: 'Praveen Manchi', main: 'Project Bluebird UI', ...reach }
+  const BRANCH = 'https://www.figma.com/design/naqp6r4h5V4KUgTTmwe9U5/branch/Br4nchK3yExample/button-refresh'
   return {
     [MSG.list]: async (payload: unknown): Promise<ListResult> => {
       const { days } = listRequestSchema.parse(payload)
@@ -59,7 +64,18 @@ export function createMockHandlers(options: HistoryMockOptions | MockScenario = 
       await wait(scenario === 'slow' ? 3000 : delayMs)
       if (scenario === 'error') throw new Error('The main file’s API key is missing the file_variables:read scope. Create a token with it.')
       const changes = scenario === 'empty' ? [] : SAMPLE_CHANGES
-      return { draftId: 'mock-draft', context, title: draftTitle(changes, context.file), changes, warnings: [] }
+      return { draftId: 'mock-draft', context, title: draftTitle(changes, context.file), changes, warnings: [], branch: BRANCH }
+    },
+    [CHANGELOG.tickets]: async (): Promise<TicketsResult> => { await wait(delayMs); return { tickets: SAMPLE_TICKETS } },
+    [MSG.versions]: async (payload: unknown): Promise<VersionsResult> => {
+      versionsRequestSchema.parse(payload)
+      await wait(scenario === 'slow' ? 3000 : delayMs)
+      return { file: 'Project Bluebird UI', versions: scenario === 'empty' ? [] : SAMPLE_VERSIONS(now()) }
+    },
+    [MSG.versionDiff]: async (payload: unknown): Promise<VersionDiff> => {
+      const req = versionDiffRequestSchema.parse(payload)
+      await wait(delayMs)
+      return req.previousId ? SAMPLE_VERSION_DIFF : { changes: [], note: 'This is the oldest version in the range, so there is nothing before it to compare with.' }
     },
     [CHANGELOG.submit]: async (payload: unknown): Promise<SubmitResult> => {
       const req = submitRequestSchema.parse(payload)
@@ -70,7 +86,9 @@ export function createMockHandlers(options: HistoryMockOptions | MockScenario = 
         schema: 1, id: `mock${at.getTime().toString(36)}`, at: at.toISOString(),
       }
       own = [entry, ...own]
-      return { id: entry.id, card: req.addCard, message: `Submitted for review. Your team sees it in History as Under review.${req.addCard ? ' The changelog card is on this page.' : ''}` }
+      const jira = req.postToJira && req.ticket ? ` ${req.ticket} got a Jira comment with the changes and the Figma branch link.` : ''
+      const told = [req.notify.teams && 'Microsoft Teams', req.notify.outlook && 'Outlook'].filter(Boolean)
+      return { id: entry.id, card: req.addCard, message: `Submitted for review. Your team sees it in History as Under review.${req.addCard ? ' The changelog card is on this page.' : ''}${jira}${told.length ? ` ${told.join(' and ')} ${told.length === 1 ? 'was' : 'were'} notified.` : ''}` }
     },
     [CHANGELOG.approve]: async (payload: unknown): Promise<ApproveResult> => {
       const req = approveRequestSchema.parse(payload)
@@ -78,7 +96,7 @@ export function createMockHandlers(options: HistoryMockOptions | MockScenario = 
       const entry = [...own, ...sampleEntries(now())].find((e) => e.id === req.id)
       if (!entry || !isPending(entry)) throw new Error('This entry is not waiting for review.')
       own = [approveEntry(entry, { by: 'Anita Rao', at: now().toISOString() }), ...own.filter((e) => e.id !== entry.id)]
-      return { message: `Approved. “${entry.title}” is now in ${SAMPLE_REPO} · .bluebird/DESIGN-CHANGELOG.md.` }
+      return { message: `Approved. “${entry.title}” is now in ${SAMPLE_REPO} · .bluebird/DESIGN-CHANGELOG.md.${req.postToJira && entry.ticket ? ` ${entry.ticket} got a Jira comment with the approval and the Figma branch link.` : ''}` }
     },
     [MSG.open]: async (payload: { url: string }) => { if (typeof window !== 'undefined' && typeof window.open === 'function') window.open(payload.url, '_blank', 'noopener') },
   }

@@ -8,10 +8,10 @@
 .bb-publish {
   display: flex;
   flex-direction: column;
-  gap: var(--bb-publish-space-section);
+  gap: var(--bb-mcp-space-section);
   box-sizing: border-box;
   height: 100%;
-  padding: var(--bb-publish-space-panel);
+  padding: var(--bb-mcp-space-panel);
   font-family: var(--bb-publish-font-family), ui-sans-serif, system-ui, sans-serif;
   color: var(--bb-publish-text-body);
   container: publish / inline-size;
@@ -59,6 +59,7 @@
   align-items: center;
   gap: var(--bb-publish-space-inline);
 }
+.bb-publish__extract { gap: var(--bb-space-inline-md); }
 .bb-publish__extract > span,
 .bb-publish__summary {
   flex: 1 1 0;
@@ -66,6 +67,7 @@
   margin: 0;
   font-size: var(--bb-publish-font-size-caption);
   line-height: var(--bb-publish-font-line-caption);
+  font-weight: var(--bb-publish-font-weight-regular);
   color: var(--bb-publish-text-meta);
 }
 

@@ -15,6 +15,12 @@ describe('ContextChip', () => {
     rerender(<ContextChip type="citation">Doc</ContextChip>)
     expect(container.querySelector('[data-icon]')?.getAttribute('data-icon')).toBe('text')
   })
+  it('exposes a forced focus state for the Figma State=Focus variants', () => {
+    const { container, rerender } = render(<ContextChip />)
+    expect(container.querySelector('.bb-context-chip')!.hasAttribute('data-state')).toBe(false)
+    rerender(<ContextChip state="focus" />)
+    expect(container.querySelector('.bb-context-chip')!.getAttribute('data-state')).toBe('focus')
+  })
   it('renders the label and honours an icon override', () => {
     const { container } = render(<ContextChip type="source" icon="jira">PROJ-12</ContextChip>)
     expect(screen.getByText('PROJ-12')).toBeInTheDocument()

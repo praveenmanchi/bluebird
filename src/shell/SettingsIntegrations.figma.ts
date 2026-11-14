@@ -29,6 +29,8 @@ export const figma = {
     'Team Banner': 'TeamBanner, rendered by SettingsScreen',
   },
   figmaGaps: {
+    // Bound on the size-step instances inside the shell Footer's size expander; Footer.css reads --bb-footer-segment-radius.
+    ...scaleGaps('footer/segment/radius'),
     ...scaleGaps('dimension/space/10', 'space/inset-xs', 'space/inset-lg-alt', 'dimension/space/6', 'dimension/space/8', 'space/stack-xs', 'dimension/space/9', 'dimension/space/45', 'text/placeholder', 'dimension/radius/12'),
     Background: 'The SettingsScreen root (.bb-settings) paints Background around the sections.',
     'Banner/bg': chrome, Border: chrome, 'tab/gap': chrome, 'tab/padding-x': chrome, 'tab/padding-y': chrome,
@@ -69,6 +71,7 @@ export const figma = {
     ]),
     ...gaps(composed('SectionHeader'), ['section-header-gap', 'section-header-padding-right', 'configure-the-github-repository-where-extracted-va-line-height']),
     ...gaps(stale, ['label-input-label-color', 'label-input-label-font-family', 'label-input-label-font-weight']),
+    ...gaps('Old Dual File layout (narrow ID column beside a wide key column). Code follows the one-token file cards in "Settings · 600 · Integrations open" (40002863:13838): Contains is 176 wide beside the URL.', ['dual-file-r1-column-1-width']),
   },
   notes: 'Desktop mock 1074 × ~3680. Code: two columns from a 560px container up (halves, or Dual File\'s 324 / fill split), one column below; the AI provider rows wrap the API key under the model when narrow. Values persist per section through integrations:get / integrations:save (figma.clientStorage, zod-validated, field rules in @shared/integrations/validate). Test Connection is wired for Jira (via the proxy) and Dual File Mode (Figma REST); other sections say it is not wired. Dual File is ahead of Figma: code has two file slots, each with ID, API key and a "File N contains" dropbox (Variables / Components / Variables + Components), where the frame still shows the Variables/Components ID + key pairs. Figma has Styleguide ID as a "dropbox"; code uses an Input because listing styleguides needs the Zeroheight API. Select options (branches, paths, models) are fixed lists until the GitHub/AI APIs are wired. The Jira "Base URL - Enterprise" helper in Figma is the Input Box placeholder copy; code says what the field is for.',
 } as const

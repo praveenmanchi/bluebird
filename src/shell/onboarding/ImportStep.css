@@ -1,0 +1,27 @@
+/* Team setup screen card — Figma "Team setup · 1 Import settings" (40002766:16928) and its
+ * Review / All set / File not valid states. Sits in the same media frame the tour plays demos in; content is centred vertically and scrolls when a file lists many sections. */
+.bb-ob-import {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: var(--bb-onboarding-gap-md);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-onboarding-scene-padding);
+  overflow-y: auto;
+}
+.bb-ob-import > .bb-notice { width: 100%; max-width: none; box-sizing: border-box; }
+.bb-ob-import__heading {
+  color: var(--bb-onboarding-text-title);
+  font-size: var(--bb-onboarding-font-text-size);
+  font-weight: var(--bb-onboarding-font-weight-medium);
+  line-height: var(--bb-onboarding-font-text-line);
+}
+.bb-ob-import__hint {
+  margin: 0;
+  color: var(--bb-onboarding-text-meta);
+  font-size: var(--bb-onboarding-font-text-size);
+  line-height: var(--bb-onboarding-font-text-line);
+}
+.bb-ob-import__hint--center { text-align: center; }

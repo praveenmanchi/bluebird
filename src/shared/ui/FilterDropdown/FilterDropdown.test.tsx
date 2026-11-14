@@ -23,6 +23,10 @@ describe('FilterDropdown', () => {
     expect(button.dataset.open).toBe('true')
     expect(button.dataset.state).toBe('hover')
   })
+  it('exposes a forced focus state for the Figma Focus variant', () => {
+    render(<FilterDropdown state="focus">x</FilterDropdown>)
+    expect(screen.getByRole('button').dataset.state).toBe('focus')
+  })
   it('calls onClick and respects disabled', () => {
     const onClick = vi.fn()
     const { rerender } = render(<FilterDropdown onClick={onClick}>x</FilterDropdown>)

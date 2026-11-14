@@ -4,7 +4,7 @@
 import type { LibrariesRuntime } from '@shared/libraries/handlers'
 import { filesFromSettings, type FileSpec } from '@shared/libraries/load'
 import { createFigmaGet, LibraryError, type FigmaGet } from '@shared/libraries/rest'
-import type { LibraryIndex } from '@shared/libraries/types'
+import { fileLabel, type LibraryIndex } from '@shared/libraries/types'
 import { weekLabel } from '../format'
 import type { AnalyticsResult, Asset, AssetAnalytics, TeamAnalytics, UsageRow } from '../messages'
 
@@ -90,7 +90,7 @@ function specsFor(specs: readonly FileSpec[], kind: Kind): FileSpec[] {
 interface Reader { get: FigmaGet; base: string }
 
 const reader = (spec: FileSpec, fetch: LibrariesRuntime['fetch']): Reader => ({
-  get: createFigmaGet(spec.token, `File ${spec.slot}`, fetch),
+  get: createFigmaGet(spec.token, fileLabel(spec), fetch),
   base: `/analytics/libraries/${encodeURIComponent(spec.fileKey)}`,
 })
 

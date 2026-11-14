@@ -1,4 +1,5 @@
 import { WcagCard, useRpc } from '@shared/ui'
+import { inDevMode } from '@shared/editor'
 import { annotationForContrast } from '../annotate'
 import { MSG, type ContrastIssue } from '../messages'
 import { understandingUrl, type StandardId } from '../standards'
@@ -29,7 +30,8 @@ export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?
     ? () => { void rpc.call(MSG.selectAll, { nodeIds: issue.nodeIds }).catch(() => undefined) }
     : undefined
   // One click rebinds every layer that shares the pair, not just the focused one.
-  const applyFix = issue.fix
+  // Dev Mode's file is read-only, so the fix is not offered there.
+  const applyFix = issue.fix && !inDevMode.value
     ? () => { void rpc.call(MSG.applyFix, { nodeIds: issue.nodeIds, variableId: issue.fix!.tokenId }).catch(() => undefined) }
     : undefined
   return (
@@ -75,7 +77,7 @@ export function IssueCard({ issue, standard }: { issue: ContrastIssue; standard?
         ? `Rebind the text to ${issue.fix.tokenName}, the nearest token in the ${issue.fix.mode} palette that reaches ${issue.fix.ratio.toFixed(2)}:1.`
         : `Darken the text or lighten the fill until the ratio reaches ${c.needs}:1, or increase the type size so the large-text threshold applies.`}
       themes={['zoom']}
-      link={{ label: `Understanding SC ${c.code} ↗`, href: understandingUrl(standard, c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced') }}
+      link={{ label: `Understanding SC ${c.code}`, href: understandingUrl(standard, c.code === '1.4.3' ? 'contrast-minimum' : 'contrast-enhanced') }}
       sampleText={issue.text || 'Aa'}
       ratio={{ value: `${issue.ratio.toFixed(2)}:1`, requirement: `needs ${c.needs}:1` }}
       checks={['design']}

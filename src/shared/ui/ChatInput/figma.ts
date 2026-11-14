@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const chip = 'Bound on the nested Context Chip instances (Selection / Sources); rendered by the composed <ContextChip>, whose ContextChip.css consumes it.'
 
 /** Figma ↔ code contract for ChatInput ("Chat Input" 40000284:8166). */
@@ -17,6 +18,7 @@ export const figma = {
     'Toolbar › Stop (Generating only)': 'onStop',
   },
   figmaGaps: {
+    ...scaleGaps('dimension/space/2'),
     'uxai/bubble/user/bg': chip,
     'uxai/bubble/user/border': chip,
     'uxai/chip/bg': chip,

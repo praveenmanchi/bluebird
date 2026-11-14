@@ -2,7 +2,9 @@
 //
 //  1. Generated files are up to date with figma/*.json.
 //  2. Every `var(--bb-…)` used under src/shared/ui, src/shell and src/features exists.
-//  3. No hardcoded visual values (hex, rgb(), px, named colours) in component CSS.
+//  3. No hardcoded visual values in component CSS (hex, rgb(), px, rem/em, named colours, durations,
+//     fractional opacity, fractional calc multipliers) or in hand-written .ts/.tsx, the sandbox canvas
+//     writers included (hex, rgb(), px). `allow-raw: <reason>` on the line is the escape.
 //  4. Each code component consumes every token its Figma set binds, unless the
 //     component's figma.ts lists the token under `figmaGaps` with a reason.
 //  5. Each code component reads every `--bb-derived-*` its Figma set generates —
@@ -37,8 +39,42 @@ const RAW_PATTERNS: { name: string; re: RegExp }[] = [
   { name: 'hex colour', re: /#[0-9a-fA-F]{3,8}\b/ },
   { name: 'rgb/hsl colour', re: /\b(?:rgb|hsl)a?\(/ },
   { name: 'px length', re: /(?<![\w-])(?!0px)\d*\.?\d+px\b/ },
-  { name: 'named colour', re: /:\s*(?:white|black|red|blue|green|gray|grey|transparent)\s*[;!]/ },
+  { name: 'named colour', re: /:\s*(?:white|black|red|blue|green|gray|grey|orange|yellow|purple|pink|silver|navy|teal|transparent)\s*[;!]/ },
+  { name: 'rem/em length', re: /(?<![\w-])\d*\.?\d+r?em\b/ },
+  { name: 'duration', re: /(?<![\w-])\d*\.?\d+m?s\b/ },
+  { name: 'raw opacity', re: /opacity:\s*(?![01]\s*[;}!])\d*\.?\d+\s*[;}!]/ },
+  { name: 'fractional multiplier', re: /calc\([^;]*[*/]\s*-?\d*\.\d+/ },
 ]
+
+/** Hand-written TypeScript that may not carry a raw colour or length: components, tabs, shell and the
+ *  sandbox code that draws on the canvas. Fixtures, mocks, tests, stories and the Figma contracts hold
+ *  sample or bookkeeping data, not styling. */
+const SOURCE_SKIP = /(\.test\.tsx?|\.stories\.tsx?|stories\.helpers\.tsx|(^|[./])figma\.ts|figmaDerived\.ts|screenGaps\.ts|fixtures?\.ts|mock\.ts|generated(\.active)?\.ts)$|\/__tests__\/|\/fixtures\//
+const SOURCE_PATTERNS: { name: string; re: RegExp }[] = [
+  { name: 'hex colour', re: /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/ },
+  { name: 'rgb/hsl colour', re: /\b(?:rgb|hsl)a?\(\s*\d/ },
+  { name: 'px length', re: /(?<![\w$}.-])\d+(?:\.\d+)?px\b/ },
+]
+
+/**
+ * Raw colours and px lengths in .ts/.tsx. A line is exempt when it is a comment or carries
+ * `allow-raw: <reason>`; a whole file is exempt when one of its first lines carries
+ * `allow-raw-file: <reason>` (colour maths, parsers, anything whose subject is the value itself).
+ */
+export function findRawInSource(source: string, file: string): Finding[] {
+  if (SOURCE_SKIP.test(file)) return []
+  const lines = source.split('\n')
+  if (lines.slice(0, 8).some((line) => /allow-raw-file:\s*\S/.test(line))) return []
+  const findings: Finding[] = []
+  lines.forEach((line, i) => {
+    if (/^\s*(\/\/|\/?\*)/.test(line) || /allow-raw:\s*\S/.test(line)) return
+    const code = line.replace(/\s\/\/.*$/, '')
+    for (const { name, re } of SOURCE_PATTERNS) {
+      if (re.test(code)) findings.push({ rule: 'no-raw-values', file, line: i + 1, message: `${name} in "${line.trim().slice(0, 120)}"` })
+    }
+  })
+  return findings
+}
 
 export function findRawValues(css: string, file: string): Finding[] {
   const findings: Finding[] = []
@@ -91,7 +127,7 @@ export async function checkComponentCoverage(root = ROOT, options: { writeBaseli
   for (const set of components.sets) {
     if (set.status === 'planned' || set.status === 'alias') continue
     const dir = set.dir ? resolve(root, set.dir) : resolve(root, 'src/shared/ui', set.code)
-    const cssFile = resolve(dir, `${set.code}.css`)
+    const cssFile = resolve(dir, set.css ?? `${set.code}.css`)
     if (!existsSync(cssFile)) { findings.push({ rule: 'missing-component', file: relative(root, cssFile), message: `Figma set "${set.name}" has no code component` }); continue }
     const css = readFileSync(cssFile, 'utf8')
     const file = relative(root, cssFile)
@@ -217,6 +253,7 @@ export async function runChecks(root = ROOT, options: { writeBaseline?: boolean 
       const source = readFileSync(file, 'utf8')
       findings.push(...findUnknownVars(source, rel, known))
       if (file.endsWith('.css')) findings.push(...findRawValues(source, rel))
+      else if (/\.tsx?$/.test(file)) findings.push(...findRawInSource(source, rel))
     }
   }
   findings.push(...(await checkComponentCoverage(root, options)))

@@ -11,6 +11,8 @@ import { createRouter, type HandlerMap } from '@shared/bridge'
 import { resolveBrandTokens } from '@shared/brand/resolve'
 import { extractAll, type ExtractManifest } from '@shared/brand/extract'
 import { handlers as featureHandlers } from './registry.generated'
+import { EDITOR_MSG, editorModeOf, guardCanvasWrites } from '@shared/editor/mode'
+import { CANVAS_WRITES } from './canvas-writes'
 
 const TOKEN_KEY = 'bluebird:relay-token'
 
@@ -19,6 +21,8 @@ const TOKEN_KEY = 'bluebird:relay-token'
 declare const __LIVE_BRIDGE__: boolean
 
 const store = clientStorageStore()
+/** Dev Mode runs the plugin in the Inspect panel with a read-only file. */
+const editorMode = editorModeOf(figma.editorType)
 
 /** Brand tokens for the requested brand, else the session's brand, else the config default. */
 async function brandTokens(payload?: { brandId?: string }) {
@@ -39,8 +43,14 @@ const coreHandlers: HandlerMap = {
     readSettings: async () => (await readIntegrations((k) => store.get(k))).dualFile,
     fetch: (url, init) => fetch(url, init),
   }),
+  [EDITOR_MSG.mode]: () => editorMode,
   'shell:close': () => { figma.closePlugin() },
-  'shell:resize': (size: WindowSize) => { const { width, height } = clampWindow(size); figma.ui.resize(width, height) },
+  // In Dev Mode the iframe fills the Inspect panel, so there is no window to size.
+  'shell:resize': (size: WindowSize) => {
+    if (editorMode === 'dev') return
+    const { width, height } = clampWindow(size)
+    figma.ui.resize(width, height)
+  },
   // Design-token snapshot for scripts/figma-pull.ts (plugin backend). Read-only.
   'figma:snapshot': (manifest: ExtractManifest) => extractAll(manifest),
   // The current page's top-level frames with every descendant id, for
@@ -69,7 +79,10 @@ const coreHandlers: HandlerMap = {
   }),
 }
 
-const router = createRouter({ ...coreHandlers, ...featureHandlers }, (message) => figma.ui.postMessage(message))
+const router = createRouter(
+  guardCanvasWrites({ ...coreHandlers, ...featureHandlers }, CANVAS_WRITES, editorMode),
+  (message) => figma.ui.postMessage(message),
+)
 
 if (__LIVE_BRIDGE__) {
   figma.showUI(uiFile('bridge'), { width: 320, height: 260, title: 'Bluebird · live bridge (dev build)' })

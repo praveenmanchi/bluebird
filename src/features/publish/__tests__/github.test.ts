@@ -6,6 +6,7 @@ import { MSG, type CommitPreview, type ExtractResult, type PublishRequest, type 
 import { createPublishHandlers, type DocumentData } from '../sandbox/publish-handlers'
 import { RETRY_ATTEMPTS, configFromSettings, type GithubFetch } from '../github/client'
 import { STORE_PATH, allowedWebhook, prependChangelog, tokensFilePath, utf8Bytes } from '../github/release'
+import { normalizeWebhook } from '@shared/integrations/webhooks'
 import type { Snapshot } from '../types'
 
 const TOKEN = 'ghp_test_secret'
@@ -374,7 +375,57 @@ describe('posting the changelog to Teams', () => {
     expect(posts).toHaveLength(2)
     expect(posts[0]!.body['@type']).toBe('MessageCard')
     expect(String(posts[0]!.body.text)).toContain('### Breaking')
-    expect(posts[0]!.body.potentialAction).toEqual([expect.objectContaining({ targets: [{ os: 'default', uri: `https://github.com/${REPO}/commit/c0ffee1234567` }] })])
+    // Teams drops MessageCard buttons, so the link is a bare URL in the text and a discrete key.
+    expect(posts[0]!.body).not.toHaveProperty('potentialAction')
+    expect(posts[0]!.body.link).toBe(`https://github.com/${REPO}/commit/c0ffee1234567`)
+    expect(String(posts[0]!.body.text)).toContain(`: https://github.com/${REPO}/commit/c0ffee1234567`)
+  })
+
+  it('sends the counts and names as discrete keys, so a flow never parses the prose', async () => {
+    const github = fakeGithub({ runs: [[]] })
+    const t = setup(github, CURRENT, BASELINE, { webhooks: [WEBHOOK] })
+    await t.publish({ ...request(await t.extract(), { openPr: false, tag: false }), version: 'v3.0.0' })
+    t.setSnapshot(CURRENT)
+    await t.publish(request(await t.extract(), { openPr: false, postToTeams: true }))
+    const body = github.webhookCalls[0]!.body
+    expect(Object.keys(body).slice(0, 5)).toEqual(['@type', '@context', 'summary', 'title', 'text'])
+    expect(body).toMatchObject({ kind: 'release', repo: REPO, ref: 'v4.0.0', notify: expect.stringMatching(/^(channel|none)$/) })
+    for (const key of ['added', 'modified', 'removed', 'breaking']) expect(typeof body[key]).toBe('number')
+    expect(Number(body.added) + Number(body.modified) + Number(body.removed)).toBe(body.changesTotal)
+    expect(Array.isArray(body.impacted)).toBe(true)
+  })
+
+  it('tabulates the changes with breaking rows first and every cell a string', async () => {
+    const github = fakeGithub({ runs: [[]] })
+    const t = setup(github, CURRENT, BASELINE, { webhooks: [WEBHOOK] })
+    await t.publish({ ...request(await t.extract(), { openPr: false, tag: false }), version: 'v3.0.0' })
+    t.setSnapshot(CURRENT)
+    await t.publish(request(await t.extract(), { openPr: false, postToTeams: true }))
+    const body = github.webhookCalls[0]!.body
+    const rows = body.changes as Array<Record<string, unknown>>
+    expect(rows.length).toBe(body.changesShown)
+    expect(rows.length).toBeGreaterThan(0)
+    for (const row of rows) {
+      for (const key of ['name', 'kind', 'from', 'to', 'usedIn']) expect(typeof row[key]).toBe('string')
+      expect(typeof row.breaking).toBe('boolean')
+    }
+    const firstRoutine = rows.findIndex((r) => !r.breaking)
+    expect(firstRoutine === -1 || rows.slice(firstRoutine).every((r) => !r.breaking)).toBe(true)
+    expect(body.breaking).toBeGreaterThan(0) // the fixture removes a variable
+    expect(rows[0]!.breaking).toBe(true)
+    expect(body.themeColor).toBe('D64045')
+  })
+
+  it('posts to a Power Platform trigger URL, without its explicit :443', async () => {
+    const PLATFORM = 'https://default0123abcd.ef.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/abc/triggers/manual/paths/invoke?api-version=1&sig=xyz'
+    const github = fakeGithub({ runs: [[]] })
+    const t = setup(github, CURRENT, BASELINE, { webhooks: [PLATFORM] })
+    const res = await t.publish(request(await t.extract(), { openPr: false, postToTeams: true }))
+    expect(res.steps.find((s) => s.id === 'notify')).toMatchObject({ status: 'done' })
+    expect(github.webhookCalls.map((w) => w.url)).toEqual([PLATFORM.replace(':443', '')])
+    expect(normalizeWebhook('https://x.webhook.office.com:443')).toBe('https://x.webhook.office.com')
+    expect(normalizeWebhook('https://x.webhook.office.com:8443/a')).toBe('https://x.webhook.office.com:8443/a')
+    expect(allowedWebhook('https://x.environment.api.powerplatform.com:8443/a')).toBe(false)
   })
 
   it('reports a failed post without touching the release, and skips the step without a webhook', async () => {
@@ -396,6 +447,8 @@ describe('posting the changelog to Teams', () => {
   it('only posts to Teams and Power Automate hosts', () => {
     expect(allowedWebhook(WEBHOOK)).toBe(true)
     expect(allowedWebhook('https://prod-07.westus.logic.azure.com/workflows/x')).toBe(true)
+    expect(allowedWebhook('https://default0123.ef.environment.api.powerplatform.com:443/powerautomate/x')).toBe(true)
+    expect(allowedWebhook('https://evil.example.com/environment.api.powerplatform.com/')).toBe(false)
     expect(allowedWebhook('https://evil.example.com/webhook.office.com/')).toBe(false)
     expect(allowedWebhook('http://acme.webhook.office.com/x')).toBe(false)
   })

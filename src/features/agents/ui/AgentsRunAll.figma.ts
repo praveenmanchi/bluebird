@@ -13,7 +13,7 @@ export const figma = {
     'Voice Bar': 'VoiceBar Idle (onMic)',
   },
   figmaGaps: {
-    ...scaleGaps('button/secondary/border-width', 'border-width/default', 'button/primary/border-width', 'dimension/opacity/55'),
+    ...scaleGaps('dimension/space/2', 'button/secondary/border-width', 'border-width/default', 'button/primary/border-width', 'dimension/opacity/55'),
     ...composed('Button', [...BUTTON_SECONDARY, 'button/primary/bg/disabled', 'button/primary/border/disabled', 'button/primary/radius', 'button/primary/gap', 'button/primary/padding-x', 'button/primary/height']),
     ...composed('ProgressBar', PROGRESS_BAR),
     ...composed('MetaBadge', [...META_BADGE, 'feedback/success', 'border/accent', 'border/subtle']),

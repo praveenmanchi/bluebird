@@ -3,7 +3,7 @@
 import { signal } from '@preact/signals'
 import type { RpcClient } from '@shared/bridge'
 import type { StatusPillStatus } from '@shared/ui'
-import { LIBRARIES_MSG, type LibraryLoadResult } from './types'
+import { fileLabel, LIBRARIES_MSG, type LibraryLoadResult } from './types'
 
 /** Where the libraries are: still loading, the sandbox's answer, or why asking failed. */
 export type LibraryState = { status: 'loading' } | { status: 'error'; message: string } | LibraryLoadResult
@@ -54,8 +54,8 @@ export function libraryPill(state: LibraryState): LibraryPill {
   const { files } = state.index
   const ok = files.filter((f) => !f.error)
   const detail = files.map((f) => f.error
-    ? `File ${f.slot} ${f.name}: ${f.error}`
-    : `File ${f.slot} ${f.name}: ${[f.roles.includes('variables') ? plural(f.variables, 'variable') : '', f.roles.includes('components') ? plural(f.components, 'component') : ''].filter(Boolean).join(', ')}`).join('\n')
+    ? `${fileLabel(f)} ${f.name}: ${f.error}`
+    : `${fileLabel(f)} ${f.name}: ${[f.roles.includes('variables') ? plural(f.variables, 'variable') : '', f.roles.includes('components') ? plural(f.components, 'component') : ''].filter(Boolean).join(', ')}`).join('\n')
   if (!ok.length) return { status: 'error', label: 'Dual File · failed', title: detail }
   if (ok.length < files.length) return { status: 'issue', label: `Dual File · ${ok.length} of ${files.length} files`, title: detail }
   return { status: 'good', label: 'Dual File · connected', title: detail }

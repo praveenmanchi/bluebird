@@ -1,7 +1,7 @@
 // Answers grounded in the Dual File libraries: the question picks variables and
 // components out of the index (search), and the selection is checked against it
 // (which bindings and instances come from which library file). Pure; no RPC.
-import { queryTerms, searchComponents, searchStyles, searchVariables, type LibraryComponent, type LibraryIndex, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
+import { fileLabel, queryTerms, searchComponents, searchStyles, searchVariables, type LibraryComponent, type LibraryIndex, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
 import { PROVIDER_LABEL, type AiFailure } from '@shared/ai'
 import { sceneForFailure, type BotSceneId, type MetaBadgeTone } from '@shared/ui'
 import type { AnswerKind, CannedAnswer, Source, Suggestion } from './fixtures'
@@ -309,7 +309,7 @@ export function librarySources(index: LibraryIndex): Source[] {
       id: f.fileKey,
       name: f.name,
       chip: f.name,
-      meta: f.error ?? `${kind} · File ${f.slot} · ${counts.join(' · ')}${f.warning ? ` · ${f.warning}` : ''}`,
+      meta: f.error ?? `${kind} · ${fileLabel(f)} · ${counts.join(' · ')}${f.warning ? ` · ${f.warning}` : ''}`,
       icon: both ? 'layers' : f.roles[0] === 'variables' ? 'variables' : 'component',
       status: f.error ? 'Failed' : f.warning ? 'Check' : 'Indexed',
       statusTone: tone,

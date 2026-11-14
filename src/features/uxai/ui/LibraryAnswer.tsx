@@ -1,4 +1,4 @@
-import { ArtifactHeader, BrandSwatch, ColorSwatch, ContextChip, LinkButton, MetaBadge } from '@shared/ui'
+import { ArtifactHeader, BrandSwatch, ColorSwatch, ContextChip, EXTERNAL_LINK_ICON, LinkButton, MetaBadge } from '@shared/ui'
 import { BRANDS, type BrandId } from '@shared/brand'
 import { figmaUrl, type LibraryComponent, type LibraryStyle, type LibraryTextStyle, type LibraryVariable } from '@shared/libraries'
 import { typeSpec, type GroundedAnswer, type Origin, type SelectionComponent, type SelectionVariable } from '../grounding'
@@ -25,7 +25,7 @@ const fileList = (keys: readonly string[], files: Readonly<Record<string, string
 /** The Artifact Header's link (always drawn) opens the first library file the panel cites. */
 const openFile = (fileKey: string | undefined, onOpenUrl?: (url: string) => void) =>
   fileKey && onOpenUrl ? () => onOpenUrl(figmaUrl(fileKey)) : undefined
-const OPEN_LIBRARY = 'Open library ↗'
+const OPEN_LIBRARY = 'Open library'
 
 /** "3 matching variables", or "Top 6 of 40 matching variables" when the list is cut. */
 const heading = (shown: number, total: number, what: string) =>
@@ -66,7 +66,7 @@ function ComponentItem({ component, onOpenUrl }: { component: LibraryComponent; 
         <span class="bb-uxai-library__meta">{[kind, component.location].filter(Boolean).join(' · ')}</span>
         {component.description && <span class="bb-uxai-library__meta">{component.description}</span>}
       </div>
-      {onOpenUrl && <LinkButton class="bb-uxai-library__open" onClick={() => onOpenUrl(figmaUrl(component.fileKey, component.nodeId))}>Open in Figma ↗</LinkButton>}
+      {onOpenUrl && <LinkButton icon={EXTERNAL_LINK_ICON} class="bb-uxai-library__open" onClick={() => onOpenUrl(figmaUrl(component.fileKey, component.nodeId))}>Open in Figma</LinkButton>}
     </li>
   )
 }
@@ -99,7 +99,7 @@ function SelectionComponentItem({ item, files, onOpenUrl }: { item: SelectionCom
         <span class="bb-uxai-library__meta">{`${item.count} ${item.count === 1 ? 'instance' : 'instances'}${match?.location ? ` · ${match.location}` : ''}`}</span>
       </div>
       <OriginBadge origin={item.origin} file={match ? files[match.fileKey] : undefined} byName={item.byName} />
-      {match && onOpenUrl && <LinkButton class="bb-uxai-library__open" onClick={() => onOpenUrl(figmaUrl(match.fileKey, match.nodeId))}>Open ↗</LinkButton>}
+      {match && onOpenUrl && <LinkButton icon={EXTERNAL_LINK_ICON} class="bb-uxai-library__open" onClick={() => onOpenUrl(figmaUrl(match.fileKey, match.nodeId))}>Open</LinkButton>}
     </li>
   )
 }

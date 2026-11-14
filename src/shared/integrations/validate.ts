@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
+import { FILE_ROLES, MAX_LIBRARY_FILES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -54,40 +54,41 @@ const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') 
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
   github: { repo, baseUrl: url },
-  notifications: { designSystemWebhook: url, devTeamWebhook: url, emails },
+  notifications: { designSystemWebhook: url, devTeamWebhook: url, outlookWebhook: url, emails },
   storybook: { baseUrl: url, indexUrl: url, storyPathTemplate: storyTemplate },
   zeroheight: { publicBaseUrl: url },
-  dualFile: { file1Id: fileId, file2Id: fileId, file1Key: token, file2Key: token, file1Role: oneOf(FILE_ROLES), file2Role: oneOf(FILE_ROLES) },
+  dualFile: { token },
   ai: { provider: oneOf(PROVIDER_OPTIONS), claudeModel: oneOf(MODEL_OPTIONS.claude), openaiModel: oneOf(MODEL_OPTIONS.openai), geminiModel: oneOf(MODEL_OPTIONS.gemini) },
   mcp: { repo, outputFormat, branchTemplate: noSpaces, enterpriseUrl: url },
   jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: localProxy },
   storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS) },
 }
 
+/** Longest name a library file can have: it is a label in Settings and UX AI's sources. */
+export const MAX_FILE_NAME = 60
+
 /**
- * Rules across fields. Dual File: a file needs its token (File 2 may borrow File 1's, since a
- * personal access token belongs to the person, not the file), a token needs its file, and one
- * file in both slots is set once as "Variables + Components" instead.
+ * Dual File rows, keyed files.<i>.<field>. One token opens every file, so a file needs the token
+ * and the token needs a file. A lone empty first row is "not set up yet"; a row added and left
+ * without a URL is an error, as is the same file listed twice.
  */
 function dualFileErrors(v: IntegrationValues<'dualFile'>): FieldErrors {
   const errors: FieldErrors = {}
   const has = (s: string) => s.trim() !== ''
-  if (has(v.file1Id) && !has(v.file1Key)) errors.file1Key = 'Add the API key that can open File 1'
-  if (has(v.file1Key) && !has(v.file1Id)) errors.file1Id = 'Add File 1’s ID, or clear its API key'
-  if (has(v.file2Id) && !has(v.file2Key) && !has(v.file1Key)) errors.file2Key = 'Add an API key that can open File 2'
-  if (has(v.file2Key) && !has(v.file2Id)) errors.file2Id = 'Add File 2’s ID, or clear its API key'
-  if (has(v.file1Id) && v.file1Id.trim() === v.file2Id.trim()) errors.file2Id = 'File 2 is File 1. Set File 1 to “Variables + Components” and leave File 2 empty'
-  // Files 3…N: same rules per row, keyed extraFiles.<i>.<field>; a row may borrow File 1's key like File 2 does.
-  const seen = new Set([v.file1Id.trim(), v.file2Id.trim()].filter(Boolean))
-  ;(v.extraFiles ?? []).forEach((f, i) => {
-    const n = i + 3
-    const at = (field: string) => `extraFiles.${i}.${field}`
+  const files = v.files ?? []
+  const listed = files.filter((f) => has(f.id))
+  if (files.length > MAX_LIBRARY_FILES) errors.files = `Up to ${MAX_LIBRARY_FILES} files. Remove one first`
+  if (listed.length && !has(v.token)) errors.token = 'Add your Figma personal access token to read these files'
+  if (has(v.token) && !listed.length) errors['files.0.id'] = 'Add a library file URL, or clear the token'
+  const seen = new Set<string>()
+  files.forEach((f, i) => {
+    const at = (field: string) => `files.${i}.${field}`
+    const name = f.name.trim() || `File ${i + 1}`
+    if (f.name.trim().length > MAX_FILE_NAME) errors[at('name')] = `Keep the name to ${MAX_FILE_NAME} characters`
     if (has(f.id) && !FILE_ID.test(f.id.trim())) errors[at('id')] = fileId(f.id)!
-    if (has(f.id) && !has(f.key) && !has(v.file1Key)) errors[at('key')] = `Add an API key that can open File ${n}`
-    if (has(f.key) && !has(f.id)) errors[at('id')] = `Add File ${n}’s ID, or clear its API key`
-    if (has(f.key) && !/^[\x21-\x7E]+$/.test(f.key.trim())) errors[at('key')] = token(f.key)!
+    if (!has(f.id) && files.length > 1) errors[at('id')] = `Add ${name}’s URL, or remove it`
     if (has(f.role) && !(FILE_ROLES as readonly string[]).includes(f.role)) errors[at('role')] = oneOf(FILE_ROLES)(f.role)!
-    if (has(f.id) && seen.has(f.id.trim())) errors[at('id')] = `File ${n} is already listed above. Give one slot both roles instead`
+    if (has(f.id) && seen.has(f.id.trim())) errors[at('id')] = 'This file is already listed. Set the first one to “Variables + Components” instead'
     if (has(f.id)) seen.add(f.id.trim())
   })
   return errors

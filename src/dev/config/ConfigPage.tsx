@@ -10,6 +10,8 @@ import { IntegrationModes } from './IntegrationModes'
 import { dirtyBrands, draftsFrom, invalidSections, patchFor, setPersonaTab, tabRows, withDraft, type BrandDraft, type Drafts, type FieldValues } from './draft'
 import { loadPluginConfig, savePluginConfig } from './api'
 import { BuildPrompt, isBuildPending, markBuildPending } from './BuildPrompt'
+import { DeploymentDialog } from './DeploymentDialog'
+import { deployLabel } from './deployment'
 import '@shell/SettingsIntegrations.css'
 import './config.css'
 
@@ -38,6 +40,7 @@ export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
   const [save, setSave] = useState<Save>({ kind: 'idle' })
   // Open again after the reload a Save triggers, until it's dismissed.
   const [buildPrompt, setBuildPrompt] = useState(isBuildPending)
+  const [deployOpen, setDeployOpen] = useState(false)
 
   // The file on disk, not the bundled copy: it may have changed since this page loaded.
   useEffect(() => {
@@ -106,6 +109,7 @@ export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
           <span class="dh-page__context">{brandLabel(current)}</span>
         </div>
         <div class="dh-page__actions">
+          <button type="button" class="dh-btn" aria-haspopup="dialog" onClick={() => setDeployOpen(true)}>Deployment: {deployLabel(config)}</button>
           <button type="button" class="dh-btn" onClick={() => onPreview(current)}><Icon name="show" size="sm" />Preview in Dev mode</button>
         </div>
       </header>
@@ -190,7 +194,19 @@ export function ConfigPage({ brandId, onBrand, onPreview }: ConfigPageProps) {
           </footer>
         </main>
       </div>
-      <BuildPrompt open={buildPrompt} onClose={() => setBuildPrompt(false)} />
+      <DeploymentDialog
+        open={deployOpen}
+        config={config}
+        onClose={() => setDeployOpen(false)}
+        onSaved={(next) => { setConfig(next); setDeployOpen(false); markBuildPending(); setBuildPrompt(true) }}
+      />
+      {/* A single-brand deployment is built to be handed over, so its prompt packages the zip too. */}
+      <BuildPrompt
+        open={buildPrompt}
+        onClose={() => setBuildPrompt(false)}
+        script={config.deploy.mode === 'single' ? 'package' : 'build'}
+        brandLabel={config.deploy.brand ? brandLabel(config.deploy.brand) : undefined}
+      />
     </div>
   )
 }

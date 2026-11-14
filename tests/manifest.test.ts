@@ -6,11 +6,17 @@ import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
 const read = (path: string) => readFileSync(resolve(root, path), 'utf8')
-const manifest = JSON.parse(read('manifest.json')) as { menu?: unknown; ui: Record<string, string> }
+const manifest = JSON.parse(read('manifest.json')) as { menu?: unknown; ui: Record<string, string>; editorType: string[]; capabilities: string[] }
 
 describe('manifest.json', () => {
   it('has no menu, so running the plugin opens Bluebird and no dev command is listed', () => {
     expect(manifest.menu).toBeUndefined()
+  })
+
+  it('runs in Design Mode and in Dev Mode\'s Inspect panel', () => {
+    // Without "dev" + "inspect" Figma lists the plugin in Dev Mode but nothing opens on click.
+    expect(manifest.editorType).toEqual(['figma', 'dev'])
+    expect(manifest.capabilities).toContain('inspect')
   })
 
   it('keeps the bridge UI declared for dev:live builds', () => {

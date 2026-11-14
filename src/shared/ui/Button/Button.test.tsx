@@ -31,6 +31,10 @@ describe('Button', () => {
     render(<Button state="hover">Hover</Button>)
     expect(screen.getByRole('button').dataset.state).toBe('hover')
   })
+  it('exposes a forced focus state for the Figma Focus variants', () => {
+    render(<Button state="focus">Focus</Button>)
+    expect(screen.getByRole('button').dataset.state).toBe('focus')
+  })
   it('exposes the Figma Size axis as data-size, medium by default', () => {
     const { rerender } = render(<Button>Save</Button>)
     expect(screen.getByRole('button').dataset.size).toBe('md')

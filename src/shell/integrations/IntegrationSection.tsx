@@ -55,7 +55,7 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
 
   const onChange = (key: string, value: FieldValues[string]) => {
     setValues((v) => ({ ...v, [key]: value }))
-    // A list field (extraFiles) carries its rows' errors as extraFiles.<i>.<field>; clear those with it.
+    // A list field (Dual File's files) carries its rows' errors as files.<i>.<field>; clear those with it.
     if (Object.keys(errors).some((k) => k === key || k.startsWith(`${key}.`))) setErrors((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key && !k.startsWith(`${key}.`))))
     if (status.kind !== 'idle' && status.kind !== 'saving' && status.kind !== 'testing') setStatus({ kind: 'idle' })
   }

@@ -12,7 +12,8 @@ import './SettingsScreen.css'
 export interface SettingsScreenProps {
   session: Session | null
   brand: BrandTokensResult | null
-  onLogout: () => Promise<void>
+  /** Omit in a single-brand build: there is no sign-in, so Settings shows Reset alone. */
+  onLogout?: () => Promise<void>
   onReset: () => Promise<void>
   /** Configured personas; the persona card shows only when there are two or more. */
   personas?: readonly ResolvedPersona[]
@@ -30,6 +31,9 @@ export interface SettingsScreenProps {
  * right-aligned button group "Logoff session" / "Reset all Settings". The
  * row is the Toggle instance with its switch hidden (Toggle=false); its
  * placeholder copy becomes the session details.
+ * Page order: persona card, the integration sections (ending on the team setup file), then
+ * Product tour and the session block, each its own ruled section. The session details and
+ * Sign out / Reset sit last so they are not the first thing on the page.
  */
 export function SettingsScreen({ session, brand, onLogout, onReset, personas = [], personaId = null, onChangePersona, integrations, onReplayTour }: SettingsScreenProps) {
   const active = personas.find((p) => p.id === personaId) ?? personas[0]
@@ -53,42 +57,56 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
           onOpen={onChangePersona}
         />
       )}
-      <Toggle
-        class="bb-settings__row"
-        showSwitch={false}
-        title={`Signed in as ${label}`}
-        description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you sign out; resetting also forgets window size and preferences.`}
-      />
-      {confirmReset ? (
-        <ButtonGroup
-          class="bb-settings__actions"
-          secondaryLabel="Keep settings"
-          primaryLabel="Yes, reset everything"
-          primaryVariant="danger"
-          onSecondary={() => setConfirmReset(false)}
-          onPrimary={() => { void run('reset', onReset) }}
-          primaryLoading={busy === 'reset'}
-          secondaryDisabled={busy !== null}
-        />
-      ) : (
-        <ButtonGroup
-          class="bb-settings__actions"
-          secondaryLabel="Sign out"
-          primaryLabel="Reset all settings"
-          primaryVariant="danger"
-          onSecondary={() => { void run('logout', onLogout) }}
-          onPrimary={() => setConfirmReset(true)}
-          secondaryLoading={busy === 'logout'}
-          primaryDisabled={busy !== null}
-        />
-      )}
+      {integrations && <SettingsIntegrations api={integrations} managed={managedFor(session?.brandId)} managedBy={label} brandId={session?.brandId} />}
       {onReplayTour && (
-        <div class="bb-settings__tour">
-          <Toggle showSwitch={false} title="Product tour" description="Walk through what each of your tabs does, with a short demo of each." />
-          <Button variant="secondary" onClick={onReplayTour}>Replay tour</Button>
-        </div>
+        <section class="bb-settings__section" aria-label="Product tour">
+          <div class="bb-settings__tour">
+            <Toggle showSwitch={false} title="Product tour" description="Walk through what each of your tabs does, with a short demo of each." />
+            <Button variant="secondary" onClick={onReplayTour}>Replay tour</Button>
+          </div>
+        </section>
       )}
-      {integrations && <SettingsIntegrations api={integrations} managed={managedFor(session?.brandId)} managedBy={label} />}
+      <section class="bb-settings__section" aria-label="Session">
+        {onLogout ? (
+          <Toggle
+            class="bb-settings__row"
+            showSwitch={false}
+            title={`Signed in as ${label}`}
+            description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you sign out; resetting also forgets window size and preferences.`}
+          />
+        ) : (
+          <Toggle
+            class="bb-settings__row"
+            showSwitch={false}
+            title={`${label} workspace`}
+            description={`This plugin is set up for ${label} only, so there’s nothing to sign in to · ${source}. Resetting forgets window size and preferences.`}
+          />
+        )}
+        {confirmReset ? (
+          <ButtonGroup
+            class="bb-settings__actions"
+            secondaryLabel="Keep settings"
+            primaryLabel="Yes, reset everything"
+            primaryVariant="danger"
+            onSecondary={() => setConfirmReset(false)}
+            onPrimary={() => { void run('reset', onReset) }}
+            primaryLoading={busy === 'reset'}
+            secondaryDisabled={busy !== null}
+          />
+        ) : (
+          <ButtonGroup
+            class="bb-settings__actions"
+            secondaryLabel="Sign out"
+            showSecondary={onLogout !== undefined}
+            primaryLabel="Reset all settings"
+            primaryVariant="danger"
+            onSecondary={() => { if (onLogout) void run('logout', onLogout) }}
+            onPrimary={() => setConfirmReset(true)}
+            secondaryLoading={busy === 'logout'}
+            primaryDisabled={busy !== null}
+          />
+        )}
+      </section>
       <TeamBanner class="bb-settings__team" taglineSize="auto" />
     </section>
   )

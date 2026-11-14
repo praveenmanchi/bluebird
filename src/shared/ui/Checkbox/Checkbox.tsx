@@ -10,8 +10,8 @@ export interface CheckboxProps extends Omit<JSX.InputHTMLAttributes<HTMLInputEle
   checked?: CheckboxChecked
   /** Figma "Label" (+ "Show label" when set). */
   label?: ComponentChildren
-  /** Force the Hover variant (stories, visual regression). */
-  state?: 'default' | 'hover'
+  /** Force the Hover or Focus variant (stories, visual regression). Real focus comes from the input's :focus-visible. */
+  state?: 'default' | 'hover' | 'focus'
   onChange?: (checked: boolean) => void
 }
 

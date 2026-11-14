@@ -24,6 +24,10 @@ describe('Checkbox', () => {
     rerender(<Checkbox checked />)
     expect(container.querySelector('[data-mark="check"]')).not.toBeNull()
   })
+  it('exposes a forced focus state for the Figma Focus variants', () => {
+    render(<Checkbox label="f" state="focus" />)
+    expect(screen.getByText('f').closest('label')?.dataset.state).toBe('focus')
+  })
   it('calls onChange with the next value and respects disabled', () => {
     const onChange = vi.fn()
     const { rerender } = render(<Checkbox label="a" onChange={onChange} />)

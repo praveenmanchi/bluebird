@@ -26,7 +26,7 @@ export interface TeamBannerProps extends Omit<JSX.HTMLAttributes<HTMLElement>, '
   productTagline?: ComponentChildren
   /** Replaces the two-line tagline (Figma layer "Together, every step forward to Innovate’ & scale"). */
   tagline?: ComponentChildren
-  /** Tagline size: md = the component's 16; lg = the 24 the Settings Layout instances override it to;
+  /** Tagline size: md = the component's own size; lg = the 24 the Settings Layout instances used to override it to;
    *  auto = lg when the banner is wide enough (Settings S-480/S-600 frames), md when narrow (S-360). */
   taglineSize?: 'md' | 'lg' | 'auto'
   /** Slot rendered in place of the tagline when given. */

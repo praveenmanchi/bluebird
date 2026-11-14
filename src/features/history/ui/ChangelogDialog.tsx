@@ -1,12 +1,16 @@
 import { useEffect, useRef } from 'preact/hooks'
-import { Button, ChangeRow, Checkbox, Chip, Input, MetaBadge, Notice, SectionTitle, Spinner, TextArea, useRpc } from '@shared/ui'
+import { Button, ChangeRow, Checkbox, Input, MetaBadge, Notice, SectionTitle, Spinner, TextArea, useRpc } from '@shared/ui'
 import type { Change } from '@shared/design/types'
-import { canSubmit, generateChangelog, submitChangelog } from '../actions'
+import { inDevMode } from '@shared/editor'
+import { canSubmit, generateChangelog, openLink, submitChangelog } from '../actions'
 import { countLine } from '../changelog'
 import { isTicket } from '../messages'
+import { submitComment } from '../review'
 import {
-  changelogCard, changelogContext, changelogDraft, changelogError, changelogNotes, changelogPhase, changelogTicket, changelogTitle, closeChangelog, knownTickets,
+  changelogCard, changelogContext, changelogDraft, changelogError, changelogNotes, changelogPhase, changelogPostToJira, changelogTicket, changelogTitle, closeChangelog,
+  notifyOutlook, notifyTeams, ticketMode, ticketOptions,
 } from '../state'
+import { JiraComment, NotifyReviewers, TicketField } from './ReviewOptions'
 
 /** Rows shown per list in the preview; the entry keeps all of them. */
 export const PREVIEW_ROWS = 8
@@ -37,18 +41,32 @@ function Where() {
   )
 }
 
-function Ticket() {
-  const value = changelogTicket.value
-  const valid = value.trim() === '' || isTicket(value.trim())
+/** Ticket picker, the Jira comment it gets, and the reviewer webhooks. */
+function SendOptions({ busy }: { busy: boolean }) {
+  const rpc = useRpc()
+  const context = changelogContext.value
+  const draft = changelogDraft.value
+  if (!context || !draft) return null
+  const key = changelogTicket.value.trim()
+  const valid = key === '' || isTicket(key)
+  const jira = context.jira
+  const body = submitComment({ title: changelogTitle.value.trim() || draft.title, notes: changelogNotes.value, file: context.file, main: context.main ?? 'the main file', by: context.user, changes: draft.changes, branch: '' })
   return (
-    <div class="bb-changelog__field">
-      <Input label="Jira ticket" icon="jira" value={value} placeholder="BB-342" error={!valid} helperText={valid ? 'Optional. Pick one the team already used, or type the key.' : 'A Jira key looks like BB-342.'} onValueChange={(v) => { changelogTicket.value = v.toUpperCase() }} />
-      {knownTickets.value.length > 0 && (
-        <div class="bb-changelog__chips" role="group" aria-label="Tickets the team used">
-          {knownTickets.value.map((t) => <Chip key={t} showIcon={false} selected={t === value.trim()} onClick={() => { changelogTicket.value = t }}>{t}</Chip>)}
-        </div>
+    <>
+      <TicketField
+        mode={ticketMode.value} value={key} valid={valid} tickets={ticketOptions.value?.tickets ?? []} disabled={busy}
+        problem={jira.connected ? ticketOptions.value?.problem : jira.problem}
+        onModeChange={(m) => { ticketMode.value = m }} onChange={(k) => { changelogTicket.value = k }}
+      />
+      {key && valid && jira.connected && (
+        <JiraComment
+          ticket={key} label={`Post the changes to ${key} as a Jira comment`} checked={changelogPostToJira.value} disabled={busy}
+          author={context.user} time="Posted when you submit" body={body} branch={draft.branch}
+          onChange={(v) => { changelogPostToJira.value = v }} onOpenUrl={(url) => openLink(rpc, url)}
+        />
       )}
-    </div>
+      <NotifyReviewers channels={context.channels} teams={notifyTeams.value} outlook={notifyOutlook.value} disabled={busy} onChange={(n) => { notifyTeams.value = n.teams; notifyOutlook.value = n.outlook }} />
+    </>
   )
 }
 
@@ -114,8 +132,8 @@ export function ChangelogDialog() {
             <ChangeList title="Component changes" changes={components} />
             <Input label="Title" value={changelogTitle.value} error={!changelogTitle.value.trim()} disabled={busy} onValueChange={(v) => { changelogTitle.value = v.slice(0, 160) }} />
             <TextArea label="What changed and why" value={changelogNotes.value} placeholder="Layout tweaks, spacing or anything the compare can’t see." disabled={busy} onValueChange={(v) => { changelogNotes.value = v.slice(0, 2000) }} />
-            <Ticket />
-            <Checkbox checked={changelogCard.value} disabled={busy} label="Add the changelog card to this page" onChange={(v) => { changelogCard.value = v }} />
+            <SendOptions busy={busy} />
+            {!inDevMode.value && <Checkbox checked={changelogCard.value} disabled={busy} label="Add the changelog card to this page" onChange={(v) => { changelogCard.value = v }} />}
             {changelogError.value && <Notice tone="error" title="Not submitted">{changelogError.value}</Notice>}
           </>
         )}

@@ -1,5 +1,6 @@
 node_modules
 dist
+release
 coverage
 src/shell/registry.generated.ts
 src/sandbox/registry.generated.ts

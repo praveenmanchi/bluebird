@@ -14,14 +14,19 @@ export interface ExportMenuProps {
   onExport: (format: ExportFormat) => void
   /** A canvas document is being drawn. */
   busy?: boolean
+  /** False in Dev Mode: the file is read-only, so the formats drawn on the canvas are left out. */
+  canvas?: boolean
 }
+
+const CANVAS_FORMATS: readonly ExportFormat[] = ['figma-report', 'developer-spec']
 
 /**
  * Figma "Accessibility M · Results · Export menu" (40002658:26652): a secondary Export
  * button with a dropdown arrow beside the finding filters. Esc closes the menu and puts
  * focus back on the button.
  */
-export function ExportMenu({ onExport, busy = false }: ExportMenuProps) {
+export function ExportMenu({ onExport, busy = false, canvas = true }: ExportMenuProps) {
+  const options = canvas ? OPTIONS : OPTIONS.filter(([format]) => !CANVAS_FORMATS.includes(format))
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
   // Button does not forward refs; the trigger is the wrapper's first button.
@@ -60,7 +65,7 @@ export function ExportMenu({ onExport, busy = false }: ExportMenuProps) {
       </Button>
       {open && (
         <DropdownMenu class="bb-a11y__export-options" aria-label="Export as">
-          {OPTIONS.map(([format, label, icon]) => (
+          {options.map(([format, label, icon]) => (
             <MenuItem key={format} label={label} icon={icon} onSelect={() => choose(format)} />
           ))}
         </DropdownMenu>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { loadConfig, resolvePersonas, brandTabRows, ConfigError } from './load'
+import { loadConfig, resolvePersonas, brandTabRows, singleBrand, ConfigError } from './load'
 
 const valid = {
   brand: { active: 'bluebird', brands: { bluebird: { label: 'Bluebird', accessCodeHash: 'a'.repeat(64), source: { collection: 'Brand', mode: 'Bluebird' }, fallbackTokens: { 'color-brand': '#0066ff' } } } },
@@ -156,5 +156,32 @@ describe('turning a persona off', () => {
 
   it('refuses a default persona that is turned off', () => {
     expect(() => loadConfig({ ...twoPersonas, activePersona: 'spare' })).toThrow('activePersona "spare" is turned off')
+  })
+})
+
+describe('deploy', () => {
+  const noHash = { ...valid, brand: { ...valid.brand, brands: { bluebird: { label: 'Bluebird', source: { collection: 'Brand', mode: 'Bluebird' } } } } }
+
+  it('defaults to multi-brand, where every brand needs an access code', () => {
+    expect(loadConfig(valid).deploy).toEqual({ mode: 'multi' })
+    expect(singleBrand(loadConfig(valid))).toBeNull()
+    expect(() => loadConfig(noHash)).toThrow('brand "bluebird" has no accessCodeHash')
+  })
+
+  it('locks a single-brand config to its brand, with or without an access code', () => {
+    const config = loadConfig({ ...noHash, deploy: { mode: 'single', brand: 'bluebird' } })
+    expect(singleBrand(config)).toBe('bluebird')
+  })
+
+  it('refuses a single-brand config that names no brand or an unknown one', () => {
+    expect(() => loadConfig({ ...valid, deploy: { mode: 'single' } })).toThrow('deploy.brand is not set')
+    expect(() => loadConfig({ ...valid, deploy: { mode: 'single', brand: 'nope' } })).toThrow('deploy.brand "nope" is not defined')
+    expect(() => loadConfig({ ...valid, deploy: { mode: 'solo' } })).toThrow(ConfigError)
+  })
+
+  it('checks a brand’s Figma plugin id is a plugin id', () => {
+    const withPlugin = (id: string) => ({ ...valid, brand: { ...valid.brand, brands: { bluebird: { ...valid.brand.brands.bluebird, figmaPlugin: { id, name: 'Studio' } } } } })
+    expect(loadConfig(withPlugin('1686669081925353511')).brand.brands.bluebird?.figmaPlugin).toEqual({ id: '1686669081925353511', name: 'Studio' })
+    expect(() => loadConfig(withPlugin('abc'))).toThrow(ConfigError)
   })
 })

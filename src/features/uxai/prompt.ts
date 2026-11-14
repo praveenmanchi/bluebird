@@ -1,7 +1,7 @@
 // What UX AI sends the model: a system prompt that keeps it to the Dual File
 // libraries, and a compact text context built from the same search the
 // artifacts come from (with more hits than the artifacts show). Pure.
-import { searchComponents, searchStyles, searchVariables, type LibraryIndex, type LibraryStyle, type LibraryVariable } from '@shared/libraries'
+import { fileLabel, searchComponents, searchStyles, searchVariables, type LibraryIndex, type LibraryStyle, type LibraryVariable } from '@shared/libraries'
 import type { AnswerKind } from './fixtures'
 import type { SelectionReport } from './grounding'
 
@@ -46,7 +46,7 @@ export function libraryContext(prompt: string, kind: AnswerKind, index: LibraryI
   const styles = searchStyles(index, prompt, CONTEXT_STYLES)
   const lines = [
     'Library files:',
-    ...index.files.map((f) => `- File ${f.slot} “${f.name}” (${f.roles.join(' + ')})${f.error ? `: could not be read — ${f.error}` : `: ${f.variables} variables${f.collections.length ? ` in ${f.collections.join(', ')}` : ''}, ${f.components} published components`}`),
+    ...index.files.map((f) => `- ${fileLabel(f)} “${f.name}” (${f.roles.join(' + ')})${f.error ? `: could not be read — ${f.error}` : `: ${f.variables} variables${f.collections.length ? ` in ${f.collections.join(', ')}` : ''}, ${f.components} published components`}`),
     `Collections and modes: ${index.collections.map((c) => `${c.name} [${c.modes.join(', ')}]`).join('; ') || 'none'}`,
     '',
     `Variables matching the question (${vars.items.length} of ${vars.total}):`,

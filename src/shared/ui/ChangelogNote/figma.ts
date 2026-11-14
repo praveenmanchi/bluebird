@@ -14,7 +14,7 @@ export const figma = {
     'Source text (not a Figma prop)': 'source override (defaults to the per-State copy)',
   },
   figmaGaps: {
-    ...scaleGaps('border-width/default'),
+    ...scaleGaps('dimension/space/2', 'border-width/default'),
     'border/accent': badge,
     'radius/pill': badge,
     'space/inline-xs': badge,

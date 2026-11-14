@@ -1,14 +1,19 @@
 import { useEffect } from 'preact/hooks'
 import { Icon, LinkButton, MetaBadge, Notice, PublishEmptyState, SectionTitle, SegmentedControl, Spinner, useRpc } from '@shared/ui'
 import { requestSettings } from '@shared/navigation'
-import { HISTORY_TYPES } from '@shared/history/types'
-import { approveChangelog, openChangelog, openLink, refresh } from '../actions'
+import { approveChangelog, loadVersions, openChangelog, openLink, refresh } from '../actions'
 import { FILTER_LABEL, groupEntries } from '../format'
-import { approveError, approving, changelogPhase, current, days, entries, error, feature, flash, fresh, loading, polling, reset, result, selected, showAll, shown, type FeatureFilter } from '../state'
+import {
+  FEATURE_FILTERS, approveError, approvePostToJira, approving, changelogPhase, current, days, entries, error, feature, flash, fresh, loading, polling, reset, result, selected, showAll, shown, versionsResult,
+  closeSearch, searchMatches, searchOpen,
+  type FeatureFilter,
+} from '../state'
 import { ChangelogDialog } from './ChangelogDialog'
 import { EntryCard } from './EntryCard'
 import { EntryDetails } from './EntryDetails'
 import { RangeSelect } from './RangeSelect'
+import { HISTORY_PLACEHOLDER, HistorySearchBar, SearchResults, VERSIONS_PLACEHOLDER } from './SearchResults'
+import { VersionsView } from './Versions'
 import './history.css'
 
 export interface HistoryTabProps {
@@ -26,11 +31,13 @@ export function listNames(names: readonly string[]): string {
 /** Entries a filtered list shows before "Show N more". */
 export const PAGE_SIZE = 10
 
+const featureLabel = (f: FeatureFilter) => f === 'all' ? 'All' : f === 'versioning' ? 'Versioning' : FILTER_LABEL[f]
+
 /**
- * History tab — Figma "History · 600": the whole team's extractions, reports, Code
- * Connect templates, MCP pushes and UX AI answers, read from the repository in
- * Settings › GitHub. Timeline grouped by day, filtered by range and feature;
- * View details opens the entry.
+ * History tab — Figma "History · 600": the whole team's extractions, changelogs,
+ * reports, MCP pushes and UX AI answers, read from the repository in Settings ›
+ * GitHub, plus Versioning (the open file's Figma versions). Timeline grouped by
+ * day, filtered by range and feature; View details opens the entry.
  */
 export function HistoryTab({ preloaded = false, now = () => new Date() }: HistoryTabProps) {
   const rpc = useRpc()
@@ -56,25 +63,43 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         <EntryDetails
           entry={entry} jiraSite={site} onBack={() => { selected.value = null; approveError.value = null }} onOpenUrl={open}
           onApprove={() => { void approveChangelog(rpc, entry) }} approving={approving.value === entry.id} approveError={approveError.value}
+          postToJira={approvePostToJira.value} onPostToJiraChange={(on) => { approvePostToJira.value = on }}
         />
       </div>
     )
   }
 
   const all = entries.value
-  const count = (f: FeatureFilter) => f === 'all' ? all.length : all.filter((e) => e.type === f).length
+  const count = (f: FeatureFilter) => f === 'all' ? all.length : f === 'versioning' ? versionsResult.value?.versions.length ?? '' : all.filter((e) => e.type === f).length
+  const versioning = feature.value === 'versioning'
   const list = shown.value
   const filtered = feature.value !== 'all'
   const visible = filtered && !showAll.value ? list.slice(0, PAGE_SIZE) : list
-  const groups = filtered ? [{ label: FILTER_LABEL[feature.value as Exclude<FeatureFilter, 'all'>], entries: visible }] : groupEntries(visible, now())
+  const groups = filtered ? [{ label: featureLabel(feature.value), entries: visible }] : groupEntries(visible, now())
   const connected = r?.repo.connected ?? false
 
   return (
     <div class="bb-history">
       <section class="bb-history__toolbar" aria-label="Team history">
         <div class="bb-history__header">
-          <SectionTitle title="Team history" showCount={false} showAction={false} />
-          {r && <MetaBadge tone={connected ? 'success' : 'danger'}>{connected ? 'GitHub connected' : 'GitHub not connected'}</MetaBadge>}
+          <SectionTitle title={versioning ? 'File versions' : 'Team history'} showCount={false} showAction={false} />
+          {versioning
+            ? versionsResult.value && <MetaBadge tone={versionsResult.value.problem ? 'danger' : 'success'}>{versionsResult.value.problem ? 'No Figma REST key' : 'Figma REST connected'}</MetaBadge>
+            : r && <MetaBadge tone={connected ? 'success' : 'danger'}>{connected ? 'GitHub connected' : 'GitHub not connected'}</MetaBadge>}
+          {connected && (
+            <button
+              type="button"
+              class="bb-history__refresh"
+              aria-label="Search the history"
+              title={versioning ? 'Find a version by name, description or author' : 'Find a variable, colour, Jira ticket or component'}
+              aria-expanded={searchOpen.value}
+              aria-controls="bb-history-search"
+              data-active={String(searchOpen.value)}
+              onClick={() => { if (searchOpen.value) closeSearch(); else searchOpen.value = true }}
+            >
+              <Icon name="search" aria-hidden="true" />
+            </button>
+          )}
           {connected && (
             <button
               type="button"
@@ -83,9 +108,9 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
               title={every ? `Checks for teammates’ changes automatically · checked ${new Date(r!.fetchedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}` : 'Refresh'}
               data-busy={String(loading.value || polling.value)}
               disabled={loading.value}
-              onClick={() => { void refresh(rpc) }}
+              onClick={() => { void refresh(rpc); if (feature.value === 'versioning') void loadVersions(rpc) }}
             >
-              <Icon name="ui-prototype-loop" aria-hidden="true" />
+              <Icon name="status-retry" aria-hidden="true" />
             </button>
           )}
           {connected && (
@@ -94,13 +119,14 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
             </button>
           )}
         </div>
+        {connected && searchOpen.value && <HistorySearchBar placeholder={versioning ? VERSIONS_PLACEHOLDER : HISTORY_PLACEHOLDER} />}
         {connected && (
           <div class="bb-history__filters">
-            <RangeSelect value={days.value} disabled={loading.value} onChange={(d) => { showAll.value = false; void refresh(rpc, d) }} />
+            <RangeSelect value={days.value} disabled={loading.value} onChange={(d) => { showAll.value = false; void refresh(rpc, d).then(() => { if (versionsResult.value) void loadVersions(rpc, d) }) }} />
             <SegmentedControl
               class="bb-history__features"
               aria-label="Filter by feature"
-              options={(['all', ...HISTORY_TYPES] as FeatureFilter[]).map((f) => ({ value: f, label: `${f === 'all' ? 'All' : FILTER_LABEL[f]} ${count(f)}` }))}
+              options={FEATURE_FILTERS.map((f) => ({ value: f, label: `${featureLabel(f)} ${count(f)}`.trim() }))}
               value={feature.value}
               onChange={(f) => { feature.value = f; showAll.value = false }}
             />
@@ -117,8 +143,12 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         <div class="bb-history__loading"><Spinner tone="accent" size="lg" label="Reading the team history" /></div>
       ) : !connected ? (
         <PublishEmptyState state="not-connected" title="Connect the history repository" body={`${r.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Everyone who uses the same repository sees the same history.`} actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]} />
+      ) : versioning ? (
+        <VersionsView now={now()} />
+      ) : searchMatches.value ? (
+        <SearchResults matches={searchMatches.value} days={days.value} feature={filtered ? featureLabel(feature.value) : ''} jiraSite={site} onOpen={(id) => { selected.value = id }} onOpenUrl={open} />
       ) : !list.length ? (
-        <PublishEmptyState state="first-release" title="No history yet" body={filtered && feature.value === 'changelog' ? `No changelogs in the last ${days.value} days. Press + on a branch to generate one.` : filtered ? `Nobody on the team used ${FILTER_LABEL[feature.value as Exclude<FeatureFilter, 'all'>]} in the last ${days.value} days.` : `Extractions, reports, Code Connect templates, MCP pushes and UX AI answers from everyone on the team show up here. Nothing in the last ${days.value} days.`} actions={[]} />
+        <PublishEmptyState state="first-release" title="No history yet" body={filtered && feature.value === 'changelog' ? `No changelogs in the last ${days.value} days. Press + on a branch to generate one.` : filtered ? `Nobody on the team used ${featureLabel(feature.value)} in the last ${days.value} days.` : `Extractions, reports, changelogs, MCP pushes and UX AI answers from everyone on the team show up here. Nothing in the last ${days.value} days.`} actions={[]} />
       ) : (
         groups.map((g) => (
           <section key={g.label} class="bb-history__day" aria-label={g.label}>
@@ -132,7 +162,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         ))
       )}
       {changelogPhase.value !== 'closed' && <ChangelogDialog />}
-      {filtered && !showAll.value && list.length > PAGE_SIZE && <LinkButton class="bb-history__more" onClick={() => { showAll.value = true }}>Show {list.length - PAGE_SIZE} more</LinkButton>}
+      {filtered && !versioning && !searchMatches.value && !showAll.value && list.length > PAGE_SIZE && <LinkButton class="bb-history__more" onClick={() => { showAll.value = true }}>Show {list.length - PAGE_SIZE} more</LinkButton>}
     </div>
   )
 }

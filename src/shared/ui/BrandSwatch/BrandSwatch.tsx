@@ -15,7 +15,7 @@ export interface BrandSwatchProps extends Omit<JSX.HTMLAttributes<HTMLDivElement
 }
 
 /** Figma "Brand Swatch" (40000285:8153): one brand's value of a colour variable — Large swatch, brand name, hex. */
-export function BrandSwatch({ brand, label, hex = '#0A84FF', color, class: cls, ...rest }: BrandSwatchProps) {
+export function BrandSwatch({ brand, label, hex = '#0A84FF', color, class: cls, ...rest }: BrandSwatchProps) { // allow-raw: sample content mirroring the Figma component, shown as data
   return (
     <div {...rest} class={`bb-brand-swatch ${cls ?? ''}`}>
       <ColorSwatch size="large" color={color} data-brand={brand} class="bb-brand-swatch__swatch" />

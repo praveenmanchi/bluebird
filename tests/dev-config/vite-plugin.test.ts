@@ -68,5 +68,24 @@ describe('dev config middleware', () => {
     expect((await request(handler, 'POST', '{}', json))).toMatchObject({ status: 409, json: { error: 'A build is already running.' } })
     expect((await request(handler, 'PUT')).status).toBe(405)
   })
-})
 
+  it('starts the package script on request and refuses any other', async () => {
+    const started: unknown[] = []
+    const runner: BuildRunner = { state: () => ({ status: 'idle' }), start: (script) => { started.push(script); return true } }
+    const handler = middlewares(file, runner)['/__bluebird/build']!
+    expect((await request(handler, 'POST', JSON.stringify({ script: 'package' }), json)).status).toBe(202)
+    expect((await request(handler, 'POST', JSON.stringify({ script: 'deploy' }), json))).toMatchObject({ status: 400, json: { error: 'Unknown script: use "build" or "package".' } })
+    expect((await request(handler, 'POST', 'not json', json)).status).toBe(400)
+    expect(started).toEqual(['package'])
+  })
+
+  it('writes the deployment to the file', async () => {
+    const handler = middlewares(file)['/__bluebird/deploy']!
+    const put = await request(handler, 'PUT', JSON.stringify({ deploy: { mode: 'single', brand: 'gap' }, figmaPlugin: { gap: { id: '1234567890123' } } }), json)
+    expect(put.status).toBe(200)
+    const stored = JSON.parse(readFileSync(file, 'utf8'))
+    expect(stored.deploy).toEqual({ mode: 'single', brand: 'gap' })
+    expect(stored.brand.brands.gap.figmaPlugin).toEqual({ id: '1234567890123' })
+    expect((await request(handler, 'PUT', JSON.stringify({ deploy: { mode: 'single', brand: 'nike' } }), json)).status).toBe(400)
+  })
+})

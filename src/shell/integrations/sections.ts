@@ -2,15 +2,15 @@
 // "Settings · Integrations" (40000408:8714). Copy, icons and order follow the
 // frame; an array in `blocks` is one row of side-by-side columns.
 import type { IconName, SectionHeaderLogo } from '@shared/ui'
-import { FILE_ROLES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId } from '@shared/integrations'
+import { MAX_LIBRARY_FILES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId } from '@shared/integrations'
 
 export interface TextFieldSpec { kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean }
 export interface SelectFieldSpec { kind: 'select'; key: string; label: string; icon: IconName; options: readonly string[] }
 export interface SwitchSpec { kind: 'switch'; key: string; title: string; description: string }
 export interface TextAreaSpec { kind: 'textarea'; key: string; label: string; placeholder: string; helper: string }
 export interface ProviderSpec { kind: 'provider'; provider: 'claude' | 'openai' | 'gemini'; model: SelectFieldSpec; apiKey: TextFieldSpec }
-/** Files 3…N of Dual File Mode: a growable list of ID · contains · key rows (not in the Figma frame, which draws two slots). */
-export interface FilesListSpec { kind: 'files'; key: 'extraFiles'; label: string }
+/** Dual File Mode's library files: named cards of Contains + Figma file URL, with Add file / Remove (Figma "Settings · 600 · Integrations open"). */
+export interface FilesListSpec { kind: 'files'; key: 'files'; label: string }
 export type FieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec
 /** A column is one field or a stack of fields. */
 export type ColumnSpec = FieldSpec | readonly FieldSpec[]
@@ -23,8 +23,8 @@ export interface SectionSpec {
   logo?: SectionHeaderLogo
   /** Boolean value driven by the header switch (Figma "Toggle" on the section title). */
   toggleKey?: string
-  /** Column template of the rows: halves, or Dual File's narrow ID / wide key split. */
-  columns?: 'halves' | 'narrow-wide'
+  /** Column template of the rows. */
+  columns?: 'halves'
   blocks: readonly BlockSpec[]
 }
 
@@ -39,23 +39,6 @@ const provider = (id: ProviderSpec['provider'], name: string, placeholder: strin
   apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API key`, icon: 'api-key', placeholder, secret: true },
 })
 
-const LIBRARY_TOKEN = 'Figma personal access token'
-
-/** One Dual File slot: ID and what it contains in the narrow column, its API key in the wide one. */
-const dualFileRow = (n: 1 | 2): readonly ColumnSpec[] => [
-  [
-    { kind: 'text', key: `file${n}Id`, label: `File ${n} ID`, icon: n === 1 ? 'variables' : 'component-audit', placeholder: 'File URL or ID from figma.com/design/…' },
-    { kind: 'select', key: `file${n}Role`, label: `File ${n} contains`, icon: 'layers', options: FILE_ROLES },
-  ],
-  [
-    {
-      kind: 'text', key: `file${n}Key`, label: `File ${n} API key`, icon: 'api-key', placeholder: LIBRARY_TOKEN, secret: true,
-      helper: n === 1
-        ? 'Scopes: file_content:read, library_content:read, file_metadata:read. On Enterprise also file_variables:read (variables) and library_analytics:read (Audit › Across files). Components must be published.'
-        : 'Optional when File 1’s key can open this file too. Leave File 2 empty if File 1 holds both.',
-    },
-  ],
-]
 
 export const SECTIONS: readonly SectionSpec[] = [
   {
@@ -77,7 +60,7 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'storage', logo: 'github', title: 'Storage', columns: 'halves',
+    id: 'storage', logo: 'database', title: 'Storage', columns: 'halves',
     description: 'Where the team History is kept: a GitHub repository every designer’s plugin writes to and reads from. Extractions, reports, Code Connect templates, MCP pushes and UX AI answers land here, so everyone sees one changelog.',
     blocks: [
       { kind: 'switch', key: 'sameAsGithub', title: 'Use the GitHub output repository', description: 'When on, History uses the repository, branch and API key from GitHub output configuration above, and the fields below are ignored except the folder.' },
@@ -97,10 +80,11 @@ export const SECTIONS: readonly SectionSpec[] = [
   },
   {
     id: 'notifications', logo: 'teams', title: 'Notifications',
-    description: 'Configure Power Automate workflow URLs to receive Teams notifications when Pull Requests are created. Toggle notifications in the Publish tab.',
+    description: 'Configure Power Automate workflow URLs to receive Teams and Outlook notifications when pull requests are created or changelogs are sent for review. Toggle notifications where you send.',
     blocks: [
-      { kind: 'text', key: 'designSystemWebhook', label: 'Power Automate — Design System Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
-      { kind: 'text', key: 'devTeamWebhook', label: 'Power Automate — Dev Team', icon: 'url', placeholder: 'https://prod-xx.westus.logic.azure.com/workflows/...' },
+      { kind: 'text', key: 'designSystemWebhook', label: 'Power Automate — Design System Team', icon: 'url', placeholder: 'https://….environment.api.powerplatform.com/powerautomate/…' },
+      { kind: 'text', key: 'devTeamWebhook', label: 'Power Automate — Dev Team', icon: 'url', placeholder: 'https://….environment.api.powerplatform.com/powerautomate/…' },
+      { kind: 'text', key: 'outlookWebhook', label: 'Outlook webhook — Reviewers', icon: 'url', placeholder: 'https://….environment.api.powerplatform.com/powerautomate/…', helper: 'A Power Automate flow that emails the reviewers in Outlook, or an Outlook connector URL (*.webhook.office.com). Used when a changelog is sent for review.' },
       { kind: 'text', key: 'emails', label: 'Email Notifications', icon: 'message', placeholder: 'team@company.com', helper: 'Comma-separated addresses for PR summary emails (requires backend mail service).' },
     ],
   },
@@ -127,12 +111,18 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'dualFile', title: 'Dual File Mode', toggleKey: 'enabled', columns: 'narrow-wide',
-    description: 'Point UXAI and the agents at the published library files your designs use: one file for variables and one for components, a single file that holds both, or as many library files as your system spans. Each is read through the Figma REST API with its own key (or File 1’s).',
-    blocks: [dualFileRow(1), dualFileRow(2), { kind: 'files', key: 'extraFiles', label: 'More library files' }],
+    id: 'dualFile', logo: 'dual-file', title: 'Dual File Mode', toggleKey: 'enabled',
+    description: `Point UXAI and the agents at the published library files your designs use. One Figma token opens every file: add up to ${MAX_LIBRARY_FILES} and say what each one holds.`,
+    blocks: [
+      {
+        kind: 'text', key: 'token', label: 'Figma personal access token', icon: 'api-key', placeholder: 'figd_…', secret: true,
+        helper: 'One token for every file below. Scopes: file_content:read, library_content:read, file_metadata:read. On Enterprise also file_variables:read (variables) and library_analytics:read (Audit › Across files). Components must be published.',
+      },
+      { kind: 'files', key: 'files', label: 'Library files' },
+    ],
   },
   {
-    id: 'ai', title: 'AI agent assistance (UXAI)', toggleKey: 'enabled',
+    id: 'ai', logo: 'ai', title: 'AI agent assistance (UXAI)', toggleKey: 'enabled',
     description: 'Configure the AI model and API keys for the UXAI assistant and the UX AI agents. Supports Claude (Anthropic), OpenAI, and Google Gemini: the provider you pick answers with its Default Model; the others are fallbacks when it has no key.',
     blocks: [
       { kind: 'select', key: 'provider', label: 'Answer with', icon: 'ai-model', options: PROVIDER_OPTIONS },
@@ -144,7 +134,7 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'mcp', title: 'MCP + code sync', toggleKey: 'enabled', columns: 'halves',
+    id: 'mcp', logo: 'mcp', title: 'MCP + code sync', toggleKey: 'enabled', columns: 'halves',
     description: 'Where the MCP tab pushes design-token JSON. The repo\'s existing CI/CD rebuilds Storybook on each push. When off, the push button stays disabled.',
     blocks: [
       [
@@ -165,7 +155,7 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'jira', title: 'Jira integration', toggleKey: 'enabled', columns: 'halves',
+    id: 'jira', logo: 'jira', title: 'Jira integration', toggleKey: 'enabled', columns: 'halves',
     description: 'Connect Jira to browse and pull tickets into the Jira board tab. Tickets can be sent to UXAI for AI-assisted analysis.',
     blocks: [
       [

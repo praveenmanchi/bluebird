@@ -107,6 +107,8 @@ export async function checkProps(root: string, components: ComponentsSnapshot, m
     }
 
     const known = new Set(sourceFilesFor(set, root).flatMap((f) => [...readPropNames(f)]))
+    // A tab screen (checked against the tab's own stylesheet) is a frame the tab renders from state: it has no Figma properties and no props of its own.
+    if (!known.size && set.css && !Object.keys(set.props).length) continue
     if (!known.size) { findings.push({ rule: 'figma-prop-unknown-target', file: rel, message: `could not read any props from ${sourceFilesFor(set, root).map((f) => relative(root, f)).join(', ') || `${set.code}.tsx`}` }); continue }
     for (const [name, value] of Object.entries(mapped)) {
       if (!(name in set.props)) continue // prose documentation of a composed child, not a Figma property

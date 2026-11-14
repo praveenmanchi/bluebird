@@ -40,7 +40,7 @@ export function NonTextCard({ issue, standard }: { issue: NonTextIssue; standard
       whyItFails={`The “${issue.name}” border measures ${issue.ratio.toFixed(2)}:1 against ${issue.gradientBackground ? 'the worst point of the gradient it sits on' : 'what it sits on'}; a visible boundary needs ${NON_TEXT_MIN}:1.`}
       howToFix={`Darken or lighten the stroke until it reaches ${NON_TEXT_MIN}:1. A border nobody can see is a border that is not there.`}
       themes={['forms']}
-      link={{ label: 'Understanding SC 1.4.11 ↗', href: understandingUrl(standard, 'non-text-contrast') }}
+      link={{ label: 'Understanding SC 1.4.11', href: understandingUrl(standard, 'non-text-contrast') }}
       sampleText="▭"
       sampleCaption="Sample of this exact pair"
       ratio={{ value: `${issue.ratio.toFixed(2)}:1`, requirement: `needs ${NON_TEXT_MIN}:1` }}

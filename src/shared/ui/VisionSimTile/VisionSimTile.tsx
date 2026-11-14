@@ -35,7 +35,7 @@ const CAPTION: Record<VisionSimulation, string> = {
 export function VisionSimTile({
   simulation, colors, labels = ['Error', 'Success'], name, caption, class: cls, ...rest
 }: VisionSimTileProps) {
-  const a = hexToRgb(colors.a), b = hexToRgb(colors.b), bg = hexToRgb(colors.bg ?? '#FFFFFF')
+  const a = hexToRgb(colors.a), b = hexToRgb(colors.b), bg = hexToRgb(colors.bg ?? '#FFFFFF') // allow-raw: white page behind a pair that names no background
   if (!a || !b || !bg) return null
   const show = (c: typeof a) => rgbaToHex(simulateVision(c, simulation))
   const distinct = staysDistinct(a, b, simulation)

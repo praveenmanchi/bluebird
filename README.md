@@ -155,6 +155,34 @@ Settings › GitHub › **Test Connection** names the account, whether it can pu
 release the branch holds. The audit that shaped this is in
 [docs/research/tokens-studio-audit.md](docs/research/tokens-studio-audit.md).
 
+## Extraction tab (variables → GitHub)
+
+Branch → Extract → Review → Push. The tab reads the file's local variables and components,
+compares them with the latest extraction on the branch you pick in the repository from
+Settings › **GitHub**, and shows the variable changes and the components they touch before
+anything is committed.
+
+- **Files.** Every branch carries its own extractions in one folder, written in one commit:
+  `extractions/<UTC stamp>.json` (the extraction itself, kept — e.g.
+  `extractions/2026-11-12-0932.json`), `extractions/latest.json` (a copy of the newest one,
+  which is what a compare reads) and `extractions/index.json` (who and when for the newest
+  and up to 50 before it).
+- **Push targets.** Push to an existing branch, or create a new one from a base branch (the
+  default branch when none is picked). An empty repository needs a new branch for its first
+  push. If GitHub refuses the update (a protected branch), nothing is pushed and nobody is
+  notified; push to a new branch instead.
+- **Pull request.** "Create pull request" also opens one from the pushed branch into the
+  default branch, so it needs a different branch to come from. The commit message is the
+  title; the body is the change summary, the file and who extracted it, and the Jira key
+  when one is given. If a pull request for the branch is already open, the push simply
+  joins it.
+- **Jira and Teams.** An optional Jira key (`BB-342`) is added to the commit message and
+  the pull request. Ticking Design system or Dev team posts the summary, with a link to
+  the commit or pull request, to the Teams / Power Automate webhooks in Settings ›
+  **Notifications**; a channel that can't be reached is reported without failing the push.
+- **One extraction per push.** A push uses up the extraction it reviewed: extract again
+  before pushing a second time. Each push is also added to the team History.
+
 ## MCP handoff tab
 
 Select → Check → Generate → Ship. The tab reads the **real selection** (name, path,

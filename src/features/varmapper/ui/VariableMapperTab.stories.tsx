@@ -3,6 +3,7 @@ import { RpcProvider } from '@shared/ui'
 import { createRpcClient, createMockTransport } from '@shared/bridge'
 import { createMockHandlers, type MockScenario } from '../mock'
 import { Tab } from './Tab'
+import { figma } from './VarmapperResults.figma'
 
 /** The L plugin window — the size the Figma "Variable mapper · 600" frames are drawn at. */
 const L = { width: '600px', height: '643px', display: 'flex', flexDirection: 'column' as const }
@@ -12,12 +13,12 @@ function frame(scenario: MockScenario = 'default') {
   return <div style={L}><RpcProvider client={client}><Tab /></RpcProvider></div>
 }
 
-const meta = { title: 'Screens/Variable mapper', parameters: { layout: 'centered' } } satisfies Meta
+const meta = { title: 'Screens/Variable mapper', parameters: { layout: 'centered', figma: { setId: figma.setId, name: figma.name } } } satisfies Meta
 export default meta
 type Story = StoryObj
 
 /** Figma "2 Results": a real check of the Login page's Page header. */
-export const Results: Story = { render: () => frame() }
+export const Results: Story = { render: () => frame(), parameters: { figma: { variant: 'Variable mapper' } } }
 /** Figma "1 Nothing selected". */
 export const NothingSelected: Story = { render: () => frame('empty') }
 /** Figma "Source failed". */

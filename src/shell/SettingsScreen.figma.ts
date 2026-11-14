@@ -10,6 +10,8 @@ export const figma = {
     '--bb-derived-settings-screen-settings-height': 'The settings button grew 33px → 40px in Figma on 2026-09-23; the shell renders the composed <SettingsButton>, which already sizes itself from --bb-derived-settings-button-root-height (40px). Reading it here would pin the row twice.',
   },
   figmaGaps: {
+    // Bound on the size-step instances inside the shell Footer's size expander; Footer.css reads --bb-footer-segment-radius.
+    ...scaleGaps('footer/segment/radius'),
     ...scaleGaps('border-width/default', 'dimension/space/10', 'space/inset-sm', 'space/inset-xs', 'space/inset-lg-alt', 'dimension/space/6', 'dimension/space/8'),
     'footer/bg/default': 'consumed by the shell Footer', 'footer/border/top': 'consumed by the shell Footer', 'footer/padding-x': 'consumed by the shell Footer', 'footer/padding-y': 'consumed by the shell Footer',
     'Banner/bg': 'consumed by the shell Banner', 'Border': 'consumed by the shell tab row (shell.css)',

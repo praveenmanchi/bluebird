@@ -26,10 +26,10 @@
   width: 100%;
   transform-origin: 50% 90%;
   rotate: calc(var(--pp-look) * 7deg);
-  transition: rotate 260ms ease, transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: rotate 260ms ease, transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1); /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-persona-bird__frame:hover .bb-persona-bird__figure { transform: translateY(-4%) scale(1.05); }
-.bb-persona-bird.is-flying .bb-persona-bird__figure { animation: bb-persona-bird-fly 1500ms ease-in-out both; }
+.bb-persona-bird.is-flying .bb-persona-bird__figure { animation: bb-persona-bird-fly 1500ms ease-in-out both; } /* allow-raw: motion is not tokenised in Figma */
 
 /* Its line, above the bird so it never covers the persona's name. */
 .bb-persona-bird__say {
@@ -49,7 +49,7 @@
   background: var(--bb-persona-surface-panel);
   color: var(--bb-persona-text-title);
   font-size: var(--bb-font-size-label);
-  animation: bb-persona-bird-pop 240ms ease-out;
+  animation: bb-persona-bird-pop 240ms ease-out; /* allow-raw: motion is not tokenised in Figma */
 }
 
 /* Crouch, take off up and away, shrinking into the distance; reappear past the other edge and fly back to land. */

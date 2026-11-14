@@ -16,19 +16,49 @@ function renderTab(scenario: MockScenario = 'default', overrides: Record<string,
 
 async function audit() {
   fireEvent.click(screen.getByRole('button', { name: 'Run audit' }))
-  await screen.findByRole('tab', { name: 'All 111' })
+  await screen.findByRole('tab', { name: 'Not mapped 87' })
 }
 
 describe('audit Tab', () => {
   beforeEach(reset)
 
-  it('explains what it counts before the first run', () => {
+  it('says what it compares against and how it works before the first run', async () => {
     renderTab()
-    expect(screen.getByRole('heading', { name: 'Variables' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Components' })).toBeInTheDocument()
-    expect(screen.getByText('Colours')).toBeInTheDocument()
-    expect(screen.getByText('Unused')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'This page' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Compared against' })).toBeInTheDocument()
+    expect(await screen.findByText('Components · Bluebird Components')).toBeInTheDocument()
+    expect(screen.getByText('Variables · Bluebird Variables')).toBeInTheDocument()
+    expect(screen.getByText('232')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'How it works' })).toBeInTheDocument()
+    expect(screen.getByText('By published library key')).toBeInTheDocument()
+    expect(screen.queryByRole('search')).toBeNull()
+  })
+
+  it('asks for a library when none is connected', async () => {
+    const pages = async () => ({ pages: [], currentPageId: 'p', currentPage: 'Login', screens: 2, selected: 0, source: null, libraries: [] })
+    renderTab('default', { [MSG.pages]: pages })
+    expect(await screen.findByText('No library connected yet')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Selection' })).toBeDisabled()
+  })
+
+  it('picks the scope from the cards, and runs it from the Ready button', async () => {
+    const run = vi.fn(createMockHandlers()[MSG.run] as never)
+    renderTab('default', { [MSG.run]: run })
+    expect(await screen.findByText('Login · 14 screens')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'This page' })).toBeChecked()
+    fireEvent.click(screen.getByRole('radio', { name: 'Selection' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Run audit on the selection' }))
+    await screen.findByRole('tab', { name: 'Not mapped 87' })
+    expect(run).toHaveBeenCalledWith({ mode: 'selection' }, expect.anything())
+  })
+
+  it('opens the page list from the Chosen pages card', async () => {
+    renderTab()
+    await screen.findByText('Pick from 8 pages')
+    fireEvent.click(screen.getByRole('radio', { name: 'Chosen pages' }))
+    fireEvent.click(await screen.findByText('Atoms'))
+    fireEvent.click(screen.getByText('Molecules'))
+    expect(await screen.findByText('2 pages chosen')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Run audit on 2 pages' })).toBeInTheDocument()
   })
 
   it('offers the selection, this page and chosen pages', async () => {
@@ -50,41 +80,93 @@ describe('audit Tab', () => {
     expect(run).toHaveBeenCalledWith({ mode: 'selection' }, expect.anything())
   })
 
-  it('gives one score with the variable and component counts', async () => {
+  it('gives one mapped score with the variable and component counts', async () => {
     renderTab()
     await audit()
     expect(screen.getByText('673 / 760')).toBeInTheDocument()
-    expect(screen.getByText('From the design system')).toBeInTheDocument()
+    expect(screen.getByText('Mapped to the design system')).toBeInTheDocument()
     expect(screen.getByText('487 of 528')).toBeInTheDocument()
     expect(screen.getByText('186 of 232')).toBeInTheDocument()
-    expect(screen.getByText('111 issues to review')).toBeInTheDocument()
+    expect(screen.getByText('87 not mapped')).toBeInTheDocument()
   })
 
-  it('lists variable and component issues together, in two groups', async () => {
+  it('opens on an overview: mapped by library, then by screen', async () => {
     renderTab()
     await audit()
-    expect(screen.getByRole('heading', { name: 'Variables' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Components' })).toBeInTheDocument()
-    expect(screen.getByText('#FAFAFA')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: 'Mapped by library' })).toBeInTheDocument()
+    expect(screen.getByText('46 instances not mapped')).toBeInTheDocument()
+    expect(screen.getByText('41 values not mapped')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'By screen' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Access code flow/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Error states/ })).toBeInTheDocument()
+    expect(screen.queryByText('#FAFAFA')).toBeNull()
+  })
+
+  it('lists by page, with the screens that need attention, when several pages were audited', async () => {
+    const base = mockAudit()
+    const cover = (name: string, page: string, library: number, components: number) => ({ id: `s:${name}`, name, page, bound: 0, paints: 0, library, components })
+    const screens = [cover('Campaign hero', 'Marketing', 41, 88), cover('Promo landing', 'Marketing', 66, 109), cover('Welcome', 'Onboarding', 97, 100)]
+    const several: AuditResult = {
+      ...base, screens,
+      pageCoverage: [{ name: 'Marketing', screens: 2, bound: 0, paints: 0, library: 107, components: 197 }, { name: 'Onboarding', screens: 1, bound: 0, paints: 0, library: 97, components: 100 }],
+    }
+    renderTab('default', { [MSG.run]: async () => several })
+    await audit()
+    expect(screen.getByRole('heading', { name: 'By page' })).toBeInTheDocument()
+    expect(screen.getByText('90 not mapped · 2 screens')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Screens that need attention' })).toBeInTheDocument()
+    expect(screen.getByText('Marketing · 47 not mapped')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Welcome/ })).toBeNull()
+    expect(screen.queryByRole('heading', { name: 'By screen' })).toBeNull()
+  })
+
+  it('opens one screen with its own score and list, and goes back', async () => {
+    renderTab()
+    await audit()
+    fireEvent.click(screen.getByRole('button', { name: /Error states/ }))
+    expect(await screen.findByRole('heading', { name: 'Error states' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Screen summary' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /^All \d+$/ })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByText('Local component · 2 layers on this screen')).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Overview' })).toBeNull()
+    fireEvent.keyDown(screen.getByRole('button', { name: 'All screens' }), { key: 'Enter' })
+    fireEvent.click(screen.getByRole('button', { name: 'All screens' }))
+    expect(await screen.findByRole('heading', { name: 'By screen' })).toBeInTheDocument()
+  })
+
+  it('opens a screen from the keyboard', async () => {
+    renderTab()
+    await audit()
+    fireEvent.keyDown(screen.getByRole('button', { name: /SSO flow/ }), { key: 'Enter' })
+    expect(await screen.findByRole('heading', { name: 'SSO flow' })).toBeInTheDocument()
+  })
+
+  it('lists what is not mapped, without healthy library instances', async () => {
+    renderTab()
+    await audit()
+    fireEvent.click(screen.getByRole('tab', { name: 'Not mapped 87' }))
+    expect(await screen.findByText('#FAFAFA')).toBeInTheDocument()
     expect(screen.getByText('Fill · use text/secondary')).toBeInTheDocument()
     expect(screen.getByText('Promo tile')).toBeInTheDocument()
-  })
-
-  it('does not list healthy library instances as issues', async () => {
-    renderTab()
-    await audit()
+    expect(screen.getByText('From another library · on 2 screens')).toBeInTheDocument()
     expect(screen.queryByText('Meta Badge')).toBeNull()
+    expect(screen.queryByText('Item spacing 14')).toBeNull()
   })
 
-  it('filters by kind of issue', async () => {
+  it('filters by kind', async () => {
     renderTab()
     await audit()
     fireEvent.click(screen.getByRole('tab', { name: 'Spacing 12' }))
     await waitFor(() => expect(screen.getByText('Item spacing 14')).toBeInTheDocument())
     expect(screen.queryByText('#FAFAFA')).toBeNull()
-    fireEvent.click(screen.getByRole('tab', { name: 'Not in library 32' }))
+    fireEvent.click(screen.getByRole('tab', { name: 'Other library 9' }))
     await waitFor(() => expect(screen.getByText('Promo tile')).toBeInTheDocument())
-    expect(screen.queryByText('Item spacing 14')).toBeNull()
+    expect(screen.queryByText('Card / Promo')).toBeNull()
+    fireEvent.click(screen.getByRole('tab', { name: 'Local 23' }))
+    await waitFor(() => expect(screen.getByText('Card / Promo')).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('tab', { name: 'Detached 14' }))
+    await waitFor(() => expect(screen.getByText('Detached · on 2 screens')).toBeInTheDocument())
   })
 
   it('sends variable issues to Variable mapper to fix', async () => {
@@ -100,55 +182,39 @@ describe('audit Tab', () => {
     window.removeEventListener(OPEN_TAB_EVENT, listen)
   })
 
-  it('lists library components with no instance', async () => {
-    renderTab()
-    await audit()
-    fireEvent.click(screen.getByRole('tab', { name: 'Unused 12' }))
-    expect(await screen.findByText('Stepper')).toBeInTheDocument()
-  })
-
-  it('opens a card, then selects a frame’s layers and goes to it', async () => {
+  it('opens a card, then selects a screen’s layers and goes to it', async () => {
     const select = vi.fn(async (p: { nodeIds: string[] }) => ({ selected: p.nodeIds.length, page: 'Login', elsewhere: 0 }))
     const goto = vi.fn(async () => ({ page: 'Login', name: 'Button' }))
     renderTab('default', { [MSG.select]: select, [MSG.goto]: goto })
     await audit()
-    fireEvent.click(screen.getAllByRole('button', { name: 'Expand' })[0]!)
+    fireEvent.click(screen.getByRole('tab', { name: 'Not mapped 87' }))
+    fireEvent.click((await screen.findAllByRole('button', { name: 'Expand' }))[0]!)
     fireEvent.click(await screen.findByRole('button', { name: 'Show layers of Access code flow' }))
     expect(await screen.findByText('Selected 12 layers in Access code flow')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Show Access code flow' }))
     expect(await screen.findByText('Opened Access code flow on Login')).toBeInTheDocument()
   })
 
-  it('shows Library Analytics under Across files, reading each view when opened', async () => {
-    const analytics = vi.fn(createMockHandlers()[MSG.analytics] as never)
+  it('switches to Across files from the view menu, which is coming soon, and back', async () => {
+    const analytics = vi.fn()
     renderTab('default', { [MSG.analytics]: analytics })
     await audit()
-    fireEvent.click(screen.getByRole('tab', { name: 'Across files' }))
-    expect(await screen.findByText('Most used components')).toBeInTheDocument()
-    expect(screen.getByText('Checkout redesign')).toBeInTheDocument()
-    expect(analytics).toHaveBeenCalledTimes(1)
-    fireEvent.click(screen.getByRole('tab', { name: 'Variables' }))
-    expect(await screen.findByText('Most used variables')).toBeInTheDocument()
-    expect(screen.getByText('Uses by collection')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('tab', { name: 'Styles' }))
-    expect(await screen.findByText('Most used styles')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('tab', { name: 'Teams' }))
-    expect(await screen.findByText('Components inserted by team')).toBeInTheDocument()
-    expect(screen.getByText('Week by week')).toBeInTheDocument()
-    expect(screen.getByText('Button · 38 detached')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('tab', { name: 'Components' }))
-    expect(await screen.findByText('Most used components')).toBeInTheDocument()
-    expect(analytics).toHaveBeenCalledTimes(4)
+    fireEvent.click(screen.getByRole('button', { name: 'View: This scope' }))
+    fireEvent.click(await screen.findByRole('option', { name: 'Across files' }))
+    expect(await screen.findByText('Across files is coming soon')).toBeInTheDocument()
+    expect(screen.queryByText('673 / 760')).toBeNull()
+    expect(analytics).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'View: Across files' }))
+    fireEvent.click(await screen.findByRole('option', { name: 'This scope' }))
+    expect(await screen.findByText('673 / 760')).toBeInTheDocument()
   })
 
-  it('explains Across files without Enterprise and keeps This scope working', async () => {
-    const empty = createMockHandlers('empty')
-    renderTab('default', { [MSG.analytics]: empty[MSG.analytics] })
-    await audit()
-    fireEvent.click(screen.getByRole('tab', { name: 'Across files' }))
-    expect(await screen.findByText('Across files needs Figma Enterprise')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('tab', { name: 'This scope' }))
-    expect(await screen.findByText('673 / 760')).toBeInTheDocument()
+  it('closes the view menu on Escape', async () => {
+    renderTab()
+    fireEvent.click(screen.getByRole('button', { name: 'View: This scope' }))
+    expect(await screen.findByRole('option', { name: 'Across files' })).toBeInTheDocument()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    await waitFor(() => expect(screen.queryByRole('option', { name: 'Across files' })).toBeNull())
   })
 
   it('says when there is nothing to audit', async () => {
@@ -157,22 +223,22 @@ describe('audit Tab', () => {
     expect(await screen.findByText('Nothing to audit')).toBeInTheDocument()
   })
 
-  it('says when there is nothing to fix', async () => {
+  it('says when everything is mapped', async () => {
     const clean = mockAudit(mockAudit().items.filter(() => false), [], 528)
     renderTab('default', { [MSG.run]: async (): Promise<AuditResult> => clean })
     fireEvent.click(screen.getByRole('button', { name: 'Run audit' }))
     expect(await screen.findByText('Everything in this scope comes from the design system.')).toBeInTheDocument()
-    expect(screen.queryByRole('tab', { name: /^All/ })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Overview' })).toBeNull()
   })
 
   it('still reports variables without a library', async () => {
     renderTab('default', { [MSG.run]: async (): Promise<AuditResult> => mockNoLibrary() })
     fireEvent.click(screen.getByRole('button', { name: 'Run audit' }))
     expect(await screen.findByText('Components need a library')).toBeInTheDocument()
-    expect(screen.getByText('Variables from the design system')).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: 'All 53' })).toBeInTheDocument()
+    expect(screen.getByText('Variables mapped to the design system')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Not mapped 41' })).toBeInTheDocument()
     expect(screen.queryByRole('tab', { name: /^Detached/ })).toBeNull()
-    expect(screen.getByText('#FAFAFA')).toBeInTheDocument()
+    expect(screen.queryByText('46 instances not mapped')).toBeNull()
   })
 
   it('keeps the audit when you leave the tab and come back', async () => {

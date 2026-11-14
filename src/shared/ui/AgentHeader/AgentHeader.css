@@ -14,8 +14,8 @@
   min-height: var(--bb-derived-agent-header-root-height);
 }
 .bb-agent-header__bot {
-  width: calc(var(--bb-agents-size-bot) * 1.4);
-  height: calc(var(--bb-agents-size-bot) * 1.4);
+  width: calc(var(--bb-agents-size-bot) * 1.4); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+  height: calc(var(--bb-agents-size-bot) * 1.4); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
 }
 .bb-agent-header__text {
   display: flex;

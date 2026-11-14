@@ -7,7 +7,7 @@ describe('SectionTitle', () => {
     render(<SectionTitle />)
     expect(screen.getByRole('heading', { name: 'Figma links' })).toBeInTheDocument()
     expect(screen.getByText('2').closest('.bb-meta-badge')?.getAttribute('data-tone')).toBe('neutral')
-    expect(screen.getByRole('button', { name: '+ Attach link' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Attach link' })).toBeInTheDocument()
   })
   it('honours Show count and Show action', () => {
     const { container } = render(<SectionTitle showCount={false} showAction={false} />)
@@ -16,8 +16,8 @@ describe('SectionTitle', () => {
   })
   it('calls onAction from the link button', () => {
     const onAction = vi.fn()
-    render(<SectionTitle actionLabel="+ Add" onAction={onAction} />)
-    fireEvent.click(screen.getByRole('button', { name: '+ Add' }))
+    render(<SectionTitle actionLabel="Add" onAction={onAction} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
     expect(onAction).toHaveBeenCalledTimes(1)
   })
 })

@@ -58,7 +58,7 @@ export function TargetCard({ issue }: { issue: TargetSizeIssue }) {
       // The scan measures the hit area but not the gap to the nearest target, so no neighbour is drawn.
       target={{ width: issue.width, height: issue.height, minimum: issue.required }}
       // The finding carries the version it was measured against (2.1 files everything under 2.5.5).
-      link={cited.code ? { label: `Understanding SC ${cited.code} ↗`, href: understandingUrl(issue.standard, enhanced ? 'target-size-enhanced' : 'target-size-minimum') } : undefined}
+      link={cited.code ? { label: `Understanding SC ${cited.code}`, href: understandingUrl(issue.standard, enhanced ? 'target-size-enhanced' : 'target-size-minimum') } : undefined}
       checks={['design']}
       annotation={annotation}
       onAnnotate={onAnnotate}

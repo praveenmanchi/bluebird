@@ -5,8 +5,9 @@ import type { Snapshot } from '@shared/design/types'
 import { decodeBase64 } from '@shared/github/base64'
 import { parseDay } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
-import { CHANGELOG, type ApproveResult, type ChangelogContext, type ChangelogDraft, type SubmitResult } from '../messages'
+import { CHANGELOG, type ApproveResult, type ChangelogContext, type ChangelogDraft, type SubmitResult, type TicketsResult } from '../messages'
 import { NOT_A_BRANCH, NO_KEY, NO_TOKEN, createChangelogHandlers } from '../sandbox/changelog-handlers'
+import { dualFileWith } from '@shared/integrations/testing'
 
 const LOCAL: Snapshot = {
   takenAt: '2026-11-12T10:00:00.000Z',
@@ -14,10 +15,12 @@ const LOCAL: Snapshot = {
   components: [{ id: 'k-button', nodeId: '1:2', name: 'Button', page: 'Atoms', variants: 2, properties: ['State'], description: '', usesVariables: ['v1'] }],
 }
 
-interface Options { fileKey?: string | null; token?: string; branch?: boolean; storage?: boolean; drawFails?: boolean; conflicts?: number; figmaDown?: boolean }
+interface Options { fileKey?: string | null; token?: string; branch?: boolean; storage?: boolean; drawFails?: boolean; conflicts?: number; figmaDown?: boolean; jira?: boolean; jiraDown?: boolean; teams?: string; outlook?: string }
 
-function setup({ fileKey = 'BRANCH', token = 'figd_x', branch = true, storage = true, drawFails = false, conflicts = 0, figmaDown = false }: Options = {}) {
+function setup({ fileKey = 'BRANCH', token = 'figd_x', branch = true, storage = true, drawFails = false, conflicts = 0, figmaDown = false, jira = true, jiraDown = false, teams = 'https://prod-1.westus.logic.azure.com/workflows/t?sig=1', outlook = '' }: Options = {}) {
   const files = new Map<string, string>()
+  const comments: { key: string; text: string }[] = []
+  const posts: { url: string; body: string }[] = []
   const drawn: HistoryEntry[] = []
   const tokens = new Set<string>()
   let pending = conflicts
@@ -25,10 +28,24 @@ function setup({ fileKey = 'BRANCH', token = 'figd_x', branch = true, storage = 
   const reply = (status: number, body: unknown) => ({ status, text: async () => JSON.stringify(body) })
   const handlers = createChangelogHandlers({
     readSnapshot: async () => LOCAL,
-    readDualFile: async () => ({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'LIB', file1Key: token, extraFiles: [{ id: 'MAIN', key: token ? 'figd_main' : '', role: 'Variables' }] }),
+    readDualFile: async () => dualFileWith(['LIB', 'MAIN'], token),
     readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo: 'acme/ds', branch: 'main', apiKey: storage ? 'ghp_x' : '' }),
     readStorage: async () => DEFAULT_INTEGRATIONS.storage,
+    readJira: async () => ({ ...DEFAULT_INTEGRATIONS.jira, enabled: jira, siteUrl: 'https://acme.atlassian.net', email: 'p@acme.com', apiKey: 'jira-token', projectKey: 'BB' }),
+    readNotifications: async () => ({ ...DEFAULT_INTEGRATIONS.notifications, designSystemWebhook: teams, outlookWebhook: outlook }),
     fetch: async (url: string, init: { method: string; headers: Record<string, string>; body?: string }) => {
+      if (url.startsWith('https://acme.atlassian.net/')) {
+        if (jiraDown) return reply(401, {})
+        if (url.endsWith('/search/jql')) return reply(200, { issues: [{ key: 'BB-342', fields: { summary: 'Darker primary', status: { name: 'In Progress' } } }] })
+        const m = /\/issue\/([^/]+)\/comment$/.exec(url)
+        if (m && init.method === 'POST') {
+          const body = JSON.parse(init.body ?? '{}') as { body: { content: { content: { text?: string }[] }[] } }
+          comments.push({ key: decodeURIComponent(m[1]!), text: body.body.content.map((p) => p.content.map((n) => n.text ?? '\n').join('')).join('\n\n') })
+          return reply(201, {})
+        }
+        return reply(404, {})
+      }
+      if (url.includes('logic.azure.com') || url.includes('webhook.office.com')) { posts.push({ url, body: init.body ?? '' }); return reply(202, {}) }
       if (url.startsWith('https://api.figma.com/')) {
         if (figmaDown) return reply(500, { err: 'boom' })
         tokens.add(init.headers['X-Figma-Token'] ?? '')
@@ -60,20 +77,21 @@ function setup({ fileKey = 'BRANCH', token = 'figd_x', branch = true, storage = 
   const call = <T>(type: string, payload?: unknown) => (handlers[type] as (p: unknown, c: HandlerContext) => Promise<T>)(payload, {} as HandlerContext)
   const day = () => parseDay(files.get('.bluebird/history/2026-11-12.json') ?? null)
   return {
-    files, drawn, tokens, day,
+    files, drawn, tokens, day, comments, posts,
     context: () => call<ChangelogContext>(CHANGELOG.context),
     generate: () => call<ChangelogDraft>(CHANGELOG.generate),
-    submit: (over: Record<string, unknown> = {}) => call<SubmitResult>(CHANGELOG.submit, { draftId: 'x', title: 'Button refresh', notes: 'Darker primary.', ticket: 'BB-342', addCard: true, ...over }),
-    approve: (e: { id: string; at: string }) => call<ApproveResult>(CHANGELOG.approve, { id: e.id, at: e.at }),
+    tickets: () => call<TicketsResult>(CHANGELOG.tickets),
+    submit: (over: Record<string, unknown> = {}) => call<SubmitResult>(CHANGELOG.submit, { draftId: 'x', title: 'Button refresh', notes: 'Darker primary.', ticket: 'BB-342', addCard: true, postToJira: false, notify: { teams: false, outlook: false }, ...over }),
+    approve: (e: { id: string; at: string }, postToJira = false) => call<ApproveResult>(CHANGELOG.approve, { id: e.id, at: e.at, postToJira }),
   }
 }
 
 describe('changelog handlers', () => {
   it('says where you are and names the main file of a branch', async () => {
     const t = setup()
-    expect(await t.context()).toEqual({ file: 'button-refresh', page: 'Atoms', user: 'Praveen Manchi', main: 'Project Bluebird UI' })
-    // The main file is a Dual File library with its own key: that key reads it.
-    expect([...t.tokens]).toEqual(['figd_x', 'figd_main'])
+    expect(await t.context()).toEqual({ file: 'button-refresh', page: 'Atoms', user: 'Praveen Manchi', main: 'Project Bluebird UI', channels: { teams: true, outlook: false }, jira: { connected: true } })
+    // One Dual File token reads this file and its main file.
+    expect([...t.tokens]).toEqual(['figd_x'])
   })
 
   it('explains why there is nothing to compare with', async () => {
@@ -87,6 +105,7 @@ describe('changelog handlers', () => {
   it('compares the branch with its main file', async () => {
     const draft = await setup().generate()
     expect(draft.title).toBe('button-refresh')
+    expect(draft.branch).toBe('https://www.figma.com/design/MAIN/branch/BRANCH/button-refresh')
     expect(draft.warnings).toEqual([])
     expect(draft.changes.map((c) => `${c.subject} ${c.kind} ${c.name} ${c.detail}`)).toEqual(['component added Button New · 2 variants · 1 property', 'variable modified button/bg #0066FF → #0052CC'])
   })
@@ -140,5 +159,46 @@ describe('changelog handlers', () => {
     await t.submit({ draftId: (await t.generate()).draftId })
     await expect(t.approve(t.day()[0]!)).rejects.toThrow()
     expect(t.day()[0]!.status).toBe('review')
+  })
+
+  it('lists the Jira project’s open tickets, or says why it can’t', async () => {
+    expect(await setup().tickets()).toEqual({ tickets: [{ key: 'BB-342', title: 'Darker primary', status: 'In Progress' }] })
+    expect((await setup({ jira: false }).tickets()).problem).toMatch(/Jira is switched off/)
+    expect((await setup({ jiraDown: true }).tickets()).problem).toMatch(/rejected the email or API token/)
+    expect((await setup({ jira: false }).context()).jira).toEqual({ connected: false, problem: expect.stringMatching(/switched off/) })
+  })
+
+  it('posts the changes and the branch link to the ticket, and notifies the reviewers', async () => {
+    const t = setup({ outlook: 'https://acme.webhook.office.com/webhookb2/o' })
+    const done = await t.submit({ draftId: (await t.generate()).draftId, postToJira: true, notify: { teams: true, outlook: true } })
+    expect(done.message).toContain('BB-342 got a Jira comment with the changes and the Figma branch link.')
+    expect(done.message).toContain('Microsoft Teams and Outlook were notified.')
+    expect(t.comments).toHaveLength(1)
+    expect(t.comments[0]!.key).toBe('BB-342')
+    expect(t.comments[0]!.text).toContain('Changelog sent for review: Button refresh')
+    expect(t.comments[0]!.text).toContain('button/bg modified #0066FF → #0052CC')
+    expect(t.comments[0]!.text).toContain('Figma branch: https://www.figma.com/design/MAIN/branch/BRANCH/button-refresh')
+    expect(t.posts.map((p) => p.url)).toEqual(['https://prod-1.westus.logic.azure.com/workflows/t?sig=1', 'https://acme.webhook.office.com/webhookb2/o'])
+    expect(JSON.parse(t.posts[0]!.body)).toMatchObject({ title: 'Changelog for review: Button refresh' })
+    // The branch link is kept on the entry, for the reviewer's comment.
+    expect(t.day()[0]!.details?.facts).toContainEqual({ label: 'Figma branch', value: 'https://www.figma.com/design/MAIN/branch/BRANCH/button-refresh' })
+  })
+
+  it('still submits when Jira refuses the comment, and never posts to an unknown host', async () => {
+    const t = setup({ jiraDown: true, teams: 'https://evil.example.com/hook' })
+    const done = await t.submit({ draftId: (await t.generate()).draftId, postToJira: true, notify: { teams: true, outlook: true } })
+    expect(done.message).toMatch(/BB-342 was not updated: Jira rejected/)
+    expect(done.message).toContain('Microsoft Teams could not be reached.')
+    expect(t.posts).toEqual([])
+    expect(t.day()).toHaveLength(1)
+  })
+
+  it('posts the approval to the ticket when the reviewer asks', async () => {
+    const t = setup()
+    await t.submit({ draftId: (await t.generate()).draftId })
+    const done = await t.approve(t.day()[0]!, true)
+    expect(done.message).toContain('BB-342 got a Jira comment with the approval and the Figma branch link.')
+    expect(t.comments[0]!.text).toContain('Changelog approved: Button refresh')
+    expect(t.comments[0]!.text).toContain('Added to the design changelog: https://github.com/acme/ds/blob/main/.bluebird/DESIGN-CHANGELOG.md')
   })
 })

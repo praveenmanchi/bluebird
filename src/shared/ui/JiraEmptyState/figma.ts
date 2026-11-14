@@ -13,7 +13,7 @@ export const figma = {
     'Action › width FIXED (button/*/width-md)': 'width="fixed" (120 wide in Figma)',
   },
   figmaGaps: {
-    ...scaleGaps('button/secondary/border-width', 'button/primary/border-width'),
+    ...scaleGaps('icon/size/lg', 'button/secondary/border-width', 'button/primary/border-width'),
     'button/secondary/bg/default': secondary,
     'button/secondary/border/default': secondary,
     'button/secondary/radius': secondary,

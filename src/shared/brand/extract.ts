@@ -368,22 +368,52 @@ export async function extractComponents(manifest: ExtractManifest): Promise<Comp
 
 // --------------------------------------------------------------------- icons
 
+/**
+ * The icon's own value in a variant name. Icon sets also carry `Size=Small|Medium|Large`
+ * (`Icon=add, Size=Large`), which is not part of the glyph's name.
+ */
+export function iconLabel(variantName: string, variantProperty: string): string {
+  const prefix = `${variantProperty}=`
+  const part = variantName.split(', ').find((p) => p.startsWith(prefix))
+  return (part ? part.slice(prefix.length) : variantName.replace(new RegExp(`^${prefix}`), '')).trim()
+}
+
 export function iconKey(variantName: string, variantProperty: string): string {
-  return variantName
-    .replace(new RegExp(`^${variantProperty}=`), '')
-    .trim()
+  return iconLabel(variantName, variantProperty)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 }
 
+/** Orders Figma node ids (`<n>:<n>`) numerically, so `91:3` sorts before `40002351:5`. */
+function compareNodeIds(a: string, b: string): number {
+  const [a1 = 0, a2 = 0] = a.split(':').map(Number)
+  const [b1 = 0, b2 = 0] = b.split(':').map(Number)
+  return a1 - b1 || a2 - b2
+}
+
+/**
+ * One variant per glyph, in first-seen order. A glyph's Size variants were cloned from the
+ * icon as drawn, so the lowest node id is that original: its id and SVG stay stable across pulls.
+ */
+export function oneVariantPerGlyph<T extends { id: string; name: string }>(variants: readonly T[], keyOf: (name: string) => string): T[] {
+  const picked = new Map<string, T>()
+  for (const v of variants) {
+    const key = keyOf(v.name)
+    const current = picked.get(key)
+    if (!current || compareNodeIds(v.id, current.id) < 0) picked.set(key, v)
+  }
+  return [...picked.values()]
+}
+
 export async function extractIcons(manifest: ExtractManifest): Promise<IconsSnapshot> {
   const set = await figma.getNodeByIdAsync(manifest.iconSet.id)
   if (!set || set.type !== 'COMPONENT_SET') throw new Error(`Icon set ${manifest.iconSet.id} not found`)
+  const { variantProperty } = manifest.iconSet
   const icons: IconsSnapshot['icons'] = {}
-  for (const variant of set.children) {
+  for (const variant of oneVariantPerGlyph(set.children, (name) => iconKey(name, variantProperty))) {
     const svg = await variant.exportAsync({ format: 'SVG_STRING', svgOutlineText: true, svgIdAttribute: false, svgSimplifyStroke: true })
-    icons[iconKey(variant.name, manifest.iconSet.variantProperty)] = { id: variant.id, name: variant.name.replace(`${manifest.iconSet.variantProperty}=`, ''), svg }
+    icons[iconKey(variant.name, variantProperty)] = { id: variant.id, name: iconLabel(variant.name, variantProperty), svg }
   }
   return { fileKey: manifest.fileKey, set: manifest.iconSet, icons, marks: {} }
 }

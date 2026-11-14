@@ -5,18 +5,18 @@ import { LOGOS, type LogoName } from '@logos'
 import type { BadgeTone, DocTheme } from '../doc/types'
 
 /** The Figma values, used when a variable is missing (tests, or a stale build). */
-const FALLBACK: Readonly<Record<string, string>> = {
-  'a11y-report-surface-page': '#ffffff', 'a11y-report-surface-subtle': '#f7f7f7',
-  'a11y-report-border-default': '#dedede', 'a11y-report-border-strong': '#c4c4c4',
-  'a11y-report-text-title': '#161616', 'a11y-report-text-body': '#4d4d4d', 'a11y-report-text-meta': '#757575', 'a11y-report-text-accent': '#0b57d0',
-  'a11y-report-severity-critical-fg': '#7d2420', 'a11y-report-severity-critical-bg': '#ffd6ce',
-  'a11y-report-severity-serious-fg': '#624000', 'a11y-report-severity-serious-bg': '#fde4bc',
-  'a11y-report-severity-moderate-fg': '#004789', 'a11y-report-severity-moderate-bg': '#cbebff',
-  'a11y-report-severity-minor-fg': '#4d4d4d', 'a11y-report-severity-minor-bg': '#eeeeee',
-  'a11y-report-status-pass-fg': '#035817', 'a11y-report-status-pass-bg': '#ccf5cd',
-  'a11y-report-annotation-focus': '#0b57d0', 'a11y-report-annotation-heading': '#5c1f8f',
-  'a11y-report-annotation-landmark': '#035817', 'a11y-report-annotation-on': '#ffffff',
-  'banner-bg': '#0b57d0', 'banner-text': '#ffffff',
+export const FALLBACK: Readonly<Record<string, string>> = {
+  'a11y-report-surface-page': '#ffffff', 'a11y-report-surface-subtle': '#f7f7f7', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-border-default': '#dedede', 'a11y-report-border-strong': '#c4c4c4', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-text-title': '#161616', 'a11y-report-text-body': '#4d4d4d', 'a11y-report-text-meta': '#757575', 'a11y-report-text-accent': '#0b57d0', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-severity-critical-fg': '#7d2420', 'a11y-report-severity-critical-bg': '#ffd6ce', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-severity-serious-fg': '#624000', 'a11y-report-severity-serious-bg': '#fde4bc', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-severity-moderate-fg': '#004789', 'a11y-report-severity-moderate-bg': '#cbebff', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-severity-minor-fg': '#4d4d4d', 'a11y-report-severity-minor-bg': '#eeeeee', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-status-pass-fg': '#035817', 'a11y-report-status-pass-bg': '#ccf5cd', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-annotation-focus': '#0b57d0', 'a11y-report-annotation-heading': '#5c1f8f', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'a11y-report-annotation-landmark': '#035817', 'a11y-report-annotation-on': '#ffffff', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
+  'banner-bg': '#0b57d0', 'banner-text': '#ffffff', // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
 }
 
 const HEX = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i
@@ -44,7 +44,7 @@ export function logoSvg(brand: string | undefined): string {
 
 export function readDocTheme(root: HTMLElement = document.documentElement): DocTheme {
   const style = getComputedStyle(root)
-  const read = (name: string): string => normalizeHex(style.getPropertyValue(`--bb-${name}`)) ?? FALLBACK[name] ?? '#000000'
+  const read = (name: string): string => normalizeHex(style.getPropertyValue(`--bb-${name}`)) ?? FALLBACK[name] ?? '#000000' // allow-raw: fallback copy of the a11y/report/* values; __tests__/docTheme.test.ts holds it to the generated tokens
   const pair = (fg: string, bg: string) => ({ fg: read(fg), bg: read(bg) })
   const severity: Record<BadgeTone, { fg: string; bg: string }> = {
     critical: pair('a11y-report-severity-critical-fg', 'a11y-report-severity-critical-bg'),

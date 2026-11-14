@@ -21,11 +21,16 @@ export function loadConfig(raw: unknown): PluginConfig {
   if (!config.brand.brands[config.brand.active]) {
     errors.push(`brand.active "${config.brand.active}" is not defined in brand.brands`)
   }
+  errors.push(...deployErrors(config))
   const hashes = new Map<string, string>()
   for (const [brandId, b] of Object.entries(config.brand.brands)) {
-    const other = hashes.get(b.accessCodeHash)
-    if (other) errors.push(`brands "${other}" and "${brandId}" share the same access code`)
-    hashes.set(b.accessCodeHash, brandId)
+    if (b.accessCodeHash) {
+      const other = hashes.get(b.accessCodeHash)
+      if (other) errors.push(`brands "${other}" and "${brandId}" share the same access code`)
+      hashes.set(b.accessCodeHash, brandId)
+    } else if (config.deploy.mode === 'multi') {
+      errors.push(`brand "${brandId}" has no accessCodeHash: a multi-brand plugin needs one per brand (npm run access-code -- <code>)`)
+    }
     errors.push(...brandErrors(brandId, b, config))
   }
   if (!config.personas[config.activePersona]) {
@@ -43,6 +48,19 @@ export function loadConfig(raw: unknown): PluginConfig {
   }
   if (errors.length) throw new ConfigError(`plugin.config.json is invalid:\n${errors.map((e) => `  ${e}`).join('\n')}`)
   return config
+}
+
+/** Single-brand mode names a brand that exists. */
+function deployErrors(config: PluginConfig): string[] {
+  if (config.deploy.mode !== 'single') return []
+  const id = config.deploy.brand
+  if (!id) return ['deploy.mode is "single" but deploy.brand is not set: name the brand this build is for']
+  return config.brand.brands[id] ? [] : [`deploy.brand "${id}" is not defined in brand.brands`]
+}
+
+/** The brand a single-brand build is locked to; null in a multi-brand build. */
+export function singleBrand(config: PluginConfig): string | null {
+  return config.deploy.mode === 'single' ? config.deploy.brand ?? null : null
 }
 
 /** A brand's tab and persona lists name real tabs once each, and its managed Settings carry no keys or tokens. */

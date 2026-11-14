@@ -39,7 +39,7 @@ export interface VariableRowProps extends Omit<JSX.HTMLAttributes<HTMLDivElement
 /** Figma "Variable Row" (40000287:8277): one bound variable with its preview, where it is used, and a Dropdown to swap it. */
 export function VariableRow({
   token = 'jira/row/bg/selected',
-  where = 'Fill · root · #0B3A6E',
+  where = 'Fill · root · #0B3A6E', // allow-raw: sample content mirroring the Figma component, shown as data
   kind = 'color',
   state = 'default',
   color,

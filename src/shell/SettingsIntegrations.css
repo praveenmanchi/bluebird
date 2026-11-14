@@ -62,9 +62,6 @@
 }
 @container (min-width: 560px) { /* allow-raw: two Input Box columns + the columns gap, a layout breakpoint not a Figma value */
   .bb-integrations__section[data-columns="halves"] .bb-integrations__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .bb-integrations__section[data-columns="narrow-wide"] .bb-integrations__row {
-    grid-template-columns: var(--bb-derived-settings-integrations-dual-file-r1-column-1-width) minmax(0, 1fr);
-  }
 }
 
 /* "AI row N": AI service mark · Default Model (210) · API key (fill). Wraps the key under the model when narrow. */
@@ -112,23 +109,52 @@
 /* "Set by <brand>": the section's managed fields come from plugin.config.json. */
 .bb-integrations__managed { width: 100%; max-width: none; }
 
-/* Files 3…N of Dual File Mode ("Add another library file"); not in the Figma frame, which draws two slots.
- * Each row reuses the Dual File row grid (narrow ID / contains column, wide key column). */
+/* Dual File Mode › Library files (Figma "Settings · 600 · Integrations open"): a "1 of 3" label row,
+ * one bordered card per file (name + Remove, then Contains + Figma file URL), and Add file. */
 .bb-integrations__files {
   display: flex;
   flex-direction: column;
   gap: var(--bb-settings-space-fields);
 }
-.bb-integrations__files-row {
-  padding-top: var(--bb-settings-space-fields);
-  border-top: var(--bb-settings-section-border-width) solid var(--bb-settings-section-border);
+.bb-integrations__files-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-settings-space-columns);
 }
-@container (min-width: 560px) { /* allow-raw: same breakpoint as the Dual File rows above */
-  .bb-integrations__files-row .bb-integrations__row {
-    grid-template-columns: var(--bb-derived-settings-integrations-dual-file-r1-column-1-width) minmax(0, 1fr);
-  }
+.bb-integrations__files-title {
+  color: var(--bb-input-fg-label);
+  font-family: var(--bb-input-label-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-input-label-font-size);
+  font-weight: var(--bb-input-label-font-weight);
+  line-height: var(--bb-input-label-line-height);
 }
-.bb-integrations__files-remove { align-self: flex-start; }
+.bb-integrations__files-count {
+  font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
+  color: var(--bb-input-fg-helper);
+}
+/* "File n card": border/default, card-variable/radius, dimension/space/12 padding, settings/space/fields gap. */
+.bb-integrations__file {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-fields);
+  padding: var(--bb-dimension-space-12);
+  border: var(--bb-settings-section-border-width) solid var(--bb-border-default);
+  border-radius: var(--bb-card-variable-radius);
+}
+.bb-integrations__file-head,
+.bb-integrations__file-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+/* Top-aligned so a helper or error under one field doesn't push its neighbour down. */
+.bb-integrations__file-body { align-items: flex-start; }
+.bb-integrations__file-name,
+.bb-integrations__file-url { flex: 1 1 220px; min-width: 0; } /* allow-raw: wrap point for the name / URL beside Remove / Contains */
+.bb-integrations__file-role { flex: 0 1 176px; min-width: 0; } /* allow-raw: Figma "Contains" dropbox width (176) */
+.bb-integrations__file-head > .bb-button { flex: none; }
 .bb-integrations__files-add {
   display: flex;
   flex-wrap: wrap;

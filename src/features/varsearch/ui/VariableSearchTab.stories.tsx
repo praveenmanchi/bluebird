@@ -4,6 +4,7 @@ import { createRpcClient, createMockTransport } from '@shared/bridge'
 import { createMockHandlers, MOCK_PAGES, MOCK_VARIABLES, type MockScenario } from '../mock'
 import { expanded, pages, currentPageId, pageScope, query, result, status, types } from '../state'
 import { Tab } from './Tab'
+import { figma } from './VarsearchResults.figma'
 
 /** The L plugin window — the size the Figma "Variable search · 600" frames are drawn at. */
 const L = { width: '600px', height: '643px', display: 'flex', flexDirection: 'column' as const }
@@ -27,7 +28,7 @@ const searched = (name: string) => () => {
   status.value = 'done'
 }
 
-const meta = { title: 'Screens/Variable search', parameters: { layout: 'centered' } } satisfies Meta
+const meta = { title: 'Screens/Variable search', parameters: { layout: 'centered', figma: { setId: figma.setId, name: figma.name } } } satisfies Meta
 export default meta
 type Story = StoryObj
 
@@ -36,7 +37,7 @@ export const Empty: Story = { render: () => frame('empty') }
 /** Figma "2 Recent searches". */
 export const RecentSearches: Story = { render: () => frame() }
 /** Figma "3 Results": dropdown/border/default on Atoms / Molecules / Organisms, Component only. */
-export const Results: Story = { render: () => frame('default', searched('dropdown/border/default')) }
+export const Results: Story = { render: () => frame('default', searched('dropdown/border/default')), parameters: { figma: { variant: 'Variable search' } } }
 /** Figma "Edge · No results". */
 export const NoResults: Story = {
   render: () => frame('default', () => {

@@ -11,7 +11,7 @@ export const figma = {
     Meta: 'meta',
   },
   figmaGaps: {
-    ...scaleGaps('jira/border-width', 'border-width/default'),
+    ...scaleGaps('dimension/space/2', 'jira/border-width', 'border-width/default'),
     'jira/row/bg/selected': ticketRow,
     'jira/row/border/selected': ticketRow,
     'jira/radius/row': ticketRow,

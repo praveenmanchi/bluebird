@@ -15,7 +15,7 @@ export const figma = {
     'Change (Meta Badge instance, Label "Modified")': 'change → CHANGE_BADGE label + tone',
   },
   figmaGaps: {
-    ...scaleGaps('border-width/default'), 'surface/accent-strong': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.',
+    ...scaleGaps('icon/size/lg', 'border-width/default'), 'surface/accent-strong': 'Sample swatch colour: the row shows the changed value from data, so code paints it inline.',
     'checkbox/gap': "Bound on the composed Checkbox instance (gap between box and label); the label is hidden here and Checkbox's own CSS reads it.",
     'bridge/color/primary/600': 'Sample swatch fill in Figma (the Bridge primary of the default row). In code the Preview paints the scanned value — the swatch prop — so no design token is read.',
     'border/accent': badge,

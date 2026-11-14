@@ -84,6 +84,17 @@ describe('generate()', () => {
       'src/shared/ui/Icon/generated.ts',
     ]))
   })
+  it('ships the plugin only the derived tokens that src reads', () => {
+    const all = files['src/shared/brand/generated/derived.css']!
+    const active = files['src/shared/brand/generated/derived.active.css']!
+    const names = (css: string) => [...css.matchAll(/(--bb-derived-[a-z0-9-]+):/g)].map((m) => m[1]!)
+    expect(names(active).length).toBeGreaterThan(0)
+    expect(names(active).length).toBeLessThan(names(all).length)
+    expect(names(all)).toEqual(expect.arrayContaining(names(active)))
+    expect(names(active)).toContain('--bb-derived-button-root-stroke-width')
+    expect(active).not.toContain('--bb-derived-bot-scene-')
+    expect(files['src/shared/brand/generated/plugin.css']).toContain('derived.active.css')
+  })
   it('resolves brand values per mode', () => {
     expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-button-primary-bg-default: #0978c8;')
     expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-bg-default: #161616;')

@@ -8,13 +8,10 @@ import { Bird } from './persona/Bird'
 import { personaCopy } from './persona/copy'
 import './PersonaScreen.css'
 
-/** The picked bird takes off before the app opens. */
-export const TAKE_OFF_MS = 950
 /** Curtain plus the birds landing one by one. */
 const INTRO_MS = 1500
 /** The other birds flying back and landing after Change persona. */
 const RETURN_MS = 1100
-const FEATHERS = [0, 1, 2, 3, 4, 5, 6]
 const NAV_KEYS = ['Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']
 const CLOUD = 'M16 40a14 14 0 0 1 2-28 20 20 0 0 1 38-4 16 16 0 0 1 26 12 12 12 0 0 1 2 20z'
 
@@ -28,8 +25,10 @@ export interface PersonaScreenProps {
   onCancel?: () => void
   /** Plays the curtain and the birds landing; off when coming from Settings. */
   intro?: boolean
-  /** No animation, no take-off delay (stories, visual diff). Reduced motion does this too. */
+  /** No animation (stories, visual diff). Reduced motion does this too. */
   still?: boolean
+  /** Laid over the next screen (see PersonaHandOver): the picker fades away as the picked bird lifts off towards the viewer. */
+  departing?: boolean
 }
 
 type Vars = JSX.CSSProperties & Record<`--${string}`, string | number>
@@ -38,14 +37,14 @@ type Vars = JSX.CSSProperties & Record<`--${string}`, string | number>
  * The birds on a branch. Pick one and the others fly away while it moves to the centre, in front of a
  * full circle, and its speech bubble lists that persona's tabs. Change persona brings the flock back.
  */
-export function PersonaScreen({ personas, brand, initialId = null, onConfirm, onCancel, intro = true, still = false }: PersonaScreenProps) {
+export function PersonaScreen({ personas, brand, initialId = null, onConfirm, onCancel, intro = true, still = false, departing = false }: PersonaScreenProps) {
   const [selectedId, setSelectedId] = useState<string | null>(personas.some((p) => p.id === initialId) ? initialId : null)
   const [leaving, setLeaving] = useState(false)
   // Gated in state so the landing plays once: as a plain class it would replay on every bird that loses the selection.
-  const [introing, setIntroing] = useState(intro)
+  const [introing, setIntroing] = useState(intro && !departing)
   const [returning, setReturning] = useState(false)
   /** Opened on a persona (from Settings): the others are simply gone, nothing to watch fly away. */
-  const [instant, setInstant] = useState(selectedId !== null)
+  const [instant, setInstant] = useState(selectedId !== null && !departing)
   /**
    * Set once someone navigates here by keyboard. Focus lands on a bird when the screen opens, and after
    * typing the access code the browser would ring it as :focus-visible, though nobody moved to it.
@@ -82,9 +81,10 @@ export function PersonaScreen({ personas, brand, initialId = null, onConfirm, on
   confirmed.current = onConfirm
   useEffect(() => {
     if (!leaving || !selectedId) return
-    const timer = setTimeout(() => { confirmed.current(selectedId) }, frozen ? 0 : TAKE_OFF_MS)
+    // No wait here: the bird starts flapping, and its flight plays over the next screen (PersonaHandOver).
+    const timer = setTimeout(() => { confirmed.current(selectedId) }, 0)
     return () => clearTimeout(timer)
-  }, [leaving, selectedId, frozen])
+  }, [leaving, selectedId])
 
   const pick = (index: number) => {
     setIntroing(false)
@@ -113,11 +113,11 @@ export function PersonaScreen({ personas, brand, initialId = null, onConfirm, on
     move(index, step)
   }
 
-  const rootClass = ['bb-pick', frozen && 'is-still', introing && 'has-intro', leaving && 'is-leaving', selected && 'has-selection', returning && 'is-returning', instant && 'is-instant', usingKeyboard && 'uses-keyboard'].filter(Boolean).join(' ')
+  const rootClass = ['bb-pick', frozen && 'is-still', introing && 'has-intro', leaving && 'is-leaving', selected && 'has-selection', returning && 'is-returning', instant && 'is-instant', departing && 'is-departing', usingKeyboard && 'uses-keyboard'].filter(Boolean).join(' ')
   return (
     <section ref={root} class={rootClass} style={{ '--pp-n': personas.length } as Vars} aria-label="Choose your persona"
       onKeyDown={(e) => { if (NAV_KEYS.includes(e.key)) setUsingKeyboard(true) }} onPointerDown={() => setUsingKeyboard(false)}>
-      {intro && <div class="bb-pick__curtain" aria-hidden="true" />}
+      {intro && !departing && <div class="bb-pick__curtain" aria-hidden="true" />}
       <header class="bb-pick__header">
         <BrandLogo brand={brand} class="bb-pick__logo" />
       </header>
@@ -144,10 +144,9 @@ export function PersonaScreen({ personas, brand, initialId = null, onConfirm, on
                 tabIndex={i === (selectedIndex >= 0 ? selectedIndex : rover) ? 0 : -1}
                 class={`bb-pick__bird${isSelected ? ' is-selected' : ''}${i === anchor ? ' is-anchor' : ''}`}
                 style={{ gridColumn: i + 1, '--pp-i': i, '--pp-dir': i < anchor ? -1 : 1, '--pp-blink': `${i * 0.9}s` } as Vars}
-                disabled={leaving || (selected !== null && !isSelected)} onClick={() => pick(i)} onKeyDown={(e) => onKeyDown(e, i)}>
+                disabled={leaving || departing || (selected !== null && !isSelected)} onClick={() => pick(i)} onKeyDown={(e) => onKeyDown(e, i)}>
                 <span class="bb-pick__figure">
-                  <Bird kind={personaCopy(persona.id).kind} class={isSelected ? `is-playing${leaving ? ' is-flapping' : ''}` : flying ? 'is-flapping' : undefined} />
-                  {isSelected && leaving && FEATHERS.map((k) => <i key={k} class="bb-pick__feather" style={{ '--pp-a': `${k * 51}deg` } as Vars} />)}
+                  <Bird kind={personaCopy(persona.id).kind} class={isSelected ? (departing ? 'is-flapping' : `is-playing${leaving ? ' is-flapping' : ''}`) : flying ? 'is-flapping' : undefined} />
                 </span>
                 <span class="bb-pick__label">{persona.label}</span>
               </button>

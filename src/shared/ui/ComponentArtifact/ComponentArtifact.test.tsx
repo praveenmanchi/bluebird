@@ -14,7 +14,7 @@ describe('ComponentArtifact', () => {
   it('renders the header with the component glyph and the overridden link label', () => {
     const { container } = render(<ComponentArtifact />)
     expect(container.querySelector('.bb-artifact-header [data-icon]')?.getAttribute('data-icon')).toBe('component')
-    expect(screen.getByRole('button', { name: 'Go to component ↗' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Go to component' })).toBeInTheDocument()
   })
   it('lists properties as neutral Meta Badges and the code path as a Citation chip', () => {
     const { container } = render(<ComponentArtifact properties={['Tone', 'Label']} code="src/shared/ui/MetaBadge" />)
@@ -29,7 +29,7 @@ describe('ComponentArtifact', () => {
     render(<ComponentArtifact onOpen={() => calls.push('open')}><span>live render</span></ComponentArtifact>)
     expect(screen.getByText('live render')).toBeInTheDocument()
     expect(screen.queryAllByRole('button', { name: 'Button' })).toHaveLength(0)
-    screen.getByRole('button', { name: 'Go to component ↗' }).click()
+    screen.getByRole('button', { name: 'Go to component' }).click()
     expect(calls).toEqual(['open'])
   })
 })

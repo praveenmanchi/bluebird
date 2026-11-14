@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks'
 import { Button, Notice, ScanSummary, SectionTitle, SegmentedControl, useRpc, type IconName } from '@shared/ui'
 import { BUILD_VERSION } from '@shared/buildInfo'
+import { inDevMode } from '@shared/editor'
 import { brand } from '@shared/config'
 import { MSG, type CreatedDocument, type ScanResult, type ScanProgress, type ScanTarget } from '../messages'
 import { scope, scanning, visited, result, error, reset, level, platform, standard, rules, target, ignored, type LevelFilter } from '../state'
@@ -250,7 +251,7 @@ export function Tab() {
                 value={kind}
                 onChange={setKind}
               />
-              <ExportMenu busy={exporting} onExport={(format) => { void exportReport(format) }} />
+              <ExportMenu busy={exporting} canvas={!inDevMode.value} onExport={(format) => { void exportReport(format) }} />
             </div>
             {total === 0 && (
               <p class="bb-a11y__empty">

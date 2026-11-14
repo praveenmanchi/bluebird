@@ -705,6 +705,41 @@
       "id": "40000299:18411"
     },
     {
+      "code": "A11yResults",
+      "figma": "Accessibility checker",
+      "id": "40000386:32445"
+    },
+    {
+      "code": "AuditResults",
+      "figma": "Audit",
+      "id": "40002539:6775"
+    },
+    {
+      "code": "ExtractionResults",
+      "figma": "Extraction",
+      "id": "40002702:9537"
+    },
+    {
+      "code": "HistoryTimeline",
+      "figma": "History",
+      "id": "40002705:6666"
+    },
+    {
+      "code": "PublishReview",
+      "figma": "Publish",
+      "id": "40000484:8324"
+    },
+    {
+      "code": "VarmapperResults",
+      "figma": "Variable mapper",
+      "id": "40002505:6704"
+    },
+    {
+      "code": "VarsearchResults",
+      "figma": "Variable search",
+      "id": "40002433:6889"
+    },
+    {
       "code": "TypeCompare",
       "figma": "Type Compare",
       "id": "40000463:9116"

@@ -7,7 +7,7 @@
  * prefers-reduced-motion) only has to switch animations off. Durations and easing
  * curves are motion constants — Figma Motion keeps them on keyframes, not variables. */
 .bb-onboarding {
-  --ob-dur: 450ms;
+  --ob-dur: 450ms; /* allow-raw: motion is not tokenised in Figma */
   --ob-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ob-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ob-ease-bounce: cubic-bezier(0.3, 1.9, 0.5, 1);
@@ -87,7 +87,7 @@
   height: var(--bb-onboarding-tab-indicator-height);
   border-radius: var(--bb-onboarding-counter-radius);
   background: var(--bb-onboarding-tab-indicator);
-  animation: bb-ob-grow 350ms var(--ob-ease) 150ms both;
+  animation: bb-ob-grow 350ms var(--ob-ease) 150ms both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-onboarding__spacer { flex: 1 1 auto; }
 .bb-onboarding__divider {
@@ -106,7 +106,7 @@
   border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-border-plugin);
   border-radius: var(--bb-onboarding-media-radius);
   background: var(--bb-onboarding-surface-media);
-  animation: bb-ob-media 500ms var(--ob-ease) both;
+  animation: bb-ob-media 500ms var(--ob-ease) both; /* allow-raw: motion is not tokenised in Figma */
 }
 
 /* Counter + copy. */
@@ -122,7 +122,7 @@
   font-size: var(--bb-font-size-caption);
   font-weight: var(--bb-font-weight-regular);
   line-height: var(--bb-font-line-caption);
-  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 200ms both;
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 200ms both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-onboarding__title {
   margin: 0;
@@ -130,7 +130,7 @@
   font-size: var(--bb-onboarding-font-heading-size);
   font-weight: var(--bb-onboarding-font-weight-medium);
   line-height: var(--bb-onboarding-font-heading-line);
-  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 280ms both;
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 280ms both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-onboarding__text {
   margin: 0;
@@ -138,7 +138,7 @@
   font-size: var(--bb-onboarding-font-text-size);
   font-weight: var(--bb-onboarding-font-weight-regular);
   line-height: var(--bb-onboarding-font-text-line);
-  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 360ms both;
+  animation: bb-ob-up var(--ob-dur) var(--ob-ease) 360ms both; /* allow-raw: motion is not tokenised in Figma */
 }
 
 /* Footer — progress dots and navigation. */
@@ -161,14 +161,14 @@
   border-radius: var(--bb-onboarding-dot-radius);
   background: var(--bb-onboarding-dot-idle);
   cursor: pointer;
-  transition: width 300ms var(--ob-ease), background-color 300ms var(--ob-ease);
+  transition: width 300ms var(--ob-ease), background-color 300ms var(--ob-ease); /* allow-raw: motion is not tokenised in Figma */
 }
 /* Larger hit area than the 6px dot; Back / Next stay the primary way to move. */
 .bb-onboarding__dot::after { position: absolute; inset: calc(-1 * var(--bb-onboarding-gap-xs)); content: ''; }
 .bb-onboarding__dot:focus-visible { outline: var(--bb-onboarding-border-width) solid var(--bb-onboarding-tab-indicator); outline-offset: var(--bb-onboarding-border-width); }
 .bb-onboarding__dot.is-active { width: var(--bb-onboarding-dot-width-active); background: var(--bb-onboarding-dot-active); }
 .bb-onboarding__nav { display: flex; align-items: center; gap: var(--bb-onboarding-copy-gap); }
-.bb-onboarding__next { flex: 1 1 auto; animation: 500ms ease-in-out 1800ms both; }
+.bb-onboarding__next { flex: 1 1 auto; animation: 500ms ease-in-out 1800ms both; } /* allow-raw: motion is not tokenised in Figma */
 .bb-onboarding__next--even { animation-name: bb-ob-pulse; }
 .bb-onboarding__next--odd { animation-name: bb-ob-pulse-alt; }
 
@@ -210,31 +210,31 @@
   background: var(--bb-onboarding-ripple);
   opacity: 0;
   pointer-events: none;
-  animation: bb-ob-ripple 550ms ease-out var(--ob-d) forwards;
+  animation: bb-ob-ripple 550ms ease-out var(--ob-d) forwards; /* allow-raw: motion is not tokenised in Figma */
 }
 
 /* Entrances (reveal()), effects (<Fx>), state swaps (<Swap>). */
-.bb-ob-rv { animation: bb-ob-up var(--ob-dur) var(--ob-ease) var(--ob-d, 0ms) both; }
+.bb-ob-rv { animation: bb-ob-up var(--ob-dur) var(--ob-ease) var(--ob-d, 0ms) both; } /* allow-raw: motion is not tokenised in Figma */
 .bb-ob-rv--down { animation-name: bb-ob-down; }
 .bb-ob-rv--left { animation-name: bb-ob-left; }
 .bb-ob-rv--right { animation-name: bb-ob-right; }
 .bb-ob-rv--fade { animation-name: bb-ob-fade; }
 .bb-ob-rv--pop { animation-name: bb-ob-pop; animation-timing-function: var(--ob-ease-back); }
-.bb-ob-rv--bounce { animation-name: bb-ob-bounce; animation-duration: 600ms; animation-timing-function: var(--ob-ease-bounce); }
+.bb-ob-rv--bounce { animation-name: bb-ob-bounce; animation-duration: 600ms; animation-timing-function: var(--ob-ease-bounce); } /* allow-raw: motion is not tokenised in Figma */
 .bb-ob-fx { animation-delay: var(--ob-fx); animation-fill-mode: both; }
-.bb-ob-fx--pulse { animation-name: bb-ob-pulse; animation-duration: 400ms; animation-timing-function: ease-in-out; }
-.bb-ob-fx--wiggle { animation-name: bb-ob-wiggle; animation-duration: 320ms; animation-timing-function: ease-in-out; }
-.bb-ob-fx--dim { opacity: 0.4; animation-name: bb-ob-dim; animation-duration: 250ms; animation-timing-function: ease-out; }
-.bb-ob-fx--float { animation-name: bb-ob-float; animation-duration: 2700ms; animation-timing-function: ease-in-out; }
-.bb-ob-fx--spin { animation-name: bb-ob-spin; animation-duration: 1200ms; animation-timing-function: linear; }
+.bb-ob-fx--pulse { animation-name: bb-ob-pulse; animation-duration: 400ms; animation-timing-function: ease-in-out; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-fx--wiggle { animation-name: bb-ob-wiggle; animation-duration: 320ms; animation-timing-function: ease-in-out; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-fx--dim { opacity: var(--bb-dimension-opacity-40); animation-name: bb-ob-dim; animation-duration: 250ms; animation-timing-function: ease-out; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-fx--float { animation-name: bb-ob-float; animation-duration: 2700ms; animation-timing-function: ease-in-out; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-fx--spin { animation-name: bb-ob-spin; animation-duration: 1200ms; animation-timing-function: linear; } /* allow-raw: motion is not tokenised in Figma */
 .bb-ob-swap { display: grid; }
 .bb-ob-swap > * { grid-area: 1 / 1; min-width: 0; }
-.bb-ob-swap__before { opacity: 0; animation: bb-ob-vanish 250ms ease-out var(--ob-swap) both; }
-.bb-ob-swap__after { animation: bb-ob-appear 300ms var(--ob-ease) var(--ob-swap) both; }
-.bb-ob-grow > :first-child { transform-origin: left center; animation: bb-ob-grow 800ms ease-in-out 500ms both; }
-.bb-ob-grow--slow > :first-child { animation-duration: 1400ms; animation-delay: 2500ms; }
+.bb-ob-swap__before { opacity: 0; animation: bb-ob-vanish 250ms ease-out var(--ob-swap) both; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-swap__after { animation: bb-ob-appear 300ms var(--ob-ease) var(--ob-swap) both; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-grow > :first-child { transform-origin: left center; animation: bb-ob-grow 800ms ease-in-out 500ms both; } /* allow-raw: motion is not tokenised in Figma */
+.bb-ob-grow--slow > :first-child { animation-duration: 1400ms; animation-delay: 2500ms; } /* allow-raw: motion is not tokenised in Figma */
 /* The typed text: a clip-path wipe in steps reads as typing. */
-.bb-ob-type { animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both; }
+.bb-ob-type { animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both; } /* allow-raw: motion is not tokenised in Figma */
 
 .bb-ob-still .bb-ob-rv,
 .bb-ob-still .bb-ob-fx,
@@ -306,7 +306,7 @@
   background: var(--bb-onboarding-surface-glow);
   opacity: 0;
   pointer-events: none;
-  animation: bb-ob-scan 1300ms ease-in-out var(--ob-d) both;
+  animation: bb-ob-scan 1300ms ease-in-out var(--ob-d) both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-ob-tile-chip,
 .bb-ob-fix,
@@ -341,7 +341,7 @@
   line-height: var(--bb-onboarding-font-text-line);
   white-space: nowrap;
   opacity: 0;
-  animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both, bb-ob-vanish 150ms ease-out 1950ms both;
+  animation: bb-ob-type 1000ms steps(28, end) var(--ob-d) both, bb-ob-vanish 150ms ease-out 1950ms both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-ob-pill { align-self: center; }
 .bb-ob-agents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--bb-onboarding-gap-lg) var(--bb-onboarding-gap-sm); }
@@ -360,7 +360,7 @@
   border: var(--bb-onboarding-border-width) solid var(--bb-onboarding-field-ring);
   border-radius: var(--bb-onboarding-tile-radius);
   pointer-events: none;
-  animation: bb-ob-fade 150ms ease-out var(--ob-d) both;
+  animation: bb-ob-fade 150ms ease-out var(--ob-d) both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-ob-check {
   display: grid;
@@ -370,7 +370,7 @@
   height: var(--bb-onboarding-tile-size);
   border-radius: var(--bb-onboarding-dot-radius);
   background: var(--bb-onboarding-check-bg);
-  animation: bb-ob-bounce 600ms var(--ob-ease-bounce) var(--ob-d) both;
+  animation: bb-ob-bounce 600ms var(--ob-ease-bounce) var(--ob-d) both; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-ob-check svg { width: var(--bb-onboarding-icon-size); height: var(--bb-onboarding-icon-size); overflow: visible; }
 .bb-ob-check path {
@@ -380,7 +380,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
-  animation: bb-ob-draw 400ms ease-out var(--ob-d) both;
+  animation: bb-ob-draw 400ms ease-out var(--ob-d) both; /* allow-raw: motion is not tokenised in Figma */
 }
 
 /* ── Keyframes ─────────────────────────────────────────────────────────────── */
@@ -397,13 +397,13 @@
 @keyframes bb-ob-pulse { 50% { transform: scale(1.05); } }
 @keyframes bb-ob-pulse-alt { 50% { transform: scale(1.05); } }
 @keyframes bb-ob-wiggle { 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(2deg); } }
-@keyframes bb-ob-dim { from { opacity: 1; } to { opacity: 0.4; } }
+@keyframes bb-ob-dim { from { opacity: 1; } to { opacity: var(--bb-dimension-opacity-40); } }
 @keyframes bb-ob-float { 17%, 67% { transform: translateY(calc(-1 * var(--bb-onboarding-gap-xs))); } 33%, 83% { transform: none; } 50% { transform: translateY(calc(-1 * var(--bb-onboarding-gap-xs) / 2)); } }
 @keyframes bb-ob-spin { to { transform: rotate(-360deg); } }
 @keyframes bb-ob-grow { from { transform: scaleX(0.04); } }
 @keyframes bb-ob-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
 @keyframes bb-ob-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes bb-ob-ripple { from { opacity: 0.55; transform: scale(0.3); } to { opacity: 0; transform: scale(1.5); } }
+@keyframes bb-ob-ripple { from { opacity: var(--bb-dimension-opacity-55); transform: scale(0.3); } to { opacity: 0; transform: scale(1.5); } }
 @keyframes bb-ob-scan {
   from { top: calc(-1 * var(--bb-onboarding-tile-size)); opacity: 0; }
   10%, 85% { opacity: 1; }

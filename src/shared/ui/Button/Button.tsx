@@ -18,13 +18,13 @@ export interface ButtonProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonEle
   trailingIcon?: IconName
   /** Replaces the leading icon with a spinner and disables the button. Not a Figma variant. */
   loading?: boolean
-  /** Force a visual state (stories, visual regression). Real hover comes from :hover. */
-  state?: 'default' | 'hover'
+  /** Force the Figma "State" Hover or Focus visuals (stories, visual regression). Real hover comes from :hover, real focus from :focus-visible. */
+  state?: 'default' | 'hover' | 'focus'
   /** Figma "Label". */
   children?: ComponentChildren
 }
 
-/** Figma "Button" (40000040:5139): Primary / Secondary × Default / Hover / Disabled × Medium / Large. */
+/** Figma "Button" (40000040:5139): Primary / Secondary / Danger × Default / Hover / Disabled / Focus × Medium / Large. */
 export function Button({ variant = 'primary', size = 'md', width = 'hug', leadingIcon, trailingIcon, loading = false, state, disabled, children, class: cls, type = 'button', ...rest }: ButtonProps) {
   return (
     <button

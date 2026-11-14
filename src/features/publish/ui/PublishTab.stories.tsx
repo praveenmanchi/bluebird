@@ -10,6 +10,7 @@ import {
   expanded, extractError, extractPhase, loadExtract, publishPhase, publishResult, reset, status, step, steps,
 } from '../state'
 import { PublishTab } from './Tab'
+import { figma } from './PublishReview.figma'
 
 /** One Teams webhook in Settings › Notifications, so "Post the changelog to Teams" is available. */
 const TEAMS = { webhooks: 1 }
@@ -51,7 +52,7 @@ function preloaded(setup: () => void, options?: PublishMockOptions) {
   return frame(<PublishTab preloaded />, options)
 }
 
-const meta = { title: 'Screens/Publish', parameters: { layout: 'centered' } } satisfies Meta
+const meta = { title: 'Screens/Publish', parameters: { layout: 'centered', figma: { setId: figma.setId, name: figma.name } } } satisfies Meta
 export default meta
 type Story = StoryObj
 
@@ -65,6 +66,7 @@ export const ReviewExtract: Story = {
 export const ReviewChanges: Story = {
   name: '1 Review changes · Changes',
   render: () => preloaded(() => loadExtract(sample())),
+  parameters: { figma: { variant: 'Publish' } },
 }
 export const ReviewDetails: Story = {
   name: '2 Review changes · Details',

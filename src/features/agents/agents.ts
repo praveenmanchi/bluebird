@@ -125,7 +125,7 @@ export const AGENTS: readonly AgentDef[] = [
     headerPurpose: 'Flags detached instances, raw colours, off-scale spacing and unstyled text, and rebinds raw values to Brand UI tokens.',
     rulesLabel: 'Brand UI · 5 rules', headerChips: ['Brand UI · 5 rules', `Brand UI · ${BRAND_MODES.length} modes`],
     rulePack: 'Brand UI', ruleHead: 'RULE PACK · BRAND UI', levels: false,
-    rules: plain([['detached', 'Detached instances', 'Frames that used to be a component'], ['raw-colour', 'Raw colours', 'Fills and strokes without a variable'], ['off-scale', 'Off-scale spacing', 'Gaps and padding off the 4px scale or typed by hand'], ['raw-radius', 'Raw radii', 'Corner radii that match a token but aren’t bound'], ['unstyled-text', 'Unstyled text', 'Text without a text style or font variables']]),
+    rules: plain([['detached', 'Detached instances', 'Frames that used to be a component'], ['raw-colour', 'Raw colours', 'Fills and strokes without a variable'], ['off-scale', 'Off-scale spacing', 'Gaps and padding off the 4px scale or typed by hand'], ['raw-radius', 'Raw radii', 'Corner radii that match a token but aren’t bound'], ['unstyled-text', 'Unstyled text', 'Text without a text style or font variables']]), // allow-raw: copy shown to the user, not a style
     runLabel: 'Run design system check', runningNote: 'Keep designing. Results stream in as each frame finishes.',
     scoreLabel: 'Token coverage', needsModel: false, unit: 'layers',
   },

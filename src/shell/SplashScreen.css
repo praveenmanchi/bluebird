@@ -12,10 +12,10 @@
   outline: none;
 }
 .bb-brand-logo.bb-splash__logo {
-  width: calc(var(--bb-derived-onboarding-screen-brand-logos-width) * 1.8);
-  height: calc(var(--bb-derived-onboarding-screen-brand-logos-height) * 1.8);
-  transition: opacity 240ms ease;
-  animation: bb-splash-in 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  width: calc(var(--bb-derived-onboarding-screen-brand-logos-width) * 1.8); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+  height: calc(var(--bb-derived-onboarding-screen-brand-logos-height) * 1.8); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+  transition: opacity 240ms ease; /* allow-raw: motion is not tokenised in Figma */
+  animation: bb-splash-in 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-splash.is-leaving .bb-splash__logo { opacity: 0; }
 

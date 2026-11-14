@@ -8,7 +8,8 @@ const meta = {
   component: Button,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['primary', 'secondary'] },
+    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'danger'] },
+    state: { control: 'inline-radio', options: ['default', 'hover', 'focus'] },
     size: { control: 'inline-radio', options: ['md', 'lg'] },
     leadingIcon: { control: 'select', options: [undefined, 'ui-general-add', 'ui-general-check', 'ui-misc-save', 'ui-general-x', 'accessibility', 'inspect', 'component'] },
     trailingIcon: { control: 'select', options: [undefined, 'dropdown-down', 'dropdown-up'] },
@@ -31,6 +32,18 @@ export const PrimaryLargeDisabled: Story = { args: { size: 'lg', disabled: true 
 export const SecondaryLarge: Story = { args: { size: 'lg', variant: 'secondary' }, parameters: { figma: { variant: 'Type=Secondary, State=Default, Size=Large' } } }
 export const SecondaryLargeHover: Story = { args: { size: 'lg', variant: 'secondary', state: 'hover' }, parameters: { figma: { variant: 'Type=Secondary, State=Hover, Size=Large' } } }
 export const SecondaryLargeDisabled: Story = { args: { size: 'lg', variant: 'secondary', disabled: true }, parameters: { figma: { variant: 'Type=Secondary, State=Disabled, Size=Large' } } }
+export const PrimaryFocus: Story = { args: { state: 'focus' }, parameters: { figma: { variant: 'Type=Primary, State=Focus, Size=Medium' } } }
+export const SecondaryFocus: Story = { args: { variant: 'secondary', state: 'focus' }, parameters: { figma: { variant: 'Type=Secondary, State=Focus, Size=Medium' } } }
+export const PrimaryLargeFocus: Story = { args: { size: 'lg', state: 'focus' }, parameters: { figma: { variant: 'Type=Primary, State=Focus, Size=Large' } } }
+export const SecondaryLargeFocus: Story = { args: { size: 'lg', variant: 'secondary', state: 'focus' }, parameters: { figma: { variant: 'Type=Secondary, State=Focus, Size=Large' } } }
+export const DangerDefault: Story = { args: { variant: 'danger' }, parameters: { figma: { variant: 'Type=Danger, State=Default, Size=Medium' } } }
+export const DangerHover: Story = { args: { variant: 'danger', state: 'hover' }, parameters: { figma: { variant: 'Type=Danger, State=Hover, Size=Medium' } } }
+export const DangerDisabled: Story = { args: { variant: 'danger', disabled: true }, parameters: { figma: { variant: 'Type=Danger, State=Disabled, Size=Medium' } } }
+export const DangerFocus: Story = { args: { variant: 'danger', state: 'focus' }, parameters: { figma: { variant: 'Type=Danger, State=Focus, Size=Medium' } } }
+export const DangerLarge: Story = { args: { size: 'lg', variant: 'danger' }, parameters: { figma: { variant: 'Type=Danger, State=Default, Size=Large' } } }
+export const DangerLargeHover: Story = { args: { size: 'lg', variant: 'danger', state: 'hover' }, parameters: { figma: { variant: 'Type=Danger, State=Hover, Size=Large' } } }
+export const DangerLargeDisabled: Story = { args: { size: 'lg', variant: 'danger', disabled: true }, parameters: { figma: { variant: 'Type=Danger, State=Disabled, Size=Large' } } }
+export const DangerLargeFocus: Story = { args: { size: 'lg', variant: 'danger', state: 'focus' }, parameters: { figma: { variant: 'Type=Danger, State=Focus, Size=Large' } } }
 
 export const Loading: Story = { args: { loading: true } }
 export const TrailingIcon: Story = { args: { leadingIcon: undefined, trailingIcon: 'dropdown-down', children: 'All pages' } }
@@ -38,8 +51,8 @@ export const TrailingIcon: Story = { args: { leadingIcon: undefined, trailingIco
 /** Mirrors the Figma component set frame: (Type × Size) × State. */
 export const Matrix: Story = {
   render: (args) => (
-    <VariantGrid columns={['Default', 'Hover', 'Disabled']} rows={['Primary · Medium', 'Secondary · Medium', 'Primary · Large', 'Secondary · Large']}>
-      {(row, col) => <Button {...args} variant={row.startsWith('Primary') ? 'primary' : 'secondary'} size={row.endsWith('Large') ? 'lg' : 'md'} state={col === 'Hover' ? 'hover' : undefined} disabled={col === 'Disabled'} />}
+    <VariantGrid columns={['Default', 'Hover', 'Disabled', 'Focus']} rows={['Primary · Medium', 'Secondary · Medium', 'Danger · Medium', 'Primary · Large', 'Secondary · Large', 'Danger · Large']}>
+      {(row, col) => <Button {...args} variant={row.startsWith('Primary') ? 'primary' : row.startsWith('Secondary') ? 'secondary' : 'danger'} size={row.endsWith('Large') ? 'lg' : 'md'} state={col === 'Hover' ? 'hover' : col === 'Focus' ? 'focus' : undefined} disabled={col === 'Disabled'} />}
     </VariantGrid>
   ),
 }

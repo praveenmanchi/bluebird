@@ -90,11 +90,13 @@ export type LibraryRole = 'variables' | 'components'
 
 /** One Dual File slot after loading. A failed file keeps its slot with the reason. */
 export interface LibraryFile {
-  /** 1 and 2 are the designed Settings slots; 3… come from "Add another library file". */
+  /** Position in Settings › Dual File Mode, from 1. */
   slot: number
   fileKey: string
   /** The file's name in Figma, or its key when the name couldn't be read. */
   name: string
+  /** The name the person gave it in Settings. Absent in indexes cached before names existed. */
+  label?: string
   roles: readonly LibraryRole[]
   variables: number
   components: number
@@ -120,3 +122,6 @@ export interface LibraryIndex {
 export type LibraryLoadResult =
   | { status: 'ready'; index: LibraryIndex }
   | { status: 'not-configured'; reason: 'disabled' | 'empty'; message: string }
+
+/** How messages name a file: the name the person gave it in Settings, else its position ("File 2"). */
+export const fileLabel = (f: { readonly slot: number; readonly label?: string }): string => f.label?.trim() || `File ${f.slot}`

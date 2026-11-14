@@ -15,11 +15,13 @@ export const activeTabId = signal<string | null>(defaultPersona?.tabs[0]?.id ?? 
 export const brandStatus = signal<BrandTokensResult | null>(null)
 
 /** Access-code session. `boot` until session:status answers; first run after sign-in goes `splash` → `persona` → `onboarding` (the tour). */
-export type Screen = 'boot' | 'login' | 'splash' | 'persona' | 'onboarding' | 'app' | 'settings'
+export type Screen = 'boot' | 'login' | 'splash' | 'persona' | 'onboarding' | 'team-setup' | 'app' | 'settings'
 export const screen = signal<Screen>('boot')
 export const session = signal<Session | null>(null)
 /** True while the persona screen was opened from Settings, so it can go back there and skips the intro. */
 export const changingPersona = signal(false)
+/** True while the tour runs from Settings › Replay tour: it then returns to the app, not to the team setup screen. */
+export const replayingTour = signal(false)
 export const connection = signal<TransportStatus>('connected')
 /** Current plugin window size; the footer's S / M / L, expand and grip all go through shell:resize. */
 export const windowSize = signal<WindowSize>({ width: config.window.width, height: config.window.height })

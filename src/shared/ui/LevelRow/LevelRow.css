@@ -2,7 +2,7 @@
 .bb-level-row {
   display: grid;
   /* Figma: Name 150 · Count 48 · Bar FILL · Percent 36 — as icon-box (24) multiples. */
-  grid-template-columns: minmax(0, var(--bb-derived-level-row-name-width)) calc(var(--bb-a11y-size-icon-box) * 2) minmax(0, 1fr) calc(var(--bb-a11y-size-icon-box) * 1.5);
+  grid-template-columns: minmax(0, var(--bb-derived-level-row-name-width)) calc(var(--bb-a11y-size-icon-box) * 2) minmax(0, 1fr) calc(var(--bb-a11y-size-icon-box) * 1.5); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
   align-items: center;
   gap: var(--bb-a11y-space-row-x);
   font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;

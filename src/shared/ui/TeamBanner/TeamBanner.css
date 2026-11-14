@@ -88,7 +88,7 @@
   font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-type-size-6-03);
   font-weight: var(--bb-font-weight-regular);
-  line-height: var(--bb-derived-team-banner-connecting-gap-between-design-workflow-line-height);
+  line-height: var(--bb-derived-team-banner-connecting-design-and-development-line-height);
   white-space: nowrap;
 }
 /* Release — right-aligned stack of the version pill and the "Updated <date>" line. */
@@ -134,34 +134,27 @@
   align-items: flex-end;
   justify-content: space-between;
 }
-/* "Together, every step forward to Innovate’ & scale" — faded display line. */
+/* "Together, every step forward to Innovate’ & scale" — display line at dimension/opacity/72.
+ * Since the 2026-11-13 pull its family, size and weight are raw on the layer (MuseoModerno
+ * Black 20) → the --bb-derived-team-banner-together-* tokens. AUTO line height, like "Design Studio". */
 .bb-team-banner__tagline {
   flex: 1;
   min-width: 0;
   white-space: pre-line;
   color: var(--bb-banner-text);
-  font-family: var(--bb-font-family-brand), ui-sans-serif, system-ui, sans-serif;
-  font-size: var(--bb-font-size-title);
-  font-weight: var(--bb-font-weight-regular);
-  /* Figma AUTO line height for Archivo Black = size + 1 at 16 (17 per line, 51 for
-   * three); the browser's "normal" is 24, so it is spelled out from tokens. */
-  line-height: calc(var(--bb-type-size-16) + var(--bb-dimension-stroke-1));
-  opacity: var(--bb-dimension-opacity-20);
+  font-family: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-size);
+  font-weight: var(--bb-derived-team-banner-together-every-step-forward-to-innovate-scale-font-weight);
+  line-height: normal;
+  opacity: var(--bb-dimension-opacity-72);
 }
-/* Large tagline — the Settings Layout instances override the tagline to 24
- * (AUTO = 26 per line, 78 for three; banner 149 tall). */
-.bb-team-banner[data-tagline='lg'] .bb-team-banner__tagline {
-  font-size: var(--bb-type-size-24);
-  line-height: calc(var(--bb-type-size-24) + var(--bb-dimension-space-2));
-}
-/* Auto — what Settings uses: 24 where the banner is 460+ wide (the S-480 and S-600
- * Settings frames), 16 in the S-360 frame (banner 341 wide). */
+/* Large tagline — code-only since the 2026-11-13 pull: the Settings Layout instances used to
+ * override the tagline to 24 and no longer do. */
+.bb-team-banner[data-tagline='lg'] .bb-team-banner__tagline { font-size: var(--bb-type-size-24); }
+/* Auto — 24 where the banner is 460+ wide, the component size below that. */
 .bb-team-banner[data-tagline='auto'] { container: team-banner / inline-size; }
-@container team-banner (min-width: 400px) { /* allow-raw: breakpoint between Figma's 341 (16) and 460 (24) banner widths */
-  .bb-team-banner[data-tagline='auto'] .bb-team-banner__tagline {
-    font-size: var(--bb-type-size-24);
-    line-height: calc(var(--bb-type-size-24) + var(--bb-dimension-space-2));
-  }
+@container team-banner (min-width: 400px) { /* allow-raw: breakpoint between the 341 and 460 banner widths */
+  .bb-team-banner[data-tagline='auto'] .bb-team-banner__tagline { font-size: var(--bb-type-size-24); }
 }
 /* Frame 1430102644 — credit line, right-aligned to the bottom edge. */
 .bb-team-banner__credit {

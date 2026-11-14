@@ -5,7 +5,7 @@
 export const EMBLEM = { icon: 'uxai', size: 19, cy: 24.7 } as const
 
 /** Searching and Answering: the robot steps back to .82 to make room for the bubble. */
-export const ROBOT_ASIDE = 'translate(-1.33px, 7.2px) scale(0.82)'
+export const ROBOT_ASIDE = 'translate(-1.33px, 7.2px) scale(0.82)' // allow-raw: artwork transform in the 40-unit robot frame, copied from Figma
 
 export const BUBBLE = 'M26.33 1H34.33a4.33 4.33 0 0 1 4.33 4.33V8.67a4.33 4.33 0 0 1-4.33 4.33H28.67L24.67 16.67V12.87A4.33 4.33 0 0 1 22 8.67V5.33A4.33 4.33 0 0 1 26.33 1Z'
 export const BUBBLE_STROKE = 1.33

@@ -20,7 +20,7 @@ export const figma = {
     'Skip / Back / Next': 'Skip finishes as skipped; Back is disabled on the first step; Next → “Get started” on the last step',
   },
   figmaGaps: {
-    ...scaleGaps('button/primary/border-width', 'border-width/default', 'button/secondary/border-width'),
+    ...scaleGaps('icon/size/lg', 'button/primary/border-width', 'border-width/default', 'button/secondary/border-width'),
     'button/primary/bg/default': button, 'button/primary/border/default': button, 'button/primary/radius': button, 'button/primary/gap': button,
     'button/primary/padding-x': button, 'button/primary/width-md': button, 'button/primary/height': button,
     'button/secondary/bg/default': button, 'button/secondary/border/default': button, 'button/secondary/radius': button, 'button/secondary/gap': button,

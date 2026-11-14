@@ -14,11 +14,9 @@ export const figma = {
     'Details › Source (text)': 'source',
   },
   figmaGaps: {
-    ...scaleGaps('uxai/border-width'),
-    'a11y/surface/sunken': composed('DisclosureToggle'),
+    ...scaleGaps('uxai/border-width', 'border/default'),
     'a11y/radius/control': composed('DisclosureToggle'),
     'a11y/space/tight': composed('DisclosureToggle'),
-    'a11y/space/inline': composed('DisclosureToggle'),
     'a11y/space/hair': composed('DisclosureToggle'),
     'uxai/chip/bg': composed('ContextChip'),
     'uxai/chip/border': composed('ContextChip'),
@@ -28,6 +26,7 @@ export const figma = {
     'uxai/space/hair': composed('ContextChip'),
   },
   derivedGaps: {
+    '--bb-derived-change-item-disclosure-stroke-width': 'Stroke weight of the nested Disclosure Toggle instance; the composed <DisclosureToggle> draws its own border.',
     '--bb-derived-change-item-root-width': 'FIXED 600 on the Components page; the item fills its changes list, so it is width: 100%.',
     '--bb-derived-change-item-details-width': 'FIXED 598 (root inner width) in Expanded=No, FILL in Expanded=Yes; code stretches Details to the item (align-items: stretch).',
   },

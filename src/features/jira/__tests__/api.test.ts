@@ -77,6 +77,19 @@ describe('jira api · settings and transport', () => {
     expect(isConfig(server) && server).toMatchObject({ flavor: 'server', site: 'https://jira.acme.com', endpoint: 'https://jira.acme.com', authorization: 'Bearer tok' })
   })
 
+  // A Cloud site typed into the Enterprise Base URL field stays Cloud: `server` would send it to
+  // /rest/api/2/search, which Atlassian removed (CHANGE-2046).
+  it('treats an atlassian.net Base URL as cloud, not server', () => {
+    const misfiled = configFromSettings(jira({ siteUrl: '', baseUrl: 'https://gapinc.atlassian.net' }))
+    expect(isConfig(misfiled) && misfiled).toMatchObject({ flavor: 'cloud', site: 'https://gapinc.atlassian.net' })
+    // A trailing slash, uppercase host or path must not sneak past the host check.
+    const messy = configFromSettings(jira({ siteUrl: '', baseUrl: 'https://GapInc.Atlassian.NET/' }))
+    expect(isConfig(messy) && messy).toMatchObject({ flavor: 'cloud' })
+    // A look-alike host is still Server / DC.
+    const lookalike = configFromSettings(jira({ siteUrl: '', baseUrl: 'https://atlassian.net.evil.com', email: '', proxyUrl: '' }))
+    expect(isConfig(lookalike) && lookalike).toMatchObject({ flavor: 'server' })
+  })
+
   it('base64-encodes UTF-8 like btoa', () => {
     expect(base64('me@acme.com:tok')).toBe(Buffer.from('me@acme.com:tok').toString('base64'))
     expect(base64('ünï:🔑')).toBe(Buffer.from('ünï:🔑').toString('base64'))

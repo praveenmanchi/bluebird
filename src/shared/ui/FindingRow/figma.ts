@@ -14,7 +14,7 @@ export const figma = {
     'Actions (Locate / Ignore / Apply fix Link Buttons)': 'onAction',
   },
   figmaGaps: {
-    ...scaleGaps('uxai/border-width'),
+    ...scaleGaps('dimension/space/2', 'uxai/border-width'),
     'feedback/danger': badge,
     'feedback/warning': badge,
     'border/accent': badge,

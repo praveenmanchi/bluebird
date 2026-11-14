@@ -40,10 +40,10 @@
   background: var(--bb-uxai-text-title);
   opacity: var(--bb-dimension-opacity-35);
 }
-.bb-thinking-orb[data-size='20'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.09)); }
-.bb-thinking-orb[data-size='40'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.09)); }
-.bb-thinking-orb[data-size='20'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.05)); }
-.bb-thinking-orb[data-size='40'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.05)); }
+.bb-thinking-orb[data-size='20'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.09)); } /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+.bb-thinking-orb[data-size='40'] .bb-thinking-orb__blob { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.09)); } /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+.bb-thinking-orb[data-size='20'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-sm) * 0.05)); } /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+.bb-thinking-orb[data-size='40'] .bb-thinking-orb__highlight { filter: blur(calc(var(--bb-uxai-size-orb-lg) * 0.05)); } /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
 
 /* Geometry per Figma variant (layer order = Figma order, bottom → top). */
 /* State=Searching */

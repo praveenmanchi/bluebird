@@ -2,10 +2,11 @@
 // session:* handlers and swaps the brand (data-brand + resolved tokens).
 import type { RpcClient } from '@shared/bridge'
 import { applyTokens, clearTokens, type BrandTokensResult } from '@shared/brand'
-import { config, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
+import { config, singleBrand, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
 import { ONBOARDING_MSG, PERSONA_MSG, SESSION_MSG, type OnboardingStatus, type PersonaStatus, type Session } from '@shared/session'
 import { loadLibraryState } from '@shared/libraries/status'
-import { brandPersonas, brandStatus, changingPersona, screen, session, selectPersona, syncTabs, windowSize } from './state'
+import { loadEditorMode } from '@shared/editor'
+import { brandPersonas, brandStatus, changingPersona, replayingTour, screen, session, selectPersona, syncTabs, windowSize } from './state'
 
 /** Point the UI at a brand: generated [data-brand] CSS first, then the tokens resolved from the Figma document. */
 export async function activateBrand(client: RpcClient, brandId: string): Promise<void> {
@@ -21,8 +22,13 @@ export async function activateBrand(client: RpcClient, brandId: string): Promise
 }
 
 export async function bootSession(client: RpcClient): Promise<void> {
+  // Dev Mode's read-only file changes what the tabs offer; asked alongside the session.
+  void loadEditorMode(client)
   let current: Session | null = null
   try { current = await client.call<Session | null>(SESSION_MSG.status) } catch { current = null }
+  // A single-brand build has no login screen to fall back to: an unreadable store still opens its brand.
+  const locked = singleBrand(config)
+  if (!current && locked) current = { brandId: locked, since: new Date().toISOString() }
   if (current) await enter(client, current)
   else { session.value = null; document.documentElement.dataset.brand = config.brand.active; screen.value = 'login' }
 }
@@ -93,12 +99,14 @@ async function tourPending(client: RpcClient): Promise<boolean> {
 }
 
 /**
- * Finish or skip the tour. The app opens first, whatever happens to the save; resolves
+ * Finish or skip the tour. The next screen opens first, whatever happens to the save; resolves
  * to whether the flag was stored. A failed save has one consequence — the tour shows
  * again on the next sign-in — so callers may ignore it.
  */
 export async function completeOnboarding(client: RpcClient, skipped: boolean): Promise<boolean> {
-  screen.value = 'app'
+  // First run: the team setup screen follows the tour, finished or skipped. A replay goes back to the app.
+  screen.value = replayingTour.value ? 'app' : 'team-setup'
+  replayingTour.value = false
   try {
     await client.call(ONBOARDING_MSG.complete, { skipped })
     return true
@@ -107,8 +115,14 @@ export async function completeOnboarding(client: RpcClient, skipped: boolean): P
   }
 }
 
+/** Leaves the team setup screen, with or without a file imported. */
+export function finishTeamSetup(): void {
+  screen.value = 'app'
+}
+
 /** Settings › "Replay product tour". */
 export function replayOnboarding(): void {
+  replayingTour.value = true
   screen.value = 'onboarding'
 }
 
@@ -129,7 +143,10 @@ export async function logout(client: RpcClient): Promise<void> {
   leave()
 }
 
-/** Reset = log out and forget every stored preference; the UI returns to first-run state. */
+/**
+ * Reset = log out and forget every stored preference; the UI returns to first-run state.
+ * A single-brand build has no login to return to, so it boots straight back into its brand.
+ */
 export async function reset(client: RpcClient): Promise<void> {
   await client.call(SESSION_MSG.reset)
   windowSize.value = WINDOW_PRESETS[WINDOW_DEFAULT]
@@ -137,12 +154,17 @@ export async function reset(client: RpcClient): Promise<void> {
   leave()
   // Signed out now, so this is the config's first-run persona, not the old brand's.
   selectPersona(brandPersonas.value.find((p) => p.id === config.activePersona)?.id ?? brandPersonas.value[0]?.id ?? '')
+  if (singleBrand(config)) await bootSession(client)
 }
+
+/** Single-brand builds have nothing to sign out of: Settings hides the button. */
+export const canSignOut = (): boolean => singleBrand(config) === null
 
 function leave(): void {
   clearTokens()
   session.value = null
   brandStatus.value = null
   document.documentElement.dataset.brand = config.brand.active
-  screen.value = 'login'
+  // Single-brand: reset() boots straight back in, so hold on the blank boot screen rather than flash the login.
+  screen.value = singleBrand(config) ? 'boot' : 'login'
 }

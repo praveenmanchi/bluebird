@@ -51,3 +51,34 @@ describe('session handlers', () => {
     expect([...store.data.keys()]).toEqual(['other'])
   })
 })
+
+describe('single-brand session handlers', () => {
+  const single = loadConfig({
+    brand: { active: 'b', brands: { b: { label: 'B', source: { collection: 'Brand', mode: 'B' } } } },
+    deploy: { mode: 'single', brand: 'b' },
+    activePersona: 'p', personas: { p: { label: 'P', tabs: [] } }, tabs: {},
+  })
+
+  it('is always in the brand, keeping the first-run date, without a code', async () => {
+    const store = memoryStore()
+    const h = createSessionHandlers(single, store)
+    const first = await call(h, SESSION_MSG.status) as { brandId: string; since: string }
+    expect(first.brandId).toBe('b')
+    expect(store.data.get(SESSION_KEY)).toEqual(first)
+    expect(await call(h, SESSION_MSG.status)).toEqual(first)
+    expect(await call(h, SESSION_MSG.login, { code: '' })).toEqual(first)
+  })
+
+  it('replaces a session left from another brand, ignores sign-out and still resets', async () => {
+    const store = memoryStore()
+    store.data.set(SESSION_KEY, { brandId: 'old', since: '2020-01-01' })
+    store.data.set('bluebird:persona', 'p')
+    const h = createSessionHandlers(single, store)
+    expect(await call(h, SESSION_MSG.status)).toMatchObject({ brandId: 'b' })
+    await call(h, SESSION_MSG.logout)
+    expect(store.data.get(SESSION_KEY)).toMatchObject({ brandId: 'b' })
+    await call(h, SESSION_MSG.reset)
+    expect(store.data.size).toBe(0)
+  })
+})
+

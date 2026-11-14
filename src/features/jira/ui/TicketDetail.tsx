@@ -1,5 +1,5 @@
 import {
-  Button, Checkbox, FieldRow, FigmaLinkCard, Icon, IssueType, LinkButton, PriorityIcon, SectionTitle, useRpc,
+  Button, Checkbox, EXTERNAL_LINK_ICON, FieldRow, FigmaLinkCard, Icon, IssueType, LinkButton, PriorityIcon, SectionTitle, useRpc,
 } from '@shared/ui'
 import { openExternal, write } from '../actions'
 import { PRIORITY_LABEL, STATUS_META, STATUS_ORDER, subtaskProgress } from '../board'
@@ -62,7 +62,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
           <button type="button" class="bb-jira-board__icon-button" aria-label="Copy issue link" onClick={() => { void copyText(url, `the link to ${key}`) }}>
             <Icon name="copy" class="bb-jira-board__action-icon" />
           </button>
-          <LinkButton onClick={() => openInJira()}>Open in Jira ↗</LinkButton>
+          <LinkButton icon={EXTERNAL_LINK_ICON} onClick={() => openInJira()}>Open in Jira</LinkButton>
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
       <SectionTitle title="Description" showCount={false} actionLabel="Edit" onAction={() => openInJira('Edit the description in Jira; Refresh to see it here.')} />
       <p class="bb-jira-board__description">{ticket.description || 'No description.'}</p>
 
-      <SectionTitle title="Figma links" count={String(ticket.links.length)} actionLabel="+ Attach Figma link" onAction={() => { void write(rpc, MSG.link, { key }, 'Attaching the Figma frame…', 'Couldn’t attach the Figma frame.') }} />
+      <SectionTitle title="Figma links" count={String(ticket.links.length)} actionLabel="Attach Figma link" onAction={() => { void write(rpc, MSG.link, { key }, 'Attaching the Figma frame…', 'Couldn’t attach the Figma frame.') }} />
       {ticket.links.length > 0 && (
         <div class="bb-jira-board__links">
           {ticket.links.map((link) => (
@@ -122,7 +122,7 @@ export function TicketDetail({ ticket }: { ticket: Ticket }) {
         </div>
       )}
 
-      <SectionTitle title="Subtasks" count={subtaskProgress(ticket)} actionLabel="+ Add subtask" onAction={() => openInJira('Add the subtask in Jira; Refresh to see it here.')} />
+      <SectionTitle title="Subtasks" count={subtaskProgress(ticket)} actionLabel="Add subtask" onAction={() => openInJira('Add the subtask in Jira; Refresh to see it here.')} />
       {ticket.subtasks.length > 0 && (
         <div class="bb-jira-board__subtasks">
           {subtaskColumns.filter((c) => c.length > 0).map((column, i) => (

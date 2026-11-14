@@ -1,7 +1,7 @@
 /** Logo layers figma/logos/<provider>.svg draws; the frame around them sets the size (SsoProviderButton.css). */
 const artwork = (provider: string, parts: readonly string[], why: string) =>
   parts.map((part) => [`--bb-derived-sso-provider-button-${part}`, `${provider} logo ${why}`] as const)
-const vector = (provider: string) => ['default', 'hover'].map((state) => `vector-provider-${provider}-state-${state}`)
+const vector = (provider: string) => ['default', 'hover', 'focus'].map((state) => `vector-provider-${provider}-state-${state}`)
 const sized = (layers: readonly string[]) => layers.flatMap((layer) => [`${layer}-width`, `${layer}-height`])
 const filled = (layers: readonly string[]) => layers.map((layer) => `${layer}-fill`)
 
@@ -13,7 +13,7 @@ const GOOGLE_PARTS = ['vector--1', 'vector--2', 'vector--3', ...vector('google')
 export const figma = {
   setId: '40000324:8451',
   name: 'SSO Provider Button',
-  props: { Provider: 'provider (microsoft | okta | google)', State: ':hover (state forces it)', Label: 'children (defaults to "Continue with <Provider>")' },
+  props: { Provider: 'provider (microsoft | okta | google)', State: ':hover / :focus-visible (state forces hover | focus)', Label: 'children (defaults to "Continue with <Provider>")' },
   figmaGaps: { 'dimension/opacity/99': 'Bound on two Google logo vectors; figma/logos/google.svg draws the opacity.' },
   derivedGaps: {
     ...Object.fromEntries([

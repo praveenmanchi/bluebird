@@ -2,6 +2,8 @@ import { Button, ChangeStatus, Icon, LinkButton, MetaBadge, type IconName } from
 import { teamShort } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
 import { STATUS_LABEL, STATUS_TONE, TYPE_LABEL, cardDate, changeCounts, countsLabel, typeTone } from '../format'
+import type { SearchHit } from '../search'
+import { SearchHits } from './SearchHits'
 
 export interface EntryCardProps {
   entry: HistoryEntry
@@ -9,6 +11,8 @@ export interface EntryCardProps {
   jiraSite: string
   onOpen: () => void
   onOpenUrl: (url: string) => void
+  /** While searching: the changes on this entry that match, shown under the summary. */
+  hits?: readonly SearchHit[]
 }
 
 /**
@@ -32,7 +36,7 @@ function Changes({ what, icon, line }: { what: string; icon: IconName; line: str
  * variable and component changes (Change Status pills, a rule between the two
  * groups) and View details. Failed entries get the red stroke.
  */
-export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl }: EntryCardProps) {
+export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl, hits }: EntryCardProps) {
   const team = teamShort(entry.by.team)
   const ticketUrl = entry.ticket && jiraSite ? `${jiraSite}/browse/${entry.ticket}` : ''
   return (
@@ -64,6 +68,7 @@ export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl }: EntryCardProps
         </div>
       </div>
       <p class="bb-history-card__what">{entry.summary}</p>
+      {hits && <SearchHits hits={hits} onMore={onOpen} />}
       <div class="bb-history-card__footer">
         <div class="bb-history-card__changes">
           {entry.variables && <Changes what="Variables" icon="variables" line={entry.variables} />}

@@ -154,14 +154,14 @@ describe('jira Tab', () => {
 
   it('attaches the current Figma selection as a link', async () => {
     await renderTab()
-    fireEvent.click(screen.getByRole('button', { name: '+ Attach Figma link' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Attach Figma link' }))
     await waitFor(() => expect(screen.getByText('Ticket detail')).toBeInTheDocument())
     expect(within(detail()).getByText('3')).toBeInTheDocument()
   })
 
   it('asks for a selection when nothing is selected in Figma', async () => {
     await renderTab({}, 'empty-selection')
-    fireEvent.click(screen.getByRole('button', { name: '+ Attach Figma link' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Attach Figma link' }))
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Select a frame in Figma, then attach it.'))
   })
 

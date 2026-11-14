@@ -13,7 +13,7 @@ export const figma = {
     'Icon box › Status error icons / Tab Icons instance': 'state → Icon status-good / git-merg / status-error / change-log / layers / extract',
   },
   figmaGaps: {
-    ...scaleGaps('button/secondary/border-width', 'button/primary/border-width'),
+    ...scaleGaps('icon/size/lg', 'icon/size/sm', 'button/secondary/border-width', 'button/primary/border-width'),
     'button/secondary/bg/default': secondary,
     'button/secondary/border/default': secondary,
     'button/secondary/radius': secondary,

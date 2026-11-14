@@ -1,3 +1,4 @@
+import { scaleGaps } from '../../brand/scaleGaps'
 const avatar = 'Bound on the nested Avatar (Size=Medium) instance; the composed <Avatar size="md"> (Avatar.css) consumes it.'
 
 /** Figma ↔ code contract for Comment ("Comment" 40000268:8025). */
@@ -13,6 +14,7 @@ export const figma = {
     'Actions › Reply / Edit / Delete (Link Button instances)': 'onReply / onEdit / onDelete',
   },
   figmaGaps: {
+    ...scaleGaps('dimension/space/2'),
     'jira/avatar/bg': avatar,
     'jira/radius/pill': avatar,
     'jira/size/avatar': avatar,

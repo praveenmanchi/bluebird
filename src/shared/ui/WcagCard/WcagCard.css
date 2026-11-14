@@ -101,6 +101,9 @@
   gap: var(--bb-dimension-space-6);
   min-width: 0;
 }
+/* Mode=colors: "Frame 1430102697" has a raw 3 item spacing since the 2026-11-13 pull; the other
+ * modes bind dimension/space/6. */
+.bb-wcag-card[data-mode='colors'] .bb-wcag-card__reference { gap: var(--bb-derived-wcag-card-frame-1430102697-gap); }
 .bb-wcag-card__link {
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-wcag-card-meta-font-size);
@@ -110,6 +113,9 @@
   text-align: right;
   text-decoration: none;
 }
+/* Link row (Figma "Frame 1430102701", Mode=colors): the label, then the glyph. */
+.bb-wcag-card__link { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--bb-derived-wcag-card-frame-1430102701-gap); }
+.bb-wcag-card__link-icon { flex: none; width: var(--bb-font-line-caption); height: var(--bb-font-line-caption); }
 .bb-wcag-card__link:is(:hover, :focus-visible) { text-decoration: underline; }
 
 .bb-wcag-card__sections {
@@ -292,8 +298,8 @@
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-wcag-card-meta-font-size);
   font-weight: var(--bb-type-weight-600);
-  line-height: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-line-height);
-  color: var(--bb-derived-wcag-card-2-4-1-needs-4-5-1-color);
+  line-height: var(--bb-derived-wcag-card-2-2-1-needs-4-5-1-line-height);
+  color: var(--bb-derived-wcag-card-2-2-1-needs-4-5-1-color);
 }
 
 /* Footer action bar. */
@@ -322,9 +328,9 @@
 }
 /* The Disability Indicator instance sits at 0.7 scale in Figma: its bound values are the full-size ones. */
 .bb-wcag-card__check {
-  padding: calc(var(--bb-dimension-space-2-57) * 0.7);
-  border-radius: calc(var(--bb-dimension-radius-3) * 0.7);
-  border-width: calc(var(--bb-dimension-stroke-0-64) * 0.7);
+  padding: calc(var(--bb-dimension-space-2-57) * 0.7); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+  border-radius: calc(var(--bb-dimension-radius-3) * 0.7); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
+  border-width: calc(var(--bb-dimension-stroke-0-64) * 0.7); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
 }
 .bb-wcag-card__spacer { flex: 1 1 auto; }
 .bb-wcag-card__action {

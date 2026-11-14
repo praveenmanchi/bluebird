@@ -25,6 +25,10 @@ describe('SegmentTab', () => {
     expect(container.querySelector('[data-icon="ui-variable-text"]')).not.toBeNull()
     expect(screen.getByRole('tab').classList.contains('bb-segment-tab--text-only')).toBe(false)
   })
+  it('exposes a forced focus state for the Figma State=Focus variant', () => {
+    render(<SegmentTab state="focus">x</SegmentTab>)
+    expect(screen.getByRole('tab').dataset.state).toBe('focus')
+  })
   it('calls onClick and respects disabled', () => {
     const onClick = vi.fn()
     const { rerender } = render(<SegmentTab onClick={onClick}>x</SegmentTab>)

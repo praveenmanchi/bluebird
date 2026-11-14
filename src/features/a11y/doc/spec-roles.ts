@@ -72,7 +72,7 @@ export function humanName(name: string): string | null {
 export interface ImplementationNote { title: string; body: string; code: string }
 
 const FOCUS_NOTE: Readonly<Record<Platform, ImplementationNote>> = {
-  web: { title: 'Focus ring', body: 'Every focusable element shows a 2px ring with a 2px gap. It must reach 3:1 against what it sits on (2.4.7, 1.4.11).', code: ':focus-visible {\n  outline: 2px solid var(--focus-ring);\n  outline-offset: 2px;\n}' },
+  web: { title: 'Focus ring', body: 'Every focusable element shows a 2px ring with a 2px gap. It must reach 3:1 against what it sits on (2.4.7, 1.4.11).', code: ':focus-visible {\n  outline: 2px solid var(--focus-ring);\n  outline-offset: 2px;\n}' }, // allow-raw: copy shown to the user, not a style
   ios: { title: 'Focus', body: 'Keep the system focus effect for Full Keyboard Access and Switch Control; do not hide it (2.4.7).', code: 'Button("Settings") { … }\n  .focusable()\n  .accessibilityLabel("Settings")' },
   android: { title: 'Focus', body: 'Give every control a visible focused state for keyboard and switch users (2.4.7).', code: 'Modifier\n  .focusable()\n  .border(2.dp, if (focused) focusColor else Color.Transparent)' },
 }

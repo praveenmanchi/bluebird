@@ -22,10 +22,15 @@ export type Spawn = (command: string, args: readonly string[], options: { cwd: s
   on(event: 'error', listener: (error: Error) => void): unknown
 }
 
+/** The npm scripts the page may start. Nothing else from the request reaches the shell. */
+export const BUILD_SCRIPTS = ['build', 'package'] as const
+export type BuildScript = (typeof BUILD_SCRIPTS)[number]
+export const isBuildScript = (v: unknown): v is BuildScript => (BUILD_SCRIPTS as readonly unknown[]).includes(v)
+
 export interface BuildRunner {
   state(): BuildState
-  /** Starts a build; false when one is already running. */
-  start(): boolean
+  /** Starts `npm run <script>` (build by default); false when one is already running. */
+  start(script?: BuildScript): boolean
 }
 
 // eslint-disable-next-line no-control-regex -- strips the colour codes vite and tsx print
@@ -63,8 +68,9 @@ export function createBuildRunner(cwd: string, spawn: Spawn = nodeSpawn as unkno
   let current: BuildState = { status: 'idle' }
   return {
     state: () => current,
-    start() {
+    start(script: BuildScript = 'build') {
       if (current.status === 'running') return false
+      if (!isBuildScript(script)) return false
       const startedAt = now().toISOString()
       let raw: string[] = []
       const tail = () => withoutNoise(raw).slice(-TAIL_LINES)
@@ -78,12 +84,12 @@ export function createBuildRunner(cwd: string, spawn: Spawn = nodeSpawn as unkno
         current = { status: exitCode === 0 ? 'passed' : 'failed', startedAt, finishedAt: now().toISOString(), exitCode, output: lines.join('\n'), ...(summary ? { summary } : {}) }
       }
       current = { status: 'running', startedAt, output: '' }
-      // shell: npm is npm.cmd on Windows. The command is fixed; nothing from the request reaches it.
+      // shell: npm is npm.cmd on Windows. The script is one of BUILD_SCRIPTS; nothing else from the request reaches it.
       // The dev server runs with NODE_ENV=development, and a child inherits it: Vite then makes an
       // unminified development build (~1.8 MB) that always fails check:size. Build as a terminal would.
       const env: NodeJS.ProcessEnv = { ...process.env }
       delete env.NODE_ENV
-      const child = spawn('npm', ['run', 'build'], { cwd, shell: process.platform === 'win32', env })
+      const child = spawn('npm', ['run', script], { cwd, shell: process.platform === 'win32', env })
       child.stdout?.on('data', append)
       child.stderr?.on('data', append)
       child.on('error', (error) => { append(`Couldn’t start npm: ${error.message}`); finish(null) })

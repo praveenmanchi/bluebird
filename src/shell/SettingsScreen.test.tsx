@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/preact'
+import { fireEvent, render, screen, within } from '@testing-library/preact'
 import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
 import { SettingsScreen } from './SettingsScreen'
 
@@ -61,15 +61,20 @@ describe('SettingsScreen', () => {
     expect(settings.querySelector('.bb-team-banner__credit')?.textContent).toBe('Built with Care by the HCL Design System Team')
   })
 
-  it('with the integrations store, opens on the persona card and lists the integration sections before the Team Banner', async () => {
+  it('with the integrations store, opens on the persona card, then the integrations, the tour and the session last before the Team Banner', async () => {
     const api = { load: async () => DEFAULT_INTEGRATIONS, save: async (_s: string, v: unknown) => v as never }
     const onChangePersona = vi.fn()
-    const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onChangePersona={onChangePersona} integrations={api} />)
+    const { container } = render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} personas={personas} personaId="design-system" onChangePersona={onChangePersona} integrations={api} onReplayTour={noop} />)
     await screen.findByRole('region', { name: 'Jira integration' })
     const settings = container.querySelector('.bb-settings')!
     expect(settings.firstElementChild?.classList.contains('bb-persona-card')).toBe(true)
     expect(settings.querySelector('.bb-persona-card')?.textContent).toContain('Design System')
-    expect(settings.lastElementChild?.previousElementSibling?.classList.contains('bb-integrations')).toBe(true)
+    // Signing out and resetting sit at the bottom, each block a ruled section of its own.
+    expect([...settings.children].map((el) => el.getAttribute('aria-label') ?? el.classList[0])).toEqual(['bb-persona-card', 'bb-integrations', 'Product tour', 'Session', 'bb-team-banner'])
+    const session = screen.getByRole('region', { name: 'Session' })
+    expect(within(session).getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
+    expect(within(session).getByRole('button', { name: 'Reset all settings' })).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: 'Product tour' })).getByRole('button', { name: 'Replay tour' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Change the persona' }))
     expect(onChangePersona).toHaveBeenCalledOnce()
   })
@@ -88,5 +93,13 @@ describe('SettingsScreen', () => {
     unmount()
     render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} />)
     expect(screen.queryByRole('button', { name: 'Replay tour' })).toBeNull()
+  })
+
+  it('shows the brand workspace and Reset alone when there is no sign-in (single-brand build)', () => {
+    const { container } = render(<SettingsScreen session={{ brandId: 'ikea', since: '2026-09-22T09:00:00Z' }} brand={null} onReset={noop} />)
+    expect(container.querySelector('.bb-settings .bb-toggle__title')?.textContent).toBe('Ikea workspace')
+    expect(container.querySelector('.bb-settings .bb-toggle__description')?.textContent).toMatch(/set up for Ikea only/)
+    expect(screen.queryByRole('button', { name: 'Sign out' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Reset all settings' })).toBeInTheDocument()
   })
 })

@@ -4,7 +4,7 @@ import figmaPlugin from '@figma/eslint-plugin-figma-plugins'
 import boundaries from './tools/eslint-boundaries.js'
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'storybook-static/**', 'figma/visual/**', 'src/**/registry.generated.ts'] },
+  { ignores: ['dist/**', 'release/**', 'coverage/**', 'node_modules/**', 'storybook-static/**', 'figma/visual/**', 'src/**/registry.generated.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

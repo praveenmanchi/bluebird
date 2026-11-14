@@ -80,7 +80,7 @@ const variantKey = (v: ComponentVariant) => Object.entries(v.props).sort(([a], [
 const derivedPrefix = (code: string) => `--bb-derived-${tokenKeyFromVariableName(code.replace(/([a-z])([A-Z])/g, '$1-$2'))}-`
 
 function cssFileFor(set: ComponentSetSnapshot, root: string): string {
-  return set.dir ? resolve(root, set.dir, `${set.code}.css`) : resolve(root, 'src/shared/ui', set.code, `${set.code}.css`)
+  return set.dir ? resolve(root, set.dir, set.css ?? `${set.code}.css`) : resolve(root, 'src/shared/ui', set.code, `${set.code}.css`)
 }
 
 /** Every `var(--bb-…)` any component reads, so a finding can say whether the change reaches code. */

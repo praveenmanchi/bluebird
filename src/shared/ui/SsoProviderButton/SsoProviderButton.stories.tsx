@@ -7,7 +7,7 @@ const meta = {
   title: 'Molecules/SsoProviderButton',
   component: SsoProviderButton,
   parameters: { figma: { setId: figma.setId, name: figma.name } },
-  argTypes: { onClick: { action: 'click' } },
+  argTypes: { onClick: { action: 'click' }, state: { control: 'inline-radio', options: ['default', 'hover', 'focus'] } },
   decorators: [(Story) => <div style={{ width: '344px' }}><Story /></div>],
 } satisfies Meta<typeof SsoProviderButton>
 export default meta
@@ -21,6 +21,9 @@ export const Okta: Story = { args: { provider: 'okta' }, parameters: v('Provider
 export const OktaHover: Story = { args: { provider: 'okta', state: 'hover' }, parameters: v('Provider=Okta, State=Hover') }
 export const Google: Story = { args: { provider: 'google' }, parameters: v('Provider=Google, State=Default') }
 export const GoogleHover: Story = { args: { provider: 'google', state: 'hover' }, parameters: v('Provider=Google, State=Hover') }
+export const MicrosoftFocus: Story = { args: { provider: 'microsoft', state: 'focus' }, parameters: v('Provider=Microsoft, State=Focus') }
+export const OktaFocus: Story = { args: { provider: 'okta', state: 'focus' }, parameters: v('Provider=Okta, State=Focus') }
+export const GoogleFocus: Story = { args: { provider: 'google', state: 'focus' }, parameters: v('Provider=Google, State=Focus') }
 
 export const AcrossBrands: Story = {
   render: () => (

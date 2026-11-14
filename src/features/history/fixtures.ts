@@ -4,6 +4,7 @@
 import type { Change } from '@shared/design/types'
 import type { HistoryEntry } from '@shared/history/types'
 import { changelogEntry } from './changelog'
+import type { FileVersion, TicketOption, VersionDiff } from './messages'
 
 const ago = (now: Date, hours: number) => new Date(now.getTime() - hours * 3_600_000).toISOString()
 
@@ -109,3 +110,30 @@ export function sampleEntries(now: Date): HistoryEntry[] {
 
 export const SAMPLE_REPO = 'praveenmanchi/bridge-ds-tokens'
 export const SAMPLE_JIRA = 'https://bluebird.atlassian.net'
+
+/** Open tickets the mock's picker lists. */
+export const SAMPLE_TICKETS: readonly TicketOption[] = [
+  { key: 'BB-342', title: 'Darker primary button for AA contrast', status: 'In Progress' },
+  { key: 'BB-351', title: 'Info colour for feedback banners', status: 'In Progress' },
+  { key: 'BB-340', title: 'Filter chip for the PLP filters', status: 'To Do' },
+]
+
+const minutesAgo = (now: Date, minutes: number) => new Date(now.getTime() - minutes * 60_000).toISOString()
+
+/** The open file's versions, newest first. */
+export const SAMPLE_VERSIONS = (now: Date): FileVersion[] => [
+  { id: '6012', at: minutesAgo(now, 40), label: 'Button refresh ready for review', description: 'Primary button is darker so white labels pass AA; feedback/info added for banners.', by: 'Praveen Manchi' },
+  { id: '6011', at: minutesAgo(now, 75), label: '', description: '', by: 'Ravi Kumar' },
+  { id: '6010', at: minutesAgo(now, 120), label: '', description: '', by: 'Anita Rao' },
+  { id: '6007', at: minutesAgo(now, 1500), label: 'Spacing scale v2', description: '', by: 'Anita Rao' },
+  { id: '6004', at: minutesAgo(now, 1680), label: 'Filter chip first draft', description: '', by: 'Ravi Kumar' },
+]
+
+export const SAMPLE_VERSION_DIFF: VersionDiff = {
+  changes: [
+    { kind: 'added', what: 'Component set', name: 'Filter chip', detail: 'New component set on Molecules' },
+    { kind: 'modified', what: 'Frame', name: 'Button · States', detail: 'Renamed from Button states on Atoms' },
+    { kind: 'removed', what: 'Section', name: 'Old buttons', detail: 'Deleted section on Atoms' },
+  ],
+  note: 'Pages, the frames and sections on them, and components, compared with the version before. Edits inside a frame and variable values are not kept with Figma versions.',
+}

@@ -73,6 +73,10 @@
   cursor: pointer;
 }
 
+/* Findings (and Ignored) — the title, the filter row and one card per finding, stacked with the page gap.
+ * It is also the `a11y-findings` container the narrow-width rules below query. */
+.bb-a11y__findings { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); container: a11y-findings / inline-size; }
+
 /* Export row — the artifact an auditor reads, in two formats. */
 /* Findings row — Figma "Accessibility M · Results · Export" (40002658:26473): the filters, then
  * Export ▾ on the right. The menu opens under the button, right-aligned. */

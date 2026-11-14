@@ -4,6 +4,7 @@ import { createRpcClient, createMockTransport } from '@shared/bridge'
 import { createMockHandlers, mockAudit, type MockScenario } from '../mock'
 import { result, status } from '../state'
 import { Tab } from './Tab'
+import { figma } from './AuditResults.figma'
 
 /** The L plugin window — the size the Figma "Audit · 600" frames are drawn at. */
 const L = { width: '600px', height: '643px', display: 'flex', flexDirection: 'column' as const }
@@ -14,11 +15,11 @@ function frame(scenario: MockScenario = 'default', setup?: () => void) {
   return <div style={L}><RpcProvider client={client}><Tab /></RpcProvider></div>
 }
 
-const meta = { title: 'Screens/Audit', parameters: { layout: 'centered' } } satisfies Meta
+const meta = { title: 'Screens/Audit', parameters: { layout: 'centered', figma: { setId: figma.setId, name: figma.name } } } satisfies Meta
 export default meta
 type Story = StoryObj
 
-/** Figma "1 Ready". */
+/** Figma "Audit v2 · 1 Ready". */
 export const Ready: Story = { render: () => frame() }
-/** Figma "4 Results". */
-export const Results: Story = { render: () => frame('default', () => { result.value = mockAudit(); status.value = 'done' }) }
+/** Figma "Audit v2 · 3 Results · This page". */
+export const Results: Story = { render: () => frame('default', () => { result.value = mockAudit(); status.value = 'done' }), parameters: { figma: { variant: 'Audit' } } }

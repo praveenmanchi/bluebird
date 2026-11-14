@@ -7,6 +7,8 @@
   --pp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pp-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
   --pp-hero: 1.2;
+  /* How much the picked bird grows as it comes towards the viewer on Continue. It has faded out by then. */
+  --pp-near: 2;
   position: relative;
   display: flex;
   flex: 1 1 auto;
@@ -29,7 +31,7 @@
   background: var(--bb-persona-surface-banner);
   pointer-events: none;
   transform: translateY(-100%);
-  animation: bb-pick-curtain 560ms var(--pp-ease) backwards;
+  animation: bb-pick-curtain 560ms var(--pp-ease) backwards; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__header {
   display: flex;
@@ -54,9 +56,9 @@
 }
 /* Clouds drift behind everything; the sky fills whatever height the window leaves. */
 .bb-pick__sky { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
-.bb-pick__cloud { fill: var(--bb-persona-surface-cloud); opacity: 0.55; animation: bb-pick-drift 14s ease-in-out infinite alternate; }
-.bb-pick__cloud--2 { opacity: 0.35; animation-duration: 19s; animation-direction: alternate-reverse; }
-.bb-pick__cloud--3 { opacity: 0.45; animation-duration: 23s; }
+.bb-pick__cloud { fill: var(--bb-persona-surface-cloud); opacity: var(--bb-dimension-opacity-55); animation: bb-pick-drift 14s ease-in-out infinite alternate; } /* allow-raw: motion is not tokenised in Figma */
+.bb-pick__cloud--2 { opacity: var(--bb-dimension-opacity-35); animation-duration: 19s; animation-direction: alternate-reverse; } /* allow-raw: motion is not tokenised in Figma */
+.bb-pick__cloud--3 { opacity: var(--bb-dimension-opacity-45); animation-duration: 23s; } /* allow-raw: motion is not tokenised in Figma */
 .bb-pick__heading { position: relative; display: flex; flex-direction: column; gap: var(--bb-onboarding-copy-gap); text-align: center; }
 .bb-pick__title {
   margin: 0;
@@ -70,7 +72,7 @@
   font-size: var(--bb-onboarding-font-text-size);
   line-height: var(--bb-onboarding-font-text-line);
 }
-.bb-pick.has-intro .bb-pick__heading { animation: bb-pick-rise 500ms 260ms var(--pp-ease) backwards; }
+.bb-pick.has-intro .bb-pick__heading { animation: bb-pick-rise 500ms 260ms var(--pp-ease) backwards; } /* allow-raw: motion is not tokenised in Figma */
 
 /* Birds sit on the branch, labels hang below it. Subgrid shares one bird row and one label row
  * across all five, so a label that wraps at S can't lift the branch away from the feet. */
@@ -95,7 +97,7 @@
   color: var(--bb-persona-text-meta);
   font: inherit;
   cursor: pointer;
-  transition: transform 460ms var(--pp-ease);
+  transition: transform 460ms var(--pp-ease); /* allow-raw: motion is not tokenised in Figma */
 }
 /* Ring only once someone is navigating by keyboard: see usingKeyboard in PersonaScreen.tsx. */
 .bb-pick__bird:focus-visible { outline: none; }
@@ -106,9 +108,9 @@
   width: 118%;
   margin: 0 -9%;
   transform-origin: 50% 90%;
-  transition: transform 420ms var(--pp-ease-back);
+  transition: transform 420ms var(--pp-ease-back); /* allow-raw: motion is not tokenised in Figma */
 }
-.bb-pick.has-intro .bb-pick__figure { animation: bb-pick-land 620ms calc(420ms + var(--pp-i) * 110ms) var(--pp-ease-back) backwards; }
+.bb-pick.has-intro .bb-pick__figure { animation: bb-pick-land 620ms calc(420ms + var(--pp-i) * 110ms) var(--pp-ease-back) backwards; } /* allow-raw: motion is not tokenised in Figma */
 .bb-pick__bird:hover .bb-pick__figure { transform: translateY(-4%) scale(1.05); }
 
 /* Picked: this bird slides to the middle column and grows, whichever column it came from. */
@@ -123,13 +125,13 @@
 .bb-pick.has-selection .bb-pick__bird:not(.is-selected) {
   visibility: hidden;
   pointer-events: none;
-  transition: transform 460ms var(--pp-ease), visibility 0s 640ms;
+  transition: transform 460ms var(--pp-ease), visibility 0s 640ms; /* allow-raw: motion is not tokenised in Figma */
 }
-.bb-pick.has-selection .bb-pick__bird:not(.is-selected) .bb-pick__figure { animation: bb-pick-fly-away 640ms cubic-bezier(0.45, 0, 0.8, 0.6) both; }
+.bb-pick.has-selection .bb-pick__bird:not(.is-selected) .bb-pick__figure { animation: bb-pick-fly-away 640ms cubic-bezier(0.45, 0, 0.8, 0.6) both; } /* allow-raw: motion is not tokenised in Figma */
 .bb-pick.has-selection .bb-pick__bird:not(.is-selected) .bb-pick__label { opacity: 0; }
 
 /* Change persona: the picked bird slides home and the others fly back in, one after another. */
-.bb-pick.is-returning .bb-pick__bird:not(.is-anchor) .bb-pick__figure { animation: bb-pick-fly-back 720ms calc(120ms + var(--pp-i) * 90ms) var(--pp-ease) backwards; }
+.bb-pick.is-returning .bb-pick__bird:not(.is-anchor) .bb-pick__figure { animation: bb-pick-fly-back 720ms calc(120ms + var(--pp-i) * 90ms) var(--pp-ease) backwards; } /* allow-raw: motion is not tokenised in Figma */
 
 /* Full circle behind the centre of the stage. Under the branch and the birds, grows in with the pick.
  * The grid item has no height, so the circle never stretches the bird row off the branch. */
@@ -139,7 +141,7 @@
   grid-column: 1 / -1;
   align-self: end;
   justify-self: center;
-  width: calc(100% / var(--pp-n) * 1.18 * var(--pp-hero) * 1.06);
+  width: calc(100% / var(--pp-n) * 1.18 * var(--pp-hero) * 1.06); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
   height: 0;
 }
 .bb-pick__sun::before {
@@ -153,16 +155,15 @@
   background: var(--bb-persona-surface-spotlight);
   opacity: 0;
   transform: translateY(5%) scale(0.3);
-  transition: transform 460ms var(--pp-ease-back), opacity 200ms ease;
+  transition: transform 460ms var(--pp-ease-back), opacity 200ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick.has-selection .bb-pick__sun::before { opacity: 1; transform: translateY(5%); }
-.bb-pick.is-leaving .bb-pick__sun::before { opacity: 0; transform: translateY(5%) scale(0.3); }
 .bb-pick__label {
   font-size: var(--bb-onboarding-font-tab-size);
   font-weight: var(--bb-onboarding-font-weight-medium);
   line-height: var(--bb-onboarding-font-tab-line);
   text-align: center;
-  transition: color 200ms ease, opacity 200ms ease;
+  transition: color 200ms ease, opacity 200ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__bird:hover .bb-pick__label, .bb-pick__bird.is-selected .bb-pick__label { color: var(--bb-persona-text-title); }
 .bb-pick__bird.is-selected .bb-pick__label { font-weight: var(--bb-onboarding-font-weight-strong); }
@@ -174,7 +175,7 @@
   align-self: end;
   width: calc(100% + var(--bb-onboarding-plugin-padding-x) * 2);
   height: var(--bb-onboarding-gap-xl);
-  margin: 0 calc(var(--bb-onboarding-plugin-padding-x) * -1) calc(var(--bb-onboarding-gap-xl) * -0.4);
+  margin: 0 calc(var(--bb-onboarding-plugin-padding-x) * -1) calc(var(--bb-onboarding-gap-xl) * -0.4); /* allow-raw: a proportion of the token it scales; Figma has no variable for the ratio */
   overflow: visible;
 }
 .bb-pick__bough {
@@ -185,7 +186,7 @@
   stroke-dasharray: 1;
   vector-effect: non-scaling-stroke;
 }
-.bb-pick.has-intro .bb-pick__bough { animation: bb-pick-grow 700ms 240ms var(--pp-ease) backwards; }
+.bb-pick.has-intro .bb-pick__bough { animation: bb-pick-grow 700ms 240ms var(--pp-ease) backwards; } /* allow-raw: motion is not tokenised in Figma */
 
 /* Speech bubble: the panel's tail tracks the selected bird on the same columns. */
 .bb-pick__panel {
@@ -199,14 +200,14 @@
   border-top: var(--bb-onboarding-border-width) solid var(--bb-persona-border-panel);
   background: var(--bb-persona-surface-panel);
 }
-.bb-pick.has-intro .bb-pick__panel { animation: bb-pick-panel 520ms 700ms var(--pp-ease) backwards; }
+.bb-pick.has-intro .bb-pick__panel { animation: bb-pick-panel 520ms 700ms var(--pp-ease) backwards; } /* allow-raw: motion is not tokenised in Figma */
 .bb-pick__tail-track {
   position: absolute;
   top: 0;
   right: var(--bb-onboarding-plugin-padding-x);
   left: var(--bb-onboarding-plugin-padding-x);
   opacity: 0;
-  transition: opacity 180ms ease;
+  transition: opacity 180ms ease; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick.has-selection .bb-pick__tail-track { opacity: 1; }
 .bb-pick__tail {
@@ -232,21 +233,21 @@
   font-size: var(--bb-onboarding-font-heading-size);
   line-height: var(--bb-onboarding-font-heading-line);
   text-align: center;
-  animation: bb-pick-nudge 1.6s 1.4s ease-in-out infinite;
+  animation: bb-pick-nudge 1.6s 1.4s ease-in-out infinite; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__quip {
   margin: 0;
   font-size: var(--bb-onboarding-font-heading-size);
   font-weight: var(--bb-onboarding-font-weight-strong);
   line-height: var(--bb-onboarding-font-heading-line);
-  animation: bb-pick-rise 320ms var(--pp-ease) backwards;
+  animation: bb-pick-rise 320ms var(--pp-ease) backwards; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__blurb {
   margin: 0;
   color: var(--bb-persona-text-meta);
   font-size: var(--bb-onboarding-font-text-size);
   line-height: var(--bb-onboarding-font-text-line);
-  animation: bb-pick-rise 320ms 60ms var(--pp-ease) backwards;
+  animation: bb-pick-rise 320ms 60ms var(--pp-ease) backwards; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__tools {
   display: flex;
@@ -266,25 +267,25 @@
   font-size: var(--bb-onboarding-font-tab-size);
   font-weight: var(--bb-onboarding-font-weight-medium);
   line-height: var(--bb-onboarding-font-tab-line);
-  animation: bb-pick-chip 340ms calc(120ms + var(--pp-i) * 60ms) var(--pp-ease-back) backwards;
+  animation: bb-pick-chip 340ms calc(120ms + var(--pp-i) * 60ms) var(--pp-ease-back) backwards; /* allow-raw: motion is not tokenised in Figma */
 }
 .bb-pick__tool .bb-icon { width: var(--bb-onboarding-icon-size-sm); height: var(--bb-onboarding-icon-size-sm); }
 .bb-pick__footer { display: flex; gap: var(--bb-onboarding-gap-sm); }
 .bb-pick__continue { flex: 1 1 auto; }
 
-/* Take-off: the picked bird flaps away in a puff of feathers. */
-.bb-pick.is-leaving .bb-pick__bird.is-selected .bb-pick__figure { animation: bb-pick-take-off 900ms cubic-bezier(0.5, 0, 0.75, 0.4) forwards; }
-.bb-pick__feather {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 9%;
-  height: 16%;
-  border-radius: 100% 0;
-  background: var(--bb-persona-feather);
-  opacity: 0;
-  animation: bb-pick-feather 800ms ease-out forwards;
-}
+/* Continue: the picked bird starts flapping at once, and the flight itself plays in the hand-over below. */
+
+/* Hand-over (PersonaHandOver): the same picker laid over the screen that opens next. The backdrop fades as
+ * the bird lifts off, and the bird comes a little towards the viewer, under the banner, fading as it nears,
+ * so the next screen is already there. The scale is from the bird's middle here (it rests on its feet),
+ * so 0% restates the picked pose for that origin. */
+.bb-pick-handover { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; pointer-events: none; }
+.bb-pick.is-departing { overflow: hidden; background: none; }
+.bb-pick.is-departing::before { content: ''; position: absolute; inset: 0; background: var(--bb-persona-surface-stage); animation: bb-pick-fade-out 360ms 120ms ease-out forwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-pick.is-departing .bb-pick__header { position: relative; z-index: 3; animation: bb-pick-banner-out 700ms ease-in forwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-pick.is-departing .bb-pick__bubble * { animation: none; }
+.bb-pick.is-departing :is(.bb-pick__sky, .bb-pick__heading, .bb-pick__sun, .bb-pick__branch, .bb-pick__label, .bb-pick__panel) { animation: bb-pick-fade-out 360ms 120ms ease-out forwards; } /* allow-raw: motion is not tokenised in Figma */
+.bb-pick.is-departing .bb-pick__bird.is-selected .bb-pick__figure { transform-origin: 50% 50%; animation: bb-pick-take-off 700ms cubic-bezier(0.4, 0, 0.6, 1) forwards; } /* allow-raw: motion is not tokenised in Figma */
 
 @keyframes bb-pick-drift { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
 @keyframes bb-pick-curtain { from { transform: translateY(0); } }
@@ -311,28 +312,27 @@
 @keyframes bb-pick-chip { from { opacity: 0; transform: scale(0.6) translateY(30%); } }
 @keyframes bb-pick-nudge { 50% { transform: translateY(-14%); } }
 @keyframes bb-pick-take-off {
-  0% { transform: translateY(-4%) scale(var(--pp-hero)); }
-  18% { transform: translateY(4%) scale(calc(var(--pp-hero) + 0.1), calc(var(--pp-hero) - 0.12)); }
-  100% { transform: translate(120%, -420%) scale(0.7) rotate(16deg); opacity: 0.9; }
+  0% { opacity: 1; transform: translateY(calc(-4% - 40% * (var(--pp-hero) - 1))) scale(var(--pp-hero)); }
+  16% { transform: translateY(calc(2% - 40% * (var(--pp-hero) - 1))) scale(calc(var(--pp-hero) + 0.1), calc(var(--pp-hero) - 0.12)); }
+  45% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(calc(6% - 40% * (var(--pp-hero) - 1))) scale(calc(var(--pp-hero) * var(--pp-near))); }
 }
-@keyframes bb-pick-feather {
-  0% { opacity: 1; transform: rotate(var(--pp-a)) translateY(0) scale(0.6); }
-  100% { opacity: 0; transform: rotate(calc(var(--pp-a) + 90deg)) translateY(-420%) scale(1); }
-}
+@keyframes bb-pick-fade-out { to { opacity: 0; } }
+@keyframes bb-pick-banner-out { 80% { opacity: 1; } to { opacity: 0; } }
 
 /* Room above the birds: the picked one grows into it. */
-@container (min-height: 36rem) {
+@container (min-height: 36rem) { /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
   .bb-pick__birds { --pp-hero: 1.5; }
 }
 /* Opened on a persona: everything is already in place. */
 .bb-pick.is-instant .bb-pick__bird, .bb-pick.is-instant .bb-pick__figure, .bb-pick.is-instant .bb-pick__sun::before { animation: none; transition: none; }
 
 /* Short window: the tabs and Continue matter more than the description, so it goes first. */
-@container (max-height: 34rem) {
+@container (max-height: 34rem) { /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
   .bb-pick__blurb { display: none; }
 }
 /* Small window: the same layout, tighter type. */
-@container (max-width: 26rem) {
+@container (max-width: 26rem) { /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
   .bb-pick__title { font-size: var(--bb-onboarding-font-heading-size); line-height: var(--bb-onboarding-font-heading-line); }
   .bb-pick__stage { padding-top: var(--bb-onboarding-gap-sm); }
 }

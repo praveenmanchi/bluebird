@@ -47,7 +47,7 @@ export interface ChangelogNoteProps extends Omit<JSX.HTMLAttributes<HTMLDivEleme
 export function ChangelogNote({
   state = 'auto',
   title = 'button/bg/primary',
-  note = 'Primary button background darkened from #0C8CE9 to #0560A3 so white labels pass AA (4.9:1).',
+  note = 'Primary button background darkened from #0C8CE9 to #0560A3 so white labels pass AA (4.9:1).', // allow-raw: sample content mirroring the Figma component, shown as data
   change = 'modified',
   source,
   actionLabel,

@@ -20,6 +20,12 @@ describe('Footer', () => {
     expect(pill).toHaveTextContent('Cloud')
     expect(pill.dataset.status).toBe('error')
   })
+  it('hides the size steps, expand and grip when the panel cannot be resized', () => {
+    const { container } = render(<Footer resizable={false} onExpand={() => undefined} />)
+    expect(container.querySelector('.bb-footer__controls')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Expand' })).toBeNull()
+  })
+
   it('forwards size changes and the expand click', () => {
     const onSizeChange = vi.fn()
     const onExpand = vi.fn()

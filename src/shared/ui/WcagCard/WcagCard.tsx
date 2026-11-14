@@ -1,6 +1,7 @@
 import type { ComponentChildren, JSX } from 'preact'
 import { DisabilityIndicator, type DisabilityKind } from '../DisabilityIndicator/DisabilityIndicator'
 import { Icon } from '../Icon/Icon'
+import { EXTERNAL_LINK_ICON } from '../LinkButton/LinkButton'
 import { PrincipleTag, type Principle } from '../PrincipleTag/PrincipleTag'
 import { Rating, type RatingLevel } from '../Rating/Rating'
 import { ThemeChip, type ThemeChipTheme } from '../ThemeChip/ThemeChip'
@@ -88,7 +89,7 @@ export interface WcagCardProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ti
   principle?: Principle
   /** Figma booleans Cognitive / Auditory / Physical/Motor / Visual → one DisabilityIndicator each. */
   disabilities?: readonly DisabilityKind[]
-  /** "Understanding SC 1.4.3 ↗" link on the right of the summary row. */
+  /** "Understanding SC 1.4.3" link on the right of the summary row; the Figma label's arrow is drawn as the link glyph. */
   link?: WcagCardLink
   /** "Node" row value (mono). */
   node?: ComponentChildren
@@ -285,7 +286,7 @@ export function WcagCard({
                   onSelectAll={occurrences.onSelectAll}
                 />
               )}
-              {link && <a class="bb-wcag-card__link" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>}
+              {link && <a class="bb-wcag-card__link" href={link.href} target="_blank" rel="noreferrer">{link.label}<Icon name={EXTERNAL_LINK_ICON} class="bb-wcag-card__link-icon" /></a>}
             </div>
           )}
         </div>
