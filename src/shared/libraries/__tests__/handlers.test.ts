@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { isMessageType } from '@shared/bridge/messages'
 import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
+import { dualFileWith } from '@shared/integrations/testing'
 import { createLibrariesHandlers } from '../handlers'
 import { LIBRARIES_MSG, type LibraryLoadResult } from '../types'
 import { fakeFigma } from './fixtures'
 
 const ctx = {} as never
 
-function setup(settings = { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'V', file1Key: 't' }) {
+function setup(settings = dualFileWith([{ id: 'V', role: 'Variables' }], 't')) {
   const figma = fakeFigma()
   let current = settings
   const handlers = createLibrariesHandlers({ readSettings: async () => current, fetch: figma.fetch, now: () => 1 })
@@ -26,7 +27,7 @@ describe('libraries handlers', () => {
     expect(figma.calls.length).toBe(after)
     await load({ refresh: true })
     expect(figma.calls.length).toBe(after * 2)
-    set({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'V', file1Key: 't', file1Role: 'Variables + Components' })
+    set(dualFileWith(['V'], 't', { enabled: true }))
     await load()
     expect(figma.calls.length).toBeGreaterThan(after * 2)
   })
@@ -35,7 +36,7 @@ describe('libraries handlers', () => {
     const { figma, load, set } = setup({ ...DEFAULT_INTEGRATIONS.dualFile, enabled: false })
     expect(await load()).toMatchObject({ status: 'not-configured', reason: 'disabled' })
     expect(figma.calls).toHaveLength(0)
-    set({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'V', file1Key: 'secret-token' })
+    set(dualFileWith([{ id: 'V', role: 'Variables' }], 'secret-token'))
     expect(JSON.stringify(await load())).not.toContain('secret-token')
   })
 
@@ -43,7 +44,7 @@ describe('libraries handlers', () => {
     let online = false
     const figma = fakeFigma()
     const handlers = createLibrariesHandlers({
-      readSettings: async () => ({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'V', file1Key: 't' }),
+      readSettings: async () => (dualFileWith([{ id: 'V', role: 'Variables' }], 't')),
       fetch: async (url, init) => { if (!online) throw new Error('offline'); return figma.fetch(url, init) },
     })
     const load = () => handlers[LIBRARIES_MSG.load]!(undefined as never, ctx) as Promise<LibraryLoadResult>
@@ -60,7 +61,7 @@ describe('libraries handlers', () => {
 
   it('wires Test connection on dual-file:test', async () => {
     const { handlers } = setup()
-    const result = await handlers["dual-file:test"]!({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: "V", file1Key: "t" } as never, ctx)
+    const result = await handlers["dual-file:test"]!(dualFileWith([{ id: 'V', role: 'Variables' }], 't') as never, ctx)
     expect((result as { message: string }).message).toContain('5 variables')
   })
 })

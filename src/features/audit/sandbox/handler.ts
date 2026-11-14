@@ -1,11 +1,11 @@
 // Runs inside Figma. Everything that touches the document for this tab lives here.
 import type { HandlerContext, HandlerMap } from '@shared/bridge'
 import { librariesRuntime, type LibrariesRuntime } from '@shared/libraries/handlers'
-import type { LibraryIndex, LibraryLoadResult } from '@shared/libraries/types'
-import { countItems, groupHits, issuesOf, scoreOf, unusedComponents } from '../audit'
+import type { LibraryIndex, LibraryLoadResult, LibraryRole } from '@shared/libraries/types'
+import { countItems, coverageOf, groupHits, issuesOf, pageCoverageOf, scoreOf, unusedComponents } from '../audit'
 import {
   MSG, analyticsRequestSchema, gotoRequestSchema, scopeSchema, selectRequestSchema,
-  type AnalyticsResult, type AuditProgress, type AuditResult, type GotoResult, type PagesResult, type Scope, type SelectResult,
+  type AnalyticsResult, type AuditProgress, type AuditResult, type GotoResult, type LibraryCard, type PagesResult, type Scope, type SelectResult,
 } from '../messages'
 import { readAnalytics } from './analytics'
 import { cleanPageName, scan } from './scan'
@@ -26,7 +26,22 @@ function scopeLabel(scope: Scope): string {
   return plural(scope.pageIds.length, 'page')
 }
 
-const sourceName = (index: LibraryIndex) => index.files.filter((f) => f.roles.includes('components')).map((f) => f.name).join(', ')
+const filesFor = (index: LibraryIndex, role: LibraryRole) => index.files.filter((f) => f.roles.includes(role)).map((f) => f.name).join(', ')
+const sourceName = (index: LibraryIndex) => filesFor(index, 'components')
+
+/** What the audit will compare against. A role with nothing published is left out: there is nothing to match. */
+function librariesOf(index: LibraryIndex | null): LibraryCard[] {
+  if (!index) return []
+  const cards: LibraryCard[] = [
+    { role: 'components', name: filesFor(index, 'components'), count: index.components.length },
+    { role: 'variables', name: filesFor(index, 'variables'), count: index.variables.length },
+  ]
+  return cards.filter((c) => c.count > 0)
+}
+
+/** Screens are the top-level frames; a section only groups them. */
+const screensIn = (nodes: readonly SceneNode[]): number =>
+  nodes.reduce((n, node) => n + (node.type === 'SECTION' ? screensIn(node.children) : 1), 0)
 
 export interface AuditDeps {
   loadLibraries: () => Promise<LibraryLoadResult>
@@ -51,8 +66,11 @@ export function createHandlers(deps: AuditDeps): HandlerMap {
     return {
       pages: figma.root.children.filter((p) => !isDivider(p.name)).map((p) => ({ id: p.id, name: cleanPageName(p.name) })),
       currentPageId: figma.currentPage.id,
+      currentPage: cleanPageName(figma.currentPage.name),
+      screens: screensIn(figma.currentPage.children),
       selected: figma.currentPage.selection.length,
       source: r.index && !r.problem ? sourceName(r.index) : null,
+      libraries: librariesOf(r.index),
     }
   }
 
@@ -65,13 +83,14 @@ export function createHandlers(deps: AuditDeps): HandlerMap {
     // The designer can click away during a long scan: name the scope as it was when it started.
     const label = scopeLabel(scope)
     const scales = await loadScales(index?.variables ?? [])
-    const { hits, seenKeys, bound, visited } = await scan(scope, components, scales, (p) => ctx.emit(MSG.progress, p satisfies AuditProgress))
+    const { hits, seenKeys, bound, boundPlaces, visited } = await scan(scope, components, scales, (p) => ctx.emit(MSG.progress, p satisfies AuditProgress))
     const grouped = groupHits(hits)
     const unused = components ? unusedComponents(components, seenKeys) : []
     const counts = countItems(grouped, bound, unused.length, components?.length ?? 0)
+    const screens = coverageOf(grouped, boundPlaces)
     return {
       status: 'ready', source: components && index ? sourceName(index) : null, problem, scope: label, counts, score: scoreOf(counts), issues: issuesOf(counts),
-      items: grouped.filter((i) => i.origin !== 'library'), unused, visited, durationMs: now() - started,
+      items: grouped.filter((i) => i.origin !== 'library'), unused, screens, pageCoverage: pageCoverageOf(screens), visited, durationMs: now() - started,
     }
   }
 

@@ -3,7 +3,6 @@
 // with the version before it. Built from injected dependencies like the rest.
 import type { HandlerMap } from '@shared/bridge'
 import type { IntegrationValues } from '@shared/integrations'
-import { filesFromSettings } from '@shared/libraries/load'
 import { createFigmaGet, type FigmaGet, type HttpFetch } from '@shared/libraries/rest'
 import { MSG, versionDiffRequestSchema, versionsRequestSchema, type VersionDiff, type VersionsResult } from '../messages'
 import { diffStructure, toVersions, type RestFile, type RestVersion } from '../versions'
@@ -30,7 +29,7 @@ export function createVersionsHandlers(deps: VersionsDeps): HandlerMap {
   async function connect(): Promise<{ get: FigmaGet; key: string } | { problem: string }> {
     const key = deps.fileKey()
     if (!key) return { problem: NO_FILE_KEY }
-    const token = filesFromSettings(await deps.readDualFile()).find((f) => f.token)?.token ?? ''
+    const token = (await deps.readDualFile()).token.trim()
     if (!token) return { problem: NO_REST_KEY }
     return { get: createFigmaGet(token, 'This file', deps.fetch, deps.sleep), key }
   }

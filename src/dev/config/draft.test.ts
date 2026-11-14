@@ -59,7 +59,7 @@ describe('managed sections', () => {
 
   it('report field errors but not the missing keys each person adds', () => {
     expect(managedErrors('github', { repo: 'not a repo' })).toHaveProperty('repo')
-    expect(managedErrors('dualFile', { enabled: true, file1Id: 'ABC123' })).toEqual({})
+    expect(managedErrors('dualFile', { enabled: true, files: [{ name: 'Core', id: 'ABC123', role: 'Variables + Components' }] })).toEqual({})
   })
 })
 

@@ -171,46 +171,59 @@ describe('SettingsIntegrations', () => {
   })
 
   describe('Dual File Mode', () => {
-    it('offers what each file contains and saves a pasted URL as its file ID', async () => {
+    const card = (dual: HTMLElement, name: string) => within(within(dual).getByRole('group', { name }))
+
+    it('starts with one file, offers what it contains and saves a pasted URL as its file key with the one token', async () => {
       const api = fakeApi()
       render(<SettingsIntegrations api={api} />)
       const dual = await section('Dual File Mode')
-      fireEvent.input(within(dual).getByLabelText('File 1 ID'), { target: { value: 'https://www.figma.com/design/JPZ7koqomjcjczGQuhIMVH/Plugin-UI?node-id=0-1' } })
-      fireEvent.input(within(dual).getByLabelText('File 1 API key'), { target: { value: 'figd_test' } })
-      fireEvent.click(within(dual).getByRole('button', { name: /File 1 contains/ }))
+      expect(within(dual).getByText('1 of 3')).toBeInTheDocument()
+      expect(within(dual).queryByRole('button', { name: /^Remove/ })).toBeNull()
+      fireEvent.input(within(dual).getByLabelText('Figma personal access token'), { target: { value: 'figd_test' } })
+      const file1 = card(dual, 'File 1')
+      fireEvent.input(file1.getByLabelText('Figma file URL'), { target: { value: 'https://www.figma.com/design/JPZ7koqomjcjczGQuhIMVH/Plugin-UI?node-id=0-1' } })
+      fireEvent.input(file1.getByLabelText('File name'), { target: { value: 'Core library' } })
+      fireEvent.click(within(dual).getByRole('button', { name: /Contains/ }))
       expect(within(dual).getAllByRole('option').map((o) => o.textContent)).toEqual(['Variables', 'Components', 'Variables + Components'])
-      fireEvent.click(within(dual).getByRole('option', { name: 'Variables + Components' }))
+      fireEvent.click(within(dual).getByRole('option', { name: 'Variables' }))
       fireEvent.click(within(dual).getByRole('button', { name: 'Save configuration' }))
       await within(dual).findByText('Saved')
-      expect(api.save).toHaveBeenCalledWith('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'JPZ7koqomjcjczGQuhIMVH', file1Key: 'figd_test', file1Role: 'Variables + Components' })
+      expect(api.save).toHaveBeenCalledWith('dualFile', { enabled: true, token: 'figd_test', files: [{ name: 'Core library', id: 'JPZ7koqomjcjczGQuhIMVH', role: 'Variables' }] })
     })
 
-    it('adds, fills, validates and removes extra library files', async () => {
+    it('adds files named File 2 and File 3, stops at three, asks for a URL in an added file and removes one', async () => {
       const api = fakeApi()
       render(<SettingsIntegrations api={api} />)
       const dual = await section('Dual File Mode')
-      fireEvent.click(within(dual).getByRole('button', { name: 'Add another library file' }))
-      fireEvent.input(within(dual).getByLabelText('File 3 ID'), { target: { value: 'https://www.figma.com/design/ICONS3/Icons' } })
+      fireEvent.input(within(dual).getByLabelText('Figma personal access token'), { target: { value: 'figd_test' } })
+      fireEvent.input(card(dual, 'File 1').getByLabelText('Figma file URL'), { target: { value: 'VARS1' } })
+      const add = within(dual).getByRole('button', { name: 'Add file' })
+      fireEvent.click(add)
+      fireEvent.click(add)
+      expect(within(dual).getByText('3 of 3')).toBeInTheDocument()
+      expect(add).toBeDisabled()
+      expect(card(dual, 'File 2').getByLabelText('File name')).toHaveValue('File 2')
+      fireEvent.input(card(dual, 'File 2').getByLabelText('Figma file URL'), { target: { value: 'https://www.figma.com/design/ICONS2/Icons' } })
       fireEvent.click(within(dual).getByRole('button', { name: 'Save configuration' }))
       expect(await within(dual).findByText('Check the highlighted fields')).toBeInTheDocument()
-      expect(within(dual).getByLabelText('File 3 API key')).toHaveAccessibleDescription(expect.stringContaining('File 3'))
-      fireEvent.input(within(dual).getByLabelText('File 1 ID'), { target: { value: 'VARS1' } })
-      fireEvent.input(within(dual).getByLabelText('File 1 API key'), { target: { value: 'figd_test' } })
-      fireEvent.click(within(dual).getByRole('button', { name: 'Add another library file' }))
-      fireEvent.click(within(dual).getByRole('button', { name: 'Remove File 4' }))
+      expect(card(dual, 'File 3').getByLabelText('Figma file URL')).toHaveAccessibleDescription('Add File 3’s URL, or remove it')
+      fireEvent.click(within(dual).getByRole('button', { name: 'Remove File 3' }))
+      expect(add).not.toBeDisabled()
       fireEvent.click(within(dual).getByRole('button', { name: 'Save configuration' }))
       await within(dual).findByText('Saved')
-      expect(api.save).toHaveBeenCalledWith('dualFile', expect.objectContaining({ file1Id: 'VARS1', extraFiles: [{ id: 'ICONS3', key: '', role: 'Components' }] }))
+      expect(api.save).toHaveBeenCalledWith('dualFile', expect.objectContaining({ files: [
+        { name: 'File 1', id: 'VARS1', role: 'Variables + Components' }, { name: 'File 2', id: 'ICONS2', role: 'Components' },
+      ] }))
     })
 
-    it('asks for the key a file needs before saving', async () => {
+    it('asks for the token a listed file needs before saving', async () => {
       const api = fakeApi()
       render(<SettingsIntegrations api={api} />)
       const dual = await section('Dual File Mode')
-      fireEvent.input(within(dual).getByLabelText('File 2 ID'), { target: { value: 'COMP2' } })
+      fireEvent.input(card(dual, 'File 1').getByLabelText('Figma file URL'), { target: { value: 'COMP2' } })
       fireEvent.click(within(dual).getByRole('button', { name: 'Save configuration' }))
       expect(await within(dual).findByText('Check the highlighted fields')).toBeInTheDocument()
-      expect(within(dual).getByLabelText('File 2 API key')).toHaveAccessibleDescription(expect.stringContaining('API key'))
+      expect(within(dual).getByLabelText('Figma personal access token')).toHaveAccessibleDescription(expect.stringContaining('access token'))
       expect(api.save).not.toHaveBeenCalled()
     })
 
@@ -219,11 +232,11 @@ describe('SettingsIntegrations', () => {
       const api = { ...fakeApi(), test }
       render(<SettingsIntegrations api={api} />)
       const dual = await section('Dual File Mode')
-      fireEvent.input(within(dual).getByLabelText('File 1 ID'), { target: { value: 'VARS1' } })
-      fireEvent.input(within(dual).getByLabelText('File 1 API key'), { target: { value: 'figd_test' } })
+      fireEvent.input(within(dual).getByLabelText('Figma personal access token'), { target: { value: 'figd_test' } })
+      fireEvent.input(card(dual, 'File 1').getByLabelText('Figma file URL'), { target: { value: 'VARS1' } })
       fireEvent.click(within(dual).getByRole('button', { name: 'Test connection' }))
       expect(await within(dual).findByText(/1,026 variables in 3 collections/)).toBeInTheDocument()
-      expect(test).toHaveBeenCalledWith('dualFile', expect.objectContaining({ file1Id: 'VARS1', file1Role: 'Variables' }))
+      expect(test).toHaveBeenCalledWith('dualFile', expect.objectContaining({ token: 'figd_test', files: [{ name: 'File 1', id: 'VARS1', role: 'Variables + Components' }] }))
     })
   })
 

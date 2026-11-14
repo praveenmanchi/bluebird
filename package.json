@@ -16,6 +16,7 @@
     "build:ui": "vite build && BB_TARGET=bridge vite build",
     "build:sandbox": "tsx scripts/build-sandbox.ts",
     "check:size": "tsx scripts/check-size.ts",
+    "package": "npm run build && tsx scripts/package-plugin.ts",
     "check:manifest": "tsx scripts/check-manifest.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint . --ignore-pattern '.claude/**'",

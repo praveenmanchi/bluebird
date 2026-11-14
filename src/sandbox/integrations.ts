@@ -45,7 +45,7 @@ export function createIntegrationsHandlers(store: SessionStore, brands?: Brands)
         const lockedKeys = Object.keys(managed?.[section] ?? {}).filter((key) => !isSecretField(section, key))
         const kept = Object.fromEntries(lockedKeys.map((key) => [key, (own[section] as Record<string, unknown>)[key]]))
         const mine = { ...own, [section]: { ...clean, ...kept } }
-        // Rules run on what the plugin will act on, so a managed File 1 ID still asks for the person's key.
+        // Rules run on what the plugin will act on, so a managed Dual File list still asks for the person's token.
         const effective = applyManaged(mine, managed)[section]
         const first = Object.values(validateIntegration(section, effective))[0]
         if (first) throw new Error(first)

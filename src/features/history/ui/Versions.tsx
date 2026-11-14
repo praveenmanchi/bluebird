@@ -4,7 +4,7 @@ import { requestSettings } from '@shared/navigation'
 import { loadVersions, showVersion } from '../actions'
 import { cardDate, groupLabel, longDate } from '../format'
 import type { FileVersion } from '../messages'
-import { closeVersion, days, openVersion, versionDiff, versionDiffError, versionsError, versionsLoading, versionsResult } from '../state'
+import { closeVersion, days, openVersion, searchText, versionDiff, versionDiffError, versionMatches, versionsError, versionsLoading, versionsResult } from '../state'
 import { isAutosave } from '../versions'
 
 const title = (v: FileVersion) => v.label || 'Autosave'
@@ -90,8 +90,13 @@ export function VersionsView({ now }: { now: Date }) {
     return <PublishEmptyState state="not-connected" title="Add a Figma REST key" body={`${r.problem} Versioning shows who saved each version of the file you have open and what changed.`} actions={r.needsSettings ? [{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }] : []} />
   }
   if (!r.versions.length) return <PublishEmptyState state="first-release" title="No versions yet" body={`Nobody saved a version of ${r.file} in the last ${days.value} days. Figma autosaves while people edit.`} actions={[]} />
-  const groups: { label: string; versions: FileVersion[] }[] = []
-  for (const v of r.versions) {
+  const matches = versionMatches.value
+  const query = searchText.value.trim()
+  if (matches && !matches.length) {
+    return <PublishEmptyState state="first-release" title={`No version matches ${query}`} body={`No version of ${r.file} in the last ${days.value} days has “${query}” in its name, description or author. The changes inside a version are not searched — open a version to see them.`} actions={[]} />
+  }
+  const groups: { label: string; versions: FileVersion[] }[] = matches ? [{ label: `Results for ${query}`, versions: [...matches] }] : []
+  for (const v of matches ? [] : r.versions) {
     const label = groupLabel(v.at, now)
     const last = groups[groups.length - 1]
     if (last?.label === label) last.versions.push(v)
@@ -101,7 +106,7 @@ export function VersionsView({ now }: { now: Date }) {
   const index = open ? r.versions.findIndex((v) => v.id === open.id) : -1
   return (
     <>
-      <p class="bb-history__hint">Every version of {r.file}, the file you have open: who saved it and what changed since the version before.</p>
+      <p class="bb-history__hint">{matches ? `Versions of ${r.file} whose name, description or author match. The changes inside a version are not searched.` : `Every version of ${r.file}, the file you have open: who saved it and what changed since the version before.`}</p>
       {groups.map((g) => (
         <section key={g.label} class="bb-history__day" aria-label={g.label}>
           <SectionTitle title={g.label} showCount count={g.versions.length} showAction={false} />

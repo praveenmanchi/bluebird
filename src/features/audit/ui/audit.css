@@ -23,7 +23,7 @@
   background: var(--bb-background);
   container: audit-toolbar / inline-size;
 }
-/* S / M windows: the source is in the footer anyway, and the filter field needs the room. */
+/* S / M windows: the source is in the footer anyway, and the view menu needs the room. */
 @container audit-toolbar (max-width: 520px) { /* allow-raw: S/M-window breakpoint (480 wide), not a Figma value */
   .bb-filter-dropdown.bb-audit__source { display: none; }
 }
@@ -31,7 +31,9 @@
 .bb-audit__filter .bb-page-filter { width: auto; max-width: 100%; }
 .bb-audit__filter .bb-page-filter__container { width: auto; gap: var(--bb-space-inline-sm); }
 .bb-filter-dropdown.bb-audit__source { flex: 0 1 auto; min-width: 0; max-width: 30%; }
-.bb-search-bar.bb-audit__search { flex: 1 1 0; min-width: 0; max-width: none; }
+.bb-audit__view { position: relative; flex: 0 1 auto; min-width: 0; }
+.bb-audit__view .bb-filter-dropdown { max-width: 100%; }
+.bb-audit__spacer { flex: 1 1 0; min-width: 0; }
 .bb-dropdown-menu.bb-audit__menu {
   position: absolute;
   z-index: 2;
@@ -58,17 +60,21 @@
 .bb-empty-state.bb-audit__empty { flex: 1 1 auto; justify-content: center; }
 .bb-empty-state.bb-audit__block { padding-block: var(--bb-space-stack-md); }
 .bb-audit__heading { width: 100%; }
-.bb-audit__counted-group { display: flex; flex-direction: column; gap: var(--bb-card-variable-gap-row); }
+/* Ready: library tiles, scope cards and the three steps share one row of equal cells. */
+.bb-audit__cells { display: flex; align-items: stretch; gap: var(--bb-space-inline-md); min-width: 0; }
+.bb-audit__cells > * { flex: 1 1 0; width: auto; max-width: none; min-width: 0; }
+.bb-audit__cells > .bb-version-option { justify-content: center; }
+.bb-audit__run { display: flex; flex-direction: column; align-items: center; gap: var(--bb-card-variable-gap-row); padding-block: var(--bb-card-variable-gap-row); }
+/* A screen row opens that screen. */
+.bb-level-row.bb-audit__screen { cursor: pointer; }
+.bb-level-row.bb-audit__screen:focus-visible { outline: var(--bb-border-width-default) solid currentColor; outline-offset: var(--bb-space-inline-xs); }
 .bb-audit__actions { display: flex; justify-content: flex-end; }
 
-.bb-audit__counted { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); margin: 0; }
-.bb-audit__counted dt,
 .bb-audit__title {
   font-size: var(--bb-card-variable-title-font-size);
   font-weight: var(--bb-card-variable-title-font-weight);
   line-height: var(--bb-card-variable-title-line-height);
 }
-.bb-audit__counted dd,
 .bb-audit__status {
   margin: 0;
   color: var(--bb-card-variable-meta-fg);

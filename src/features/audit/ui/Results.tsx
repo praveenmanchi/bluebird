@@ -4,6 +4,8 @@ import type { AuditItem, Place } from '../messages'
 
 export interface ItemCardProps {
   item: AuditItem
+  /** Replaces the usual second line, e.g. for an item counted on one screen. */
+  meta?: string
   expanded: boolean
   onToggle: (expanded: boolean) => void
   onSelect: (nodeIds: readonly string[], label: string) => void
@@ -11,8 +13,8 @@ export interface ItemCardProps {
 }
 
 /** One issue: Figma "Variable search card" collapsed, "… expand" open, like Variable search. */
-export function ItemCard({ item, expanded, onToggle, onSelect, onGoTo }: ItemCardProps) {
-  const meta = itemMeta(item)
+export function ItemCard({ item, meta: override, expanded, onToggle, onSelect, onGoTo }: ItemCardProps) {
+  const meta = override ?? itemMeta(item)
   const kind = isValue(item) ? 'variable' : 'component'
   const selectAll = () => onSelect(item.places.flatMap((p) => p.nodeIds), item.name)
   if (!expanded) {

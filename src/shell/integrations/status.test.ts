@@ -29,7 +29,8 @@ describe('sectionStatus', () => {
 
   it('needs a file and its key for Dual File', () => {
     expect(sectionStatus('dualFile', D.dualFile)).toBe('missing')
-    expect(sectionStatus('dualFile', { ...D.dualFile, file1Id: 'abc', file1Key: 'k' })).toBe('configured')
+    expect(sectionStatus('dualFile', { ...D.dualFile, token: 'k', files: [{ name: 'File 1', id: 'abc', role: 'Variables' }] })).toBe('configured')
+    expect(sectionStatus('dualFile', { ...D.dualFile, token: 'k' })).toBe('missing')
   })
 
   it('agrees with the footer on MCP and UX AI', () => {

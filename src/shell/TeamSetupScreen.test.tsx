@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/preact'
 import { DEFAULT_INTEGRATIONS, type IntegrationSettings } from '@shared/integrations'
 import { TeamSetupScreen } from './TeamSetupScreen'
 
-const FILE = JSON.stringify({ kind: 'bluebird-settings', version: 1, brand: 'Bridge', includesKeys: true, sections: { github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { file1Id: 'AbC123' } } })
+const FILE = JSON.stringify({ kind: 'bluebird-settings', version: 1, brand: 'Bridge', includesKeys: true, sections: { github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { files: [{ name: 'Core', id: 'AbC123', role: 'Variables + Components' }] } } })
 // jsdom's File has no text(); the picker only needs name, size and text.
 const fileOf = (text: string, name = 'bridge-settings.json') => ({ name, size: text.length, text: async () => text }) as unknown as File
 const pick = (file: File) => fireEvent.change(screen.getByLabelText('Settings file'), { target: { files: [file] } })
@@ -12,7 +12,7 @@ const title = () => screen.getByRole('heading', { level: 2 }).textContent
 function setup(importFile = vi.fn(async (): Promise<IntegrationSettings> => ({
   ...DEFAULT_INTEGRATIONS,
   github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/tokens' },
-  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123' },
+  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, files: [{ name: 'Core', id: 'AbC123', role: 'Variables + Components' }] },
 }))) {
   const onFinish = vi.fn()
   render(<TeamSetupScreen load={async () => DEFAULT_INTEGRATIONS} importFile={importFile} onFinish={onFinish} />)

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { Button, Notice, Spinner } from '@shared/ui'
-import { getBuild, startBuild, type BuildState } from './api'
+import { getBuild, startBuild, type BuildScript, type BuildState } from './api'
 
 export const BUILD_COMMAND = 'npm run build'
+export const PACKAGE_COMMAND = 'npm run package'
 const POLL_MS = 1000
 /** Survives the reload a Save causes (plugin.config.json is imported by this page). */
 const PENDING_KEY = 'bb-dev:build-prompt'
@@ -25,12 +26,18 @@ export const forThisSave = (build: BuildState, since: string): BuildState =>
 export interface BuildPromptProps {
   open: boolean
   onClose: () => void
+  /** `package` also zips the plugin for publishing in a client organisation (single-brand deploys). */
+  script?: BuildScript
+  /** Shown in the copy when packaging: the brand the zip is for. */
+  brandLabel?: string
 }
 
 type Copy = 'idle' | 'copied' | 'failed'
 
 /** After a Save: the Figma plugin still runs the old config until it's rebuilt. Offers to run the build here. */
-export function BuildPrompt({ open, onClose }: BuildPromptProps) {
+export function BuildPrompt({ open, onClose, script = 'build', brandLabel }: BuildPromptProps) {
+  const packaging = script === 'package'
+  const command = packaging ? PACKAGE_COMMAND : BUILD_COMMAND
   const ref = useRef<HTMLDialogElement>(null)
   const [build, setBuild] = useState<BuildState>({ status: 'idle' })
   const [error, setError] = useState<string | null>(null)
@@ -65,10 +72,10 @@ export function BuildPrompt({ open, onClose }: BuildPromptProps) {
 
   const run = async () => {
     setError(null)
-    try { setBuild(await startBuild()) } catch (e: unknown) { setError(e instanceof Error ? e.message : 'The build couldn’t start.') }
+    try { setBuild(await startBuild(script)) } catch (e: unknown) { setError(e instanceof Error ? e.message : 'The build couldn’t start.') }
   }
   const copyCommand = async () => {
-    try { await navigator.clipboard.writeText(BUILD_COMMAND); setCopy('copied') } catch { setCopy('failed') }
+    try { await navigator.clipboard.writeText(command); setCopy('copied') } catch { setCopy('failed') }
   }
   const close = () => { clearBuildPending(); onClose() }
   const running = build.status === 'running'
@@ -80,12 +87,16 @@ export function BuildPrompt({ open, onClose }: BuildPromptProps) {
   return (
     <dialog ref={ref} class="cfg-dialog" aria-labelledby="cfg-dialog-title" onCancel={(e) => { e.preventDefault(); if (!running) close() }}>
       <h2 id="cfg-dialog-title" class="cfg-dialog__title">
-        {build.status === 'passed' ? 'Plugin rebuilt' : 'Saved. Rebuild the plugin to use it in Figma'}
+        {build.status === 'passed' ? (packaging ? 'Plugin packaged' : 'Plugin rebuilt') : (packaging ? 'Saved. Build and package the plugin' : 'Saved. Rebuild the plugin to use it in Figma')}
       </h2>
       <p class="cfg-dialog__body">
         {build.status === 'passed'
-          ? 'The Figma plugin now has this configuration. Close and reopen Bluebird in Figma (Plugins › Development › Bluebird) to see it.'
-          : <>plugin.config.json is updated and the preview here already uses it. The plugin in Figma is built from the config, so it keeps the old tabs and Settings until you run <code>{BUILD_COMMAND}</code>.</>}
+          ? (packaging
+            ? <>The zip for {brandLabel ?? 'this brand'} is in <code>release/</code>, next to a folder with the same files. In that organisation’s Figma, import its <code>manifest.json</code> (Plugins › Development › Import plugin from manifest) and publish it to the private plugins.</>
+            : 'The Figma plugin now has this configuration. Close and reopen Bluebird in Figma (Plugins › Development › Bluebird) to see it.')
+          : packaging
+            ? <>This builds {brandLabel ?? 'the brand'} on its own, with no sign-in, and zips it with its manifest into <code>release/</code>. Same as running <code>{command}</code>.</>
+            : <>plugin.config.json is updated and the preview here already uses it. The plugin in Figma is built from the config, so it keeps the old tabs and Settings until you run <code>{command}</code>.</>}
       </p>
 
       {running && <div class="cfg-dialog__status"><Spinner tone="accent" label="Building" /> Building… this takes about a minute.</div>}
@@ -95,16 +106,16 @@ export function BuildPrompt({ open, onClose }: BuildPromptProps) {
         </Notice>
       )}
       {(running || build.status === 'failed') && build.output && <pre ref={log} class="cfg-dialog__log" aria-label="Build output">{build.output}</pre>}
-      {error && <Notice tone="error" title="Couldn’t run the build from here">{error} Run <code>{BUILD_COMMAND}</code> in a terminal instead.</Notice>}
+      {error && <Notice tone="error" title="Couldn’t run the build from here">{error} Run <code>{command}</code> in a terminal instead.</Notice>}
       {copy === 'copied' && <p class="cfg-dialog__hint">Copied. Paste it in a terminal at the repo root.</p>}
-      {copy === 'failed' && <p class="cfg-dialog__hint">Copy didn’t work here: type <code>{BUILD_COMMAND}</code> in a terminal at the repo root.</p>}
+      {copy === 'failed' && <p class="cfg-dialog__hint">Copy didn’t work here: type <code>{command}</code> in a terminal at the repo root.</p>}
 
       <div class="cfg-dialog__actions">
         {build.status !== 'passed' && <Button variant="secondary" onClick={() => { void copyCommand() }} disabled={running}>Copy command</Button>}
         <Button variant="secondary" onClick={close} disabled={running}>{build.status === 'passed' ? 'Done' : 'Later'}</Button>
         {build.status !== 'passed' && (
           <Button variant="primary" loading={running} disabled={running} onClick={() => { void run() }}>
-            {build.status === 'failed' ? 'Run build again' : 'Run build now'}
+            {build.status === 'failed' ? (packaging ? 'Package again' : 'Run build again') : (packaging ? 'Build and package' : 'Run build now')}
           </Button>
         )}
       </div>

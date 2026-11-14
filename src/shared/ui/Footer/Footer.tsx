@@ -48,6 +48,8 @@ export interface FooterProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'size
   expanded?: boolean
   /** Accessible name of the chevron button. */
   expandLabel?: string
+  /** False hides the size steps, expand and grip (Dev Mode, where the plugin fills the Inspect panel). */
+  resizable?: boolean
 }
 
 function resolvePills({ git = true, uxai = true, mcp = true, dualFile = true, pills, statuses }: FooterProps): readonly FooterPill[] {
@@ -58,7 +60,7 @@ function resolvePills({ git = true, uxai = true, mcp = true, dualFile = true, pi
 
 /** Figma "footer" (133:1675): status pills, an info meta line, the size expander, an expand chevron and a resize grip. */
 export function Footer(props: FooterProps) {
-  const { git: _g, uxai: _u, mcp: _m, dualFile: _d, pills: _p, statuses: _s, meta = ['20m', 'V2.11.0'], size, onSizeChange, onExpand, onResizeDrag, expanded, expandLabel = 'Expand', class: cls, ...rest } = props
+  const { git: _g, uxai: _u, mcp: _m, dualFile: _d, pills: _p, statuses: _s, meta = ['20m', 'V2.11.0'], size, onSizeChange, onExpand, onResizeDrag, expanded, expandLabel = 'Expand', resizable = true, class: cls, ...rest } = props
 
   const startDrag = (e: PointerEvent) => {
     if (!onResizeDrag) return
@@ -89,7 +91,7 @@ export function Footer(props: FooterProps) {
         ))}
       </div>
       <InfoMeta items={meta} class="bb-footer__meta" />
-      <div class="bb-footer__controls">
+      {resizable && <div class="bb-footer__controls">
         <div class="bb-footer__size-group">
           <SizeExpander value={size} onChange={onSizeChange} class="bb-footer__size" />
           <button type="button" class="bb-footer__expand" aria-label={expandLabel} aria-pressed={expanded} onClick={onExpand}>
@@ -97,7 +99,7 @@ export function Footer(props: FooterProps) {
           </button>
         </div>
         <span class="bb-footer__grip" role={onResizeDrag ? 'separator' : undefined} aria-label={onResizeDrag ? 'Resize' : undefined} aria-hidden={onResizeDrag ? undefined : 'true'} data-draggable={onResizeDrag ? '' : undefined} onPointerDown={startDrag}><Icon name="footer-grip" /></span>
-      </div>
+      </div>}
     </footer>
   )
 }

@@ -53,11 +53,18 @@ export const refreshMs = (value: string): number => REFRESH_MS[value as RefreshO
 export const FILE_ROLES = ['Variables', 'Components', 'Variables + Components'] as const
 export type FileRole = (typeof FILE_ROLES)[number]
 
-/** A library file beyond the two Figma-designed slots (Settings "Add another library file"). */
-export const libraryFileEntrySchema = z.object({ id: text(), key: text(), role: text() })
+/**
+ * One Dual File library file: the name the person gives it, its Figma file key (a pasted
+ * figma.com URL is stored as the key) and what it holds. Every file is read with the one token.
+ */
+export const libraryFileEntrySchema = z.object({ name: text(), id: text(), role: text() })
 export type LibraryFileEntry = z.infer<typeof libraryFileEntrySchema>
-/** Two designed slots plus these; every file is one REST read per role, so keep the list sane. */
-export const MAX_EXTRA_FILES = 8
+/** Settings › Dual File Mode › Add file stops here: every file is a REST read per role. */
+export const MAX_LIBRARY_FILES = 3
+/** "File 2": what a file is called until the person names it. */
+export const defaultFileName = (index: number): string => `File ${index + 1}`
+/** A row as Add file creates it. The first file holds both; later ones usually a components library. */
+export const newLibraryFile = (index: number): LibraryFileEntry => ({ name: defaultFileName(index), id: '', role: index === 0 ? 'Variables + Components' : 'Components' })
 
 export const sectionSchemas = {
   github: z.object({ apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean() }),
@@ -66,10 +73,9 @@ export const sectionSchemas = {
   zeroheight: z.object({ apiKey: text(), styleguideId: text(), publicBaseUrl: text(), linksEnabled: z.boolean() }),
   dualFile: z.object({
     enabled: z.boolean(),
-    file1Id: text(), file1Key: text(), file1Role: text(),
-    file2Id: text(), file2Key: text(), file2Role: text(),
-    /** Files 3…N. Absent in settings stored before it existed. */
-    extraFiles: z._default(z.array(libraryFileEntrySchema).check(z.maxLength(MAX_EXTRA_FILES)), []),
+    /** One Figma personal access token opens every file below. */
+    token: text(),
+    files: z.array(libraryFileEntrySchema).check(z.maxLength(MAX_LIBRARY_FILES)),
   }),
   ai: z.object({
     enabled: z.boolean(),
@@ -106,8 +112,7 @@ export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof Int
   notifications: ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook'],
   storybook: [],
   zeroheight: ['apiKey'],
-  // extraFiles carry each file's key, so the whole list stays with the person.
-  dualFile: ['file1Key', 'file2Key', 'extraFiles'],
+  dualFile: ['token'],
   ai: ['claudeKey', 'openaiKey', 'geminiKey'],
   mcp: ['token'],
   jira: ['apiKey'],
@@ -138,7 +143,7 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   notifications: { designSystemWebhook: '', devTeamWebhook: '', outlookWebhook: '', emails: '' },
   storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true },
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
-  dualFile: { enabled: true, file1Id: '', file1Key: '', file1Role: 'Variables', file2Id: '', file2Key: '', file2Role: 'Components', extraFiles: [] },
+  dualFile: { enabled: true, token: '', files: [newLibraryFile(0)] },
   ai: { enabled: true, provider: 'Claude', claudeModel: 'claude-opus-5-5', claudeKey: '', openaiModel: 'gpt-5.5', openaiKey: '', geminiModel: 'gemini-3.5-flash', geminiKey: '', managedAgents: true, instructions: '' },
   mcp: { enabled: true, repo: '', baseBranch: 'main', token: '', filePath: 'src/tokens/design-tokens.json', outputFormat: '', branchTemplate: '', enterpriseUrl: '' },
   jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '' },
@@ -161,33 +166,49 @@ export function figmaFileKey(value: string): string {
   return match ? match[1]! : value.trim()
 }
 
-const FILE_ID_FIELDS = new Set(['file1Id', 'file2Id'])
+/** Trims a library file row; a pasted figma.com URL becomes its file key and a blank name becomes "File n". */
+const normalizeFile = (f: Partial<LibraryFileEntry>, i: number): LibraryFileEntry => ({
+  name: (f.name ?? '').trim() || defaultFileName(i),
+  id: figmaFileKey(f.id ?? ''),
+  role: (f.role ?? '').trim(),
+})
 
-/** Trims every text value (pasted keys and URLs often carry spaces); Dual File IDs also accept the whole file URL. */
+/** Trims every text value (pasted keys and URLs often carry spaces); Dual File rows also accept the whole file URL. */
 export function normalizeIntegration<K extends IntegrationId>(values: IntegrationValues<K>, section?: K): IntegrationValues<K> {
   return Object.fromEntries(Object.entries(values).map(([k, v]) => {
-    if (section === 'dualFile' && k === 'extraFiles' && Array.isArray(v)) {
-      // Empty rows (added, never filled) are dropped on save.
-      const rows = (v as LibraryFileEntry[]).map((f) => ({ id: figmaFileKey(f.id ?? ''), key: (f.key ?? '').trim(), role: (f.role ?? '').trim() }))
-      return [k, rows.filter((f) => f.id || f.key)]
-    }
-    if (typeof v !== 'string') return [k, v]
-    return [k, section === 'dualFile' && FILE_ID_FIELDS.has(k) ? figmaFileKey(v) : v.trim()]
+    if (section === 'dualFile' && k === 'files' && Array.isArray(v)) return [k, (v as Partial<LibraryFileEntry>[]).map(normalizeFile)]
+    return [k, typeof v === 'string' ? v.trim() : v]
   })) as IntegrationValues<K>
 }
 
+type OldSlot = readonly [id: string, key: string, role: string]
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/** The slots of a Dual File stored before 2026-11-14, oldest shape first; null when `old` is already the current shape. */
+function oldSlots(old: Record<string, unknown>): OldSlot[] | null {
+  const str = (k: string, from: Record<string, unknown> = old) => (typeof from[k] === 'string' ? (from[k] as string).trim() : '')
+  if ('variablesFileId' in old || 'componentsFileId' in old) {
+    return [[str('variablesFileId'), str('variablesApiKey'), 'Variables'], [str('componentsFileId'), str('componentsApiKey'), 'Components']]
+  }
+  if (!('file1Id' in old || 'file2Id' in old || 'extraFiles' in old)) return null
+  const extras = Array.isArray(old.extraFiles) ? old.extraFiles.filter(isRecord).map((f): OldSlot => [str('id', f), str('key', f), str('role', f)]) : []
+  return [[str('file1Id'), str('file1Key'), str('file1Role') || 'Variables'], [str('file2Id'), str('file2Key'), str('file2Role') || 'Components'], ...extras]
+}
+
 /**
- * Dual File stored before the per-file "Contains" select: a Variables file and a Components file.
- * They become File 1 (Variables) and File 2 (Components), so nothing typed earlier is lost.
+ * Dual File as stored before one token + named files: File 1 / File 2 (each with its own key) and
+ * extra files, or the even older Variables file / Components file pair. The first key becomes the
+ * token and the first three files with an ID are kept, named File 1…3.
  */
-function migrateDualFile(stored: unknown): unknown {
-  if (typeof stored !== 'object' || stored === null || !('variablesFileId' in stored || 'componentsFileId' in stored)) return stored
-  const old = stored as Record<string, unknown>
-  const str = (k: string) => (typeof old[k] === 'string' ? old[k] : '')
+export function migrateDualFile(stored: unknown): unknown {
+  if (!isRecord(stored) || 'files' in stored) return stored
+  const slots = oldSlots(stored)
+  if (!slots) return stored
+  const listed = slots.filter(([id]) => id !== '').slice(0, MAX_LIBRARY_FILES)
   return {
-    ...(typeof old.enabled === 'boolean' ? { enabled: old.enabled } : {}),
-    file1Id: str('variablesFileId'), file1Key: str('variablesApiKey'), file1Role: 'Variables',
-    file2Id: str('componentsFileId'), file2Key: str('componentsApiKey'), file2Role: 'Components',
+    ...(typeof stored.enabled === 'boolean' ? { enabled: stored.enabled } : {}),
+    token: slots.map(([, key]) => key).find((key) => key !== '') ?? '',
+    files: listed.length ? listed.map(([id, , role], i) => ({ name: defaultFileName(i), id, role })) : [newLibraryFile(0)],
   }
 }
 

@@ -21,7 +21,12 @@ const FIELD_LABELS: Readonly<Record<string, Readonly<Record<string, string>>>> =
 
 export const sectionTitle = (id: IntegrationId): string => SECTIONS.find((s) => s.id === id)?.title ?? id
 
-const hasValue = (value: unknown): boolean => (typeof value === 'string' ? value.trim() !== '' : Array.isArray(value) ? value.length > 0 : false)
+/** Text with something in it, or a list (Dual File's files) with at least one row that has an ID. */
+const hasValue = (value: unknown): boolean => {
+  if (typeof value === 'string') return value.trim() !== ''
+  if (!Array.isArray(value)) return false
+  return value.some((row) => typeof row !== 'object' || row === null || String((row as { id?: unknown }).id ?? '').trim() !== '')
+}
 
 /** "Repository, branch and 2 more": the filled-in text fields among `keys`. */
 export function describeFields(id: IntegrationId, values: Readonly<Record<string, unknown>>, keys: readonly string[] = Object.keys(values)): string {
@@ -42,7 +47,7 @@ export interface ExportRow {
 }
 
 const exportedKeys = (id: IntegrationId, values: Readonly<Record<string, unknown>>, includeKeys: boolean): string[] =>
-  Object.keys(values).filter((key) => !(PERSONAL_FIELDS[id] ?? []).includes(key) && (includeKeys || key === 'extraFiles' || !isSecretField(id, key)))
+  Object.keys(values).filter((key) => !(PERSONAL_FIELDS[id] ?? []).includes(key) && (includeKeys || !isSecretField(id, key)))
 
 /** One row per Settings section, in page order, for the export checklist. */
 export function exportRows(settings: IntegrationSettings, includeKeys: boolean): ExportRow[] {

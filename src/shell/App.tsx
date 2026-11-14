@@ -13,13 +13,14 @@ import { TeamSetupScreen } from './TeamSetupScreen'
 import { SplashScreen } from './SplashScreen'
 import { PersonaScreen } from './PersonaScreen'
 import { PersonaHandOver } from './persona/HandOver'
-import { bootSession, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, finishTeamSetup, login, loginWithSso, logout, replayOnboarding, reset } from './session'
+import { bootSession, canSignOut, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, finishTeamSetup, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
 import { DEFAULT_INTEGRATIONS, INTEGRATIONS_MSG, refreshMs, type IntegrationSettings } from '@shared/integrations'
 import { historyUnseen, watchHistory } from '@shared/history/watch'
 import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { OPEN_SETTINGS_EVENT, OPEN_TAB_EVENT } from '@shared/navigation'
 import { ensureLibraryState, libraryPill, libraryState, loadLibraryState } from '@shared/libraries/status'
+import { inDevMode } from '@shared/editor'
 import { gitPill, integrationSettings, mcpPill, uxaiPill } from './footerStatus'
 
 export interface AppProps { client: RpcClient; transport: Transport }
@@ -172,13 +173,13 @@ export function App({ client, transport }: AppProps) {
         <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
           {inSettings
-            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={() => logout(client)} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onChangePersona={changePersona} integrations={integrations} onReplayTour={replayOnboarding} />
+            ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={canSignOut() ? () => logout(client) : undefined} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onChangePersona={changePersona} integrations={integrations} onReplayTour={replayOnboarding} />
             : entry
               ? <entry.Tab key={entry.manifest.id} />
               : <EmptyState icon="inspect" title="No tabs enabled" description="Turn a tab on for this brand in dev.html › Plugin configuration (or plugin.config.json) and rebuild." />}
         </main>
         {handOver}
-        <Footer size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} git={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} statuses={{ git: gitPill(pillSettings?.github), uxai: uxaiPill(pillSettings?.ai), mcp: mcpPill(pillSettings?.mcp), dualFile: libraryPill(libraryState.value) }} />
+        <Footer resizable={!inDevMode.value} size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} git={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} statuses={{ git: gitPill(pillSettings?.github), uxai: uxaiPill(pillSettings?.ai), mcp: mcpPill(pillSettings?.mcp), dualFile: libraryPill(libraryState.value) }} />
       </div>
     </RpcProvider>
   )

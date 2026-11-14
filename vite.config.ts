@@ -7,8 +7,12 @@ import process from 'node:process'
 import { readFileSync } from 'node:fs'
 import type { Plugin } from 'vite'
 import { devConfigPlugin } from './tools/dev-config/vite-plugin'
+import { deployVitePlugin, planDeploy } from './tools/deploy/bundler'
 
-const activeBrand = (JSON.parse(readFileSync(new URL('./plugin.config.json', import.meta.url), 'utf8')) as { brand: { active: string } }).brand.active
+const configuredBrand = (JSON.parse(readFileSync(new URL('./plugin.config.json', import.meta.url), 'utf8')) as { brand: { active: string } }).brand.active
+// Multi-brand or one brand only (plugin.config.json › deploy, or BB_DEPLOY=<brand|multi>).
+const deploy = planDeploy(fileURLToPath(new URL('.', import.meta.url)))
+const activeBrand = deploy.deploy.mode === 'single' ? deploy.deploy.brand : configuredBrand
 
 // The generated brand CSS is scoped to [data-brand]; stamp the configured brand on <html>.
 const brandAttribute = (): Plugin => ({
@@ -24,7 +28,7 @@ const target = process.env.BB_TARGET === 'bridge' ? 'bridge' : 'index'
 // (thin WebSocket bridge used in "live" dev mode). Everything is inlined:
 // Figma loads the UI from a single HTML string.
 export default defineConfig(({ command }) => ({
-  plugins: [preact(), tailwindcss(), brandAttribute(), devConfigPlugin(fileURLToPath(new URL('./plugin.config.json', import.meta.url))), viteSingleFile({ removeViteModuleLoader: true })],
+  plugins: [deployVitePlugin(deploy), preact(), tailwindcss(), brandAttribute(), devConfigPlugin(fileURLToPath(new URL('./plugin.config.json', import.meta.url))), viteSingleFile({ removeViteModuleLoader: true })],
   resolve: {
     alias: {
       '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import type { LibraryComponent, LibraryIndex, LibraryLoadResult, LibraryVariable } from '@shared/libraries'
 import { installFigmaMock } from '../../../../tests/mocks/figma'
-import { countItems, groupHits, issuesOf, scoreOf, unusedComponents } from '../audit'
+import { countItems, coverageOf, groupHits, issuesOf, pageCoverageOf, percentOf, scoreOf, unusedComponents } from '../audit'
 import { createHandlers } from '../sandbox/handler'
 import { placeOf } from '../sandbox/scan'
 import { MSG, type AnalyticsResult, type AuditResult, type Hit, type PagesResult, type SelectResult } from '../messages'
+import { dualFileWith } from '@shared/integrations/testing'
 
 const component = (name: string, keys: string[]): LibraryComponent => ({ key: keys[0]!, nodeId: '1:1', name, kind: 'set', description: '', location: 'Atoms', variants: keys.length, keys, fileKey: 'lib' })
 const COMPONENTS = [component('Button', ['set:button', 'k:button:primary']), component('Tab', ['k:tab']), component('Stepper', ['k:stepper'])]
@@ -28,7 +29,7 @@ describe('groupHits', () => {
 describe('counts', () => {
   it('scores library layers over everything counted', () => {
     const counts = countItems(groupHits([hit('library', 'A', '1'), hit('library', 'A', '2'), hit('library', 'A', '3'), hit('detached', 'B', '4')]), 0, 2, 5)
-    expect(counts).toEqual({ bound: 0, paints: 0, colours: 0, spacing: 0, library: 3, detached: 1, notLibrary: 0, unused: 2, total: 4, published: 5 })
+    expect(counts).toEqual({ bound: 0, paints: 0, colours: 0, spacing: 0, library: 3, detached: 1, local: 0, other: 0, notLibrary: 0, unused: 2, total: 4, published: 5 })
     expect(scoreOf(counts)).toEqual({ value: 75, used: 3, total: 4 })
   })
 
@@ -85,11 +86,39 @@ const http = (routes: Record<string, unknown>) => vi.fn(async (url: string) => {
   return { status: 200, text: async () => JSON.stringify(body) }
 })
 
-const SETTINGS = { enabled: true, file1Id: 'lib', file1Key: 'token', file1Role: 'Components', file2Id: '', file2Key: '', file2Role: 'Components', extraFiles: [] }
-const VARIABLE_SETTINGS = { ...SETTINGS, file1Role: 'Variables' }
+const SETTINGS = dualFileWith([{ id: 'lib', role: 'Components' }], 'token')
+const VARIABLE_SETTINGS = dualFileWith([{ id: 'lib', role: 'Variables' }], 'token')
 
 const call = <T,>(type: string, payload?: unknown, result: LibraryLoadResult = READY, fetch: unknown = vi.fn(), settings: typeof SETTINGS = SETTINGS) =>
   (createHandlers({ loadLibraries: async () => result, runtime: () => ({ readSettings: async () => settings, fetch: fetch as never }), now: () => Date.UTC(2026, 10, 6) })[type] as unknown as (p: unknown, c: { emit: () => void }) => Promise<T>)(payload, { emit: vi.fn() })
+
+describe('coverage', () => {
+  const at = (origin: Hit['origin'], name: string, nodeId: string, place: string, page = 'Login'): Hit => ({ ...hit(origin, name, nodeId, place), page })
+  const grouped = groupHits([
+    at('library', 'Button', '1', 'Sign in'), at('library', 'Button', '2', 'Sign in'), at('local', 'Promo', '3', 'Sign in'),
+    at('colour', '#fff', '4', 'Sign in'), at('spacing', 'Gap 10', '5', 'Sign in'),
+    at('library', 'Button', '6', 'Hero', 'Marketing'), at('detached', 'Card', '7', 'Hero', 'Marketing'), at('other', 'Kit', '8', 'Hero', 'Marketing'), at('colour', '#fff', '9', 'Hero', 'Marketing'),
+  ])
+  const bound = [{ place: { id: 'Sign in', name: 'Sign in' }, page: 'Login', count: 4 }]
+
+  it('counts each screen on its own, the least mapped first, and leaves spacing out', () => {
+    const screens = coverageOf(grouped, bound)
+    expect(screens.map((s) => [s.name, percentOf(s)])).toEqual([['Hero', 25], ['Sign in', 75]])
+    expect(screens[1]).toMatchObject({ page: 'Login', bound: 4, paints: 5, library: 2, components: 3 })
+  })
+
+  it('adds the screens up by page', () => {
+    expect(pageCoverageOf(coverageOf(grouped, bound))).toEqual([
+      { name: 'Marketing', screens: 1, bound: 0, paints: 1, library: 1, components: 3 },
+      { name: 'Login', screens: 1, bound: 4, paints: 5, library: 2, components: 3 },
+    ])
+  })
+
+  it('has no percentage for a screen with nothing counted, and leaves it out', () => {
+    expect(percentOf({ bound: 0, paints: 0, library: 0, components: 0 })).toBeNull()
+    expect(coverageOf(groupHits([at('spacing', 'Gap 10', '1', 'Empty')]), [])).toEqual([])
+  })
+})
 
 describe('audit:run', () => {
   const page = () => tree({ id: 'p', type: 'PAGE', name: '  ↳ Login', children: [
@@ -113,6 +142,9 @@ describe('audit:run', () => {
     expect(r.items.map((i) => [i.origin, i.name])).toEqual([['detached', 'Button'], ['local', 'Promo'], ['other', 'Kit card']])
     expect(r.scope).toBe('Login')
     expect(r.unused.map((u) => u.name)).toEqual(['Stepper'])
+    expect(r.counts).toMatchObject({ local: 1, other: 1 })
+    expect(r.screens).toEqual([{ id: 'screen', name: 'Access code flow', page: 'Login', bound: 0, paints: 0, library: 2, components: 5 }])
+    expect(r.pageCoverage).toEqual([{ name: 'Login', screens: 1, bound: 0, paints: 0, library: 2, components: 5 }])
   })
 
   it('does not count what sits inside an instance', async () => {
@@ -186,10 +218,26 @@ describe('audit:run', () => {
 
 describe('audit:pages and select', () => {
   it('lists pages without divider pages and names the source', async () => {
-    install(tree({ id: 'p', type: 'PAGE', name: '  ↳ Login' }))
+    install(tree({ id: 'p', type: 'PAGE', name: '  ↳ Login', children: [] }))
     const r = await call<PagesResult>(MSG.pages)
     expect(r.pages).toEqual([{ id: 'p', name: 'Login' }])
     expect(r.source).toBe('Bluebird UI')
+  })
+
+  it('says what it compares against and how many screens the page holds', async () => {
+    install(tree({ id: 'p', type: 'PAGE', name: '  ↳ Login', children: [
+      { id: 'a', type: 'FRAME', name: 'A' },
+      { id: 's', type: 'SECTION', name: 'Flow', children: [{ id: 'b', type: 'FRAME', name: 'B' }, { id: 'c', type: 'FRAME', name: 'C' }] },
+    ] }))
+    const r = await call<PagesResult>(MSG.pages)
+    expect(r).toMatchObject({ currentPage: 'Login', screens: 3 })
+    expect(r.libraries).toEqual([{ role: 'components', name: 'Bluebird UI', count: 3 }])
+  })
+
+  it('compares against nothing when no library is set up', async () => {
+    install(tree({ id: 'p', type: 'PAGE', name: 'Login', children: [] }))
+    const r = await call<PagesResult>(MSG.pages, undefined, { status: 'not-configured', reason: 'disabled', message: 'Dual File Mode is off.' })
+    expect(r.libraries).toEqual([])
   })
 
   it('selects layers on the first layer’s page and reports the rest', async () => {
@@ -224,7 +272,7 @@ describe('audit:analytics', () => {
   })
 
   it('keeps what it could read when one library file fails, and says it’s partial', async () => {
-    const two = { ...SETTINGS, file2Id: 'other', file2Key: 'token' }
+    const two = dualFileWith([{ id: 'lib', role: 'Components' }, { id: 'other', role: 'Components' }], 'token')
     const fetch = vi.fn(async (url: string) => {
       if (url.includes('/other/')) return { status: 404, text: async () => '{}' }
       const body = url.includes('actions') ? ACTIONS : url.includes('group_by=file') ? FILES : USAGE

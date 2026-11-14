@@ -12,7 +12,6 @@ const REQUIRED: Partial<Readonly<Record<IntegrationId, readonly string[]>>> = {
   github: ['apiKey', 'repo'],
   storybook: ['baseUrl'],
   zeroheight: ['apiKey', 'styleguideId'],
-  dualFile: ['file1Id', 'file1Key'],
   mcp: ['repo', 'token'],
   jira: ['projectKey', 'apiKey', 'email', 'siteUrl'],
 }
@@ -27,6 +26,10 @@ export function sectionStatus(id: IntegrationId, values: IntegrationValues, othe
   if (id === 'storage') {
     if (bag.sameAsGithub !== true) return ['apiKey', 'repo'].every((k) => filled(bag, k)) ? 'configured' : 'missing'
     return others?.github ? sectionStatus('github', others.github) : 'configured'
+  }
+  if (id === 'dualFile') {
+    const files = (values as IntegrationValues<'dualFile'>).files ?? []
+    return filled(bag, 'token') && files.some((f) => f.id.trim() !== '') ? 'configured' : 'missing'
   }
   if (id === 'notifications') return ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook', 'emails'].some((k) => filled(bag, k)) ? 'configured' : 'missing'
   return (REQUIRED[id] ?? []).every((k) => filled(bag, k)) ? 'configured' : 'missing'

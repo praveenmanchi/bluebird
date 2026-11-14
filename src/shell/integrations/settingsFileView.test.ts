@@ -6,7 +6,7 @@ const LEAD: IntegrationSettings = {
   ...DEFAULT_INTEGRATIONS,
   github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/design-tokens' },
   storybook: { ...DEFAULT_INTEGRATIONS.storybook, baseUrl: 'https://ds.acme.com/storybook' },
-  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123', file1Key: 'figd_mine' },
+  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, token: 'figd_mine', files: [{ name: 'Core', id: 'AbC123', role: 'Variables + Components' }] },
   ai: { ...DEFAULT_INTEGRATIONS.ai, claudeKey: 'sk-ant-team' },
 }
 const ALL = Object.keys(DEFAULT_INTEGRATIONS) as (keyof IntegrationSettings)[]
@@ -56,7 +56,7 @@ describe('summarizeImport', () => {
   })
 
   it('counts a Dual File section as ready when the person already has a token', () => {
-    const mine = { ...DEFAULT_INTEGRATIONS, dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Key: 'figd_me' } }
+    const mine = { ...DEFAULT_INTEGRATIONS, dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, token: 'figd_me' } }
     expect(summarizeImport(exported(true), mine, false).needsKey).toBe(0)
   })
 

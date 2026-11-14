@@ -3,10 +3,11 @@
 // sends only those three keys per brand; everything else in the file is kept as is,
 // and the result must pass the same loadConfig the build runs.
 import * as z from 'zod/mini'
-import { brandPersonasSchema, brandTabSchema, managedIntegrationsSchema } from '../../src/shared/config/schema'
+import { brandPersonasSchema, brandTabSchema, deploySchema, figmaPluginSchema, managedIntegrationsSchema } from '../../src/shared/config/schema'
 import { loadConfig } from '../../src/shared/config/load'
 
 export const CONFIG_ENDPOINT = '/__bluebird/config'
+export const DEPLOY_ENDPOINT = '/__bluebird/deploy'
 
 /** Per brand: the full tab list, persona features and managed sections to store. null (or omitted) clears the override. */
 export const brandPatchSchema = z.record(
@@ -67,3 +68,33 @@ export function applyBrandPatch(raw: unknown, patch: unknown): RawConfig {
 
 /** Same layout as the hand-edited file: two-space indent, trailing newline. */
 export const formatConfig = (config: unknown): string => `${JSON.stringify(config, null, 2)}\n`
+
+/**
+ * dev.html › Plugin configuration › Deployment: multi-brand or one brand, plus the Figma plugin id
+ * and name a brand publishes under in its own organisation (null clears them).
+ */
+export const deployPatchSchema = z.object({
+  deploy: deploySchema,
+  figmaPlugin: z.optional(z.record(z.string(), z.nullable(figmaPluginSchema))),
+})
+export type DeployPatch = z.infer<typeof deployPatchSchema>
+
+/** The raw config with deploy and each brand's figmaPlugin replaced. Same errors as applyBrandPatch. */
+export function applyDeployPatch(raw: unknown, patch: unknown): RawConfig {
+  if (!isRawConfig(raw)) throw new ConfigPatchError('plugin.config.json has no brand.brands to update.')
+  const parsed = z.safeParse(deployPatchSchema, patch)
+  if (!parsed.success) throw new ConfigPatchError(`The deployment sent from the page is malformed: ${parsed.error.issues.map((i) => i.path.join('.') || '(root)').join(', ')}`)
+  const brands = { ...raw.brand.brands }
+  for (const [brandId, plugin] of Object.entries(parsed.data.figmaPlugin ?? {})) {
+    const current = Object.prototype.hasOwnProperty.call(brands, brandId) ? brands[brandId] : undefined
+    if (!current) throw new ConfigPatchError(`Brand "${brandId}" isn’t in plugin.config.json.`)
+    const rest = Object.fromEntries(Object.entries(current).filter(([key]) => key !== 'figmaPlugin'))
+    const kept = plugin ? Object.fromEntries(Object.entries(plugin).filter(([, v]) => typeof v === 'string' && v.trim() !== '')) : {}
+    brands[brandId] = Object.keys(kept).length ? { ...rest, figmaPlugin: kept } : rest
+  }
+  const { mode, brand } = parsed.data.deploy
+  const deploy = mode === 'single' ? { mode, brand } : { mode }
+  const next: RawConfig = { ...raw, deploy, brand: { ...raw.brand, brands } }
+  loadConfig(next)
+  return next
+}

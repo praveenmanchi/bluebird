@@ -19,7 +19,7 @@ export function WelcomeScene({ still, tabs }: SceneProps) {
         <div {...reveal(300, 'bounce')}><Fx kind="pulse" at={1800}><ThinkingOrb state="breathing" size="40" /></Fx></div>
         <div {...reveal(600, 'up', 'bb-ob-heading')}>
           <span class="bb-ob-label">Design Studio</span>
-          <span class="bb-ob-meta">{tabs.length} tabs · {BRANDS.length} brands · 1 plugin</span>
+          <span class="bb-ob-meta">{tabs.length} tabs · {BRANDS.length} brand{(BRANDS.length as number) === 1 ? '' : 's'} · 1 plugin</span>
         </div>
         <div class="bb-ob-chips bb-ob-chips--center">
           {tabs.map((tab, k) => (

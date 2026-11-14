@@ -3,8 +3,8 @@
 // and the sandbox store, which runs the same checks again before it writes anything.
 import * as z from 'zod/mini'
 import {
-  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, SECRET_FIELDS, sectionSchemas,
-  type IntegrationId, type IntegrationSettings, type IntegrationValues, type LibraryFileEntry,
+  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, SECRET_FIELDS, migrateDualFile, sectionSchemas,
+  type IntegrationId, type IntegrationSettings, type IntegrationValues,
 } from './schema'
 import { validateIntegration } from './validate'
 
@@ -14,16 +14,17 @@ export const SETTINGS_FILE_VERSION = 1
 export const MAX_SETTINGS_FILE_BYTES = 256 * 1024
 
 /**
- * Figma personal access tokens belong to the person, not the team: they are never written to
- * the file and never read from one, whatever "Include API keys" says.
+ * The Figma personal access token belongs to the person, not the team: it is never written to
+ * the file and never read from one, whatever "Include API keys" says. The library files (names,
+ * URLs, what each holds) carry no key, so they are shared like any other field.
  */
 export const PERSONAL_FIELDS: { readonly [K in IntegrationId]?: readonly string[] } = {
-  dualFile: ['file1Key', 'file2Key'],
+  dualFile: ['token'],
 }
 
 const isPersonal = (id: IntegrationId, key: string): boolean => (PERSONAL_FIELDS[id] ?? []).includes(key)
 /** Keys, tokens and signed webhook URLs the team shares: in the file only when keys are included. */
-const isSharedSecret = (id: IntegrationId, key: string): boolean => (SECRET_FIELDS[id] as readonly string[]).includes(key) && !isPersonal(id, key) && key !== 'extraFiles'
+const isSharedSecret = (id: IntegrationId, key: string): boolean => (SECRET_FIELDS[id] as readonly string[]).includes(key) && !isPersonal(id, key)
 
 export type SectionPatch = Readonly<Record<string, unknown>>
 export type SettingsFileSections = { readonly [K in IntegrationId]?: SectionPatch }
@@ -46,8 +47,6 @@ export interface ExportOptions {
   now?: Date
 }
 
-const withoutKeys = (files: readonly LibraryFileEntry[]): LibraryFileEntry[] => files.map((f) => ({ id: f.id, role: f.role, key: '' }))
-
 /** The chosen sections, minus personal tokens, and minus every shared key unless `includeKeys`. */
 export function buildSettingsFile(settings: IntegrationSettings, options: ExportOptions): SettingsFile {
   const sections: Record<string, SectionPatch> = {}
@@ -55,7 +54,6 @@ export function buildSettingsFile(settings: IntegrationSettings, options: Export
     if (!options.sections.includes(id)) continue
     const entries = Object.entries(settings[id] as Record<string, unknown>)
       .filter(([key]) => !isPersonal(id, key) && (options.includeKeys || !isSharedSecret(id, key)))
-      .map(([key, value]): [string, unknown] => [key, key === 'extraFiles' && Array.isArray(value) ? withoutKeys(value as LibraryFileEntry[]) : value])
     sections[id] = Object.fromEntries(entries)
   }
   return {
@@ -92,13 +90,9 @@ export const NOT_A_SETTINGS_FILE = 'It isn’t a settings file exported from Des
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
-/** A file can leave a Dual File key out: the person adds their own after importing. */
-const isMissingPersonalKey = (id: IntegrationId, field: string, values: Record<string, unknown>): boolean => {
-  if (id !== 'dualFile') return false
-  if (field === 'file1Key' || field === 'file2Key') return values[field] === ''
-  const row = /^extraFiles\.(\d+)\.key$/.exec(field)
-  return row !== null && (values.extraFiles as LibraryFileEntry[] | undefined)?.[Number(row[1])]?.key === ''
-}
+/** A file never carries the Dual File token: the person adds their own after importing. */
+const isMissingPersonalKey = (id: IntegrationId, field: string, values: Record<string, unknown>): boolean =>
+  id === 'dualFile' && field === 'token' && values.token === ''
 
 /** Field errors that should stop a section from being stored. */
 export function blockingErrors<K extends IntegrationId>(id: K, values: IntegrationValues<K>): string[] {
@@ -106,11 +100,12 @@ export function blockingErrors<K extends IntegrationId>(id: K, values: Integrati
   return Object.entries(validateIntegration(id, values)).filter(([field]) => !isMissingPersonalKey(id, field, bag)).map(([, message]) => message ?? '')
 }
 
-function readSection(id: IntegrationId, raw: unknown): { patch: SectionPatch } | { reason: string } {
+function readSection(id: IntegrationId, input: unknown): { patch: SectionPatch } | { reason: string } {
+  // Files exported before one token + named files list File 1 / File 2; read them the new way.
+  const raw = id === 'dualFile' ? migrateDualFile(input) : input
   if (!isRecord(raw)) return { reason: 'This section isn’t in a readable shape.' }
   const known = Object.keys(DEFAULT_INTEGRATIONS[id]).filter((key) => Object.prototype.hasOwnProperty.call(raw, key) && !isPersonal(id, key))
   const picked: Record<string, unknown> = Object.fromEntries(known.map((key) => [key, raw[key]]))
-  if (Array.isArray(picked.extraFiles)) picked.extraFiles = (picked.extraFiles as unknown[]).map((f) => (isRecord(f) ? { id: f.id, role: f.role, key: '' } : f))
   const candidate = { ...DEFAULT_INTEGRATIONS[id], ...picked, ...Object.fromEntries((PERSONAL_FIELDS[id] ?? []).map((key) => [key, ''])) }
   const parsed = z.safeParse(sectionSchemas[id], candidate)
   if (!parsed.success) return { reason: 'Some values are missing or too long.' }
@@ -151,15 +146,12 @@ export function parseSettingsFile(text: string): ParseResult {
   return parseSettingsObject(value)
 }
 
+/** A list counts as empty when none of its rows has an ID (Dual File starts with one blank file). */
 const isEmpty = (value: unknown, fallback: unknown): boolean => {
   if (typeof value === 'string') return value.trim() === ''
-  if (Array.isArray(value)) return value.length === 0
+  if (Array.isArray(value)) return value.every((row) => !isRecord(row) || typeof row.id !== 'string' || row.id.trim() === '')
   return value === fallback
 }
-
-/** Extra library files from the file, each keeping the key the person already stored for that file ID. */
-const mergeExtraFiles = (incoming: readonly LibraryFileEntry[], current: readonly LibraryFileEntry[]): LibraryFileEntry[] =>
-  incoming.map((f) => ({ ...f, key: current.find((c) => c.id === f.id)?.key ?? '' }))
 
 export interface ApplyOptions {
   /** The file only fills fields that are empty (or still on their default). */
@@ -180,7 +172,7 @@ export function applySettingsFile(current: IntegrationSettings, sections: Settin
     for (const [key, value] of Object.entries(patch)) {
       if (isPersonal(id, key) || options.locked?.[id]?.includes(key)) continue
       if (options.keepExisting && !isEmpty(mine[key], defaults[key])) continue
-      next[key] = key === 'extraFiles' ? mergeExtraFiles(value as LibraryFileEntry[], (mine.extraFiles as LibraryFileEntry[] | undefined) ?? []) : value
+      next[key] = value
     }
     out[id] = next
   }

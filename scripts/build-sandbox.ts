@@ -4,10 +4,13 @@
 import { build, context, type BuildOptions } from 'esbuild'
 import { resolve } from 'node:path'
 import { mkdirSync } from 'node:fs'
+import { deployEsbuildPlugin, describeDeploy, planDeploy } from '../tools/deploy/bundler'
 
 const root = resolve(import.meta.dirname, '..')
 const watch = process.argv.includes('--watch')
 const live = process.env.BB_LIVE === '1'
+// Multi-brand or one brand only (plugin.config.json › deploy, or BB_DEPLOY=<brand|multi>).
+const deploy = planDeploy(root)
 
 const options: BuildOptions = {
   entryPoints: [resolve(root, 'src/sandbox/main.ts')],
@@ -20,6 +23,7 @@ const options: BuildOptions = {
   sourcemap: watch ? 'inline' : false,
   logLevel: 'info',
   define: { __LIVE_BRIDGE__: JSON.stringify(live) },
+  plugins: [deployEsbuildPlugin(deploy)],
   alias: {
     '@shared': resolve(root, 'src/shared'),
     '@features': resolve(root, 'src/features'),
@@ -36,5 +40,6 @@ if (watch) {
     ? '[sandbox] LIVE build: running the plugin opens the bridge panel. Run npm run build before publishing.'
     : '[sandbox] watching… re-run the plugin in Figma (Cmd+Opt+P) after each change')
 } else {
+  console.log(`[sandbox] ${describeDeploy(deploy.deploy)}`)
   await build(options)
 }

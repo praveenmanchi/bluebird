@@ -27,7 +27,18 @@ export const selectRequestSchema = z.object({ nodeIds: z.array(z.string()).check
 export const gotoRequestSchema = z.object({ nodeId: z.string().check(z.minLength(1)) })
 
 export interface PageInfo { id: string; name: string }
-export interface PagesResult { pages: readonly PageInfo[]; currentPageId: string; selected: number; source: string | null }
+/** One library the audit compares against: the published count and the file it comes from. */
+export interface LibraryCard { role: 'components' | 'variables'; name: string; count: number }
+export interface PagesResult {
+  pages: readonly PageInfo[]
+  currentPageId: string
+  /** The current page's name and how many screens (top-level frames) it holds. */
+  currentPage: string
+  screens: number
+  selected: number
+  source: string | null
+  libraries: readonly LibraryCard[]
+}
 
 /** What a counted layer is: a component's origin, or a value that doesn't read the system. */
 export type Origin = 'library' | 'detached' | 'local' | 'other' | 'colour' | 'spacing'
@@ -68,12 +79,23 @@ export interface AuditCounts {
   spacing: number
   library: number
   detached: number
+  /** Local components, and instances from another library; `notLibrary` is both. */
+  local: number
+  other: number
   notLibrary: number
   unused: number
   /** Component layers counted (library + detached + not in library). */
   total: number
   published: number
 }
+
+/** What was counted in one place: paints reading the system of all paints, library instances of all component layers. */
+export interface Coverage { bound: number; paints: number; library: number; components: number }
+/** One screen: the top-level frame the layers sit in. */
+export interface ScreenCoverage extends Coverage { id: string; name: string; page: string }
+export interface PageCoverage extends Coverage { name: string; screens: number }
+/** Paints on one screen that already read a variable or style. */
+export interface BoundPlace { place: { id: string; name: string }; page: string; count: number }
 
 /** The one number: paints and component layers that come from the design system. */
 export interface AuditScore { value: number | null; used: number; total: number }
@@ -93,6 +115,9 @@ export type AuditResult =
     /** Every issue. Library instances are healthy, so they are counted but not listed. */
     items: readonly AuditItem[]
     unused: readonly UnusedComponent[]
+    /** Coverage for every screen in scope, the least mapped first, and the same added up by page. */
+    screens: readonly ScreenCoverage[]
+    pageCoverage: readonly PageCoverage[]
     visited: number
     durationMs: number
   }

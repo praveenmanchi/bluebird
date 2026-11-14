@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { dualFileWith } from './testing'
 import { DEFAULT_INTEGRATIONS } from './schema'
 import { validateIntegration } from './validate'
 
@@ -21,8 +22,8 @@ describe('validateIntegration', () => {
 
   it('checks the Storybook template, Figma file IDs, the MCP output format and branch template, and the Jira key', () => {
     expect(validateIntegration('storybook', { ...DEFAULT_INTEGRATIONS.storybook, storyPathTemplate: '?path=/story/x' }).storyPathTemplate).toMatch('{slug}')
-    expect(validateIntegration('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'https://figma.com/design/abc', file1Key: 'k' }).file1Id).toBeDefined()
-    expect(validateIntegration('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'JPZ7koqomjcjczGQuhIMVH', file1Key: 'k' })).toEqual({})
+    expect(validateIntegration('dualFile', dualFileWith(['https://figma.com/design/abc'], 'k'))['files.0.id']).toBeDefined()
+    expect(validateIntegration('dualFile', dualFileWith(['JPZ7koqomjcjczGQuhIMVH'], 'k'))).toEqual({})
     expect(validateIntegration('mcp', { ...DEFAULT_INTEGRATIONS.mcp, outputFormat: 'yaml', branchTemplate: 'ds/token update' })).toEqual({
       outputFormat: expect.stringContaining('style-dictionary'),
       branchTemplate: expect.stringContaining('spaces'),
@@ -46,24 +47,19 @@ describe('validateIntegration', () => {
     expect(validateIntegration('github', { ...gh, repo: 'gap-inc/.github' })).toEqual({})
   })
 
-  it('pairs each Dual File ID with a key, lets File 2 borrow File 1’s key, and refuses one file in both slots', () => {
-    const df = { ...DEFAULT_INTEGRATIONS.dualFile }
-    expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA' }).file1Key).toBeDefined()
-    expect(validateIntegration('dualFile', { ...df, file1Key: 'k' }).file1Id).toBeDefined()
-    expect(validateIntegration('dualFile', { ...df, file2Id: 'BBB' }).file2Key).toBeDefined()
-    expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'k', file2Id: 'BBB' })).toEqual({})
-    expect(validateIntegration('dualFile', { ...df, file2Key: 'k' }).file2Id).toBeDefined()
-    expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'k', file2Id: 'AAA' }).file2Id).toContain('Variables + Components')
-    expect(validateIntegration('dualFile', { ...df, file1Role: 'Icons' }).file1Role).toContain('Variables + Components')
-    expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'figd_ab c' }).file1Key).toContain('Paste it again')
-    expect(validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'figd_“x”' }).file1Key).toBeDefined()
-    const extra = (rows: { id: string; key: string; role: string }[]) => validateIntegration('dualFile', { ...df, file1Id: 'AAA', file1Key: 'k', extraFiles: rows })
-    expect(extra([{ id: 'CCC', key: '', role: 'Components' }])).toEqual({})
-    expect(extra([{ id: 'https://x', key: 't', role: 'Components' }])['extraFiles.0.id']).toContain('figma.com/design')
-    expect(extra([{ id: '', key: 't', role: 'Components' }])['extraFiles.0.id']).toContain('File 3')
-    expect(extra([{ id: 'AAA', key: '', role: 'Components' }])['extraFiles.0.id']).toContain('already listed')
-    expect(extra([{ id: 'CCC', key: '', role: 'Icons' }])['extraFiles.0.role']).toContain('Variables + Components')
-    expect(validateIntegration('dualFile', { ...df, extraFiles: [{ id: 'CCC', key: '', role: 'Components' }] })['extraFiles.0.key']).toContain('File 3')
+  it('needs the one token for listed files, a file for the token, and refuses empty added rows, duplicates and unknown roles', () => {
+    const v = (files: Parameters<typeof dualFileWith>[0], token = '') => validateIntegration('dualFile', dualFileWith(files, token))
+    expect(v([''])).toEqual({})
+    expect(v(['AAA']).token).toContain('access token')
+    expect(v([''], 'k')['files.0.id']).toContain('clear the token')
+    expect(v(['AAA', 'BBB', { id: 'CCC', role: 'Components' }], 'k')).toEqual({})
+    expect(v(['AAA', { name: 'Icons', id: '' }], 'k')['files.1.id']).toBe('Add Icons’s URL, or remove it')
+    expect(v(['AAA', 'AAA'], 'k')['files.1.id']).toContain('already listed')
+    expect(v([{ id: 'AAA', role: 'Icons' }], 'k')['files.0.role']).toContain('Variables + Components')
+    expect(v(['https://x'], 'k')['files.0.id']).toContain('figma.com/design')
+    expect(v([{ id: 'AAA', name: 'x'.repeat(61) }], 'k')['files.0.name']).toContain('60')
+    expect(v(['AAA'], 'figd_ab c').token).toContain('Paste it again')
+    expect(v(['AAA', 'BBB', 'CCC', 'DDD'], 'k').files).toContain('Up to 3')
   })
 
   it('only accepts the offered models', () => {

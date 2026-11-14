@@ -7,6 +7,7 @@ import { parseDay } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
 import { CHANGELOG, type ApproveResult, type ChangelogContext, type ChangelogDraft, type SubmitResult, type TicketsResult } from '../messages'
 import { NOT_A_BRANCH, NO_KEY, NO_TOKEN, createChangelogHandlers } from '../sandbox/changelog-handlers'
+import { dualFileWith } from '@shared/integrations/testing'
 
 const LOCAL: Snapshot = {
   takenAt: '2026-11-12T10:00:00.000Z',
@@ -27,7 +28,7 @@ function setup({ fileKey = 'BRANCH', token = 'figd_x', branch = true, storage = 
   const reply = (status: number, body: unknown) => ({ status, text: async () => JSON.stringify(body) })
   const handlers = createChangelogHandlers({
     readSnapshot: async () => LOCAL,
-    readDualFile: async () => ({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'LIB', file1Key: token, extraFiles: [{ id: 'MAIN', key: token ? 'figd_main' : '', role: 'Variables' }] }),
+    readDualFile: async () => dualFileWith(['LIB', 'MAIN'], token),
     readGithub: async () => ({ ...DEFAULT_INTEGRATIONS.github, repo: 'acme/ds', branch: 'main', apiKey: storage ? 'ghp_x' : '' }),
     readStorage: async () => DEFAULT_INTEGRATIONS.storage,
     readJira: async () => ({ ...DEFAULT_INTEGRATIONS.jira, enabled: jira, siteUrl: 'https://acme.atlassian.net', email: 'p@acme.com', apiKey: 'jira-token', projectKey: 'BB' }),
@@ -89,8 +90,8 @@ describe('changelog handlers', () => {
   it('says where you are and names the main file of a branch', async () => {
     const t = setup()
     expect(await t.context()).toEqual({ file: 'button-refresh', page: 'Atoms', user: 'Praveen Manchi', main: 'Project Bluebird UI', channels: { teams: true, outlook: false }, jira: { connected: true } })
-    // The main file is a Dual File library with its own key: that key reads it.
-    expect([...t.tokens]).toEqual(['figd_x', 'figd_main'])
+    // One Dual File token reads this file and its main file.
+    expect([...t.tokens]).toEqual(['figd_x'])
   })
 
   it('explains why there is nothing to compare with', async () => {

@@ -103,4 +103,13 @@ describe('build environment', () => {
       else process.env.NODE_ENV = before
     }
   })
+
+  it('runs npm run package when asked, and nothing outside the allowed scripts', () => {
+    const { spawn, runs } = fakeSpawn()
+    const runner = createBuildRunner('/repo', spawn)
+    expect(runner.start('rm -rf' as never)).toBe(false)
+    expect(runs).toHaveLength(0)
+    expect(runner.start('package')).toBe(true)
+    expect(runs[0]).toMatchObject({ command: 'npm', args: ['run', 'package'] })
+  })
 })

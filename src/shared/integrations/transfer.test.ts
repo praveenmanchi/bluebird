@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { dualFileWith } from './testing'
 import { DEFAULT_INTEGRATIONS, type IntegrationSettings } from './schema'
 import {
   applySettingsFile, blockingErrors, buildSettingsFile, parseSettingsFile, parseSettingsObject, serializeSettingsFile, settingsFileName,
@@ -10,7 +11,7 @@ const CONFIGURED: IntegrationSettings = {
   github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/design-tokens' },
   notifications: { designSystemWebhook: 'https://prod.logic.azure.com/workflows/a?sig=1', devTeamWebhook: '', outlookWebhook: '', emails: 'ds@acme.com' },
   storybook: { ...DEFAULT_INTEGRATIONS.storybook, baseUrl: 'https://ds.acme.com/storybook' },
-  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123', file1Key: 'figd_mine', extraFiles: [{ id: 'Zz9', role: 'Components', key: 'figd_extra' }] },
+  dualFile: dualFileWith([{ id: 'AbC123', name: 'Core' }, { id: 'Zz9', role: 'Components' }], 'figd_mine'),
   ai: { ...DEFAULT_INTEGRATIONS.ai, claudeKey: 'sk-ant-team', instructions: 'Use sentence case.' },
 }
 const ALL = Object.keys(DEFAULT_INTEGRATIONS) as (keyof IntegrationSettings)[]
@@ -22,8 +23,8 @@ describe('buildSettingsFile', () => {
     expect(file).toMatchObject({ kind: SETTINGS_FILE_KIND, version: 1, exportedAt: NOW.toISOString(), brand: 'Bridge', includesKeys: true })
     expect(file.sections.github).toMatchObject({ apiKey: 'ghp_team', repo: 'acme/design-tokens' })
     expect(file.sections.ai).toMatchObject({ claudeKey: 'sk-ant-team' })
-    expect(file.sections.dualFile).not.toHaveProperty('file1Key')
-    expect(file.sections.dualFile).toMatchObject({ file1Id: 'AbC123', extraFiles: [{ id: 'Zz9', role: 'Components', key: '' }] })
+    expect(file.sections.dualFile).not.toHaveProperty('token')
+    expect(file.sections.dualFile).toMatchObject({ files: [{ name: 'Core', id: 'AbC123', role: 'Variables + Components' }, { name: 'File 2', id: 'Zz9', role: 'Components' }] })
     expect(serializeSettingsFile(file)).not.toContain('figd_')
   })
 
@@ -56,7 +57,7 @@ describe('parseSettingsFile', () => {
     if (!result.ok) throw new Error(result.message)
     expect(result.file).toMatchObject({ brand: 'Bridge', includesKeys: true, exportedAt: NOW.toISOString(), skipped: [] })
     expect(result.file.sections.github).toMatchObject({ apiKey: 'ghp_team', repo: 'acme/design-tokens' })
-    expect(result.file.sections.dualFile).toMatchObject({ file1Id: 'AbC123' })
+    expect(result.file.sections.dualFile).toMatchObject({ files: [expect.objectContaining({ id: 'AbC123' }), expect.objectContaining({ id: 'Zz9' })] })
   })
 
   it('rejects anything that is not a settings file', () => {
@@ -82,17 +83,28 @@ describe('parseSettingsFile', () => {
   it('drops unknown fields, unknown sections and any personal token in the file', () => {
     const result = parseSettingsObject({
       kind: SETTINGS_FILE_KIND, version: 1,
-      sections: { dualFile: { file1Id: 'AbC123', file1Key: 'figd_theirs', __proto__: { x: 1 }, extra: true, extraFiles: [{ id: 'Zz9', role: 'Components', key: 'figd_theirs' }] }, madeUp: { a: 1 } },
+      sections: { dualFile: { token: 'figd_theirs', __proto__: { x: 1 }, extra: true, files: [{ name: 'Core', id: 'AbC123', role: 'Variables' }] }, madeUp: { a: 1 } },
     })
     if (!result.ok) throw new Error(result.message)
-    expect(result.file.sections).toEqual({ dualFile: { file1Id: 'AbC123', extraFiles: [{ id: 'Zz9', role: 'Components', key: '' }] } })
+    expect(result.file.sections).toEqual({ dualFile: { files: [{ name: 'Core', id: 'AbC123', role: 'Variables' }] } })
+  })
+
+  it('reads a file exported before one token + named files: File 1 / File 2 / extra files become the list, keys stay out', () => {
+    const result = parseSettingsObject({
+      kind: SETTINGS_FILE_KIND, version: 1,
+      sections: { dualFile: { enabled: true, file1Id: 'AbC123', file1Role: 'Variables', file2Id: 'Cmp9', file2Role: 'Components', extraFiles: [{ id: 'Ico1', role: 'Components', key: '' }] } },
+    })
+    if (!result.ok) throw new Error(result.message)
+    expect(result.file.sections.dualFile).toEqual({ enabled: true, files: [
+      { name: 'File 1', id: 'AbC123', role: 'Variables' }, { name: 'File 2', id: 'Cmp9', role: 'Components' }, { name: 'File 3', id: 'Ico1', role: 'Components' },
+    ] })
   })
 })
 
 describe('blockingErrors', () => {
-  it('lets a Dual File ID through without its key, but not a malformed ID', () => {
-    expect(blockingErrors('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123' })).toEqual([])
-    expect(blockingErrors('dualFile', { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'not an id' })).toHaveLength(1)
+  it('lets Dual File files through without the token, but not a malformed ID', () => {
+    expect(blockingErrors('dualFile', dualFileWith(['AbC123']))).toEqual([])
+    expect(blockingErrors('dualFile', dualFileWith(['not an id']))).toHaveLength(1)
   })
 })
 
@@ -100,12 +112,12 @@ describe('applySettingsFile', () => {
   const mine: IntegrationSettings = {
     ...DEFAULT_INTEGRATIONS,
     github: { ...DEFAULT_INTEGRATIONS.github, repo: 'me/fork', branch: 'develop' },
-    dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Key: 'figd_mine', extraFiles: [{ id: 'Zz9', role: 'Variables', key: 'figd_kept' }] },
+    dualFile: dualFileWith(['Zz9'], 'figd_mine'),
     jira: { ...DEFAULT_INTEGRATIONS.jira, projectKey: 'DS' },
   }
   const sections = {
     github: { apiKey: 'ghp_team', repo: 'acme/design-tokens', branch: 'main', diffComparison: false },
-    dualFile: { file1Id: 'AbC123', extraFiles: [{ id: 'Zz9', role: 'Components', key: '' }, { id: 'New1', role: 'Variables', key: '' }] },
+    dualFile: { files: [{ name: 'Core', id: 'AbC123', role: 'Variables' }, { name: 'Icons', id: 'New1', role: 'Components' }] },
   }
 
   it('replaces what the file contains and leaves other sections alone', () => {
@@ -115,16 +127,20 @@ describe('applySettingsFile', () => {
     expect(mine.github.repo).toBe('me/fork')
   })
 
-  it('keeps the person’s Figma tokens, matching extra files by ID', () => {
+  it('takes the team’s files and keeps the person’s own Figma token', () => {
     const next = applySettingsFile(mine, sections, { keepExisting: false })
-    expect(next.dualFile).toMatchObject({ file1Id: 'AbC123', file1Key: 'figd_mine' })
-    expect(next.dualFile.extraFiles).toEqual([{ id: 'Zz9', role: 'Components', key: 'figd_kept' }, { id: 'New1', role: 'Variables', key: '' }])
+    expect(next.dualFile).toEqual({ enabled: true, token: 'figd_mine', files: sections.dualFile.files })
+  })
+
+  it('fills a Dual File list that has no file yet, even when keeping existing values', () => {
+    const empty = { ...mine, dualFile: DEFAULT_INTEGRATIONS.dualFile }
+    expect(applySettingsFile(empty, sections, { keepExisting: true }).dualFile.files).toEqual(sections.dualFile.files)
   })
 
   it('only fills empty or default fields when keeping existing values', () => {
     const next = applySettingsFile(mine, sections, { keepExisting: true })
     expect(next.github).toMatchObject({ apiKey: 'ghp_team', repo: 'me/fork', branch: 'develop', diffComparison: false })
-    expect(next.dualFile.extraFiles).toEqual(mine.dualFile.extraFiles)
+    expect(next.dualFile.files).toEqual(mine.dualFile.files)
   })
 
   it('never changes a field the brand manages', () => {

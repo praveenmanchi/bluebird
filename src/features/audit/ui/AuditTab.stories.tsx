@@ -19,7 +19,7 @@ const meta = { title: 'Screens/Audit', parameters: { layout: 'centered', figma: 
 export default meta
 type Story = StoryObj
 
-/** Figma "1 Ready". */
+/** Figma "Audit v2 · 1 Ready". */
 export const Ready: Story = { render: () => frame() }
-/** Figma "4 Results". */
+/** Figma "Audit v2 · 3 Results · This page". */
 export const Results: Story = { render: () => frame('default', () => { result.value = mockAudit(); status.value = 'done' }), parameters: { figma: { variant: 'Audit' } } }

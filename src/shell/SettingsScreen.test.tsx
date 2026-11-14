@@ -94,4 +94,12 @@ describe('SettingsScreen', () => {
     render(<SettingsScreen session={null} brand={null} onLogout={noop} onReset={noop} />)
     expect(screen.queryByRole('button', { name: 'Replay tour' })).toBeNull()
   })
+
+  it('shows the brand workspace and Reset alone when there is no sign-in (single-brand build)', () => {
+    const { container } = render(<SettingsScreen session={{ brandId: 'ikea', since: '2026-09-22T09:00:00Z' }} brand={null} onReset={noop} />)
+    expect(container.querySelector('.bb-settings .bb-toggle__title')?.textContent).toBe('Ikea workspace')
+    expect(container.querySelector('.bb-settings .bb-toggle__description')?.textContent).toMatch(/set up for Ikea only/)
+    expect(screen.queryByRole('button', { name: 'Sign out' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Reset all settings' })).toBeInTheDocument()
+  })
 })

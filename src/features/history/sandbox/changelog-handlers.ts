@@ -15,7 +15,6 @@ import { isStorageProblem, resolveStorage, type HistoryStorage } from '@shared/h
 import { APPEND_ATTEMPTS, appendEntry } from '@shared/history/github'
 import { dayOf, newEntryId, parseDay } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
-import { filesFromSettings } from '@shared/libraries/load'
 import { createFigmaGet, type FigmaGet, type HttpFetch } from '@shared/libraries/rest'
 import { postWebhooks } from '@shared/integrations/webhooks'
 import { channelCard } from '@shared/integrations/card'
@@ -82,15 +81,13 @@ export function createChangelogHandlers(deps: ChangelogDeps): HandlerMap {
     const base = { file: deps.fileName(), page: deps.pageName(), user: deps.user(), main: null, ...await reach() }
     const key = deps.fileKey()
     if (!key) return { context: { ...base, problem: NO_KEY } }
-    const files = filesFromSettings(await deps.readDualFile())
-    const token = files.find((f) => f.token)?.token ?? ''
+    // One Dual File token opens this file, its main file and every library.
+    const token = (await deps.readDualFile()).token.trim()
     if (!token) return { context: { ...base, problem: NO_TOKEN } }
     try {
       const info = await readBranchInfo(createFigmaGet(token, 'This file', deps.fetch, deps.sleep), key)
       if (!info.mainFileKey) return { context: { ...base, problem: NOT_A_BRANCH } }
-      // The main file is often one of the Dual File libraries: use that file's own key when it has one.
-      const own = files.find((f) => f.fileKey === info.mainFileKey && f.token)?.token ?? token
-      const get = createFigmaGet(own, 'The main file', deps.fetch, deps.sleep)
+      const get = createFigmaGet(token, 'The main file', deps.fetch, deps.sleep)
       const main = await get<{ file?: { name?: string } }>(`/files/${encodeURIComponent(info.mainFileKey)}/meta`, 'meta').then((r) => r.file?.name ?? '', () => '')
       return { context: { ...base, main: main || 'the main file' }, get, mainKey: info.mainFileKey, branch: branchUrl(info.mainFileKey, key, info.name || base.file) }
     } catch (e) {

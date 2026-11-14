@@ -2,9 +2,9 @@
 // numbers are illustrative, the same ones the Figma screens show: the Plugin UI
 // file holds the design system itself, so a real scan of it reads as all-library.
 import type { HandlerMap } from '@shared/bridge'
-import { countItems, issuesOf, scoreOf } from './audit'
+import { countItems, coverageOf, issuesOf, pageCoverageOf, scoreOf } from './audit'
 import {
-  MSG, type AnalyticsResult, type Asset, type AuditItem, type AuditResult, type GotoResult, type Origin, type PagesResult, type Place, type SelectResult, type UnusedComponent,
+  MSG, type AnalyticsResult, type Asset, type AuditItem, type AuditResult, type BoundPlace, type GotoResult, type LibraryCard, type Origin, type PagesResult, type Place, type SelectResult, type UnusedComponent,
 } from './messages'
 
 export type MockScenario = 'default' | 'empty' | 'many' | 'slow' | 'error'
@@ -42,12 +42,25 @@ export const MOCK_UNUSED: readonly UnusedComponent[] = unusedNames.map((name) =>
 const MOCK_PAGES = ['Cover', 'Atoms', 'Molecules', 'Organisms', 'Login', 'Onboarding', 'Accessibility', 'Settings'].map((name, i) => ({ id: `p:${i}`, name }))
 
 const BOUND = 487
+/** How the bound paints fall across the frames: the first takes what the others leave. */
+const BOUND_SHARE: readonly number[] = [0, 160, 87]
+const boundPlaces = (bound: number): BoundPlace[] => {
+  const rest = BOUND_SHARE.reduce((a, b) => a + b, 0)
+  const split = bound > rest ? [bound - rest, ...BOUND_SHARE.slice(1)] : [bound]
+  return split.map((count, i) => ({ place: { id: `f:${FRAMES[i]!}`, name: FRAMES[i]! }, page: 'Login', count })).filter((b) => b.count > 0)
+}
+
+export const MOCK_LIBRARIES: readonly LibraryCard[] = [
+  { role: 'components', name: 'Bluebird Components', count: 232 },
+  { role: 'variables', name: 'Bluebird Variables', count: 528 },
+]
 
 export function mockAudit(items: readonly AuditItem[] = MOCK_ITEMS, unused: readonly UnusedComponent[] = MOCK_UNUSED, bound = BOUND): Extract<AuditResult, { status: 'ready' }> {
   const counts = countItems(items, bound, unused.length, items.filter((i) => i.origin === 'library').length + unused.length)
+  const screens = coverageOf(items, boundPlaces(bound))
   return {
     status: 'ready', source: SOURCE, problem: null, scope: 'Login', counts, score: scoreOf(counts), issues: issuesOf(counts),
-    items: items.filter((i) => i.origin !== 'library'), unused, visited: 1204, durationMs: 840,
+    items: items.filter((i) => i.origin !== 'library'), unused, screens, pageCoverage: pageCoverageOf(screens), visited: 1204, durationMs: 840,
   }
 }
 
@@ -87,7 +100,7 @@ export const MOCK_ANALYTICS: Readonly<Record<Asset, AnalyticsResult>> = {
 
 export function createMockHandlers(scenario: MockScenario = 'default'): HandlerMap {
   return {
-    [MSG.pages]: async (): Promise<PagesResult> => ({ pages: MOCK_PAGES, currentPageId: 'p:4', selected: 3, source: SOURCE }),
+    [MSG.pages]: async (): Promise<PagesResult> => ({ pages: MOCK_PAGES, currentPageId: 'p:4', currentPage: 'Login', screens: 14, selected: 3, source: SOURCE, libraries: MOCK_LIBRARIES }),
     [MSG.run]: async (): Promise<AuditResult> => {
       if (scenario === 'error') throw new Error('Figma stopped answering.')
       return scenario === 'empty' ? mockAudit([], [], 0) : mockAudit()

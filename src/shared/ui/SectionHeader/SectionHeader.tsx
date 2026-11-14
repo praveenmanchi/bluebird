@@ -3,15 +3,15 @@ import { LOGOS } from '@logos'
 import { Toggle } from '../Toggle/Toggle'
 import './SectionHeader.css'
 
-/** Integration logos available for the Figma "brands" instance (Property 1). */
-export type SectionHeaderLogo = 'github' | 'storybook' | 'teams' | 'zeroheight'
+/** Integration logos available for the Figma "Settings brands" instance (226:3580, property Brands). */
+export type SectionHeaderLogo = 'github' | 'storybook' | 'teams' | 'zeroheight' | 'dual-file' | 'ai' | 'mcp' | 'jira' | 'database'
 
 export interface SectionHeaderProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'title' | 'onToggle'> {
   /** Figma "Title" text (+ "Title2" boolean when set). Omit to hide the title line. */
   title?: ComponentChildren
   /** Figma "Description " text. */
   description?: ComponentChildren
-  /** Figma "Logo" boolean + "brands" instance swap. Omit to hide the logo. */
+  /** Figma "Logo" boolean + "Settings brands" instance swap. Omit to hide the logo. */
   logo?: SectionHeaderLogo
   /** Figma "Toggle" boolean — shows the trailing switch (hidden in Figma by default). */
   toggle?: boolean

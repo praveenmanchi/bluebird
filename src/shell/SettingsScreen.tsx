@@ -12,7 +12,8 @@ import './SettingsScreen.css'
 export interface SettingsScreenProps {
   session: Session | null
   brand: BrandTokensResult | null
-  onLogout: () => Promise<void>
+  /** Omit in a single-brand build: there is no sign-in, so Settings shows Reset alone. */
+  onLogout?: () => Promise<void>
   onReset: () => Promise<void>
   /** Configured personas; the persona card shows only when there are two or more. */
   personas?: readonly ResolvedPersona[]
@@ -66,12 +67,21 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
         </section>
       )}
       <section class="bb-settings__section" aria-label="Session">
-        <Toggle
-          class="bb-settings__row"
-          showSwitch={false}
-          title={`Signed in as ${label}`}
-          description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you sign out; resetting also forgets window size and preferences.`}
-        />
+        {onLogout ? (
+          <Toggle
+            class="bb-settings__row"
+            showSwitch={false}
+            title={`Signed in as ${label}`}
+            description={`Brand unlocked with an access code${since ? ` on ${since}` : ''} · ${source}. You stay signed in until you sign out; resetting also forgets window size and preferences.`}
+          />
+        ) : (
+          <Toggle
+            class="bb-settings__row"
+            showSwitch={false}
+            title={`${label} workspace`}
+            description={`This plugin is set up for ${label} only, so there’s nothing to sign in to · ${source}. Resetting forgets window size and preferences.`}
+          />
+        )}
         {confirmReset ? (
           <ButtonGroup
             class="bb-settings__actions"
@@ -87,9 +97,10 @@ export function SettingsScreen({ session, brand, onLogout, onReset, personas = [
           <ButtonGroup
             class="bb-settings__actions"
             secondaryLabel="Sign out"
+            showSecondary={onLogout !== undefined}
             primaryLabel="Reset all settings"
             primaryVariant="danger"
-            onSecondary={() => { void run('logout', onLogout) }}
+            onSecondary={() => { if (onLogout) void run('logout', onLogout) }}
             onPrimary={() => setConfirmReset(true)}
             secondaryLoading={busy === 'logout'}
             primaryDisabled={busy !== null}

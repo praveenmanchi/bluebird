@@ -16,6 +16,8 @@ export const brandSourceSchema = z.object({
 })
 
 const SHA256_HEX = /^[0-9a-f]{64}$/
+/** Figma plugin ids are long decimal numbers, e.g. 1686669081925353511. */
+const FIGMA_PLUGIN_ID = /^[0-9]{6,25}$/
 
 /** One row of a brand's tab bar: the tab and whether this brand shows it. Array order is the tab order. */
 export const brandTabSchema = z.object({
@@ -41,10 +43,34 @@ export const managedIntegrationsSchema = z.strictObject({
   storage: managed(sectionSchemas.storage),
 })
 
+/**
+ * A client organisation publishes the plugin under an id its own Figma account created, so a
+ * single-brand package writes these into its manifest.json. Omitted: the repo's manifest values.
+ */
+export const figmaPluginSchema = z.object({
+  id: z.optional(z.string().check(z.regex(FIGMA_PLUGIN_ID))),
+  name: z.optional(nonEmpty()),
+})
+
+export const DEPLOY_MODES = ['multi', 'single'] as const
+
+/**
+ * multi: one plugin for every brand, the access code picks the brand.
+ * single: the build ships one brand only and opens straight into it, with no sign-in.
+ * `BB_DEPLOY=<brand>` or `BB_DEPLOY=multi` overrides this for one build.
+ */
+export const deploySchema = z.object({
+  mode: z.enum(DEPLOY_MODES),
+  brand: z.optional(id()),
+})
+
 export const brandSchema = z.object({
   label: nonEmpty(),
-  /** SHA-256 of the brand's access code (normalised: trimmed, upper-cased). `npm run access-code -- <code>` prints it. */
-  accessCodeHash: z.string().check(z.regex(SHA256_HEX)),
+  /**
+   * SHA-256 of the brand's access code (normalised: trimmed, upper-cased). `npm run access-code -- <code>` prints it.
+   * Required in a multi-brand config; a single-brand build drops it, since nobody signs in.
+   */
+  accessCodeHash: z.optional(z.string().check(z.regex(SHA256_HEX))),
   source: brandSourceSchema,
   fallbackTokens: z._default(z.record(z.string().check(z.regex(TOKEN_KEY)), nonEmpty()), {}),
   /** Tab order and visibility for this brand. Omitted: every enabled tab, in persona order. */
@@ -53,6 +79,8 @@ export const brandSchema = z.object({
   personas: z.optional(brandPersonasSchema),
   /** Settings sections this brand manages. Omitted: each person fills every section in the plugin. */
   integrations: z.optional(managedIntegrationsSchema),
+  /** The plugin as it is published in this brand's own Figma organisation (single-brand builds only). */
+  figmaPlugin: z.optional(figmaPluginSchema),
 })
 
 export const personaSchema = z.object({
@@ -78,6 +106,7 @@ export const pluginConfigSchema = z.object({
   activePersona: id(),
   personas: z.record(id(), personaSchema),
   tabs: z.record(id(), tabSchema),
+  deploy: z._default(deploySchema, { mode: 'multi' }),
   window: z._default(
     z.object({
       width: z._default(z.int().check(z.gte(360), z.lte(760)), 480),
@@ -92,3 +121,6 @@ export type BrandConfig = z.infer<typeof brandSchema>
 export type PersonaConfig = z.infer<typeof personaSchema>
 export type TabConfig = z.infer<typeof tabSchema>
 export type BrandTabConfig = z.infer<typeof brandTabSchema>
+export type DeployConfig = z.infer<typeof deploySchema>
+export type DeployMode = (typeof DEPLOY_MODES)[number]
+export type FigmaPluginConfig = z.infer<typeof figmaPluginSchema>

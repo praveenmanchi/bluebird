@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { DEFAULT_INTEGRATIONS } from '@shared/integrations'
 import type { HandlerContext } from '@shared/bridge'
 import { MSG, type VersionDiff, type VersionsResult } from '../messages'
 import { MAX_STRUCTURE_ROWS, diffStructure, isAutosave, structureOf, toVersions, type RestFile } from '../versions'
 import { NO_FILE_KEY, NO_REST_KEY, createVersionsHandlers } from '../sandbox/versions-handlers'
+import { dualFileWith } from '@shared/integrations/testing'
 
 const page = (id: string, name: string, children: RestFile['document'][] = []) => ({ id, name, type: 'CANVAS', children: children as never })
 const node = (id: string, name: string, type = 'FRAME') => ({ id, name, type })
@@ -55,7 +55,7 @@ describe('versions handlers', () => {
   function setup(fileKey: string | null = 'FILE', token = 'figd_x') {
     const urls: string[] = []
     const handlers = createVersionsHandlers({
-      readDualFile: async () => ({ ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'LIB', file1Key: token }),
+      readDualFile: async () => dualFileWith(['LIB'], token),
       fetch: async (url) => {
         urls.push(url)
         const body = url.includes('/versions') ? { versions: [{ id: '7', created_at: '2026-11-12T09:00:00Z', label: 'v7', user: { handle: 'Praveen' } }] }

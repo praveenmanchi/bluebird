@@ -60,6 +60,24 @@ describe('History tab', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
+  it('searches Versioning by version name, description or author', async () => {
+    renderTab()
+    await find('GitHub connected')
+    fireEvent.click(screen.getByRole('tab', { name: 'Versioning' }))
+    await screen.findByRole('article', { name: 'Version: Button refresh ready for review' })
+    fireEvent.click(screen.getByRole('button', { name: 'Search the history' }))
+    const field = screen.getByRole('searchbox', { name: 'Search the team history' })
+    expect(field).toHaveAttribute('placeholder', 'Search versions by name, description or author')
+    fireEvent.input(field, { target: { value: 'anita' } })
+    const results = screen.getByRole('region', { name: 'Results for anita' })
+    expect(within(results).getAllByRole('article')).toHaveLength(2)
+    expect(screen.getByText(/The changes inside a version are not searched\./)).toBeInTheDocument()
+    fireEvent.input(field, { target: { value: 'carousel' } })
+    expect(screen.getByText('No version matches carousel')).toBeInTheDocument()
+    fireEvent.keyDown(field, { key: 'Escape' })
+    expect(screen.getAllByRole('article')).toHaveLength(5)
+  })
+
   it('opens an entry with its full changelog and comes back', async () => {
     renderTab()
     await find('GitHub connected')
@@ -101,6 +119,42 @@ describe('History tab', () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  it('searches for a pasted variable path and shows only the matching changes', async () => {
+    renderTab()
+    await find('GitHub connected')
+    const button = screen.getByRole('button', { name: 'Search the history' })
+    expect(button).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(button)
+    const field = screen.getByRole('searchbox', { name: 'Search the team history' })
+    fireEvent.input(field, { target: { value: 'button/bg/primary' } })
+    const results = screen.getByRole('region', { name: 'Search results' })
+    expect(within(results).getByText('Results for button/bg/primary')).toBeInTheDocument()
+    expect(within(results).getByText('Variable')).toBeInTheDocument()
+    expect(within(results).getAllByRole('article')).toHaveLength(2)
+    const card = screen.getByRole('article', { name: 'Extraction: Button refresh' })
+    const matches = within(card).getByRole('group', { name: '3 matches' })
+    expect(within(matches).getByText('button/bg/primary')).toBeInTheDocument()
+    expect(within(matches).getByText('#0C8CE9 → #0978C8 · Bridge, Ikea')).toBeInTheDocument()
+    expect(within(matches).queryByText('text/secondary')).toBeNull()
+  })
+
+  it('finds a Jira ticket and a colour, says when nothing matches, and closes on Escape', async () => {
+    renderTab()
+    await find('GitHub connected')
+    fireEvent.click(screen.getByRole('button', { name: 'Search the history' }))
+    const field = screen.getByRole('searchbox', { name: 'Search the team history' })
+    fireEvent.input(field, { target: { value: 'bb-342' } })
+    expect(screen.getAllByRole('article')).toHaveLength(1)
+    expect(screen.getByText('3 more in details')).toBeInTheDocument()
+    fireEvent.input(field, { target: { value: '#8a8a8a' } })
+    expect(screen.getByRole('article', { name: 'UX AI: Disabled text token' })).toBeInTheDocument()
+    fireEvent.input(field, { target: { value: 'Carousel' } })
+    expect(screen.getByText('Nothing touched Carousel')).toBeInTheDocument()
+    fireEvent.keyDown(field, { key: 'Escape' })
+    expect(screen.queryByRole('searchbox')).toBeNull()
+    expect(screen.getByRole('region', { name: 'Today' })).toBeInTheDocument()
   })
 
   it('shows the empty, not-connected and error states', async () => {

@@ -7,7 +7,7 @@ const LEAD: IntegrationSettings = {
   ...DEFAULT_INTEGRATIONS,
   github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'ghp_team', repo: 'acme/design-tokens' },
   storybook: { ...DEFAULT_INTEGRATIONS.storybook, baseUrl: 'https://ds.acme.com/storybook' },
-  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'AbC123', file1Key: 'figd_mine' },
+  dualFile: { ...DEFAULT_INTEGRATIONS.dualFile, token: 'figd_mine', files: [{ name: 'Core', id: 'AbC123', role: 'Variables + Components' }] },
 }
 // jsdom's File has no text(); the picker only needs name, size and text.
 const fileOf = (text: string, name = 'bridge-settings.json') => ({ name, size: text.length, text: async () => text }) as unknown as File
@@ -99,7 +99,7 @@ describe('TeamSetup export', () => {
 
 describe('TeamSetup import', () => {
   it('reviews the file, applies it and lists what still needs a key', async () => {
-    const applied: IntegrationSettings = { ...LEAD, dualFile: { ...LEAD.dualFile, file1Key: '' } }
+    const applied: IntegrationSettings = { ...LEAD, dualFile: { ...LEAD.dualFile, token: '' } }
     const importFile = vi.fn(async () => applied)
     const onImported = vi.fn()
     render(<TeamSetup settings={DEFAULT_INTEGRATIONS} importFile={importFile} onImported={onImported} />)

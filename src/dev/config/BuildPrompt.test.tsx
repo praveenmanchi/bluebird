@@ -50,4 +50,14 @@ describe('BuildPrompt', () => {
     expect(forThisSave(old, '2026-10-12T00:00:00.000Z')).toEqual({ status: 'idle' })
     expect(forThisSave(old, '2025-01-01T00:00:00.000Z')).toBe(old)
   })
+
+  it('builds and packages a single-brand deployment', async () => {
+    const posts = serveBuilds([{ status: 'idle' }, { status: 'passed', startedAt: '2999-01-01', finishedAt: '2999-01-01', exitCode: 0, output: '' }])
+    render(<BuildPrompt open onClose={() => undefined} script="package" brandLabel="Gap Inc." />)
+    expect(screen.getByRole('heading', { name: 'Saved. Build and package the plugin' })).toBeInTheDocument()
+    fireEvent.click(await screen.findByRole('button', { name: 'Build and package' }))
+    await waitFor(() => expect(posts).toEqual([JSON.stringify({ script: 'package' })]))
+    expect(await screen.findByRole('heading', { name: 'Plugin packaged' })).toBeInTheDocument()
+    expect(screen.getByText(/The zip for Gap Inc\. is in/)).toBeInTheDocument()
+  })
 })

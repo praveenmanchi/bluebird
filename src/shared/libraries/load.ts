@@ -3,7 +3,7 @@
 // fails keeps its slot with the reason, so the other file still answers.
 import * as z from 'zod/mini'
 import {
-  normalizeIntegration, sectionSchemas, validateIntegration,
+  defaultFileName, normalizeIntegration, sectionSchemas, validateIntegration,
   type ConnectionTestResult, type IntegrationValues,
 } from '@shared/integrations'
 import { createFigmaGet, LibraryError, type HttpFetch } from './rest'
@@ -11,11 +11,18 @@ import {
   toComponents, toStyles, toVariables,
   type RestComponentSetsResponse, type RestComponentsResponse, type RestNodesResponse, type RestStylesResponse, type RestVariablesResponse,
 } from './normalize'
-import type { LibraryFile, LibraryIndex, LibraryLoadResult, LibraryRole, LibraryStyle } from './types'
+import { fileLabel, type LibraryFile, type LibraryIndex, type LibraryLoadResult, type LibraryRole, type LibraryStyle } from './types'
 
 type DualFile = IntegrationValues<'dualFile'>
 
-export interface FileSpec { slot: number; fileKey: string; token: string; roles: readonly LibraryRole[] }
+export interface FileSpec {
+  slot: number
+  fileKey: string
+  token: string
+  roles: readonly LibraryRole[]
+  /** The name the person gave the file in Settings ("Core variables", "File 2"). */
+  label?: string
+}
 
 /** "Variables + Components" → both; an unknown value reads as both rather than dropping the file. */
 export function rolesOf(role: string): LibraryRole[] {
@@ -24,16 +31,12 @@ export function rolesOf(role: string): LibraryRole[] {
   return ['variables', 'components']
 }
 
-/** The files Settings describe. File 2 and every extra file borrow File 1's token when their own is empty. */
+/** The files Settings describe, in their order, each read with the one token. Rows without an ID are skipped. */
 export function filesFromSettings(s: DualFile): FileSpec[] {
-  const specs: FileSpec[] = []
-  const shared = s.file1Key.trim()
-  if (s.file1Id.trim()) specs.push({ slot: 1, fileKey: s.file1Id.trim(), token: shared, roles: rolesOf(s.file1Role) })
-  if (s.file2Id.trim()) specs.push({ slot: 2, fileKey: s.file2Id.trim(), token: (s.file2Key.trim() || shared), roles: rolesOf(s.file2Role) })
-  ;(s.extraFiles ?? []).forEach((f, i) => {
-    if (f.id.trim()) specs.push({ slot: i + 3, fileKey: f.id.trim(), token: f.key.trim() || shared, roles: rolesOf(f.role) })
-  })
-  return specs
+  const token = s.token.trim()
+  return (s.files ?? []).flatMap((f, i): FileSpec[] => f.id.trim()
+    ? [{ slot: i + 1, fileKey: f.id.trim(), token, roles: rolesOf(f.role), label: f.name.trim() || defaultFileName(i) }]
+    : [])
 }
 
 /** Why there is nothing to load, or null when there is. Stored values are re-checked before any token is sent. */
@@ -78,9 +81,9 @@ export async function readStyles(get: ReturnType<typeof createFigmaGet>, path: s
 
 /** Reads one file for its roles. Errors become the file's `error`; nothing is thrown. */
 export async function readFile(spec: FileSpec, fetchImpl: HttpFetch): Promise<FileRead> {
-  const label = `File ${spec.slot}`
+  const label = fileLabel(spec)
   const get = createFigmaGet(spec.token, label, fetchImpl)
-  const base: LibraryFile = { slot: spec.slot, fileKey: spec.fileKey, name: spec.fileKey, roles: spec.roles, variables: 0, components: 0, collections: [] }
+  const base: LibraryFile = { slot: spec.slot, fileKey: spec.fileKey, name: spec.fileKey, ...(spec.label ? { label: spec.label } : {}), roles: spec.roles, variables: 0, components: 0, collections: [] }
   const path = `/files/${encodeURIComponent(spec.fileKey)}`
   // The name is a nicety: a token without file_metadata:read still loads the library.
   const name = get<{ file?: { name?: string } }>(`${path}/meta`, 'meta').then((r) => r.file?.name ?? '', () => '')
@@ -136,7 +139,7 @@ export function describeFile(f: LibraryFile): string {
     ...(f.roles.includes('components') ? [count(f.components, 'published component')] : []),
     ...(f.styles ? [count(f.styles, 'published style')] : []),
   ]
-  return `File ${f.slot} “${f.name}”: ${parts.join(', ')}.${f.warning ? ` ${f.warning}` : ''}`
+  return `${fileLabel(f)} “${f.name}”: ${parts.join(', ')}.${f.warning ? ` ${f.warning}` : ''}`
 }
 
 /** Settings › Test Connection: the form's unsaved values, read for real (even while the switch is off). */

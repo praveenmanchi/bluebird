@@ -69,7 +69,7 @@ describe('integrations handlers', () => {
 })
 
 describe('brand-managed sections', () => {
-  const brands = { acme: { integrations: { github: { repo: 'acme/tokens', branch: 'develop' }, dualFile: { enabled: true, file1Id: 'ABC123' } } } }
+  const brands = { acme: { integrations: { github: { repo: 'acme/tokens', branch: 'develop' }, dualFile: { enabled: true, files: [{ name: 'Core', id: 'ABC123', role: 'Variables + Components' }] } } } }
   const signedIn = () => { const store = memoryStore(); store.data.set('bluebird:session', { brandId: 'acme', since: '2026-10-12' }); return store }
 
   it('reads the brand values over the person’s and stores only the person’s', async () => {
@@ -95,8 +95,8 @@ describe('brand-managed sections', () => {
 
   it('checks the rules on what the plugin acts on: a managed file still needs the person’s key', async () => {
     const h = createIntegrationsHandlers(signedIn(), brands)
-    await expect(call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: DEFAULT_INTEGRATIONS.dualFile })).rejects.toThrow('API key that can open File 1')
-    expect(await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, file1Key: 'figd_x' } })).toMatchObject({ file1Id: 'ABC123', file1Key: 'figd_x' })
+    await expect(call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: DEFAULT_INTEGRATIONS.dualFile })).rejects.toThrow('personal access token')
+    expect(await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, token: 'figd_x' } })).toMatchObject({ files: [{ name: 'Core', id: 'ABC123', role: 'Variables + Components' }], token: 'figd_x' })
   })
 })
 
@@ -107,17 +107,18 @@ describe('integrations:import', () => {
   it('applies a team setup file over the stored settings and answers with every section', async () => {
     const store = memoryStore()
     const h = createIntegrationsHandlers(store)
-    await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, file1Id: 'Old1', file1Key: 'figd_mine' } })
-    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: false, file: file({ github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { file1Id: 'New1', file1Key: 'figd_theirs' } }) }) as typeof DEFAULT_INTEGRATIONS
+    await call(h, INTEGRATIONS_MSG.save, { section: 'dualFile', values: { ...DEFAULT_INTEGRATIONS.dualFile, token: 'figd_mine', files: [{ name: 'Old', id: 'Old1', role: 'Variables' }] } })
+    const teamFiles = [{ name: 'Core', id: 'New1', role: 'Variables + Components' }]
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: false, file: file({ github: { apiKey: 'ghp_team', repo: 'acme/tokens' }, dualFile: { token: 'figd_theirs', files: teamFiles } }) }) as typeof DEFAULT_INTEGRATIONS
     expect(all.github).toMatchObject({ apiKey: 'ghp_team', repo: 'acme/tokens', branch: 'main' })
-    expect(all.dualFile).toMatchObject({ file1Id: 'New1', file1Key: 'figd_mine' })
+    expect(all.dualFile).toMatchObject({ files: teamFiles, token: 'figd_mine' })
     expect(await call(h, INTEGRATIONS_MSG.get)).toEqual(all)
   })
 
   it('stores Dual File IDs even though the person has not added a token yet', async () => {
     const h = createIntegrationsHandlers(memoryStore())
-    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: true, file: file({ dualFile: { file1Id: 'New1' } }) }) as typeof DEFAULT_INTEGRATIONS
-    expect(all.dualFile).toMatchObject({ file1Id: 'New1', file1Key: '' })
+    const all = await call(h, INTEGRATIONS_MSG.import, { keepExisting: true, file: file({ dualFile: { files: [{ name: 'Core', id: 'New1', role: 'Variables' }] } }) }) as typeof DEFAULT_INTEGRATIONS
+    expect(all.dualFile).toMatchObject({ files: [{ name: 'Core', id: 'New1', role: 'Variables' }], token: '' })
   })
 
   it('only fills empty fields when asked to keep existing values', async () => {

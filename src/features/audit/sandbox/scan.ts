@@ -3,7 +3,7 @@
 // Library Analytics can't do this: it has no page, selection or layer data.
 import { traverse } from '@shared/figma/traverse'
 import type { LibraryComponent } from '@shared/libraries/types'
-import type { AuditProgress, Hit, Scope } from '../messages'
+import type { AuditProgress, BoundPlace, Hit, Scope } from '../messages'
 import { readNodePaints, readNodeSpacing, type Scales } from './variables'
 
 export const cleanPageName = (name: string) => name.replace(/^[\s↳]+/, '').trim()
@@ -55,7 +55,7 @@ async function collectNested(main: ComponentNode, seenKeys: Set<string>, walked:
 const value = (origin: 'colour' | 'spacing', v: { key: string; name: string; hint: string }, node: SceneNode, page: string): Hit =>
   ({ origin, groupKey: v.key, name: v.name, hint: v.hint, nodeId: node.id, place: placeOf(node), page })
 
-export interface ScanOutput { hits: Hit[]; seenKeys: Set<string>; bound: number; visited: number }
+export interface ScanOutput { hits: Hit[]; seenKeys: Set<string>; bound: number; boundPlaces: BoundPlace[]; visited: number }
 
 /** `components` is null without a library: only the variable half runs. */
 export async function scan(scope: Scope, components: readonly LibraryComponent[] | null, scales: Scales, emit: (p: AuditProgress) => void): Promise<ScanOutput> {
@@ -65,6 +65,7 @@ export async function scan(scope: Scope, components: readonly LibraryComponent[]
   const hits: Hit[] = []
   const seenKeys = new Set<string>()
   const walked = new Set<string>()
+  const boundPlaces = new Map<string, BoundPlace>()
   let bound = 0
   let visited = 0
   const roots = rootsOf(scope)
@@ -86,7 +87,12 @@ export async function scan(scope: Scope, components: readonly LibraryComponent[]
       if (node.type === 'INSTANCE') { if (components) instances.push(node); return }
       if (components && node.type === 'FRAME' && node.detachedInfo) detached.push(node)
       const paints = readNodePaints(node, scales.colours)
-      bound += paints.bound
+      if (paints.bound) {
+        bound += paints.bound
+        const place = placeOf(node)
+        const at = boundPlaces.get(place.id)
+        boundPlaces.set(place.id, { place, page: root.pageName, count: (at?.count ?? 0) + paints.bound })
+      }
       for (const v of paints.found) hits.push(value('colour', v, node, root.pageName))
       for (const v of readNodeSpacing(node, scales.scale)) hits.push(value('spacing', v, node, root.pageName))
     }, {
@@ -124,5 +130,5 @@ export async function scan(scope: Scope, components: readonly LibraryComponent[]
   } finally {
     figma.skipInvisibleInstanceChildren = skippedBefore
   }
-  return { hits, seenKeys, bound, visited }
+  return { hits, seenKeys, bound, boundPlaces: [...boundPlaces.values()], visited }
 }

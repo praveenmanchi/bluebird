@@ -11,6 +11,8 @@ const BUMP_LABEL: Record<VersionBump, string> = { patch: 'Patch', minor: 'Minor'
 export interface VersionOptionProps extends Omit<JSX.HTMLAttributes<HTMLLabelElement>, 'name' | 'onSelect' | 'selected' | 'value'> {
   /** Figma "Bump": Patch / Minor / Major — the title text and the radio value. */
   bump?: VersionBump
+  /** Hides the Bump title, for option cards that aren't a version bump (Audit's scope cards). Not a Figma variant. */
+  showBump?: boolean
   /** Figma "Version". */
   version?: string
   /** Figma "Hint". */
@@ -30,6 +32,7 @@ export interface VersionOptionProps extends Omit<JSX.HTMLAttributes<HTMLLabelEle
 /** Figma "Version Option" (40000341:8566): one selectable semver bump card — a native radio inside a label. */
 export function VersionOption({
   bump = 'patch',
+  showBump = true,
   version = 'v2.5.0',
   hint = 'New tokens or components',
   suggested = false,
@@ -54,14 +57,16 @@ export function VersionOption({
         value={bump}
         checked={selected}
         disabled={disabled}
-        aria-labelledby={`${bumpId} ${versionId}`}
+        aria-labelledby={showBump ? `${bumpId} ${versionId}` : versionId}
         aria-describedby={suggested ? `${suggestedId} ${hintId}` : hintId}
         onChange={() => onSelect?.()}
       />
-      <span class="bb-version-option__top">
-        <span id={bumpId} class="bb-version-option__bump">{BUMP_LABEL[bump]}</span>
-        {suggested && <MetaBadge id={suggestedId} tone="accent" class="bb-version-option__suggested">Suggested</MetaBadge>}
-      </span>
+      {(showBump || suggested) && (
+        <span class="bb-version-option__top">
+          {showBump && <span id={bumpId} class="bb-version-option__bump">{BUMP_LABEL[bump]}</span>}
+          {suggested && <MetaBadge id={suggestedId} tone="accent" class="bb-version-option__suggested">Suggested</MetaBadge>}
+        </span>
+      )}
       <span id={versionId} class="bb-version-option__version">{version}</span>
       <span id={hintId} class="bb-version-option__hint">{hint}</span>
     </label>

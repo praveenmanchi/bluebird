@@ -2,6 +2,7 @@
 import { computed, signal } from '@preact/signals'
 import type { HistoryEntry, HistoryType } from '@shared/history/types'
 import type { ChangelogContext, ChangelogDraft, FileVersion, ListResult, RangeDays, TicketsResult, VersionDiff, VersionsResult } from './messages'
+import { parseQuery, searchEntries, searchVersions, type EntryMatch, type SearchQuery } from './search'
 
 /** Versioning is not a History type: it reads the open file's Figma versions. Code Connect is no longer listed. */
 export type FeatureFilter = 'all' | Exclude<HistoryType, 'code-connect'> | 'versioning'
@@ -22,6 +23,22 @@ export const fresh = signal<{ count: number; by: readonly string[] } | null>(nul
 
 export const entries = computed<readonly HistoryEntry[]>(() => (result.value?.entries ?? []).filter((e) => e.type !== 'code-connect'))
 export const shown = computed(() => feature.value === 'all' ? entries.value : entries.value.filter((e) => e.type === feature.value))
+
+// ── Search ──
+/** The search bar under the header is open. */
+export const searchOpen = signal(false)
+export const searchText = signal('')
+/** What the bar holds, read as a ticket, colour, variable path or component; null while it is empty or closed. */
+export const searchQuery = computed<SearchQuery | null>(() => searchOpen.value ? parseQuery(searchText.value) : null)
+/** The shown entries that touched the query, each with only its matching changes. */
+export const searchMatches = computed<readonly EntryMatch[] | null>(() => searchQuery.value ? searchEntries(shown.value, searchQuery.value) : null)
+/** Versioning: the versions whose name, description or author hold the query; null while the bar is empty or closed. */
+export const versionMatches = computed<readonly FileVersion[] | null>(() => searchOpen.value && searchText.value.trim() ? searchVersions(versionsResult.value?.versions ?? [], searchText.value) : null)
+
+export function closeSearch(): void {
+  searchOpen.value = false
+  searchText.value = ''
+}
 
 // ── Versioning ──
 export const versionsResult = signal<VersionsResult | null>(null)
@@ -97,6 +114,7 @@ export function reset(): void {
   days.value = 7
   feature.value = 'all'
   showAll.value = false
+  closeSearch()
   selected.value = null
   fresh.value = null
   flash.value = null

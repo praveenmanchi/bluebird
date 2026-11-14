@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { applyBrandPatch, ConfigPatchError, formatConfig } from '../../tools/dev-config/config-api'
+import { applyBrandPatch, applyDeployPatch, ConfigPatchError, formatConfig } from '../../tools/dev-config/config-api'
 import { ConfigError } from '../../src/shared/config/load'
 
 // jsdom gives import.meta.url an http: scheme; vitest runs from the repo root.
@@ -49,3 +49,29 @@ describe('applyBrandPatch', () => {
     expect(formatConfig(raw())).toBe(readFileSync(CONFIG, 'utf8'))
   })
 })
+
+describe('applyDeployPatch', () => {
+  it('switches to one brand and stores its Figma plugin, keeping everything else', () => {
+    const before = raw()
+    const next = applyDeployPatch(before, { deploy: { mode: 'single', brand: 'gap' }, figmaPlugin: { gap: { id: '1234567890123', name: ' ' } } })
+    expect(next.deploy).toEqual({ mode: 'single', brand: 'gap' })
+    expect(next.brand.brands.gap).toMatchObject({ label: before.brand.brands.gap!.label, figmaPlugin: { id: '1234567890123' } })
+    expect(next.brand.brands.ikea).toEqual(before.brand.brands.ikea)
+    expect(before).not.toHaveProperty('deploy.brand')
+  })
+
+  it('goes back to multi-brand without a brand, and clears a plugin with null', () => {
+    const single = applyDeployPatch(raw(), { deploy: { mode: 'single', brand: 'gap' }, figmaPlugin: { gap: { id: '1234567890123' } } })
+    const multi = applyDeployPatch(single, { deploy: { mode: 'multi', brand: 'gap' }, figmaPlugin: { gap: null } })
+    expect(multi.deploy).toEqual({ mode: 'multi' })
+    expect(multi.brand.brands.gap).not.toHaveProperty('figmaPlugin')
+  })
+
+  it('refuses malformed patches, unknown brands and configs that would not build', () => {
+    expect(() => applyDeployPatch(raw(), { deploy: { mode: 'solo' } })).toThrow(ConfigPatchError)
+    expect(() => applyDeployPatch(raw(), { deploy: { mode: 'multi' }, figmaPlugin: { nike: { id: '1234567' } } })).toThrow('Brand "nike" isn’t in plugin.config.json.')
+    expect(() => applyDeployPatch(raw(), { deploy: { mode: 'single', brand: 'nike' } })).toThrow(ConfigError)
+    expect(() => applyDeployPatch(null, { deploy: { mode: 'multi' } })).toThrow(ConfigPatchError)
+  })
+})
+

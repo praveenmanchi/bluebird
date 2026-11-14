@@ -122,7 +122,6 @@
 .cfg-integration__fields :is(.bb-input, .bb-toggle, .bb-select-field, .bb-text-area) { width: 100%; max-width: none; }
 @container (min-width: 560px) { /* allow-raw: same layout breakpoint as SettingsIntegrations.css */
   .cfg-integration__fields[data-columns="halves"] .bb-integrations__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .cfg-integration__fields[data-columns="narrow-wide"] .bb-integrations__row { grid-template-columns: var(--bb-derived-settings-integrations-dual-file-r1-column-1-width) minmax(0, 1fr); }
 }
 
 /* ---------- "Rebuild the plugin" dialog after a Save ---------- */
@@ -152,3 +151,8 @@
   white-space: pre-wrap;
 }
 .cfg-dialog__actions { display: flex; justify-content: flex-end; gap: var(--bb-space-inline-md); }
+
+/* ---------- Deployment dialog ---------- */
+.cfg-deploy__fields { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); }
+.cfg-deploy__list { margin: 0; padding-inline-start: var(--bb-space-inset-lg); font-size: var(--bb-font-size-caption); color: var(--bb-card-variable-meta-fg); line-height: 1.5; }
+.cfg-dialog__hint[data-tone="error"] { color: var(--bb-input-border-error); }

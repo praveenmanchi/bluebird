@@ -5,12 +5,14 @@ import { approveChangelog, loadVersions, openChangelog, openLink, refresh } from
 import { FILTER_LABEL, groupEntries } from '../format'
 import {
   FEATURE_FILTERS, approveError, approvePostToJira, approving, changelogPhase, current, days, entries, error, feature, flash, fresh, loading, polling, reset, result, selected, showAll, shown, versionsResult,
+  closeSearch, searchMatches, searchOpen,
   type FeatureFilter,
 } from '../state'
 import { ChangelogDialog } from './ChangelogDialog'
 import { EntryCard } from './EntryCard'
 import { EntryDetails } from './EntryDetails'
 import { RangeSelect } from './RangeSelect'
+import { HISTORY_PLACEHOLDER, HistorySearchBar, SearchResults, VERSIONS_PLACEHOLDER } from './SearchResults'
 import { VersionsView } from './Versions'
 import './history.css'
 
@@ -88,13 +90,27 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
             <button
               type="button"
               class="bb-history__refresh"
+              aria-label="Search the history"
+              title={versioning ? 'Find a version by name, description or author' : 'Find a variable, colour, Jira ticket or component'}
+              aria-expanded={searchOpen.value}
+              aria-controls="bb-history-search"
+              data-active={String(searchOpen.value)}
+              onClick={() => { if (searchOpen.value) closeSearch(); else searchOpen.value = true }}
+            >
+              <Icon name="search" aria-hidden="true" />
+            </button>
+          )}
+          {connected && (
+            <button
+              type="button"
+              class="bb-history__refresh"
               aria-label="Refresh"
               title={every ? `Checks for teammates’ changes automatically · checked ${new Date(r!.fetchedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}` : 'Refresh'}
               data-busy={String(loading.value || polling.value)}
               disabled={loading.value}
               onClick={() => { void refresh(rpc); if (feature.value === 'versioning') void loadVersions(rpc) }}
             >
-              <Icon name="ui-prototype-loop" aria-hidden="true" />
+              <Icon name="status-retry" aria-hidden="true" />
             </button>
           )}
           {connected && (
@@ -103,6 +119,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
             </button>
           )}
         </div>
+        {connected && searchOpen.value && <HistorySearchBar placeholder={versioning ? VERSIONS_PLACEHOLDER : HISTORY_PLACEHOLDER} />}
         {connected && (
           <div class="bb-history__filters">
             <RangeSelect value={days.value} disabled={loading.value} onChange={(d) => { showAll.value = false; void refresh(rpc, d).then(() => { if (versionsResult.value) void loadVersions(rpc, d) }) }} />
@@ -128,6 +145,8 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         <PublishEmptyState state="not-connected" title="Connect the history repository" body={`${r.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Everyone who uses the same repository sees the same history.`} actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]} />
       ) : versioning ? (
         <VersionsView now={now()} />
+      ) : searchMatches.value ? (
+        <SearchResults matches={searchMatches.value} days={days.value} feature={filtered ? featureLabel(feature.value) : ''} jiraSite={site} onOpen={(id) => { selected.value = id }} onOpenUrl={open} />
       ) : !list.length ? (
         <PublishEmptyState state="first-release" title="No history yet" body={filtered && feature.value === 'changelog' ? `No changelogs in the last ${days.value} days. Press + on a branch to generate one.` : filtered ? `Nobody on the team used ${featureLabel(feature.value)} in the last ${days.value} days.` : `Extractions, reports, changelogs, MCP pushes and UX AI answers from everyone on the team show up here. Nothing in the last ${days.value} days.`} actions={[]} />
       ) : (
@@ -143,7 +162,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
         ))
       )}
       {changelogPhase.value !== 'closed' && <ChangelogDialog />}
-      {filtered && !versioning && !showAll.value && list.length > PAGE_SIZE && <LinkButton class="bb-history__more" onClick={() => { showAll.value = true }}>Show {list.length - PAGE_SIZE} more</LinkButton>}
+      {filtered && !versioning && !searchMatches.value && !showAll.value && list.length > PAGE_SIZE && <LinkButton class="bb-history__more" onClick={() => { showAll.value = true }}>Show {list.length - PAGE_SIZE} more</LinkButton>}
     </div>
   )
 }
