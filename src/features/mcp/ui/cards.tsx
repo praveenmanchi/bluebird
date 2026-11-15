@@ -13,13 +13,13 @@ export function Card({ label, children }: { label: string; children: ComponentCh
 
 /** The switch's short names; Settings and the prompt use MCP_SCENARIO_LABEL. */
 export const SCENARIO_TAB: Readonly<Record<McpScenario, string>> = { component: 'Component', screen: 'Screen', library: 'Library update' }
-const SCENARIO_ICON: Readonly<Record<McpScenario, IconName>> = { component: 'ui-toolbar-component', screen: 'ui-toolbar-frame', library: 'ui-sidebar-libraries' }
+const SCENARIO_ICON: Readonly<Record<McpScenario, IconName>> = { component: 'component-audit', screen: 'ui-toolbar-frame', library: 'ui-sidebar-libraries' }
 
-/** Figma "Scenario": Component / Screen / Library update. It follows the selection; picking one overrides that. */
+/** Figma "Scenario": Component / Screen / Library update, above the Stepper on the first step and full width. It follows the selection; picking one overrides that (and restarts at step 1). */
 export function ScenarioSwitch() {
   return (
     <SegmentedControl
-      class="bb-mcp-handoff__files"
+      class="bb-mcp-handoff__scenario"
       aria-label="Scenario"
       options={MCP_SCENARIOS.map((id) => ({ value: id, label: SCENARIO_TAB[id], icon: SCENARIO_ICON[id] }))}
       value={kind.value}

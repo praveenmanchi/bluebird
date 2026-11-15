@@ -4,7 +4,7 @@ import { namesToFind, releaseLabel, shortDate } from '../../library'
 import type { LibraryRelease } from '../../messages'
 import { issueError, issueKey, release, releases, releasesPhase, releasesProblem, selectRelease } from '../../state'
 import { ActionBar } from '../ActionBar'
-import { Card, ScenarioSwitch } from '../cards'
+import { Card } from '../cards'
 import { OptionSelect } from '../OptionSelect'
 
 export interface ChangesStepProps {
@@ -86,7 +86,6 @@ export function ChangesStep({ onImpact, onReload, onOpenUrl }: ChangesStepProps)
   return (
     <>
       <div class="bb-mcp-handoff__panels">
-        <ScenarioSwitch />
         <Card label="Library release">
           <SectionTitle title="Library release" showCount={false} actionLabel="Refresh" onAction={onReload} />
           {phase === 'loading' && <div class="bb-mcp-handoff__loading" role="status"><Spinner tone="accent" size="sm" label="Reading the team History" /><span class="bb-mcp-handoff__caption">Reading the team History…</span></div>}

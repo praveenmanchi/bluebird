@@ -97033,7 +97033,7 @@
               "p": "Tone=Neutral",
               "t": "COMPONENT",
               "b": {
-                "fill": "a11y/surface/sunken",
+                "fill": "a11y/surface/panel",
                 "stroke": "a11y/surface/panel-border",
                 "strokeWeight": "a11y/border-width",
                 "radius": "a11y/radius/control",
@@ -97187,7 +97187,7 @@
               "p": "Tone=Success",
               "t": "COMPONENT",
               "b": {
-                "fill": "a11y/surface/sunken",
+                "fill": "a11y/surface/panel",
                 "stroke": "a11y/surface/panel-border",
                 "strokeWeight": "a11y/border-width",
                 "radius": "a11y/radius/control",
@@ -97341,7 +97341,7 @@
               "p": "Tone=Warning",
               "t": "COMPONENT",
               "b": {
-                "fill": "a11y/surface/sunken",
+                "fill": "a11y/surface/panel",
                 "stroke": "a11y/surface/panel-border",
                 "strokeWeight": "a11y/border-width",
                 "radius": "a11y/radius/control",
@@ -97495,7 +97495,7 @@
               "p": "Tone=Danger",
               "t": "COMPONENT",
               "b": {
-                "fill": "a11y/surface/sunken",
+                "fill": "a11y/surface/panel",
                 "stroke": "a11y/surface/panel-border",
                 "strokeWeight": "a11y/border-width",
                 "radius": "a11y/radius/control",
@@ -97649,7 +97649,7 @@
               "p": "Tone=Empty",
               "t": "COMPONENT",
               "b": {
-                "fill": "a11y/surface/sunken",
+                "fill": "a11y/surface/panel",
                 "stroke": "a11y/surface/panel-border",
                 "strokeWeight": "a11y/border-width",
                 "radius": "a11y/radius/control",

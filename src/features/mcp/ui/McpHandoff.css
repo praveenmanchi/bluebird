@@ -30,6 +30,9 @@
   overflow-y: auto;
 }
 .bb-mcp-handoff__panels > * { flex: none; }
+/* Figma "Scenario" above the Stepper: the Tab sub menu fills the column and its three items share it equally. */
+.bb-mcp-handoff__scenario { flex-shrink: 0; }
+.bb-mcp-handoff__scenario .bb-segmented-control__segment { flex: 1 1 0; }
 .bb-mcp-handoff__card {
   display: flex;
   flex-direction: column;
@@ -107,4 +110,14 @@
 .bb-mcp-handoff__summary {
   flex: 1 1 10rem; /* allow-raw: layout breakpoint or wrap threshold, not a Figma value */
   min-width: 0;
+}
+/* The buttons stay on one row: when the bar is too narrow the summary takes its own line above them. */
+.bb-mcp-handoff__buttons {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--bb-mcp-space-inline);
+  max-width: 100%;
+  margin-inline-start: auto;
 }

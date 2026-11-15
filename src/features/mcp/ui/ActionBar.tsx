@@ -21,10 +21,12 @@ export function ActionBar({ summary, secondary = [], primary }: ActionBarProps) 
   return (
     <div class="bb-mcp-handoff__actions">
       <p class="bb-mcp-handoff__summary" role="status">{notice.value ?? summary}</p>
-      {secondary.map((a) => (
-        <Button key={a.label} variant="secondary" disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>
-      ))}
-      {primary && <Button variant="primary" disabled={primary.disabled} loading={primary.loading} onClick={primary.onClick}>{primary.label}</Button>}
+      <div class="bb-mcp-handoff__buttons">
+        {secondary.map((a) => (
+          <Button key={a.label} variant="secondary" disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>
+        ))}
+        {primary && <Button variant="primary" disabled={primary.disabled} loading={primary.loading} onClick={primary.onClick}>{primary.label}</Button>}
+      </div>
     </div>
   )
 }
