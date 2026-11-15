@@ -15247,7 +15247,12 @@
       "key": "65a35f951161914d5c309c8f5f2d7b5bbd6aaca7",
       "name": "search bar",
       "description": "Variable search field with search icon.",
-      "props": {},
+      "props": {
+        "Show icon": {
+          "type": "BOOLEAN",
+          "default": true
+        }
+      },
       "variants": [
         {
           "id": "7:44532",
@@ -15312,6 +15317,9 @@
                   14,
                   14
                 ]
+              },
+              "pr": {
+                "visible": "Show icon"
               }
             },
             {

@@ -10,6 +10,8 @@ export interface SearchBarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>,
   /** Accessible name of the search field. */
   label?: string
   disabled?: boolean
+  /** Figma "Show icon": the trailing `search` glyph. Off where a Search button sits beside the field. Default true. */
+  showIcon?: boolean
   /** Fired with the new query on every keystroke. */
   onValueChange?: (value: string) => void
   /** Fired when Enter is pressed in the field. */
@@ -19,7 +21,7 @@ export interface SearchBarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>,
 }
 
 /** Figma "search bar" (7:44532): a bordered field with the `search` glyph trailing the query. */
-export function SearchBar({ value, placeholder = 'Search variables', label = 'Search', disabled, onValueChange, onSubmit, inputProps, class: cls, ...rest }: SearchBarProps) {
+export function SearchBar({ value, placeholder = 'Search variables', label = 'Search', disabled, showIcon = true, onValueChange, onSubmit, inputProps, class: cls, ...rest }: SearchBarProps) {
   return (
     <div {...rest} role="search" class={`bb-search-bar ${cls ?? ''}`} data-disabled={disabled || undefined}>
       <input
@@ -33,7 +35,7 @@ export function SearchBar({ value, placeholder = 'Search variables', label = 'Se
         onInput={(e) => onValueChange?.((e.currentTarget as HTMLInputElement).value)}
         onKeyDown={(e) => { if (e.key === 'Enter') onSubmit?.((e.currentTarget as HTMLInputElement).value) }}
       />
-      <span class="bb-search-bar__icon"><Icon name="search" /></span>
+      {showIcon && <span class="bb-search-bar__icon"><Icon name="search" /></span>}
     </div>
   )
 }

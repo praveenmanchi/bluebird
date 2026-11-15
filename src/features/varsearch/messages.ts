@@ -10,6 +10,8 @@ export const MSG = {
   goto: 'varsearch:goto',
   recent: 'varsearch:recent',
   recentClear: 'varsearch:recent-clear',
+  /** Add to Figma: draws the search report as a frame on the current page. */
+  report: 'varsearch:report',
 } as const
 
 /** Figma screens' Type filter: Frame / Component / Text style. Empty = all types. */
@@ -77,6 +79,8 @@ export interface SearchResult {
   scannedPages: number
   visited: number
   durationMs: number
+  /** The file's key, for the Figma links in a copied report; null when Figma does not expose it. */
+  fileKey?: string | null
 }
 
 export interface SearchProgress {

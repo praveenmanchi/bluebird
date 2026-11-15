@@ -5,6 +5,9 @@ import {
   MSG, searchRequestSchema, selectRequestSchema, gotoRequestSchema, recentRequestSchema, recentSearchSchema,
   type GotoResult, type PagesResult, type RecentSearch, type SearchProgress, type SearchResult, type SelectResult,
 } from '../messages'
+import type { ReportResult } from '../report'
+import { reportRequestSchema } from '../reportSchema'
+import { drawReport } from './report-canvas'
 import { scan } from './scan'
 
 export const RECENT_KEY = 'bluebird:varsearch:recent'
@@ -19,7 +22,15 @@ function pages(): PagesResult {
 
 async function search(payload: unknown, ctx: HandlerContext): Promise<SearchResult> {
   const request = searchRequestSchema.parse(payload)
-  return scan(request, (p) => ctx.emit(MSG.progress, p satisfies SearchProgress))
+  const result = await scan(request, (p) => ctx.emit(MSG.progress, p satisfies SearchProgress))
+  // The key is only exposed to private plugins; the copied report leaves its links out without it.
+  return { ...result, fileKey: figma.fileKey ?? null }
+}
+
+/** Add to Figma: draws the whole search's report on the current page and selects it. */
+async function report(payload: unknown): Promise<ReportResult> {
+  const { report: model } = reportRequestSchema.parse(payload)
+  return drawReport(model)
 }
 
 function pageOf(node: BaseNode): PageNode | null {
@@ -89,4 +100,5 @@ export const handlers: HandlerMap = {
   [MSG.goto]: goto,
   [MSG.recent]: recent,
   [MSG.recentClear]: recentClear,
+  [MSG.report]: report,
 }

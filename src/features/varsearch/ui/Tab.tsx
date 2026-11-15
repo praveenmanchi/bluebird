@@ -1,14 +1,18 @@
+import { Fragment } from 'preact'
 import { useEffect } from 'preact/hooks'
 import { Button, EmptyState, LinkButton, Notice, SearchBar, SectionTitle, VariableCard, useRpc } from '@shared/ui'
-import { pageScopeIds, relativeTime, typesLabel, variableMeta, type PageScope } from '../format'
+import { copyText } from '@shared/clipboard'
+import { pageScopeIds, pageScopeLabel, relativeTime, typesLabel, variableMeta, type PageScope } from '../format'
+import { buildReport, reportText, type ReportResult, type SearchReport } from '../report'
 import {
   MIN_QUERY, MSG,
   type GotoResult, type PagesResult, type RecentSearch, type SearchProgress, type SearchResult, type SelectResult, type Usage, type VariableMatch,
 } from '../messages'
 import {
-  pages, currentPageId, pageScope, types, query, status, progress, result, error, expanded, recent, toast, reset, type Toast,
+  pages, currentPageId, pageScope, types, query, status, progress, result, error, expanded, recent, recentResults, recentOpen, toast, reset, currentGeneration, searchedAt, adding, type Toast,
 } from '../state'
 import { PagesFilter, TypesFilter } from './Filters'
+import { ReportBar } from './ReportBar'
 import { ResultCard } from './Results'
 import './variable-search.css'
 
@@ -55,9 +59,13 @@ export function Tab() {
     progress.value = null
     error.value = null
     result.value = null
+    const started = currentGeneration()
     try {
       const r = await rpc.call<SearchResult>(MSG.search, { query: q, pageIds: pageScopeIds(pageScope.value, currentPageId.value), types: types.value }, 300_000)
+      if (currentGeneration() !== started) return // the tab was closed while scanning
+      searchedAt.value = Date.now()
       result.value = r
+      recentResults.value = new Map([...recentResults.value, ...r.variables.map((v): [string, VariableMatch] => [v.name, v])])
       expanded.value = new Set(r.variables.slice(0, 1).map((v) => v.id))
       status.value = 'done'
       const top = r.variables[0]
@@ -66,6 +74,7 @@ export function Tab() {
         rpc.call<RecentSearch[]>(MSG.recent, { add }).then((list) => { recent.value = list }).catch(() => undefined)
       }
     } catch (e: unknown) {
+      if (currentGeneration() !== started) return
       error.value = message(e, 'Search failed')
       status.value = 'error'
     }
@@ -76,6 +85,14 @@ export function Tab() {
     result.value = null
     error.value = null
   }
+
+  /** Opening a recent search shows what this session already found; only its Inspect button scans again. */
+  const toggleRecent = (name: string, open: boolean) => {
+    const next = new Set(recentOpen.value)
+    if (open) next.add(name); else next.delete(name)
+    recentOpen.value = next
+  }
+  const searchAgain = (name: string) => { query.value = name; void run(name) }
 
   const toggle = (id: string, open: boolean) => {
     const next = new Set(expanded.value)
@@ -112,18 +129,45 @@ export function Tab() {
   const busy = status.value === 'searching'
   const r = result.value
 
+  /** The whole search as one report: Copy and Add to Figma share it. */
+  const currentReport = (): SearchReport | null => r && buildReport(r, {
+    scope: pageScopeLabel(pageScope.value, pages.value),
+    types: typesLabel(types.value),
+    at: new Date(searchedAt.value ?? Date.now()),
+  })
+
+  async function copyReport() {
+    const report = currentReport()
+    if (!report) return
+    const ok = await copyText(reportText(report))
+    if (!ok) { notify({ tone: 'error', title: 'Copying is blocked in this window', body: 'Use Add to Figma instead, or try again after clicking in the plugin.' }); return }
+    const links = report.fileKey ? ' and a Figma link for each' : ''
+    notify({ tone: 'info', title: 'Copied the search report', body: `${report.details[2]![1]}${links} — ready to paste into a Jira ticket or a Teams chat.` })
+  }
+
+  async function addReport() {
+    const report = currentReport()
+    if (!report || adding.value) return
+    adding.value = true
+    try {
+      const done = await rpc.call<ReportResult>(MSG.report, { report }, 60_000)
+      notify({ tone: 'info', title: 'Added the search report to this page', body: `“${done.frameName}” is on ${done.page}, to the right of your frames, with a link to each component.` })
+    } catch (e: unknown) { fail(e) } finally { adding.value = false }
+  }
+
   return (
     <div class="bb-varsearch">
       <div class="bb-varsearch__toolbar" role="toolbar" aria-label="Variable search">
         <PagesFilter pages={pages.value} currentPageId={currentPageId.value} scope={pageScope.value} disabled={busy} onChange={(s) => { pageScope.value = s }} />
         <TypesFilter types={types.value} disabled={busy} onChange={(t) => { types.value = t }} />
-        <SearchBar class="bb-varsearch__search" value={query.value} label="Variable name" disabled={busy}
+        <SearchBar class="bb-varsearch__search" value={query.value} label="Variable name" disabled={busy} showIcon={false}
           onValueChange={(v) => { query.value = v }} onSubmit={(v) => { void run(v) }} />
         <Button class="bb-varsearch__go" aria-label="Search" leadingIcon="ui-sidebar-search" loading={busy} disabled={query.value.trim().length < MIN_QUERY} onClick={() => { void run() }}>
           Search
         </Button>
       </div>
 
+      <div class="bb-varsearch__main">
       <div class="bb-varsearch__content">
         {busy && (
           <>
@@ -171,12 +215,25 @@ export function Tab() {
             <TitleRow title="Recent searches" action="Clear all" onAction={() => {
               rpc.call<RecentSearch[]>(MSG.recentClear).then((list) => { recent.value = list }).catch(() => undefined)
             }} />
-            {recent.value.map((s) => (
-              <VariableCard key={s.name} kind={s.textLike ? 'text-style' : 'variable'} name={s.name} meta={s.meta}
-                updated={relativeTime(s.at)} changeCount={s.usage} expanded={false}
-                onToggle={() => { query.value = s.name; void run(s.name) }}
-                onInspect={() => { query.value = s.name; void run(s.name) }} />
-            ))}
+            {recent.value.map((s) => {
+              const open = recentOpen.value.has(s.name)
+              const found = recentResults.value.get(s.name)
+              if (open && found) {
+                return (
+                  <ResultCard key={s.name} variable={found} expanded onToggle={(o) => toggleRecent(s.name, o)}
+                    onSelectAll={() => searchAgain(s.name)} onShowLayers={(u) => { void showLayers(u) }} onGoTo={(u) => { void goTo(u) }} />
+                )
+              }
+              return (
+                <Fragment key={s.name}>
+                  <VariableCard kind={s.textLike ? 'text-style' : 'variable'} name={s.name} meta={s.meta}
+                    updated={relativeTime(s.at)} changeCount={s.usage} expanded={open}
+                    onToggle={(o) => toggleRecent(s.name, o)}
+                    onInspect={() => searchAgain(s.name)} />
+                  {open && <p class="bb-varsearch__status">Results from an earlier session aren’t kept. Use Inspect to search for it again.</p>}
+                </Fragment>
+              )
+            })}
           </>
         )}
 
@@ -187,6 +244,11 @@ export function Tab() {
 
       {toast.value && (
         <Notice class="bb-varsearch__toast" tone={toast.value.tone} title={toast.value.title} aria-live="polite">{toast.value.body}</Notice>
+      )}
+      </div>
+
+      {status.value === 'done' && r && r.variables.length > 0 && (
+        <ReportBar summary={currentReport()!.details[2]![1]} adding={adding.value} onCopy={() => { void copyReport() }} onAdd={() => { void addReport() }} />
       )}
     </div>
   )
