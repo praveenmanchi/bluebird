@@ -1,9 +1,9 @@
-import { ChangeItem, ChangeRow, LinkButton, MetaBadge, PublishEmptyState, SectionTitle, SegmentedControl } from '@shared/ui'
+import { ChangeCount, ChangeItem, ChangeRow, LinkButton, MetaBadge, PublishEmptyState, SectionTitle, SegmentedControl, type ChangeCountType } from '@shared/ui'
 import { copyText } from '@shared/clipboard'
 import { useState } from 'preact/hooks'
 import type { Change } from '@shared/design/types'
 import { countKinds, diffJson } from '../model'
-import { modeMeta, plural } from '../format'
+import { plural } from '../format'
 import { changes, expanded, filter, result, showAll, type ChangeFilter } from '../state'
 
 /** How many changes show before "Show N more". */
@@ -18,15 +18,23 @@ function pickFilter(id: ChangeFilter): void {
   showAll.value = false
 }
 
+const MODE_KINDS = ['added', 'modified', 'removed'] as const satisfies readonly ChangeCountType[]
+
+/** Figma "By brand mode": one row per mode, the mode name then a Change count chip per non-zero kind. */
 function ByMode() {
   const modes = result.value!.modes
   if (!modes.length) return null
   return (
     <section class="bb-extraction__card" aria-label="Changes by brand mode">
       <SectionTitle title="Changes by brand mode" showCount count={modes.length} showAction={false} />
-      <div class="bb-extraction__badges">
-        {modes.map((m) => <MetaBadge key={m.mode} tone="neutral" meta={modeMeta(m)}>{m.mode}</MetaBadge>)}
-      </div>
+      <ul class="bb-extraction__modes" aria-label="Brand modes">
+        {modes.map((m) => (
+          <li key={m.mode} class="bb-extraction__mode">
+            <span class="bb-extraction__mode-name">{m.mode}</span>
+            {MODE_KINDS.filter((k) => m[k] > 0).map((k) => <ChangeCount key={k} type={k} count={m[k]} />)}
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

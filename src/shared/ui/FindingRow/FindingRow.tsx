@@ -35,6 +35,8 @@ export interface FindingRowProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>
   onSelect?: () => void
   /** One of the Locate / Ignore / Apply fix link buttons pressed. */
   onAction?: (action: FindingAction) => void
+  /** Which link buttons show, for a list that cannot do all three. Defaults to every one, like the Figma component. */
+  actions?: readonly FindingAction[]
 }
 
 /** Figma "Finding Row" (40000296:8483): one issue an agent found, with its fix and the actions on it. */
@@ -43,7 +45,7 @@ export function FindingRow({
   title = 'Key text is 2.9:1 on the selected row — needs 4.5:1',
   meta = 'WCAG 1.4.3 · Ticket Row › Key · Ikea mode',
   fix = 'Fix: jira/text/key → text/primary (7.8:1)',
-  onSelect, onAction, class: cls, ...rest
+  onSelect, onAction, actions, class: cls, ...rest
 }: FindingRowProps) {
   const badge = SEVERITY[severity]
   return (
@@ -57,7 +59,7 @@ export function FindingRow({
         {fix !== null && fix !== undefined && <ContextChip type="citation" class="bb-finding-row__fix">{fix}</ContextChip>}
       </div>
       <div class="bb-finding-row__actions">
-        {ACTIONS.map(({ action, label }) => (
+        {ACTIONS.filter(({ action }) => !actions || actions.includes(action)).map(({ action, label }) => (
           <LinkButton key={action} data-action={action} onClick={() => onAction?.(action)}>{label}</LinkButton>
         ))}
       </div>

@@ -1,7 +1,7 @@
 // Handoff readiness, as plain data. `collectInventory` (inspect.ts) runs inside
 // Figma; `evaluate` only ever sees this shape, so the rules are unit-testable
 // without the figma global — the same split the UX AI agents use.
-import type { CheckResult, CheckStats, HandoffCheck } from '../messages'
+import type { CheckResult, CheckStats, HandoffCheck, UsedComponent } from '../messages'
 
 export interface HandoffInventory {
   nodeId: string
@@ -104,6 +104,17 @@ export function stats(inv: HandoffInventory): CheckStats {
   }
 }
 
+/** The components the selection is built from, most used first; one is "library" only when every instance of it is. */
+export function usedComponents(inv: HandoffInventory): UsedComponent[] {
+  const names = [...new Set(inv.instanceList.map((i) => i.name))]
+  return names
+    .map((name) => {
+      const uses = inv.instanceList.filter((i) => i.name === name)
+      return { name, count: uses.length, library: uses.every((i) => i.remote) }
+    })
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+}
+
 /** The checks and the readiness score they add up to. */
 export function evaluate(inv: HandoffInventory): CheckResult {
   const checks = [components(inv), variables(inv), autoLayout(inv), text(inv), naming(inv), description(inv)].filter((c): c is HandoffCheck => c !== null)
@@ -111,5 +122,5 @@ export function evaluate(inv: HandoffInventory): CheckResult {
   const warnings = checks.filter((c) => c.status === 'warning').length
   const value = Math.max(0, 100 - fails * FAIL_COST - warnings * WARNING_COST)
   const tone = fails ? 'danger' : value < 85 ? 'warning' : 'success'
-  return { nodeId: inv.nodeId, readiness: { tone, value }, checks, stats: stats(inv) }
+  return { nodeId: inv.nodeId, readiness: { tone, value }, checks, stats: stats(inv), components: usedComponents(inv) }
 }

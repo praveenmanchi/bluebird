@@ -80,6 +80,16 @@ describe('ChangeItem', () => {
     fireEvent.click(screen.getByRole('checkbox'))
     expect(seen).toEqual([false])
   })
+  it('shows the impact row only when given, with a counted or custom label (Figma Show impact / Impact label)', () => {
+    const { container, rerender } = render(<ChangeItem />)
+    expect(container.querySelector('.bb-change-item__impact')).toBeNull()
+    rerender(<ChangeItem impact={['Button', 'Tab']} />)
+    expect(screen.getByRole('list', { name: 'Impacts 2 components' }).querySelectorAll('li')).toHaveLength(2)
+    rerender(<ChangeItem impact={['Button']} />)
+    expect(screen.getByRole('list', { name: 'Impacts 1 component' })).toBeTruthy()
+    rerender(<ChangeItem impact={['Button']} impactLabel="Reaches" />)
+    expect(screen.getByRole('list', { name: 'Reaches' })).toBeTruthy()
+  })
   it('leaves out the brand and usage groups when they are empty', () => {
     render(<ChangeItem expanded brandValues={[]} usedIn={[]} source="Components › Date picker" />)
     expect(screen.queryByText('Value by brand')).toBeNull()

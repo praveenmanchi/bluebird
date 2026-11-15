@@ -1,5 +1,5 @@
-import { CheckItem, PublishEmptyState, ReadinessMeter, SectionTitle, Spinner } from '@shared/ui'
-import { blocked, checkError, checkPhase, checkResult, checks, failingChecks, goTo, selection } from '../state'
+import { CheckItem, ConnectionRow, PublishEmptyState, ReadinessMeter, SectionTitle, Spinner } from '@shared/ui'
+import { blocked, checkError, checkPhase, checkResult, checks, components, failingChecks, goTo, selection } from '../state'
 import { ActionBar } from './ActionBar'
 import { Card, SelectionLink, type SelectionLinkProps } from './cards'
 import './CheckStep.css'
@@ -11,7 +11,10 @@ export interface CheckStepProps extends Pick<SelectionLinkProps, 'onOpenNode' | 
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
-/** Figma "MCP v2 · 2 Check" and "Error · Not ready" (a failing check locks Generate). */
+/** Components listed before "Show all" would be needed: the card stays one screen tall. */
+export const MAX_SHOWN_COMPONENTS = 6
+
+/** Figma "MCP v3 · 2 Check" and "Error · Not ready" (a failing check locks Hand off). */
 export function CheckStep({ onOpenNode, onCopyLink, onRetry }: CheckStepProps) {
   const s = selection.value
   const result = checkResult.value
@@ -20,13 +23,14 @@ export function CheckStep({ onOpenNode, onCopyLink, onRetry }: CheckStepProps) {
   const warnings = list.filter((c) => c.status === 'warning').length
   const fails = failingChecks.value
   const ready = phase === 'done' && result !== null && list.length > 0
-  const caption = ready && blocked.value ? `Generate locked · ${plural(fails, 'check')} ${fails === 1 ? 'is' : 'are'} failing` : undefined
+  const caption = !ready ? undefined : blocked.value ? `Hand off locked · ${plural(fails, 'check')} ${fails === 1 ? 'is' : 'are'} failing` : `Ready to hand off · ${plural(warnings, 'warning')} won’t block it`
   const summary = phase === 'loading' ? `Checking ${s?.frame ?? 'the selection'} layer by layer…`
     : phase === 'failed' ? (checkError.value ?? 'The checks could not run.')
       : !ready ? 'Run the checks to continue.'
-        : blocked.value ? `${plural(fails, 'check')} must pass before you can generate`
-          : `Ready to generate · ${plural(warnings, 'warning')} won’t block the push`
+        : blocked.value ? `${plural(fails, 'check')} must pass before you can hand off`
+          : `Ready to hand off · ${plural(warnings, 'warning')} won’t block it`
   const st = result?.stats
+  const used = components.value
 
   return (
     <>
@@ -51,6 +55,22 @@ export function CheckStep({ onOpenNode, onCopyLink, onRetry }: CheckStepProps) {
             </>
           )}
         </Card>
+        {ready && used.length > 0 && (
+          <Card label="Built from">
+            <SectionTitle title="Built from" count={String(used.length)} showAction={false} />
+            <ul class="bb-mcp-handoff__stack">
+              {used.slice(0, MAX_SHOWN_COMPONENTS).map((c) => (
+                <li key={c.name}>
+                  <ConnectionRow name={c.name} detail={`${plural(c.count, 'instance')} · ${c.library ? 'from a library' : 'local, not published'}`} status={c.library ? 'good' : 'issue'} showAction={false} />
+                </li>
+              ))}
+            </ul>
+            <p class="bb-mcp-handoff__caption">
+              {used.length > MAX_SHOWN_COMPONENTS ? `+${used.length - MAX_SHOWN_COMPONENTS} more. ` : ''}
+              The prompt lists every one, so Claude Code reuses the components that are already in code.
+            </p>
+          </Card>
+        )}
         <Card label="Checking">
           <SectionTitle title="Checking" showCount={false} actionLabel="Change" onAction={() => goTo(0)} />
           {s && <SelectionLink selection={s} onOpenNode={onOpenNode} onCopyLink={onCopyLink} />}
@@ -59,7 +79,7 @@ export function CheckStep({ onOpenNode, onCopyLink, onRetry }: CheckStepProps) {
       <ActionBar
         summary={summary}
         secondary={[{ label: 'Back', onClick: () => goTo(0) }]}
-        primary={{ label: 'Next: Generate', disabled: !ready || blocked.value, onClick: () => goTo(2) }}
+        primary={{ label: 'Next: Hand off', disabled: !ready || blocked.value, onClick: () => goTo(2) }}
       />
     </>
   )

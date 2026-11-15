@@ -1,7 +1,7 @@
 // Whether a Settings section is set up, from its saved values. "Configured" means the
 // fields it needs are filled in, not that a connection was tested (Test Connection does that).
 import { isProviderConfig, selectProvider } from '@shared/ai'
-import type { IntegrationId, IntegrationSettings, IntegrationValues } from '@shared/integrations'
+import { connectedScenarios, type IntegrationId, type IntegrationSettings, type IntegrationValues } from '@shared/integrations'
 
 export type SectionStatus = 'configured' | 'missing' | 'off'
 
@@ -12,7 +12,6 @@ const REQUIRED: Partial<Readonly<Record<IntegrationId, readonly string[]>>> = {
   github: ['apiKey', 'repo'],
   storybook: ['baseUrl'],
   zeroheight: ['apiKey', 'styleguideId'],
-  mcp: ['repo', 'token'],
   jira: ['projectKey', 'apiKey', 'email', 'siteUrl'],
 }
 
@@ -31,6 +30,8 @@ export function sectionStatus(id: IntegrationId, values: IntegrationValues, othe
     const files = (values as IntegrationValues<'dualFile'>).files ?? []
     return filled(bag, 'token') && files.some((f) => f.id.trim() !== '') ? 'configured' : 'missing'
   }
+  // One connected scenario is enough: each team sets up only the hand-off it works on.
+  if (id === 'mcp') return connectedScenarios(values as IntegrationValues<'mcp'>).length > 0 ? 'configured' : 'missing'
   if (id === 'notifications') return ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook', 'emails'].some((k) => filled(bag, k)) ? 'configured' : 'missing'
   return (REQUIRED[id] ?? []).every((k) => filled(bag, k)) ? 'configured' : 'missing'
 }

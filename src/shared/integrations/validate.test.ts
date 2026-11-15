@@ -20,14 +20,10 @@ describe('validateIntegration', () => {
     expect(validateIntegration('notifications', { ...DEFAULT_INTEGRATIONS.notifications, emails: 'a@x.com; b' }).emails).toBeDefined()
   })
 
-  it('checks the Storybook template, Figma file IDs, the MCP output format and branch template, and the Jira key', () => {
+  it('checks the Storybook template, Figma file IDs and the Jira key', () => {
     expect(validateIntegration('storybook', { ...DEFAULT_INTEGRATIONS.storybook, storyPathTemplate: '?path=/story/x' }).storyPathTemplate).toMatch('{slug}')
     expect(validateIntegration('dualFile', dualFileWith(['https://figma.com/design/abc'], 'k'))['files.0.id']).toBeDefined()
     expect(validateIntegration('dualFile', dualFileWith(['JPZ7koqomjcjczGQuhIMVH'], 'k'))).toEqual({})
-    expect(validateIntegration('mcp', { ...DEFAULT_INTEGRATIONS.mcp, outputFormat: 'yaml', branchTemplate: 'ds/token update' })).toEqual({
-      outputFormat: expect.stringContaining('style-dictionary'),
-      branchTemplate: expect.stringContaining('spaces'),
-    })
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, projectKey: 'ds' }).projectKey).toBeDefined()
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, projectKey: 'DS', email: 'user@company.com', siteUrl: 'https://team.atlassian.net' })).toEqual({})
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, proxyUrl: 'http://localhost:8787' })).toEqual({})
@@ -60,6 +56,43 @@ describe('validateIntegration', () => {
     expect(v([{ id: 'AAA', name: 'x'.repeat(61) }], 'k')['files.0.name']).toContain('60')
     expect(v(['AAA'], 'figd_ab c').token).toContain('Paste it again')
     expect(v(['AAA', 'BBB', 'CCC', 'DDD'], 'k').files).toContain('Up to 3')
+  })
+
+  it('checks each MCP scenario’s repository, token, branch, folder and choices on its own keys', () => {
+    const mcp = DEFAULT_INTEGRATIONS.mcp
+    expect(validateIntegration('mcp', {
+      ...mcp,
+      componentRepo: 'acme/design-system', componentToken: 'ghp_c', componentBranch: 'release/2026', componentFramework: 'Vue + TypeScript', componentFolder: 'packages/ui/src',
+      screenRepo: 'acme/web', screenToken: 'ghp_s', screenFolder: 'src/pages', screenPackage: '@acme/ui',
+      libraryRepo: 'acme/app', libraryToken: 'ghp_l', libraryPullRequests: 'One for all screens',
+      enterpriseUrl: 'https://github.acme.com',
+    })).toEqual({})
+    expect(validateIntegration('mcp', { ...mcp, componentRepo: 'design-system', componentToken: 'ghp ab', componentBranch: 'my branch', componentFramework: 'Svelte', componentFolder: '../outside' })).toEqual({
+      componentRepo: expect.stringContaining('owner/repository'),
+      componentToken: expect.stringContaining('GitHub token'),
+      componentBranch: expect.stringContaining('spaces'),
+      componentFramework: expect.stringContaining('React + TypeScript'),
+      componentFolder: expect.stringContaining('folder inside the repository'),
+    })
+    expect(validateIntegration('mcp', { ...mcp, screenRepo: 'acme/..', screenToken: 'ghp_“x”', screenBranch: 'a b', screenFramework: 'jQuery', screenFolder: '/src/pages', screenPackage: 'Acme UI' })).toEqual({
+      screenRepo: expect.any(String), screenToken: expect.any(String), screenBranch: expect.any(String),
+      screenFramework: expect.any(String), screenFolder: expect.any(String), screenPackage: expect.stringContaining('@acme/ui'),
+    })
+    expect(validateIntegration('mcp', { ...mcp, libraryRepo: 'acme', libraryToken: 'a\nb', libraryBranch: 'x y', libraryPullRequests: 'Two', enterpriseUrl: 'http://github.acme.com' })).toEqual({
+      libraryRepo: expect.any(String), libraryToken: expect.any(String), libraryBranch: expect.any(String),
+      libraryPullRequests: expect.stringContaining('One per screen'), enterpriseUrl: expect.stringContaining('https://'),
+    })
+  })
+
+  it('accepts scoped and plain npm package names, and folders with dots, and nothing that leaves the repository', () => {
+    const v = (patch: Partial<typeof DEFAULT_INTEGRATIONS.mcp>) => validateIntegration('mcp', { ...DEFAULT_INTEGRATIONS.mcp, ...patch })
+    expect(v({ screenPackage: 'acme-ui' })).toEqual({})
+    expect(v({ screenPackage: '@acme/ui.core' })).toEqual({})
+    expect(v({ screenPackage: '@acme/' }).screenPackage).toBeDefined()
+    expect(v({ screenPackage: '../ui' }).screenPackage).toBeDefined()
+    expect(v({ screenFolder: '.storybook/pages' })).toEqual({})
+    expect(v({ screenFolder: 'src/../../etc' }).screenFolder).toBeDefined()
+    expect(v({ componentFolder: 'src/components/' }).componentFolder).toBeDefined()
   })
 
   it('only accepts the offered models', () => {

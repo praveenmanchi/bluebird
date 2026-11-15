@@ -6,7 +6,10 @@
  * Disclosure Toggle with its label hidden. Details (hidden when collapsed)
  * has a panel-border top rule, padding publish/space/row-y × row-x, gap
  * publish/space/inline: label, Brand Diff Rows (gap publish/space/tight),
- * label, Context Chips (gap publish/space/tight), source line. */
+ * label, Context Chips (gap publish/space/tight), source line. Impact (Show
+ * impact) is a third row with the same top rule and padding: HORIZONTAL MIN
+ * CENTER, gap publish/space/inline, the Impact label then its Context Chips
+ * (FILL, gap publish/space/tight). */
 .bb-change-item {
   display: flex;
   flex-direction: column;
@@ -50,7 +53,17 @@
 }
 .bb-change-item__label { font-weight: var(--bb-publish-font-weight-medium); }
 .bb-change-item__source { font-weight: var(--bb-publish-font-weight-regular); }
+.bb-change-item__impact {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-publish-space-inline);
+  padding: var(--bb-publish-space-row-y) var(--bb-publish-space-row-x);
+  border-top: var(--bb-publish-border-width) solid var(--bb-publish-surface-panel-border);
+}
+.bb-change-item__impact > .bb-change-item__label { flex: none; }
 .bb-change-item__brands,
+.bb-change-item__impact-components,
 .bb-change-item__used-in {
   display: flex;
   gap: var(--bb-publish-space-tight);
@@ -59,9 +72,12 @@
   list-style: none;
 }
 .bb-change-item__brands { flex-direction: column; }
+.bb-change-item__impact-components,
 .bb-change-item__used-in {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
 }
+.bb-change-item__impact-components { flex: 1 1 0; min-width: 0; }
+.bb-change-item__impact-components > li,
 .bb-change-item__used-in > li { display: flex; }

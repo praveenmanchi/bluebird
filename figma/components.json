@@ -7374,16 +7374,22 @@
       "code": "IntegrationLogo",
       "id": "226:3580",
       "key": "06f4dcc15ea50ace5b881b044291001e3a24ce40",
-      "name": "brands",
+      "name": "Settings brands",
       "description": "Integration marks — Storybook, Zeroheight, GitHub, Microsoft Teams.",
       "props": {
-        "Property 1": {
+        "Brands": {
           "type": "VARIANT",
           "options": [
             "githib",
             "storybook",
             "teams",
-            "zeroheigth"
+            "zeroheigth",
+            "webhooks",
+            "AI",
+            "database",
+            "Dual file",
+            "MCP",
+            "jira"
           ],
           "default": "storybook"
         }
@@ -7392,14 +7398,14 @@
         {
           "id": "226:3579",
           "key": "9af2aae41d808deef784e4d7bae04eb054b9e7cf",
-          "name": "Property 1=zeroheigth",
+          "name": "Brands=zeroheigth",
           "props": {
-            "Property 1": "zeroheigth"
+            "Brands": "zeroheigth"
           },
           "nodes": [
             {
               "id": "226:3579",
-              "p": "Property 1=zeroheigth",
+              "p": "Brands=zeroheigth",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -7411,7 +7417,7 @@
             },
             {
               "id": "226:3544",
-              "p": "Property 1=zeroheigth/Rectangle 3475075",
+              "p": "Brands=zeroheigth/Rectangle 3475075",
               "t": "RECTANGLE",
               "b": {},
               "r": {
@@ -7423,7 +7429,7 @@
             },
             {
               "id": "226:3545",
-              "p": "Property 1=zeroheigth/Group 14740",
+              "p": "Brands=zeroheigth/Group 14740",
               "t": "GROUP",
               "b": {},
               "r": {
@@ -7435,7 +7441,7 @@
             },
             {
               "id": "226:3546",
-              "p": "Property 1=zeroheigth/Group 14740/Group",
+              "p": "Brands=zeroheigth/Group 14740/Group",
               "t": "GROUP",
               "b": {},
               "r": {
@@ -7447,7 +7453,7 @@
             },
             {
               "id": "226:3547",
-              "p": "Property 1=zeroheigth/Group 14740/Group/Vector",
+              "p": "Brands=zeroheigth/Group 14740/Group/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7460,7 +7466,7 @@
             },
             {
               "id": "226:3548",
-              "p": "Property 1=zeroheigth/Group 14740/Group/Vector",
+              "p": "Brands=zeroheigth/Group 14740/Group/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7473,7 +7479,7 @@
             },
             {
               "id": "226:3549",
-              "p": "Property 1=zeroheigth/Group 14740/Group/Vector",
+              "p": "Brands=zeroheigth/Group 14740/Group/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7486,7 +7492,7 @@
             },
             {
               "id": "226:3550",
-              "p": "Property 1=zeroheigth/Group 14740/Group/Vector",
+              "p": "Brands=zeroheigth/Group 14740/Group/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7502,14 +7508,14 @@
         {
           "id": "226:3578",
           "key": "1071c4794c9bdae0ecee7b560c7936d1c66eb08e",
-          "name": "Property 1=teams",
+          "name": "Brands=teams",
           "props": {
-            "Property 1": "teams"
+            "Brands": "teams"
           },
           "nodes": [
             {
               "id": "226:3578",
-              "p": "Property 1=teams",
+              "p": "Brands=teams",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -7521,7 +7527,7 @@
             },
             {
               "id": "226:3552",
-              "p": "Property 1=teams/brand/teams",
+              "p": "Brands=teams/brand/teams",
               "t": "INSTANCE",
               "b": {},
               "r": {
@@ -7538,14 +7544,14 @@
         {
           "id": "226:3576",
           "key": "35295cf986682a211af6c13a8c1435f2658a4a14",
-          "name": "Property 1=storybook",
+          "name": "Brands=storybook",
           "props": {
-            "Property 1": "storybook"
+            "Brands": "storybook"
           },
           "nodes": [
             {
               "id": "226:3576",
-              "p": "Property 1=storybook",
+              "p": "Brands=storybook",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -7557,7 +7563,7 @@
             },
             {
               "id": "226:3557",
-              "p": "Property 1=storybook/Rectangle 3475074",
+              "p": "Brands=storybook/Rectangle 3475074",
               "t": "RECTANGLE",
               "b": {},
               "r": {
@@ -7569,7 +7575,7 @@
             },
             {
               "id": "226:3558",
-              "p": "Property 1=storybook/Group 14739",
+              "p": "Brands=storybook/Group 14739",
               "t": "GROUP",
               "b": {},
               "r": {
@@ -7581,7 +7587,7 @@
             },
             {
               "id": "226:3559",
-              "p": "Property 1=storybook/Group 14739/Vector",
+              "p": "Brands=storybook/Group 14739/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7594,7 +7600,7 @@
             },
             {
               "id": "226:3560",
-              "p": "Property 1=storybook/Group 14739/Vector",
+              "p": "Brands=storybook/Group 14739/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7607,7 +7613,7 @@
             },
             {
               "id": "226:3561",
-              "p": "Property 1=storybook/Group 14739/Vector",
+              "p": "Brands=storybook/Group 14739/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7623,14 +7629,14 @@
         {
           "id": "226:3577",
           "key": "7542e81ea934f044bffcab656de515caab56e965",
-          "name": "Property 1=githib",
+          "name": "Brands=githib",
           "props": {
-            "Property 1": "githib"
+            "Brands": "githib"
           },
           "nodes": [
             {
               "id": "226:3577",
-              "p": "Property 1=githib",
+              "p": "Brands=githib",
               "t": "COMPONENT",
               "b": {},
               "r": {
@@ -7642,7 +7648,7 @@
             },
             {
               "id": "226:3554",
-              "p": "Property 1=githib/Rectangle 3475074",
+              "p": "Brands=githib/Rectangle 3475074",
               "t": "RECTANGLE",
               "b": {},
               "r": {
@@ -7654,7 +7660,7 @@
             },
             {
               "id": "226:3555",
-              "p": "Property 1=githib/Vector",
+              "p": "Brands=githib/Vector",
               "t": "VECTOR",
               "b": {},
               "r": {
@@ -7662,6 +7668,378 @@
                 "size": [
                   33.7,
                   33.3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111550",
+          "key": "975c0eb1ca5f6be76d43a692d45bbd489a4b0400",
+          "name": "Brands=webhooks",
+          "props": {
+            "Brands": "webhooks"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111550",
+              "p": "Brands=webhooks",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111551",
+              "p": "Brands=webhooks/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111552",
+              "p": "Brands=webhooks/Group 14739",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  26.7,
+                  25.3
+                ]
+              }
+            },
+            {
+              "id": "40002870:111574",
+              "p": "Brands=webhooks/Group 14739/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  26.7,
+                  25.3
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111576",
+          "key": "bce55079e62a0b7fb879d0e38e2f196b7bb685c6",
+          "name": "Brands=database",
+          "props": {
+            "Brands": "database"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111576",
+              "p": "Brands=database",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111577",
+              "p": "Brands=database/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111591",
+              "p": "Brands=database/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "stroke": "#ffffff",
+                "strokeWeight": 2.6666667461395264,
+                "size": [
+                  26.7,
+                  26.7
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111581",
+          "key": "cbaecc2e8f6553d8ae9dbb1e34579be2732a1897",
+          "name": "Brands=Dual file",
+          "props": {
+            "Brands": "Dual file"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111581",
+              "p": "Brands=Dual file",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111582",
+              "p": "Brands=Dual file/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111593",
+              "p": "Brands=Dual file/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  18,
+                  26
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111597",
+          "key": "3f4d0723b4538deb4c721acb3c8161369638f9cc",
+          "name": "Brands=MCP",
+          "props": {
+            "Brands": "MCP"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111597",
+              "p": "Brands=MCP",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111598",
+              "p": "Brands=MCP/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111600",
+              "p": "Brands=MCP/Group",
+              "t": "GROUP",
+              "b": {},
+              "r": {
+                "size": [
+                  23.3,
+                  26.2
+                ]
+              }
+            },
+            {
+              "id": "40002870:111601",
+              "p": "Brands=MCP/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "stroke": "#ffffff",
+                "strokeWeight": 2.6666667461395264,
+                "size": [
+                  17.7,
+                  15
+                ]
+              }
+            },
+            {
+              "id": "40002870:111602",
+              "p": "Brands=MCP/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "stroke": "#ffffff",
+                "strokeWeight": 2.6666667461395264,
+                "size": [
+                  15,
+                  20.6
+                ]
+              }
+            },
+            {
+              "id": "40002870:111603",
+              "p": "Brands=MCP/Group/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "stroke": "#ffffff",
+                "strokeWeight": 2.6666667461395264,
+                "size": [
+                  14.9,
+                  14.9
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111586",
+          "key": "5db7d2ed7f114ead361aed2f608fe7e1d56de200",
+          "name": "Brands=AI",
+          "props": {
+            "Brands": "AI"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111586",
+              "p": "Brands=AI",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111587",
+              "p": "Brands=AI/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111595",
+              "p": "Brands=AI/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#ffffff",
+                "size": [
+                  26.7,
+                  26.7
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002870:111605",
+          "key": "090b446a7eba71220d95b699bf5969be49d628e3",
+          "name": "Brands=jira",
+          "props": {
+            "Brands": "jira"
+          },
+          "nodes": [
+            {
+              "id": "40002870:111605",
+              "p": "Brands=jira",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111606",
+              "p": "Brands=jira/Rectangle 3475074",
+              "t": "RECTANGLE",
+              "b": {},
+              "r": {
+                "size": [
+                  34,
+                  34
+                ]
+              }
+            },
+            {
+              "id": "40002870:111615",
+              "p": "Brands=jira/jira 1",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "size": [
+                  32,
+                  32
+                ]
+              }
+            },
+            {
+              "id": "40002870:111616",
+              "p": "Brands=jira/jira 1/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "fill": "#2684ff",
+                "size": [
+                  16.7,
+                  16.6
+                ]
+              }
+            },
+            {
+              "id": "40002870:111617",
+              "p": "Brands=jira/jira 1/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "size": [
+                  16.7,
+                  16.6
+                ]
+              }
+            },
+            {
+              "id": "40002870:111618",
+              "p": "Brands=jira/jira 1/Vector",
+              "t": "VECTOR",
+              "b": {},
+              "r": {
+                "size": [
+                  16.7,
+                  16.6
                 ]
               }
             }
@@ -12766,6 +13144,10 @@
           "type": "INSTANCE_SWAP",
           "default": "40002351:19434"
         },
+        "Number value": {
+          "type": "BOOLEAN",
+          "default": false
+        },
         "State": {
           "type": "VARIANT",
           "options": [
@@ -12793,14 +13175,14 @@
               "t": "COMPONENT",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
@@ -12847,6 +13229,37 @@
               "pr": {
                 "characters": "Label"
               }
+            },
+            {
+              "id": "40002860:98202",
+              "p": "State=Default/Story Points",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "jira/points/bg",
+                "stroke": "jira/points/border",
+                "strokeWeight": "jira/border-width",
+                "radius": "jira/radius/pill",
+                "paddingLeft": "jira/space/inline",
+                "paddingRight": "jira/space/inline",
+                "paddingTop": "jira/space/hair",
+                "paddingBottom": "jira/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  24,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Story Points",
+              "mc": "40000265:8036",
+              "cp": {
+                "Points": "5"
+              },
+              "pr": {
+                "visible": "Number value"
+              }
             }
           ]
         },
@@ -12865,14 +13278,14 @@
               "b": {
                 "fill": "dropdown/item/bg-hover",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
@@ -12919,6 +13332,37 @@
               "pr": {
                 "characters": "Label"
               }
+            },
+            {
+              "id": "40002860:100770",
+              "p": "State=Hover/Story Points",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "jira/points/bg",
+                "stroke": "jira/points/border",
+                "strokeWeight": "jira/border-width",
+                "radius": "jira/radius/pill",
+                "paddingLeft": "jira/space/inline",
+                "paddingRight": "jira/space/inline",
+                "paddingTop": "jira/space/hair",
+                "paddingBottom": "jira/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  24,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Story Points",
+              "mc": "40000265:8036",
+              "cp": {
+                "Points": "5"
+              },
+              "pr": {
+                "visible": "Number value"
+              }
             }
           ]
         },
@@ -12937,14 +13381,14 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
@@ -13002,6 +13446,37 @@
               "pr": {
                 "characters": "Label"
               }
+            },
+            {
+              "id": "40002860:100773",
+              "p": "State=Selected/Story Points",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "jira/points/bg",
+                "stroke": "jira/points/border",
+                "strokeWeight": "jira/border-width",
+                "radius": "jira/radius/pill",
+                "paddingLeft": "jira/space/inline",
+                "paddingRight": "jira/space/inline",
+                "paddingTop": "jira/space/hair",
+                "paddingBottom": "jira/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  24,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Story Points",
+              "mc": "40000265:8036",
+              "cp": {
+                "Points": "5"
+              },
+              "pr": {
+                "visible": "Number value"
+              }
             }
           ]
         },
@@ -13019,14 +13494,14 @@
               "t": "COMPONENT",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
@@ -13074,6 +13549,37 @@
               "pr": {
                 "characters": "Label"
               }
+            },
+            {
+              "id": "40002860:101185",
+              "p": "State=Disabled/Story Points",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "jira/points/bg",
+                "stroke": "jira/points/border",
+                "strokeWeight": "jira/border-width",
+                "radius": "jira/radius/pill",
+                "paddingLeft": "jira/space/inline",
+                "paddingRight": "jira/space/inline",
+                "paddingTop": "jira/space/hair",
+                "paddingBottom": "jira/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  24,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Story Points",
+              "mc": "40000265:8036",
+              "cp": {
+                "Points": "5"
+              },
+              "pr": {
+                "visible": "Number value"
+              }
             }
           ]
         },
@@ -13092,7 +13598,7 @@
               "b": {
                 "stroke": "border/focus",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
@@ -13100,7 +13606,7 @@
                 "strokeWeight": 2,
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               }
@@ -13146,6 +13652,37 @@
               },
               "pr": {
                 "characters": "Label"
+              }
+            },
+            {
+              "id": "40002860:101182",
+              "p": "State=Focus/Story Points",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "jira/points/bg",
+                "stroke": "jira/points/border",
+                "strokeWeight": "jira/border-width",
+                "radius": "jira/radius/pill",
+                "paddingLeft": "jira/space/inline",
+                "paddingRight": "jira/space/inline",
+                "paddingTop": "jira/space/hair",
+                "paddingBottom": "jira/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
+                "size": [
+                  24,
+                  20
+                ],
+                "hidden": true
+              },
+              "i": "Story Points",
+              "mc": "40000265:8036",
+              "cp": {
+                "Points": "5"
+              },
+              "pr": {
+                "visible": "Number value"
               }
             }
           ]
@@ -13199,7 +13736,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  144,
+                  150,
                   32
                 ]
               }
@@ -13211,20 +13748,21 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
               "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
+                "Number value": false,
                 "Icon": "40002351:19434",
                 "Show icon": true,
                 "Label": "Label",
@@ -13258,14 +13796,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  66,
+                  69,
                   24
                 ]
               },
@@ -13273,6 +13811,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:17614",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "JSON",
                 "State": "Default"
@@ -13316,7 +13855,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  208,
+                  217,
                   32
                 ]
               }
@@ -13328,20 +13867,21 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
               "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
+                "Number value": false,
                 "Icon": "40002351:19434",
                 "Show icon": true,
                 "Label": "Label",
@@ -13375,14 +13915,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  66,
+                  69,
                   24
                 ]
               },
@@ -13390,6 +13930,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:17614",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "JSON",
                 "State": "Default"
@@ -13411,14 +13952,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               },
@@ -13426,6 +13967,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20080",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "XML",
                 "State": "Default"
@@ -13469,7 +14011,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  278,
+                  290,
                   32
                 ]
               }
@@ -13481,20 +14023,21 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
               "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
+                "Number value": false,
                 "Icon": "40002351:19434",
                 "Show icon": true,
                 "Label": "Label",
@@ -13528,14 +14071,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  66,
+                  69,
                   24
                 ]
               },
@@ -13543,6 +14086,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:17614",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "JSON",
                 "State": "Default"
@@ -13564,14 +14108,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               },
@@ -13579,6 +14123,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20080",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "XML",
                 "State": "Default"
@@ -13600,14 +14145,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
@@ -13615,6 +14160,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20076",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "YAML",
                 "State": "Default"
@@ -13658,7 +14204,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  339,
+                  354,
                   32
                 ]
               }
@@ -13670,20 +14216,21 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
               "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
+                "Number value": false,
                 "Icon": "40002351:19434",
                 "Show icon": true,
                 "Label": "Label",
@@ -13717,14 +14264,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  66,
+                  69,
                   24
                 ]
               },
@@ -13732,6 +14279,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:17614",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "JSON",
                 "State": "Default"
@@ -13753,14 +14301,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               },
@@ -13768,6 +14316,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20080",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "XML",
                 "State": "Default"
@@ -13789,14 +14338,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
@@ -13804,6 +14353,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20076",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "YAML",
                 "State": "Default"
@@ -13825,14 +14375,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -13840,6 +14390,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:19255",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "CSS",
                 "State": "Default"
@@ -13883,7 +14434,7 @@
               "r": {
                 "layout": "HORIZONTAL MIN CENTER HUG HUG",
                 "size": [
-                  437,
+                  455,
                   32
                 ]
               }
@@ -13895,20 +14446,21 @@
               "b": {
                 "fill": "surface/accent-strong",
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
               "i": "State=Selected <Tab selecters>",
               "mc": "308:51052",
               "cp": {
+                "Number value": false,
                 "Icon": "40002351:19434",
                 "Show icon": true,
                 "Label": "Label",
@@ -13942,14 +14494,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  66,
+                  69,
                   24
                 ]
               },
@@ -13957,6 +14509,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:17614",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "JSON",
                 "State": "Default"
@@ -13978,14 +14531,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  62,
+                  65,
                   24
                 ]
               },
@@ -13993,6 +14546,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20080",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "XML",
                 "State": "Default"
@@ -14014,14 +14568,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  68,
+                  71,
                   24
                 ]
               },
@@ -14029,6 +14583,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20076",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "YAML",
                 "State": "Default"
@@ -14050,14 +14605,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  59,
+                  62,
                   24
                 ]
               },
@@ -14065,6 +14620,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:19255",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "CSS",
                 "State": "Default"
@@ -14086,14 +14642,14 @@
               "t": "INSTANCE",
               "b": {
                 "radius": "dimension/radius/4",
-                "itemSpacing": "dimension/space/3",
+                "itemSpacing": "dimension/space/6",
                 "paddingLeft": "dimension/space/4",
                 "paddingRight": "dimension/space/8"
               },
               "r": {
                 "layout": "HORIZONTAL CENTER CENTER HUG HUG",
                 "size": [
-                  96,
+                  99,
                   24
                 ]
               },
@@ -14101,6 +14657,7 @@
               "mc": "308:51053",
               "cp": {
                 "Icon": "40002351:20061",
+                "Number value": false,
                 "Show icon": true,
                 "Label": "Markdown",
                 "State": "Default"
@@ -107776,6 +108333,14 @@
       "name": "Change Item",
       "description": "Expandable change in the Publish › Review changes list. Header = exposed Change Row (Kind, Name, Detail, Include checkbox) + Disclosure chevron. Expanded=Yes shows what changed: value per brand mode (Brand Diff Row), where it is used (Context Chips) and the source collection/author. Replaces the side-panel web preview.",
       "props": {
+        "Show impact": {
+          "type": "BOOLEAN",
+          "default": false
+        },
+        "Impact label": {
+          "type": "TEXT",
+          "default": "Impacts 2 components"
+        },
         "Expanded": {
           "type": "VARIANT",
           "options": [
@@ -108236,6 +108801,224 @@
               "r": {
                 "text": "Brand UI › button/bg/primary · scopes Frame fill, Shape fill · changed by Praveen, 2 h ago"
               }
+            },
+            {
+              "id": "40002906:12022",
+              "p": "Expanded=No/Impact",
+              "t": "FRAME",
+              "b": {
+                "stroke": "publish/surface/panel-border",
+                "strokeWeight": "publish/border-width",
+                "itemSpacing": "publish/space/inline",
+                "paddingLeft": "publish/space/row-x",
+                "paddingRight": "publish/space/row-x",
+                "paddingTop": "publish/space/row-y",
+                "paddingBottom": "publish/space/row-y"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER FIXED HUG",
+                "size": [
+                  598,
+                  63
+                ],
+                "hidden": true
+              },
+              "pr": {
+                "visible": "Show impact"
+              }
+            },
+            {
+              "id": "40002906:12030",
+              "p": "Expanded=No/Impact/Impact label",
+              "t": "TEXT",
+              "b": {
+                "fill": "publish/text/meta",
+                "fontSize": "publish/font/size-caption",
+                "fontFamily": "publish/font/family",
+                "fontWeight": "publish/font/weight-medium",
+                "lineHeight": "publish/font/line-caption"
+              },
+              "r": {
+                "text": "Impacts 2 components"
+              },
+              "pr": {
+                "characters": "Impact label"
+              }
+            },
+            {
+              "id": "40002906:12031",
+              "p": "Expanded=No/Impact/Components",
+              "t": "FRAME",
+              "b": {
+                "itemSpacing": "publish/space/tight"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN MIN FILL FILL",
+                "size": [
+                  456,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002906:12032",
+              "p": "Expanded=No/Impact/Components/Component 1",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "uxai/chip/bg",
+                "stroke": "uxai/chip/border",
+                "strokeWeight": "uxai/border-width",
+                "radius": "uxai/radius/chip",
+                "itemSpacing": "uxai/space/tight",
+                "paddingLeft": "uxai/space/inline",
+                "paddingRight": "uxai/space/inline",
+                "paddingTop": "uxai/space/hair",
+                "paddingBottom": "uxai/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  71,
+                  22
+                ]
+              },
+              "i": "Type=Source, State=Default <Context Chip>",
+              "mc": "40000283:8199",
+              "cp": {
+                "Label": "Button",
+                "Type": "Source",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002906:12032;40000283:8200",
+              "p": "Expanded=No/Impact/Components/Component 1/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002906:12033",
+              "p": "Expanded=No/Impact/Components/Component 2",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "uxai/chip/bg",
+                "stroke": "uxai/chip/border",
+                "strokeWeight": "uxai/border-width",
+                "radius": "uxai/radius/chip",
+                "itemSpacing": "uxai/space/tight",
+                "paddingLeft": "uxai/space/inline",
+                "paddingRight": "uxai/space/inline",
+                "paddingTop": "uxai/space/hair",
+                "paddingBottom": "uxai/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  93,
+                  22
+                ]
+              },
+              "i": "Type=Source, State=Default <Context Chip>",
+              "mc": "40000283:8199",
+              "cp": {
+                "Label": "Date picker",
+                "Type": "Source",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002906:12033;40000283:8200",
+              "p": "Expanded=No/Impact/Components/Component 2/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002906:12034",
+              "p": "Expanded=No/Impact/Components/Component 3",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "uxai/chip/bg",
+                "stroke": "uxai/chip/border",
+                "strokeWeight": "uxai/border-width",
+                "radius": "uxai/radius/chip",
+                "itemSpacing": "uxai/space/tight",
+                "paddingLeft": "uxai/space/inline",
+                "paddingRight": "uxai/space/inline",
+                "paddingTop": "uxai/space/hair",
+                "paddingBottom": "uxai/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  55,
+                  22
+                ]
+              },
+              "i": "Type=Source, State=Default <Context Chip>",
+              "mc": "40000283:8199",
+              "cp": {
+                "Label": "Tab",
+                "Type": "Source",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002906:12034;40000283:8200",
+              "p": "Expanded=No/Impact/Components/Component 3/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
+            },
+            {
+              "id": "40002906:12035",
+              "p": "Expanded=No/Impact/Components/Component 4",
+              "t": "INSTANCE",
+              "b": {
+                "fill": "uxai/chip/bg",
+                "stroke": "uxai/chip/border",
+                "strokeWeight": "uxai/border-width",
+                "radius": "uxai/radius/chip",
+                "itemSpacing": "uxai/space/tight",
+                "paddingLeft": "uxai/space/inline",
+                "paddingRight": "uxai/space/inline",
+                "paddingTop": "uxai/space/hair",
+                "paddingBottom": "uxai/space/hair"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  89,
+                  22
+                ]
+              },
+              "i": "Type=Source, State=Default <Context Chip>",
+              "mc": "40000283:8199",
+              "cp": {
+                "Label": "Dropdown",
+                "Type": "Source",
+                "State": "Default"
+              }
+            },
+            {
+              "id": "I40002906:12035;40000283:8200",
+              "p": "Expanded=No/Impact/Components/Component 4/Icon",
+              "t": "INSTANCE",
+              "b": {},
+              "o": [
+                "boundVariables",
+                "name"
+              ]
             }
           ]
         },
@@ -108505,8 +109288,11 @@
               "t": "TEXT",
               "b": {},
               "o": [
+                "characterStyleOverrides",
                 "characters",
-                "styledTextSegments"
+                "lineIndentations",
+                "lineTypes",
+                "styleOverrideTable"
               ],
               "r": {
                 "text": "#0978C8 | unchanged"
@@ -108543,8 +109329,11 @@
               "t": "TEXT",
               "b": {},
               "o": [
+                "characterStyleOverrides",
                 "characters",
-                "styledTextSegments"
+                "lineIndentations",
+                "lineTypes",
+                "styleOverrideTable"
               ],
               "r": {
                 "text": "#0978C8 | unchanged"
@@ -108753,6 +109542,2912 @@
               },
               "r": {
                 "text": "Brand UI › button/bg/primary | scopes Frame fill, Shape fill | changed by Praveen, 2 h ago"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ChangeCount",
+      "id": "40002905:129272",
+      "key": "891cf3b0a8a725aa3f294793194c9ab278c0ffde",
+      "name": "Change count",
+      "description": "",
+      "props": {
+        "Count": {
+          "type": "TEXT",
+          "default": "0"
+        },
+        "Type": {
+          "type": "VARIANT",
+          "options": [
+            "Default",
+            "Added",
+            "Modified",
+            "Removed"
+          ],
+          "default": "Default"
+        },
+        "Display": {
+          "type": "VARIANT",
+          "options": [
+            "Icon + label",
+            "Icon",
+            "Label"
+          ],
+          "default": "Icon + label"
+        },
+        "Surface": {
+          "type": "VARIANT",
+          "options": [
+            "App",
+            "Report"
+          ],
+          "default": "App"
+        }
+      },
+      "variants": [
+        {
+          "id": "40002909:7301",
+          "key": "d5ddab10460f9ffeb1763eeb7804584464a80994",
+          "name": "Type=Default, Display=Icon + label, Surface=App",
+          "props": {
+            "Type": "Default",
+            "Display": "Icon + label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7301",
+              "p": "Type=Default, Display=Icon + label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  95.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7302",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  76,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7303",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Tab Icon=Variables, Size=Small <Tab Icons>",
+              "mc": "40002805:69745",
+              "cp": {
+                "Tab Icon": "Variables",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7303;40002805:69746",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/default/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002909:7304",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Changes"
+              }
+            },
+            {
+              "id": "40002909:7307",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/default/fill",
+                "stroke": "change-count/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7308",
+              "p": "Type=Default, Display=Icon + label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7310",
+          "key": "42d59eee59a41b4f295204ae4cf5c3a616f1ad14",
+          "name": "Type=Default, Display=Icon, Surface=App",
+          "props": {
+            "Type": "Default",
+            "Display": "Icon",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7310",
+              "p": "Type=Default, Display=Icon, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7311",
+              "p": "Type=Default, Display=Icon, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7312",
+              "p": "Type=Default, Display=Icon, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Tab Icon=Variables, Size=Small <Tab Icons>",
+              "mc": "40002805:69745",
+              "cp": {
+                "Tab Icon": "Variables",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7312;40002805:69746",
+              "p": "Type=Default, Display=Icon, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/default/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002909:7316",
+              "p": "Type=Default, Display=Icon, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/default/fill",
+                "stroke": "change-count/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7317",
+              "p": "Type=Default, Display=Icon, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7319",
+          "key": "0b5bed023d45921d0f4ed2ef9bf2d16e6d80452f",
+          "name": "Type=Default, Display=Label, Surface=App",
+          "props": {
+            "Type": "Default",
+            "Display": "Label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7319",
+              "p": "Type=Default, Display=Label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  75.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7320",
+              "p": "Type=Default, Display=Label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  56,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7322",
+              "p": "Type=Default, Display=Label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Changes"
+              }
+            },
+            {
+              "id": "40002909:7325",
+              "p": "Type=Default, Display=Label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/default/fill",
+                "stroke": "change-count/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7326",
+              "p": "Type=Default, Display=Label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7328",
+          "key": "4b8f24e32608f22eea78623170e825ea233a5262",
+          "name": "Type=Added, Display=Icon + label, Surface=App",
+          "props": {
+            "Type": "Added",
+            "Display": "Icon + label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7328",
+              "p": "Type=Added, Display=Icon + label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  84.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7329",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  65,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7330",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=add, Size=Small <UI Icons / General>",
+              "mc": "40002805:56206",
+              "cp": {
+                "Icon": "add",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7330;40002805:56207",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/added/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002909:7331",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Added"
+              }
+            },
+            {
+              "id": "40002909:7335",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/added/fill",
+                "stroke": "change-count/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7336",
+              "p": "Type=Added, Display=Icon + label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7338",
+          "key": "9f782a7a6c2c613022bc3da84ba3bc799313b23f",
+          "name": "Type=Added, Display=Icon, Surface=App",
+          "props": {
+            "Type": "Added",
+            "Display": "Icon",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7338",
+              "p": "Type=Added, Display=Icon, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7339",
+              "p": "Type=Added, Display=Icon, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7340",
+              "p": "Type=Added, Display=Icon, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=add, Size=Small <UI Icons / General>",
+              "mc": "40002805:56206",
+              "cp": {
+                "Icon": "add",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7340;40002805:56207",
+              "p": "Type=Added, Display=Icon, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/added/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002909:7345",
+              "p": "Type=Added, Display=Icon, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/added/fill",
+                "stroke": "change-count/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7346",
+              "p": "Type=Added, Display=Icon, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7348",
+          "key": "941f8a2e45bf0f7b4bd0ab21816662f69374f0b7",
+          "name": "Type=Added, Display=Label, Surface=App",
+          "props": {
+            "Type": "Added",
+            "Display": "Label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7348",
+              "p": "Type=Added, Display=Label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  64.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7349",
+              "p": "Type=Added, Display=Label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  45,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7351",
+              "p": "Type=Added, Display=Label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Added"
+              }
+            },
+            {
+              "id": "40002909:7355",
+              "p": "Type=Added, Display=Label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/added/fill",
+                "stroke": "change-count/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7356",
+              "p": "Type=Added, Display=Label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7358",
+          "key": "ea77fe11f19b683e142b4333246ba308de72d13f",
+          "name": "Type=Modified, Display=Icon + label, Surface=App",
+          "props": {
+            "Type": "Modified",
+            "Display": "Icon + label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7358",
+              "p": "Type=Modified, Display=Icon + label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  96.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7359",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  77,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7360",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=pencil, Size=Small <UI Icons / Toolbar>",
+              "mc": "40002805:10215",
+              "cp": {
+                "Icon": "pencil",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7360;40002805:10216",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/modified/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002909:7361",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Modified"
+              }
+            },
+            {
+              "id": "40002909:7365",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/modified/fill",
+                "stroke": "change-count/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7366",
+              "p": "Type=Modified, Display=Icon + label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7368",
+          "key": "70a6eb19f7d106e40281d2ade7b88594f79b92fa",
+          "name": "Type=Modified, Display=Icon, Surface=App",
+          "props": {
+            "Type": "Modified",
+            "Display": "Icon",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7368",
+              "p": "Type=Modified, Display=Icon, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7369",
+              "p": "Type=Modified, Display=Icon, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002905:160410",
+              "p": "Type=Modified, Display=Icon, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=pencil, Size=Small <UI Icons / Toolbar>",
+              "mc": "40002805:10215",
+              "cp": {
+                "Icon": "pencil",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002905:160410;40002805:10216",
+              "p": "Type=Modified, Display=Icon, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/modified/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002909:7375",
+              "p": "Type=Modified, Display=Icon, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/modified/fill",
+                "stroke": "change-count/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7376",
+              "p": "Type=Modified, Display=Icon, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7378",
+          "key": "4cf7fdea7d2c13ace815cfb67e08e1b449dae7f2",
+          "name": "Type=Modified, Display=Label, Surface=App",
+          "props": {
+            "Type": "Modified",
+            "Display": "Label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7378",
+              "p": "Type=Modified, Display=Label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  76.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7379",
+              "p": "Type=Modified, Display=Label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  57,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7381",
+              "p": "Type=Modified, Display=Label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Modified"
+              }
+            },
+            {
+              "id": "40002909:7385",
+              "p": "Type=Modified, Display=Label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/modified/fill",
+                "stroke": "change-count/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7386",
+              "p": "Type=Modified, Display=Label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7388",
+          "key": "4ed394c648858539182f0f6004d25e0609bd3712",
+          "name": "Type=Removed, Display=Icon + label, Surface=App",
+          "props": {
+            "Type": "Removed",
+            "Display": "Icon + label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7388",
+              "p": "Type=Removed, Display=Icon + label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  98.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7389",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  79,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7390",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=remove, Size=Small <UI Icons / General>",
+              "mc": "40002805:56210",
+              "cp": {
+                "Icon": "remove",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7390;40002805:56211",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/removed/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002909:7391",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Removed"
+              }
+            },
+            {
+              "id": "40002909:7395",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/removed/fill",
+                "stroke": "change-count/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7396",
+              "p": "Type=Removed, Display=Icon + label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7398",
+          "key": "0fd78599e3cf391d5d25017bbe446c8c7614a0ed",
+          "name": "Type=Removed, Display=Icon, Surface=App",
+          "props": {
+            "Type": "Removed",
+            "Display": "Icon",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7398",
+              "p": "Type=Removed, Display=Icon, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7399",
+              "p": "Type=Removed, Display=Icon, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7400",
+              "p": "Type=Removed, Display=Icon, Surface=App/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=remove, Size=Small <UI Icons / General>",
+              "mc": "40002805:56210",
+              "cp": {
+                "Icon": "remove",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002909:7400;40002805:56211",
+              "p": "Type=Removed, Display=Icon, Surface=App/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/removed/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002909:7405",
+              "p": "Type=Removed, Display=Icon, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/removed/fill",
+                "stroke": "change-count/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002909:7406",
+              "p": "Type=Removed, Display=Icon, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002909:7408",
+          "key": "c2d74754a60e7964dffd25c3473e1be73beba48e",
+          "name": "Type=Removed, Display=Label, Surface=App",
+          "props": {
+            "Type": "Removed",
+            "Display": "Label",
+            "Surface": "App"
+          },
+          "nodes": [
+            {
+              "id": "40002909:7408",
+              "p": "Type=Removed, Display=Label, Surface=App",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  78.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7409",
+              "p": "Type=Removed, Display=Label, Surface=App/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "border/default",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  59,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7411",
+              "p": "Type=Removed, Display=Label, Surface=App/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "text/primary",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Removed"
+              }
+            },
+            {
+              "id": "40002909:7415",
+              "p": "Type=Removed, Display=Label, Surface=App/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/removed/fill",
+                "stroke": "change-count/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002909:7416",
+              "p": "Type=Removed, Display=Label, Surface=App/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12252",
+          "key": "fdb57d3b8a709608651a62bcc8dce52b239fced1",
+          "name": "Type=Default, Display=Icon + label, Surface=Report",
+          "props": {
+            "Type": "Default",
+            "Display": "Icon + label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12252",
+              "p": "Type=Default, Display=Icon + label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  95.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12253",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  76,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12254",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Tab Icon=Variables, Size=Small <Tab Icons>",
+              "mc": "40002805:69745",
+              "cp": {
+                "Tab Icon": "Variables",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12254;40002805:69746",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/report/default/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002911:12255",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Changes"
+              }
+            },
+            {
+              "id": "40002911:12256",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/default/fill",
+                "stroke": "change-count/report/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12257",
+              "p": "Type=Default, Display=Icon + label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12259",
+          "key": "1c5a1bcf6c9b83aee03d22c122dd810ec4d28dfc",
+          "name": "Type=Default, Display=Icon, Surface=Report",
+          "props": {
+            "Type": "Default",
+            "Display": "Icon",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12259",
+              "p": "Type=Default, Display=Icon, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12260",
+              "p": "Type=Default, Display=Icon, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12261",
+              "p": "Type=Default, Display=Icon, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Tab Icon=Variables, Size=Small <Tab Icons>",
+              "mc": "40002805:69745",
+              "cp": {
+                "Tab Icon": "Variables",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12261;40002805:69746",
+              "p": "Type=Default, Display=Icon, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/report/default/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002911:12262",
+              "p": "Type=Default, Display=Icon, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/default/fill",
+                "stroke": "change-count/report/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12263",
+              "p": "Type=Default, Display=Icon, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12265",
+          "key": "b627ccaded8c5f5c4bfa6fbda21e7961a8253eb1",
+          "name": "Type=Default, Display=Label, Surface=Report",
+          "props": {
+            "Type": "Default",
+            "Display": "Label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12265",
+              "p": "Type=Default, Display=Label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  75.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12266",
+              "p": "Type=Default, Display=Label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  56,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12267",
+              "p": "Type=Default, Display=Label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Changes"
+              }
+            },
+            {
+              "id": "40002911:12268",
+              "p": "Type=Default, Display=Label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/default/fill",
+                "stroke": "change-count/report/default/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12269",
+              "p": "Type=Default, Display=Label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/default/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12270",
+          "key": "f271187a8d1c3d77143abfa9b4cef8f02aa7d0a6",
+          "name": "Type=Added, Display=Icon + label, Surface=Report",
+          "props": {
+            "Type": "Added",
+            "Display": "Icon + label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12270",
+              "p": "Type=Added, Display=Icon + label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  84.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12271",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  65,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12272",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=add, Size=Small <UI Icons / General>",
+              "mc": "40002805:56206",
+              "cp": {
+                "Icon": "add",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12272;40002805:56207",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/report/added/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002911:12273",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Added"
+              }
+            },
+            {
+              "id": "40002911:12274",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/added/fill",
+                "stroke": "change-count/report/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12275",
+              "p": "Type=Added, Display=Icon + label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12277",
+          "key": "1ce0421c2681cea495e5262a92d5f83aa897e5e6",
+          "name": "Type=Added, Display=Icon, Surface=Report",
+          "props": {
+            "Type": "Added",
+            "Display": "Icon",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12277",
+              "p": "Type=Added, Display=Icon, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12278",
+              "p": "Type=Added, Display=Icon, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12279",
+              "p": "Type=Added, Display=Icon, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=add, Size=Small <UI Icons / General>",
+              "mc": "40002805:56206",
+              "cp": {
+                "Icon": "add",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12279;40002805:56207",
+              "p": "Type=Added, Display=Icon, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/report/added/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002911:12280",
+              "p": "Type=Added, Display=Icon, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/added/fill",
+                "stroke": "change-count/report/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12281",
+              "p": "Type=Added, Display=Icon, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12283",
+          "key": "881f67019f31ab9caff25324d5c9e21e5299d9f6",
+          "name": "Type=Added, Display=Label, Surface=Report",
+          "props": {
+            "Type": "Added",
+            "Display": "Label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12283",
+              "p": "Type=Added, Display=Label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  64.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12284",
+              "p": "Type=Added, Display=Label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  45,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12285",
+              "p": "Type=Added, Display=Label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Added"
+              }
+            },
+            {
+              "id": "40002911:12286",
+              "p": "Type=Added, Display=Label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/added/fill",
+                "stroke": "change-count/report/added/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12287",
+              "p": "Type=Added, Display=Label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/added/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12288",
+          "key": "e2ce2d09e3b8214a09396a96de0b131dd71a576d",
+          "name": "Type=Modified, Display=Icon + label, Surface=Report",
+          "props": {
+            "Type": "Modified",
+            "Display": "Icon + label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12288",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  96.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12289",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  77,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12290",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=pencil, Size=Small <UI Icons / Toolbar>",
+              "mc": "40002805:10215",
+              "cp": {
+                "Icon": "pencil",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12290;40002805:10216",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/report/modified/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002911:12291",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Modified"
+              }
+            },
+            {
+              "id": "40002911:12292",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/modified/fill",
+                "stroke": "change-count/report/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12293",
+              "p": "Type=Modified, Display=Icon + label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12295",
+          "key": "c08aa12dabb21f4ad3c99c67d9b3d96037d3ebf1",
+          "name": "Type=Modified, Display=Icon, Surface=Report",
+          "props": {
+            "Type": "Modified",
+            "Display": "Icon",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12295",
+              "p": "Type=Modified, Display=Icon, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12296",
+              "p": "Type=Modified, Display=Icon, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12297",
+              "p": "Type=Modified, Display=Icon, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=pencil, Size=Small <UI Icons / Toolbar>",
+              "mc": "40002805:10215",
+              "cp": {
+                "Icon": "pencil",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12297;40002805:10216",
+              "p": "Type=Modified, Display=Icon, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "change-count/report/modified/icon"
+              },
+              "o": [
+                "fills"
+              ]
+            },
+            {
+              "id": "40002911:12298",
+              "p": "Type=Modified, Display=Icon, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/modified/fill",
+                "stroke": "change-count/report/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12299",
+              "p": "Type=Modified, Display=Icon, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12301",
+          "key": "be7c8fe13236da7433c8b6c3a286b9af2b438811",
+          "name": "Type=Modified, Display=Label, Surface=Report",
+          "props": {
+            "Type": "Modified",
+            "Display": "Label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12301",
+              "p": "Type=Modified, Display=Label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  76.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12302",
+              "p": "Type=Modified, Display=Label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  57,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12303",
+              "p": "Type=Modified, Display=Label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Modified"
+              }
+            },
+            {
+              "id": "40002911:12304",
+              "p": "Type=Modified, Display=Label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/modified/fill",
+                "stroke": "change-count/report/modified/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12305",
+              "p": "Type=Modified, Display=Label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/modified/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12306",
+          "key": "eea7828051b0583cd1483c18b0bb0ff899b366ef",
+          "name": "Type=Removed, Display=Icon + label, Surface=Report",
+          "props": {
+            "Type": "Removed",
+            "Display": "Icon + label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12306",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  98.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12307",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  79,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12308",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=remove, Size=Small <UI Icons / General>",
+              "mc": "40002805:56210",
+              "cp": {
+                "Icon": "remove",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12308;40002805:56211",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/report/removed/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002911:12309",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Removed"
+              }
+            },
+            {
+              "id": "40002911:12310",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/removed/fill",
+                "stroke": "change-count/report/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12311",
+              "p": "Type=Removed, Display=Icon + label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12313",
+          "key": "ac3206101b2501a2756b7a36cc12cc0c599ecf29",
+          "name": "Type=Removed, Display=Icon, Surface=Report",
+          "props": {
+            "Type": "Removed",
+            "Display": "Icon",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12313",
+              "p": "Type=Removed, Display=Icon, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  48.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12314",
+              "p": "Type=Removed, Display=Icon, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  29,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12315",
+              "p": "Type=Removed, Display=Icon, Surface=Report/Lead/Icon",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/sm",
+                "height": "icon/size/sm"
+              },
+              "r": {
+                "size": [
+                  16,
+                  16
+                ]
+              },
+              "i": "Icon=remove, Size=Small <UI Icons / General>",
+              "mc": "40002805:56210",
+              "cp": {
+                "Icon": "remove",
+                "Size": "Small"
+              }
+            },
+            {
+              "id": "I40002911:12315;40002805:56211",
+              "p": "Type=Removed, Display=Icon, Surface=Report/Lead/Icon/Vector",
+              "t": "VECTOR",
+              "b": {
+                "stroke": "change-count/report/removed/icon"
+              },
+              "o": [
+                "strokes"
+              ]
+            },
+            {
+              "id": "40002911:12316",
+              "p": "Type=Removed, Display=Icon, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/removed/fill",
+                "stroke": "change-count/report/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  22
+                ]
+              }
+            },
+            {
+              "id": "40002911:12317",
+              "p": "Type=Removed, Display=Icon, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002911:12319",
+          "key": "b8592f6a45225fe66cf18a2291145bc0fdac2180",
+          "name": "Type=Removed, Display=Label, Surface=Report",
+          "props": {
+            "Type": "Removed",
+            "Display": "Label",
+            "Surface": "Report"
+          },
+          "nodes": [
+            {
+              "id": "40002911:12319",
+              "p": "Type=Removed, Display=Label, Surface=Report",
+              "t": "COMPONENT",
+              "b": {},
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  78.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12320",
+              "p": "Type=Removed, Display=Label, Surface=Report/Lead",
+              "t": "FRAME",
+              "b": {
+                "stroke": "change-count/report/border",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/md",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  59,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12321",
+              "p": "Type=Removed, Display=Label, Surface=Report/Lead/Label",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/label",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "Removed"
+              }
+            },
+            {
+              "id": "40002911:12322",
+              "p": "Type=Removed, Display=Label, Surface=Report/Count",
+              "t": "FRAME",
+              "b": {
+                "fill": "change-count/report/removed/fill",
+                "stroke": "change-count/report/removed/fill",
+                "strokeWeight": "border-width/default",
+                "radius": "radius/none",
+                "itemSpacing": "space/inline-xs",
+                "paddingLeft": "space/inline-sm",
+                "paddingRight": "space/inline-sm",
+                "paddingTop": "space/inset-xs",
+                "paddingBottom": "space/inset-xs"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG FILL",
+                "size": [
+                  19.9,
+                  17
+                ]
+              }
+            },
+            {
+              "id": "40002911:12323",
+              "p": "Type=Removed, Display=Label, Surface=Report/Count/Count",
+              "t": "TEXT",
+              "b": {
+                "fill": "change-count/report/removed/fg",
+                "fontSize": "type/size/10",
+                "fontFamily": "font/family-ui",
+                "fontWeight": "font/weight-strong",
+                "lineHeight": "type/line/11"
+              },
+              "r": {
+                "text": "0"
+              },
+              "pr": {
+                "characters": "Count"
               }
             }
           ]

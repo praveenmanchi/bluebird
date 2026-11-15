@@ -8,6 +8,8 @@ src/sandbox/registry.generated.ts
 *.log
 storybook-static
 figma/drift.json
+figma/.rest-baseline.json
+figma/sync-report.md
 figma/visual
 .env
 .env.local

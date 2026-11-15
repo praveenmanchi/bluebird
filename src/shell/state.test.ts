@@ -20,12 +20,12 @@ describe('brand-aware tabs', () => {
   beforeEach(() => signIn(null))
 
   it('uses the persona order until a brand is signed in', () => {
-    expect(visibleTabs.value.map((t) => t.id)).toEqual(['a11y', 'varsearch', 'varmapper', 'jira', 'mcp', 'uxai', 'agents', 'history'])
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['a11y', 'varsearch', 'varmapper', 'jira', 'mcp', 'uxai', 'agents', 'history', 'documentation'])
   })
 
   it('applies the signed-in brand’s order and hidden tabs', () => {
     signIn('ikea')
-    expect(visibleTabs.value.map((t) => t.id)).toEqual(['uxai', 'a11y', 'varsearch', 'varmapper', 'mcp', 'agents', 'history'])
+    expect(visibleTabs.value.map((t) => t.id)).toEqual(['uxai', 'a11y', 'varsearch', 'varmapper', 'mcp', 'agents', 'history', 'documentation'])
     expect(brandPersonas.value.find((p) => p.id === 'design-system')?.tabs[0]?.id).toBe('uxai')
   })
 

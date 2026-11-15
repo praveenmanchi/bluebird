@@ -33,6 +33,10 @@ export interface ChangeItemProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>
   usedIn?: readonly string[]
   /** The source meta line under the chips. */
   source?: string
+  /** Figma "Show impact": the components this change reaches, one Context Chip each, in a row under the item. Omit for off. */
+  impact?: readonly string[]
+  /** Figma "Impact label". Defaults to "Impacts n component(s)". */
+  impactLabel?: string
   /** id for the details region (aria-controls); generated when omitted. */
   detailsId?: string
 }
@@ -55,6 +59,8 @@ export function ChangeItem({
   brandValues = SAMPLE_BRAND_VALUES,
   usedIn = SAMPLE_USED_IN,
   source = SAMPLE_SOURCE,
+  impact,
+  impactLabel,
   detailsId,
   class: cls,
   ...rest
@@ -98,6 +104,14 @@ export function ChangeItem({
         </>}
         <span class="bb-change-item__source">{source}</span>
       </div>
+      {impact && (
+        <div class="bb-change-item__impact">
+          <span id={`${regionId}-impact`} class="bb-change-item__label">{impactLabel ?? `Impacts ${impact.length} component${impact.length === 1 ? '' : 's'}`}</span>
+          <ul class="bb-change-item__impact-components" aria-labelledby={`${regionId}-impact`}>
+            {impact.map((name) => <li key={name}><ContextChip type="source" icon="ui-toolbar-component">{name}</ContextChip></li>)}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }

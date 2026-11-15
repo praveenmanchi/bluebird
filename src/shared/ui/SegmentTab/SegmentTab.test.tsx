@@ -25,6 +25,12 @@ describe('SegmentTab', () => {
     expect(container.querySelector('[data-icon="ui-variable-text"]')).not.toBeNull()
     expect(screen.getByRole('tab').classList.contains('bb-segment-tab--text-only')).toBe(false)
   })
+  it('shows the count chip only when given (Figma Number value)', () => {
+    const { container, rerender } = render(<SegmentTab>Open</SegmentTab>)
+    expect(container.querySelector('.bb-story-points')).toBeNull()
+    rerender(<SegmentTab count={12}>Open</SegmentTab>)
+    expect(container.querySelector('.bb-segment-tab__count.bb-story-points')?.textContent).toBe('12')
+  })
   it('exposes a forced focus state for the Figma State=Focus variant', () => {
     render(<SegmentTab state="focus">x</SegmentTab>)
     expect(screen.getByRole('tab').dataset.state).toBe('focus')

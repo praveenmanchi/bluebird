@@ -1,5 +1,5 @@
 // Display helpers for the Extraction screens.
-import type { ExtractionStamp, ModeCount } from './messages'
+import type { ExtractionStamp } from './messages'
 
 export const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`
 
@@ -15,7 +15,3 @@ export function stampLabel(stamp: ExtractionStamp | null): string {
   return stamp ? `${stamp.by} · ${shortDateTime(stamp.at)}` : 'No extraction yet'
 }
 
-/** "+2 ~4 −1" — zero parts are left out. */
-export function modeMeta(m: ModeCount): string {
-  return [m.added && `+${m.added}`, m.modified && `~${m.modified}`, m.removed && `−${m.removed}`].filter(Boolean).join(' ')
-}

@@ -87,6 +87,10 @@
           {
             "id": "publish",
             "enabled": false
+          },
+          {
+            "id": "documentation",
+            "enabled": false
           }
         ]
       },
@@ -149,6 +153,10 @@
           {
             "id": "audit",
             "enabled": true
+          },
+          {
+            "id": "documentation",
+            "enabled": false
           }
         ],
         "personas": {
@@ -185,6 +193,7 @@
         "varsearch",
         "varmapper",
         "publish",
+        "documentation",
         "extraction",
         "a11y",
         "uxai",
@@ -202,7 +211,8 @@
         "mcp",
         "uxai",
         "agents",
-        "history"
+        "history",
+        "documentation"
       ]
     },
     "ux-designer": {
@@ -231,7 +241,8 @@
         "mcp",
         "varsearch",
         "jira",
-        "history"
+        "history",
+        "documentation"
       ]
     }
   },
@@ -290,6 +301,11 @@
       "enabled": true,
       "label": "History",
       "icon": "ui-prototype-time"
+    },
+    "documentation": {
+      "enabled": true,
+      "label": "Documentation",
+      "icon": "documentation"
     }
   },
   "window": {

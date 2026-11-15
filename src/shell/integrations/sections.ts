@@ -2,7 +2,10 @@
 // "Settings · Integrations" (40000408:8714). Copy, icons and order follow the
 // frame; an array in `blocks` is one row of side-by-side columns.
 import type { IconName, SectionHeaderLogo } from '@shared/ui'
-import { MAX_LIBRARY_FILES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId } from '@shared/integrations'
+import {
+  MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MCP_SCENARIO_LABEL, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS,
+  type IntegrationId, type McpScenario,
+} from '@shared/integrations'
 
 export interface TextFieldSpec { kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean }
 export interface SelectFieldSpec { kind: 'select'; key: string; label: string; icon: IconName; options: readonly string[] }
@@ -11,7 +14,14 @@ export interface TextAreaSpec { kind: 'textarea'; key: string; label: string; pl
 export interface ProviderSpec { kind: 'provider'; provider: 'claude' | 'openai' | 'gemini'; model: SelectFieldSpec; apiKey: TextFieldSpec }
 /** Dual File Mode's library files: named cards of Contains + Figma file URL, with Add file / Remove (Figma "Settings · 600 · Integrations open"). */
 export interface FilesListSpec { kind: 'files'; key: 'files'; label: string }
-export type FieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec
+/** A field that edits values itself: everything but a group. */
+export type LeafFieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec
+/**
+ * A bordered card of fields with its own status, e.g. one MCP hand-off scenario. `requires` are the
+ * keys that make it "set up" (its repository and its token). Groups do not nest.
+ */
+export interface GroupSpec { kind: 'group'; id: string; title: string; requires: readonly string[]; blocks: readonly BlockSpec[] }
+export type FieldSpec = LeafFieldSpec | GroupSpec
 /** A column is one field or a stack of fields. */
 export type ColumnSpec = FieldSpec | readonly FieldSpec[]
 export type BlockSpec = FieldSpec | readonly ColumnSpec[]
@@ -39,6 +49,23 @@ const provider = (id: ProviderSpec['provider'], name: string, placeholder: strin
   apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API key`, icon: 'api-key', placeholder, secret: true },
 })
 
+// MCP + code sync: every scenario has the same repository row and token; the keys carry its name.
+const mcpRepoRow = (scenario: McpScenario): readonly ColumnSpec[] => [
+  { kind: 'text', key: `${scenario}Repo`, label: 'Repository (owner/repo)', icon: 'access', placeholder: 'org/design-system' },
+  { kind: 'select', key: `${scenario}Branch`, label: 'Base branch', icon: 'branch', options: BRANCHES },
+]
+const mcpToken = (scenario: McpScenario): TextFieldSpec => (
+  { kind: 'text', key: `${scenario}Token`, label: 'Personal access token', icon: 'api-key', placeholder: 'GitHub token that can read pull requests', secret: true }
+)
+/** The scenarios that write new code: repository + branch, token + framework, then the folder it goes in. */
+const mcpCodeBlocks = (scenario: 'component' | 'screen', folder: string): readonly BlockSpec[] => [
+  mcpRepoRow(scenario),
+  [mcpToken(scenario), { kind: 'select', key: `${scenario}Framework`, label: 'Framework', icon: 'file', options: MCP_FRAMEWORKS }],
+  { kind: 'text', key: `${scenario}Folder`, label: 'Output folder', icon: 'folder', placeholder: folder },
+]
+const mcpGroup = (scenario: McpScenario, blocks: readonly BlockSpec[]): GroupSpec => (
+  { kind: 'group', id: scenario, title: MCP_SCENARIO_LABEL[scenario], requires: [`${scenario}Repo`, `${scenario}Token`], blocks }
+)
 
 export const SECTIONS: readonly SectionSpec[] = [
   {
@@ -134,24 +161,19 @@ export const SECTIONS: readonly SectionSpec[] = [
     ],
   },
   {
-    id: 'mcp', logo: 'mcp', title: 'MCP + code sync', toggleKey: 'enabled', columns: 'halves',
-    description: 'Where the MCP tab pushes design-token JSON. The repo\'s existing CI/CD rebuilds Storybook on each push. When off, the push button stays disabled.',
+    id: 'mcp', logo: 'mcp', title: 'MCP + code sync', toggleKey: 'enabled',
+    description: 'Where MCP hand-offs go. Each scenario has its own repository and token, so each team connects only what it needs. Claude Code opens the pull requests and Bluebird tracks them.',
     blocks: [
-      [
-        [
-          { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'org/web-components-storybook' },
-          { kind: 'select', key: 'baseBranch', label: 'Base branch', icon: 'branch', options: BRANCHES },
-        ],
-        [
-          { kind: 'text', key: 'token', label: 'Personal access token', icon: 'api-key', placeholder: 'GitHub PAT with repo:write', secret: true },
-          { kind: 'select', key: 'filePath', label: 'File path in the repo', icon: 'file', options: ['src/tokens/design-tokens.json', 'tokens/design-tokens.json', 'design-tokens.json'] },
-        ],
-      ],
-      [
-        { kind: 'text', key: 'outputFormat', label: 'Output format', icon: 'folder', placeholder: OUTPUT_FORMATS.join(', ').replace(/, (?=[^,]*$)/, ', or ') },
-        { kind: 'text', key: 'branchTemplate', label: 'Branch name template ({date} resolves to ISO YYYY-MM-DD.)', icon: 'file', placeholder: 'ds/token-update-{date}' },
-      ],
-      { kind: 'text', key: 'enterpriseUrl', label: 'GitHub Enterprise base URL (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com (without /api/v3)' },
+      mcpGroup('component', mcpCodeBlocks('component', 'src/components')),
+      mcpGroup('screen', [
+        ...mcpCodeBlocks('screen', 'src/pages'),
+        { kind: 'text', key: 'screenPackage', label: 'Design system package', icon: 'url', placeholder: '@acme/ui', helper: 'Screens import components from this package instead of copying them.' },
+      ]),
+      mcpGroup('library', [
+        mcpRepoRow('library'),
+        [mcpToken('library'), { kind: 'select', key: 'libraryPullRequests', label: 'Pull requests', icon: 'file', options: MCP_PULL_REQUESTS }],
+      ]),
+      { kind: 'text', key: 'enterpriseUrl', label: 'GitHub Enterprise base URL (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: 'Shared by all three. Without /api/v3. Leave blank for github.com.' },
     ],
   },
   {
@@ -174,9 +196,19 @@ export const SECTIONS: readonly SectionSpec[] = [
   },
 ]
 
-/** Every value key a section's fields edit, header switch included. */
+/** The fields of blocks, rows and columns in page order, with each group opened up into its own fields. */
+export function flatFields(blocks: readonly (BlockSpec | ColumnSpec)[]): LeafFieldSpec[] {
+  return blocks.flatMap((block): LeafFieldSpec[] => {
+    if (Array.isArray(block)) return flatFields(block as readonly ColumnSpec[])
+    const field = block as FieldSpec
+    return field.kind === 'group' ? flatFields(field.blocks) : [field]
+  })
+}
+
+/** The value keys one field edits: an AI provider row edits its model and its key. */
+export const fieldKeys = (field: LeafFieldSpec): string[] => (field.kind === 'provider' ? [field.model.key, field.apiKey.key] : [field.key])
+
+/** Every value key a section's fields edit, header switch and the fields inside groups included. */
 export function sectionFieldKeys(spec: SectionSpec): string[] {
-  const keys = (field: FieldSpec): string[] => field.kind === 'provider' ? [field.model.key, field.apiKey.key] : [field.key]
-  const flat = (block: BlockSpec | ColumnSpec): FieldSpec[] => Array.isArray(block) ? (block as readonly (ColumnSpec)[]).flatMap(flat) : [block as FieldSpec]
-  return [...(spec.toggleKey ? [spec.toggleKey] : []), ...spec.blocks.flatMap(flat).flatMap(keys)]
+  return [...(spec.toggleKey ? [spec.toggleKey] : []), ...flatFields(spec.blocks).flatMap(fieldKeys)]
 }

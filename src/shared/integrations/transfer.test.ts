@@ -72,12 +72,21 @@ describe('parseSettingsFile', () => {
   it('skips a section whose values break a field rule, and keeps the rest', () => {
     const result = parseSettingsObject({
       kind: SETTINGS_FILE_KIND, version: 1,
-      sections: { github: { repo: 'acme/tokens', baseUrl: 'http://evil.example.com' }, storybook: { baseUrl: 'https://ds.acme.com' }, jira: 'nope', mcp: { repo: 12 } },
+      sections: { github: { repo: 'acme/tokens', baseUrl: 'http://evil.example.com' }, storybook: { baseUrl: 'https://ds.acme.com' }, jira: 'nope', mcp: { componentRepo: 12 } },
     })
     if (!result.ok) throw new Error(result.message)
     expect(Object.keys(result.file.sections)).toEqual(['storybook'])
     expect(result.file.skipped.map((s) => s.id)).toEqual(['github', 'mcp', 'jira'])
     expect(result.file.skipped[0]?.reason).toContain('https://')
+  })
+
+  it('reads an MCP section exported before one repository per scenario: it becomes the Component repository', () => {
+    const result = parseSettingsObject({ kind: SETTINGS_FILE_KIND, version: 1, sections: { mcp: { enabled: true, repo: 'acme/storybook', baseBranch: 'develop', token: 'ghp_secret' } } })
+    if (!result.ok) throw new Error(result.message)
+    expect(result.file.skipped).toEqual([])
+    // The repository token is a team key (like GitHub's), so a file exported with keys still carries it.
+    expect(result.file.sections.mcp).toMatchObject({ componentRepo: 'acme/storybook', componentBranch: 'develop', componentToken: 'ghp_secret' })
+    expect(result.file.sections.mcp).not.toHaveProperty('repo')
   })
 
   it('drops unknown fields, unknown sections and any personal token in the file', () => {

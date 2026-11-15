@@ -29,9 +29,9 @@ export default tseslint.config(
     rules: { '@figma/figma-plugins/ban-deprecated-id-params': 'off' },
   },
   {
-    // Same missing type information, on any find call. This one searches a single main
-    // component, not a page, so the advice about loading pages doesn't apply.
-    files: ['src/features/audit/sandbox/scan.ts', 'src/features/a11y/sandbox/spec-collect.ts'],
+    // Same missing type information, on any find call. These search a single main component,
+    // or (mcp impact) a page right after `page.loadAsync()`, which is what the advice asks for.
+    files: ['src/features/audit/sandbox/scan.ts', 'src/features/a11y/sandbox/spec-collect.ts', 'src/features/mcp/sandbox/impact.ts'],
     rules: { '@figma/figma-plugins/dynamic-page-find-method-advice': 'off' },
   },
   {

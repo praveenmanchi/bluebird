@@ -75,6 +75,30 @@
   flex-wrap: wrap;
   gap: var(--bb-derived-extraction-results-modes-gap);
 }
+/* Figma "Brand rows": rows 6 apart, each the mode name (fills) then the Change count chips 4 apart. */
+.bb-extraction__modes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-dimension-space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bb-extraction__mode {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-inline-xs);
+}
+.bb-extraction__mode-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--bb-publish-font-size-body);
+  line-height: var(--bb-publish-font-line-body);
+  color: var(--bb-publish-text-title);
+}
 .bb-extraction__filters,
 .bb-extraction__more { align-self: flex-start; }
 

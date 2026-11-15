@@ -2,7 +2,7 @@
 // the readiness checks. Read-only — nothing in the document changes.
 import { rgbaToHex, type RGBA } from '@shared/figma/color'
 import { traverse } from '@shared/figma/traverse'
-import type { SelectionInfo, SelectionResult } from '../messages'
+import type { SelectionInfo, SelectionResult, VariantAxis } from '../messages'
 import { DEFAULT_NAME, type HandoffInventory } from './checks'
 
 /** A walk stops here: the handoff is about one component or screen, not a page. */
@@ -39,13 +39,38 @@ async function descriptionOf(node: SceneNode): Promise<string> {
   return ''
 }
 
+/** The node whose property definitions describe this layer: the set, a standalone component, or an instance's main one. A variant never is. */
+async function definitionOwner(node: SceneNode): Promise<ComponentNode | ComponentSetNode | null> {
+  if (node.type === 'COMPONENT_SET') return node
+  if (node.type === 'COMPONENT') return node.parent?.type === 'COMPONENT_SET' ? node.parent : node
+  if (node.type !== 'INSTANCE') return null
+  try {
+    const main = await node.getMainComponentAsync()
+    if (!main) return null
+    return main.parent?.type === 'COMPONENT_SET' ? main.parent : main
+  } catch { return null }
+}
+
+/** Variant properties with their values, and the names of the other properties, as the generated component's props. */
+export async function propertiesOf(node: SceneNode): Promise<{ variantAxes: VariantAxis[]; properties: string[] }> {
+  const owner = await definitionOwner(node)
+  let defs: ComponentPropertyDefinitions = {}
+  try { defs = owner?.componentPropertyDefinitions ?? {} } catch { defs = {} } // a set with conflicting variants throws
+  const entries = Object.entries(defs)
+  return {
+    variantAxes: entries.filter(([, d]) => d.type === 'VARIANT').map(([name, d]) => ({ name, options: d.variantOptions ?? [] })),
+    properties: entries.filter(([, d]) => d.type !== 'VARIANT').map(([name]) => name.split('#')[0]!),
+  }
+}
+
 export async function describeNode(node: SceneNode): Promise<SelectionInfo> {
-  const [variants, description] = await Promise.all([variantsOf(node), descriptionOf(node)])
+  const [variants, description, props] = await Promise.all([variantsOf(node), descriptionOf(node), propertiesOf(node)])
   const layers = await traverse([node], () => undefined, { onProgress: (visited) => visited < INSPECT_NODE_LIMIT })
   const path = pathOf(node)
   return {
     nodeId: node.id, frame: node.name, type: node.type, variants, layers, description,
     path: variants ? `${path} · ${variants} variant${variants === 1 ? '' : 's'}` : path,
+    variantAxes: props.variantAxes, properties: props.properties,
   }
 }
 

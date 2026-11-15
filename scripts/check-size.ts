@@ -101,7 +101,15 @@ import { resolve } from 'node:path'
 // 2026-11-13 (Team setup file): user raised the budget to 1560 KB. Exporting and importing Settings as one
 // JSON (the file format, the Import / export menu and pop-ups, and the team setup screen after the tour)
 // added ~25 KB; build 1541.5 KB.
-const BUDGET_KB = 1560
+// 2026-11-15 (Change Item impact row): user raised the budget to 1580 KB. The Change count atom took the
+// build to 1559.8 KB; the Show impact row on Change Item and the Number value count on Tab selecters,
+// both followed from Figma, took it to 1560.7 KB.
+// 2026-11-15 (Documentation tab): user raised the budget to 1630 KB. The tab (Components and Hand-off
+// flows, its styles and three glyphs) added ~33 KB; build 1623.5 KB. Same levers as above.
+// 2026-11-15 (MCP v3 + Library update): user raised the budget to 1650 KB. Per-scenario repositories,
+// pull-request tracking and the Library update flow (releases, impact scan, per-screen hand-off) added
+// ~17 KB; build 1642.2 KB. Same levers as above.
+const BUDGET_KB = 1650
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

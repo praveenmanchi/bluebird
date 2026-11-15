@@ -72,6 +72,7 @@ function sentence(kind: GithubErrorKind, repo: string, apiMessage: string): stri
 }
 
 export interface CommitFile { path: string; content: string }
+export interface PullSummary { number: number; url: string; title: string; state: 'open' | 'merged' | 'closed' }
 export interface WorkflowRun { status: string; conclusion: string | null; html_url: string; name: string; run_number: number }
 
 /**
@@ -79,6 +80,8 @@ export interface WorkflowRun { status: string; conclusion: string | null; html_u
  * storage providers do the same around every GitHub call): a dropped connection,
  * a 5xx from GitHub, or a 429 / secondary rate limit. Everything else fails at once.
  */
+/** How many pull requests `recentPulls` reads: GitHub's largest page. */
+export const RECENT_PULLS = 100
 export const RETRY_ATTEMPTS = 3
 export const RETRY_BASE_MS = 400
 const isTransient = (status: number): boolean => status >= 500 || status === 429
@@ -207,6 +210,23 @@ export function createGithubClient(config: GithubConfig, fetch: GithubFetch, sle
     async openPull(head: string, base: string, title: string, body: string): Promise<{ number: number; url: string }> {
       const pr = await call<{ number: number; html_url: string }>('POST', `${repoPath}/pulls`, { title, head, base, body })
       return { number: pr.number, url: pr.html_url }
+    },
+    /** The newest pull request from `branch` in this repository, open or not; null when there is none yet. */
+    async findPull(branch: string): Promise<PullSummary | null> {
+      const owner = config.repo.split('/')[0] ?? ''
+      const head = encodeURIComponent(`${owner}:${branch}`)
+      const list = await call<Array<{ number: number; html_url: string; title: string; state: string; merged_at: string | null }>>('GET', `${repoPath}/pulls?head=${head}&state=all&per_page=1`)
+      const pr = Array.isArray(list) ? list[0] : undefined
+      if (!pr) return null
+      return { number: pr.number, url: pr.html_url, title: pr.title, state: pr.merged_at ? 'merged' : pr.state === 'open' ? 'open' : 'closed' }
+    },
+    /** The 100 newest pull requests into `base`, open or not, with the branch each comes from. */
+    async recentPulls(base: string): Promise<Array<PullSummary & { head: string; headRepo: string }>> {
+      const list = await call<Array<{ number: number; html_url: string; title: string; state: string; merged_at: string | null; head?: { ref?: string; repo?: { full_name?: string } | null } }>>('GET', `${repoPath}/pulls?base=${encodeURIComponent(base)}&state=all&sort=created&direction=desc&per_page=${RECENT_PULLS}`)
+      return (Array.isArray(list) ? list : []).map((pr) => ({
+        number: pr.number, url: pr.html_url, title: pr.title, head: pr.head?.ref ?? '', headRepo: pr.head?.repo?.full_name ?? '',
+        state: pr.merged_at ? 'merged' as const : pr.state === 'open' ? 'open' as const : 'closed' as const,
+      }))
     },
     async runsFor(sha: string): Promise<WorkflowRun[]> {
       return (await call<{ workflow_runs?: WorkflowRun[] }>('GET', `${repoPath}/actions/runs?head_sha=${sha}&per_page=5`)).workflow_runs ?? []

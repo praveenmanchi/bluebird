@@ -21,6 +21,8 @@ export const Collapsed: Story = { parameters: v('Expanded=No') }
 export const Expanded: Story = { args: { expanded: true }, parameters: v('Expanded=Yes') }
 
 /** Uncontrolled: the item keeps its own Expanded state. */
+/** Figma "Show impact" on, with the default "Impact label". */
+export const WithImpact: Story = { args: { impact: ['Button', 'Date picker'] } }
 export const Interactive: Story = { render: () => <ChangeItem /> }
 
 export const Spacing: Story = {

@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/preact'
+import { render, screen, fireEvent, waitFor, cleanup, within } from '@testing-library/preact'
 import { RpcProvider } from '@shared/ui'
 import { createRpcClient, createMockTransport } from '@shared/bridge'
 import { Tab } from '../ui/Tab'
@@ -46,6 +46,9 @@ describe('Extraction tab', () => {
     expect(screen.getByText('Drift detected')).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'All 6' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByText('Changes by brand mode')).toBeInTheDocument()
+    const modeRows = within(screen.getByRole('list', { name: 'Brand modes' })).getAllByRole('listitem')
+    expect(modeRows.length).toBeGreaterThan(0)
+    for (const row of modeRows) expect(row.querySelectorAll('.bb-change-count').length).toBeGreaterThan(0)
     expect(screen.getByText('Component impact')).toBeInTheDocument()
     expect(screen.getByText('Breaking')).toBeInTheDocument()
     expect(screen.queryByRole('checkbox', { name: /^Include / })).toBeNull()

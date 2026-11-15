@@ -21,10 +21,16 @@ describe('footer status pills', () => {
     expect(uxaiPill(undefined).status).toBe('retry')
   })
 
-  it('MCP needs a repository and a token', () => {
+  it('MCP is good once one scenario has its repository and token, and names where each connected one goes', () => {
     const mcp = DEFAULT_INTEGRATIONS.mcp
-    expect(mcpPill(mcp)).toEqual({ label: 'MCP', status: 'issue', title: 'Add the repository and access token in Settings › MCP + code sync.' })
-    expect(mcpPill({ ...mcp, repo: 'org/web', token: 'ghp_test' })).toEqual({ label: 'MCP', status: 'good', title: 'Pushes to org/web (main). The token isn’t tested yet.' })
-    expect(mcpPill({ ...mcp, enabled: false })).toMatchObject({ label: 'MCP · off' })
+    const none = { label: 'MCP', status: 'issue', title: 'Add a repository and access token for at least one scenario in Settings › MCP + code sync.' }
+    expect(mcpPill(mcp)).toEqual(none)
+    expect(mcpPill({ ...mcp, screenRepo: 'org/web' })).toEqual(none)
+    expect(mcpPill({ ...mcp, screenRepo: 'org/web', screenToken: 'ghp_test' })).toEqual({ label: 'MCP', status: 'good', title: 'Hand-offs go to Screen to code: org/web. Tokens aren’t tested yet.' })
+    expect(mcpPill({ ...mcp, libraryRepo: 'org/app', libraryToken: 'ghp_l', componentRepo: ' org/ds ', componentToken: 'ghp_c', screenToken: 'ghp_s' })).toEqual({
+      label: 'MCP', status: 'good', title: 'Hand-offs go to Component to Storybook: org/ds, Library update to screens: org/app. Tokens aren’t tested yet.',
+    })
+    expect(mcpPill({ ...mcp, enabled: false, screenRepo: 'org/web', screenToken: 'ghp_test' })).toEqual({ label: 'MCP · off', status: 'issue', title: 'MCP + code sync is switched off in Settings, so pushes stay disabled.' })
+    expect(mcpPill(undefined)).toEqual({ label: 'MCP', status: 'retry', title: 'Reading Settings…' })
   })
 })

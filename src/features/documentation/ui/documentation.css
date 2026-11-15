@@ -1,0 +1,235 @@
+/* Documentation tab — Figma "Documentation · 600" (page 40002314:10780, shell
+ * template 40002314:10781, a clone of Publish v2). VERTICAL, padding
+ * docs/space/panel, gap docs/space/section: the Modes row (Tab sub menu), the
+ * mode's Panel card (docs/surface/panel, panel-border stroke, radius/panel) which
+ * scrolls, then "Actions" — a plain row under the panel. */
+.bb-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-docs-space-section);
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--bb-docs-space-panel);
+  font-family: var(--bb-docs-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-docs-font-size-body);
+  line-height: var(--bb-docs-font-line-body);
+  color: var(--bb-docs-text-body);
+  container: docs / inline-size;
+}
+.bb-docs__modes,
+.bb-docs__filters { align-self: flex-start; max-width: 100%; }
+
+.bb-docs__panel {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-docs-space-section);
+  min-height: 0;
+}
+
+.bb-docs__scroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-docs-space-section);
+  min-height: 0;
+  overflow-y: auto;
+}
+.bb-docs__scroll > * { flex: none; }
+.bb-docs__scroll > .bb-docs__card--fill { flex: 1 0 auto; }
+
+.bb-docs__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-docs-space-section);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--bb-docs-space-panel);
+  border: var(--bb-docs-border-width) solid var(--bb-docs-surface-panel-border);
+  border-radius: var(--bb-docs-radius-panel);
+  background: var(--bb-docs-surface-panel);
+}
+.bb-docs__card--fill > .bb-publish-empty-state { margin: auto; }
+
+.bb-docs__actions {
+  display: flex;
+  flex: none;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--bb-docs-space-inline);
+}
+.bb-docs__summary,
+.bb-docs__hint {
+  margin: 0;
+  font-size: var(--bb-docs-font-size-caption);
+  line-height: var(--bb-docs-font-line-caption);
+  font-weight: var(--bb-docs-font-weight-regular);
+  color: var(--bb-docs-text-meta);
+}
+.bb-docs__summary { flex: 1 1 0; min-width: 0; }
+
+.bb-docs__heading {
+  margin: 0;
+  font-size: var(--bb-docs-font-size-heading);
+  line-height: var(--bb-docs-font-line-label);
+  font-weight: var(--bb-docs-font-weight-strong);
+  color: var(--bb-docs-text-title);
+}
+.bb-docs__row-head {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--bb-docs-space-inline);
+}
+.bb-docs__title { display: flex; flex-direction: column; gap: var(--bb-docs-space-hair); min-width: 0; }
+.bb-docs__title h2 {
+  margin: 0;
+  font-size: var(--bb-docs-font-size-title);
+  line-height: var(--bb-docs-font-line-label);
+  font-weight: var(--bb-docs-font-weight-strong);
+  color: var(--bb-docs-text-title);
+}
+.bb-docs__title p { margin: 0; font-size: var(--bb-docs-font-size-caption); line-height: var(--bb-docs-font-line-caption); color: var(--bb-docs-text-meta); }
+
+.bb-docs__options,
+.bb-docs__checks,
+.bb-docs__group { display: flex; flex-direction: column; gap: var(--bb-docs-space-tight); }
+.bb-docs__group { gap: var(--bb-docs-space-inline); }
+.bb-docs__more { align-self: flex-start; }
+.bb-docs__thumb { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.bb-docs__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--bb-docs-space-inline);
+  padding: var(--bb-docs-space-panel);
+  color: var(--bb-docs-text-meta);
+}
+
+/* Generating: the subject chip, the steps and the bar. */
+.bb-docs__subject { align-self: stretch; }
+.bb-docs__steps { display: flex; flex-direction: column; gap: var(--bb-docs-space-inline); margin: 0; padding: 0; list-style: none; }
+.bb-docs__steps li { display: flex; align-items: center; gap: var(--bb-docs-space-inline); color: var(--bb-docs-text-meta); }
+.bb-docs__steps li[data-status='running'] { color: var(--bb-docs-text-title); }
+.bb-docs__steps li[data-status='queued'] { display: none; }
+.bb-docs__step-icon { width: var(--bb-docs-size-icon); height: var(--bb-docs-size-icon); color: var(--bb-docs-guidance-do); }
+
+/* Anatomy: the specimen on docs/preview/canvas with numbered markers over its parts. */
+.bb-docs__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: calc(var(--bb-docs-size-swatch) * 5);
+  padding: calc(var(--bb-docs-space-panel) * 2) var(--bb-docs-space-panel);
+  border: var(--bb-docs-border-width) solid var(--bb-docs-preview-stage-border);
+  border-radius: var(--bb-docs-radius-control);
+  background: var(--bb-docs-preview-canvas);
+}
+.bb-docs__specimen { position: relative; display: inline-flex; max-width: 80%; }
+.bb-docs__specimen img { display: block; max-width: 100%; height: auto; }
+.bb-docs__specimen-name {
+  padding: var(--bb-docs-space-row-y) var(--bb-docs-space-panel);
+  border: var(--bb-docs-border-width) dashed var(--bb-docs-surface-panel-border);
+  border-radius: var(--bb-docs-radius-control);
+  font-weight: var(--bb-docs-font-weight-medium);
+  color: var(--bb-docs-text-title);
+}
+.bb-docs__marker {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-docs-size-icon);
+  height: var(--bb-docs-size-icon);
+  border-radius: var(--bb-docs-radius-pill);
+  background: var(--bb-docs-anatomy-marker);
+  font-size: var(--bb-docs-font-size-caption);
+  font-weight: var(--bb-docs-font-weight-strong);
+  line-height: 1; /* allow-raw: centres the digit in the marker circle */
+  color: var(--bb-docs-anatomy-marker-text);
+  transform: translate(-50%, -125%); /* allow-raw: sits the marker above the part's top edge */
+}
+.bb-docs__marker--inline { position: static; flex: none; transform: none; }
+.bb-docs__parts { display: flex; flex-direction: column; gap: var(--bb-docs-space-tight); margin: 0; padding: 0; list-style: none; }
+.bb-docs__parts li { display: flex; align-items: center; gap: var(--bb-docs-space-inline); min-width: 0; }
+.bb-docs__parts strong,
+.bb-docs__tokens strong,
+.bb-docs__brands strong { font-weight: var(--bb-docs-font-weight-medium); color: var(--bb-docs-text-title); }
+.bb-docs__parts span:last-child,
+.bb-docs__tokens span,
+.bb-docs__brands span:last-child { font-size: var(--bb-docs-font-size-caption); line-height: var(--bb-docs-font-line-caption); color: var(--bb-docs-text-meta); }
+
+/* Properties and "What's in it": label column, then the value. */
+.bb-docs__facts { display: flex; flex-direction: column; gap: var(--bb-docs-space-inline); margin: 0; }
+.bb-docs__facts > div { display: flex; gap: var(--bb-docs-space-inline); }
+.bb-docs__facts dt { flex: 0 0 30%; color: var(--bb-docs-text-meta); }
+.bb-docs__facts dd { flex: 1 1 0; min-width: 0; margin: 0; color: var(--bb-docs-text-title); overflow-wrap: anywhere; }
+
+.bb-docs__tokens { display: flex; flex-direction: column; gap: var(--bb-docs-space-inline); margin: 0; padding: 0 var(--bb-docs-space-row-x); list-style: none; }
+.bb-docs__tokens li { display: flex; align-items: center; gap: var(--bb-docs-space-row-x); min-width: 0; }
+.bb-docs__tokens li > div { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.bb-docs__number {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-docs-size-swatch);
+  height: var(--bb-docs-size-swatch);
+  border: var(--bb-docs-border-width) solid var(--bb-docs-swatch-border);
+  border-radius: var(--bb-docs-radius-control);
+  background: var(--bb-docs-preview-canvas);
+  font-size: var(--bb-docs-font-size-caption);
+  font-weight: var(--bb-docs-font-weight-strong);
+  color: var(--bb-docs-text-title);
+}
+.bb-docs__brands { display: flex; flex-wrap: wrap; gap: var(--bb-docs-space-row-x); margin: 0; padding: 0; list-style: none; }
+.bb-docs__brands li { display: flex; flex-direction: column; gap: var(--bb-docs-space-hair); }
+
+/* Hand-off. */
+.bb-docs__finding[data-ignored] .bb-finding-row__title { font-weight: var(--bb-docs-font-weight-regular); color: var(--bb-docs-text-meta); }
+.bb-docs__pair { display: flex; gap: var(--bb-docs-space-inline); }
+.bb-docs__pair > * { flex: 1 1 0; min-width: 0; }
+.bb-docs__select { position: relative; display: flex; flex-direction: column; }
+.bb-docs__select > .bb-dropdown { width: 100%; }
+.bb-docs__menu { position: absolute; top: 100%; right: 0; left: 0; z-index: 2; max-height: calc(var(--bb-docs-size-swatch) * 8); overflow-y: auto; } /* allow-raw: menu stacking above the card */
+
+/* Audit pop-up: docs/overlay/scrim over the panel, docs/dialog/surface card. */
+.bb-docs__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* allow-raw: above the open menus */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--bb-docs-space-panel);
+  border-radius: var(--bb-docs-radius-panel);
+  background: var(--bb-docs-overlay-scrim);
+  overflow-y: auto;
+}
+.bb-docs__dialog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-docs-space-section);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--bb-docs-space-panel);
+  border: var(--bb-docs-border-width) solid var(--bb-docs-surface-panel-border);
+  border-radius: var(--bb-docs-radius-panel);
+  background: var(--bb-docs-dialog-surface);
+}
+.bb-docs__dialog h2 { margin: 0; font-size: var(--bb-docs-font-size-title); line-height: var(--bb-docs-font-line-label); font-weight: var(--bb-docs-font-weight-strong); color: var(--bb-docs-text-title); }
+.bb-docs__dialog p { margin: 0; color: var(--bb-docs-text-meta); }
+.bb-docs__dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--bb-docs-space-inline); }
+
+@container docs (max-width: 420px) { /* allow-raw: S-window breakpoint, not a Figma value */
+  .bb-docs__actions { flex-wrap: wrap; }
+  .bb-docs__summary { flex-basis: 100%; }
+  .bb-docs__pair { flex-direction: column; }
+}
+
+/* Token rows: the swatch is docs/size/swatch, the same box as the number chip. */
+.bb-docs__tokens .bb-color-swatch { flex: none; width: var(--bb-docs-size-swatch); height: var(--bb-docs-size-swatch); }

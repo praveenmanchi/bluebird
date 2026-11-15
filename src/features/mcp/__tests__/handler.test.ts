@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { DEFAULT_INTEGRATIONS, INTEGRATIONS_KEY } from '@shared/integrations'
 import { installFigmaMock } from '../../../../tests/mocks/figma'
-import { githubStatus, handlers } from '../sandbox/handler'
-import { DEFAULT_NAME, evaluate, type HandoffInventory } from '../sandbox/checks'
+import { handlers, mcpStatus, releases, targetStatus, track } from '../sandbox/handler'
+import { findImpact, screenOf } from '../sandbox/impact'
+import { DEFAULT_NAME, evaluate, usedComponents, type HandoffInventory } from '../sandbox/checks'
 import { collectInventory, describeNode, pathOf } from '../sandbox/inspect'
 import { MSG, type CheckResult, type McpStatus, type SelectionResult } from '../messages'
+import type { GithubFetch } from '@shared/github/client'
 
 const call = <T = void>(type: string, payload?: unknown) => (handlers[type] as unknown as (p: unknown) => Promise<T> | T)(payload)
 
@@ -55,7 +57,10 @@ describe('mcp:open', () => {
 describe('mcp:selection', () => {
   it('describes the first selected layer with its path, variants and layer count', async () => {
     const section = tree({ type: 'SECTION', name: 'Components', parent: page })
-    const set = tree({ id: '40:1', type: 'COMPONENT_SET', name: 'Ticket Row', description: 'One issue row.', visible: true, parent: section }, [
+    const set = tree({
+      id: '40:1', type: 'COMPONENT_SET', name: 'Ticket Row', description: 'One issue row.', visible: true, parent: section,
+      componentPropertyDefinitions: { State: { type: 'VARIANT', variantOptions: ['Default', 'Hover', 'Selected'] }, 'Title#1:2': { type: 'TEXT' }, 'Show assignee#1:3': { type: 'BOOLEAN' } },
+    }, [
       tree({ id: '40:2', type: 'COMPONENT', name: 'State=Default', visible: true }, [{ id: '40:5', type: 'TEXT', name: 'Title', visible: true }]),
       tree({ id: '40:3', type: 'COMPONENT', name: 'State=Hover', visible: true }),
       tree({ id: '40:4', type: 'COMPONENT', name: 'State=Selected', visible: true }),
@@ -66,7 +71,9 @@ describe('mcp:selection', () => {
     ;(figma.root as { name: string }).name = 'Bluebird · Plugin UI'
     const result = await call<SelectionResult>(MSG.selection)
     expect(result).toEqual({
-      selected: { nodeId: '40:1', frame: 'Ticket Row', path: 'Plugin UI › Components · 3 variants', type: 'COMPONENT_SET', variants: 3, layers: 5, description: 'One issue row.' },
+      selected: { nodeId: '40:1', frame: 'Ticket Row', path: 'Plugin UI › Components · 3 variants', type: 'COMPONENT_SET', variants: 3, layers: 5, description: 'One issue row.',
+        variantAxes: [{ name: 'State', options: ['Default', 'Hover', 'Selected'] }], properties: ['Title', 'Show assignee'],
+      },
       count: 2,
       fileName: 'Bluebird · Plugin UI',
       fileKey: null,
@@ -79,7 +86,7 @@ describe('mcp:selection', () => {
     expect(await call<SelectionResult>(MSG.selection)).toMatchObject({ selected: null, count: 0 })
     const main = tree({ id: '7:1', type: 'COMPONENT', name: 'Button', description: 'Press it.', parent: tree({ type: 'COMPONENT_SET', name: 'Button set', parent: page }, [{}, {}]) })
     const instance = tree({ id: '8:1', type: 'INSTANCE', name: 'Button', visible: true, parent: page, getMainComponentAsync: async () => main })
-    expect(await describeNode(instance as unknown as SceneNode)).toEqual({ nodeId: '8:1', frame: 'Button', path: 'Plugin UI · 2 variants', type: 'INSTANCE', variants: 2, layers: 1, description: 'Press it.' })
+    expect(await describeNode(instance as unknown as SceneNode)).toEqual({ nodeId: '8:1', frame: 'Button', path: 'Plugin UI · 2 variants', type: 'INSTANCE', variants: 2, layers: 1, description: 'Press it.', variantAxes: [], properties: [] })
   })
 })
 
@@ -125,6 +132,16 @@ describe('readiness checks', () => {
     expect(evaluate({ ...clean, instanceList: [] }).checks[0]).toMatchObject({ status: 'warning', detail: 'No library components — the generated code starts from primitives' })
   })
 
+  it('lists the components it is built from, most used first, and marks the local ones', () => {
+    const inv = { ...clean, instanceList: [{ name: 'Avatar', remote: true }, { name: 'Button', remote: true }, { name: 'Button', remote: false }, { name: 'Banner', remote: false }] }
+    expect(usedComponents(inv)).toEqual([
+      { name: 'Button', count: 2, library: false },
+      { name: 'Avatar', count: 1, library: true },
+      { name: 'Banner', count: 1, library: false },
+    ])
+    expect(evaluate(inv).components).toHaveLength(3)
+  })
+
   it('recognises Figma’s default layer names', () => {
     for (const name of ['Frame 12', 'Rectangle 3', 'Group', 'Vector 44', 'Ellipse 1', 'Text', 'Union']) expect(DEFAULT_NAME.test(name)).toBe(true)
     for (const name of ['Frame header', 'Button / Primary', 'Rectangle-bg', 'label']) expect(DEFAULT_NAME.test(name)).toBe(false)
@@ -163,17 +180,181 @@ describe('mcp:check (collectInventory)', () => {
 })
 
 describe('mcp:status', () => {
-  const mcp = { ...DEFAULT_INTEGRATIONS.mcp, repo: 'acme/web', token: 'ghp_x', baseBranch: 'develop' }
+  const mcp = { ...DEFAULT_INTEGRATIONS.mcp, componentRepo: 'acme/design-system', componentToken: 'ghp_x', screenRepo: 'acme/web', screenToken: 'ghp_y', screenBranch: 'develop', screenPackage: '@acme/ui' }
 
-  it('reports Settings › MCP + code sync', async () => {
+  it('reports each scenario’s repository from Settings › MCP + code sync, never a token', async () => {
     installFigmaMock({ clientStorage: { getAsync: vi.fn(async (key: string) => key === INTEGRATIONS_KEY ? { mcp } : undefined) } } as unknown as Partial<PluginAPI>)
-    expect(await call<McpStatus>(MSG.status)).toEqual({ github: { connected: true, repo: 'acme/web', branch: 'develop' } })
+    const status = await call<McpStatus>(MSG.status)
+    expect(status.targets.component).toEqual({ connected: true, repo: 'acme/design-system', branch: 'main', framework: 'React + TypeScript', folder: 'src/components', designPackage: '', pullRequests: '' })
+    expect(status.targets.screen).toMatchObject({ connected: true, repo: 'acme/web', branch: 'develop', designPackage: '@acme/ui' })
+    expect(status.targets.library).toMatchObject({ connected: false, problem: 'Add the repository and personal access token for Library update to screens in Settings › MCP + code sync' })
+    expect(JSON.stringify(status)).not.toContain('ghp_')
   })
 
-  it('names what is missing or wrong', () => {
-    expect(githubStatus(DEFAULT_INTEGRATIONS.mcp)).toMatchObject({ connected: false, problem: 'Add the repository and personal access token in Settings › MCP + code sync' })
-    expect(githubStatus({ ...mcp, token: '' })).toMatchObject({ connected: false, repo: 'acme/web', problem: 'Add the personal access token in Settings › MCP + code sync' })
-    expect(githubStatus({ ...mcp, enabled: false })).toMatchObject({ connected: false, problem: 'Turn on MCP + code sync in Settings' })
-    expect(githubStatus({ ...mcp, repo: 'acme' })).toMatchObject({ connected: false, problem: 'Fix the repo in Settings › MCP + code sync' })
+  it('names what is missing or wrong, one scenario at a time', () => {
+    expect(targetStatus({ ...mcp, componentToken: '' }, 'component')).toMatchObject({ connected: false, repo: 'acme/design-system', problem: 'Add the personal access token for Component to Storybook in Settings › MCP + code sync' })
+    expect(targetStatus({ ...mcp, componentToken: '' }, 'screen')).toMatchObject({ connected: true })
+    expect(targetStatus({ ...mcp, enabled: false }, 'screen')).toMatchObject({ connected: false, problem: 'Turn on MCP + code sync in Settings' })
+    expect(targetStatus({ ...mcp, screenRepo: 'acme' }, 'screen')).toMatchObject({ connected: false, problem: 'Fix the Screen to code fields in Settings › MCP + code sync' })
+    expect(Object.keys(mcpStatus(mcp).targets)).toEqual(['component', 'screen', 'library'])
+  })
+})
+
+describe('mcp:track', () => {
+  const mcp = { ...DEFAULT_INTEGRATIONS.mcp, componentRepo: 'acme/design-system', componentToken: 'ghp_component', screenRepo: 'acme/web', screenToken: 'ghp_screen' }
+  const github = (body: unknown, status = 200) => vi.fn<GithubFetch>(async () => ({ status, text: async () => JSON.stringify(body) }))
+  const deps = (fetch: GithubFetch, settings = mcp) => ({ readMcp: async () => settings, fetch })
+
+  it('asks the scenario’s repository for the branch, with that scenario’s token', async () => {
+    const fetch = github([])
+    expect(await track({ scenario: 'screen', branch: 'feat/BB-1-checkout' }, deps(fetch))).toEqual({ state: 'waiting', repo: 'acme/web', branch: 'feat/BB-1-checkout' })
+    const [url, init] = fetch.mock.calls[0]!
+    expect(url).toBe('https://api.github.com/repos/acme/web/pulls?head=acme%3Afeat%2FBB-1-checkout&state=all&per_page=1')
+    expect(init.headers.Authorization).toBe('Bearer ghp_screen')
+  })
+
+  it('reports an open, merged or closed pull request', async () => {
+    const pull = { number: 63, html_url: 'https://github.com/acme/design-system/pull/63', title: 'feat: add Ticket Row', state: 'open', merged_at: null }
+    expect(await track({ scenario: 'component', branch: 'feat/ticket-row' }, deps(github([pull])))).toEqual({ state: 'open', repo: 'acme/design-system', branch: 'feat/ticket-row', number: 63, url: pull.html_url, title: pull.title })
+    expect(await track({ scenario: 'component', branch: 'feat/ticket-row' }, deps(github([{ ...pull, state: 'closed', merged_at: '2026-11-15T14:06:00Z' }])))).toMatchObject({ state: 'merged' })
+    expect(await track({ scenario: 'component', branch: 'feat/ticket-row' }, deps(github([{ ...pull, state: 'closed' }])))).toMatchObject({ state: 'closed' })
+  })
+
+  it('uses the GitHub Enterprise host when one is set', async () => {
+    const fetch = github([])
+    await track({ scenario: 'component', branch: 'feat/x' }, deps(fetch, { ...mcp, enterpriseUrl: 'https://github.acme.com/' }))
+    expect(fetch.mock.calls[0]![0]).toContain('https://github.acme.com/api/v3/repos/acme/design-system/pulls')
+  })
+
+  it('refuses a scenario without a repository, a bad branch name, and reports a rejected token', async () => {
+    const fetch = github([])
+    await expect(track({ scenario: 'library', branch: 'feat/x' }, deps(fetch))).rejects.toThrow('Library update to screens in Settings › MCP + code sync')
+    await expect(track({ scenario: 'screen', branch: 'feat/x' }, deps(fetch, { ...mcp, screenToken: '' }))).rejects.toThrow('Add the personal access token for Screen to code in Settings › MCP + code sync')
+    await expect(track({ scenario: 'component', branch: 'feat x' }, deps(fetch))).rejects.toThrow()
+    await expect(track({ scenario: 'component', branch: '../etc' }, deps(fetch))).rejects.toThrow()
+    expect(fetch).not.toHaveBeenCalled()
+    await expect(track({ scenario: 'component', branch: 'feat/x' }, deps(github({ message: 'Bad credentials' }, 401)))).rejects.toThrow('GitHub rejected the token for Component to Storybook. Paste a new one in Settings › MCP + code sync.')
+    await expect(track({ scenario: 'component', branch: 'feat/x' }, deps(github({ message: 'Not Found' }, 404)))).rejects.toThrow('GitHub can’t find acme/design-system. Check the Component to Storybook repository in Settings › MCP + code sync')
+  })
+})
+
+describe('mcp:track — one pull request per screen', () => {
+  const mcp = { ...DEFAULT_INTEGRATIONS.mcp, libraryRepo: 'acme/web', libraryToken: 'ghp_library', libraryBranch: 'develop' }
+  it('asks for the newest pull requests into the base branch once, and matches each screen branch', async () => {
+    const pulls = [
+      { number: 91, html_url: 'https://github.com/acme/web/pull/91', title: 'from a fork', state: 'open', merged_at: null, head: { ref: 'chore/x/checkout', repo: { full_name: 'someone/web' } } },
+      { number: 90, html_url: 'https://github.com/acme/web/pull/90', title: 'chore: cart', state: 'open', merged_at: null, head: { ref: 'chore/x/cart', repo: { full_name: 'acme/web' } } },
+      { number: 89, html_url: 'https://github.com/acme/web/pull/89', title: 'other', state: 'open', merged_at: null, head: { ref: 'feat/other', repo: { full_name: 'acme/web' } } },
+    ]
+    const fetch = vi.fn<GithubFetch>(async () => ({ status: 200, text: async () => JSON.stringify(pulls) }))
+    const result = await track({ scenario: 'library', branch: 'chore/x', branches: ['chore/x/checkout', 'chore/x/cart'] }, { readMcp: async () => mcp, fetch })
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(fetch.mock.calls[0]![0]).toBe('https://api.github.com/repos/acme/web/pulls?base=develop&state=all&sort=created&direction=desc&per_page=100')
+    expect(fetch.mock.calls[0]![1].headers.Authorization).toBe('Bearer ghp_library')
+    expect(result).toEqual({
+      state: 'waiting', repo: 'acme/web', branch: 'chore/x',
+      pulls: [{ branch: 'chore/x/checkout', state: 'waiting' }, { branch: 'chore/x/cart', state: 'open', number: 90, url: pulls[1]!.html_url, title: 'chore: cart' }],
+    })
+  })
+
+  it('asks for an unmatched branch on its own when the newest page is full', async () => {
+    const page = Array.from({ length: 100 }, (_, i) => ({ number: 200 + i, html_url: 'https://github.com/acme/web/pull/1', title: 't', state: 'open', merged_at: null, head: { ref: `feat/n${i}`, repo: { full_name: 'acme/web' } } }))
+    const old = [{ number: 12, html_url: 'https://github.com/acme/web/pull/12', title: 'chore: checkout', state: 'closed', merged_at: '2026-11-01T00:00:00Z' }]
+    const fetch = vi.fn<GithubFetch>(async (url) => ({ status: 200, text: async () => JSON.stringify(url.includes('head=') ? old : page) }))
+    const result = await track({ scenario: 'library', branch: 'chore/x', branches: ['chore/x/checkout'] }, { readMcp: async () => mcp, fetch })
+    expect(fetch).toHaveBeenCalledTimes(2)
+    expect(result).toMatchObject({ state: 'merged', pulls: [{ branch: 'chore/x/checkout', state: 'merged', number: 12 }] })
+  })
+
+  it('refuses more branches than it tracks', async () => {
+    const fetch = vi.fn<GithubFetch>()
+    const branches = Array.from({ length: 21 }, (_, i) => `chore/x/s${i}`)
+    await expect(track({ scenario: 'library', branch: 'chore/x', branches }, { readMcp: async () => mcp, fetch })).rejects.toThrow()
+    expect(fetch).not.toHaveBeenCalled()
+  })
+})
+
+describe('mcp:releases', () => {
+  const now = () => new Date('2026-11-15T12:00:00.000Z')
+  const github = { ...DEFAULT_INTEGRATIONS.github, repo: 'acme/history', apiKey: 'ghp_h' }
+  const storage = DEFAULT_INTEGRATIONS.storage
+
+  it('says where to set up the team History when Storage has no repository', async () => {
+    const fetch = vi.fn<GithubFetch>()
+    const result = await releases({ readGithub: async () => DEFAULT_INTEGRATIONS.github, readStorage: async () => storage, fetch, now })
+    expect(result.releases).toEqual([])
+    expect(result.problem).toContain('Library releases come from the team History.')
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('reads the History folder and keeps the finished library changes', async () => {
+    const entry = {
+      schema: 1, id: 'cl1bridge2', type: 'changelog', status: 'done', title: 'Bridge DS 2.0', summary: '', at: '2026-11-14T10:20:00.000Z', by: { name: 'Anita' }, file: 'Bridge DS',
+      details: { sections: [{ kind: 'changes', title: 'Component changes', unit: 'component', groups: [{ change: 'modified', rows: [{ name: 'Button', valueKind: 'text', note: 'x' }] }] }] },
+    }
+    const fetch = vi.fn<GithubFetch>(async (url) => {
+      if (url.includes('/contents/.bluebird/history?')) return { status: 200, text: async () => JSON.stringify([{ name: '2026-11-14.json', type: 'file', sha: 's1' }]) }
+      return { status: 200, text: async () => JSON.stringify({ schema: 1, entries: [entry, { ...entry, id: 'cl2review0', status: 'review' }] }) } // the day file, read raw
+    })
+    const result = await releases({ readGithub: async () => github, readStorage: async () => storage, fetch, now })
+    expect(result.problem).toBeUndefined()
+    expect(result.releases.map((r) => [r.id, r.components.map((c) => c.name)])).toEqual([['cl1bridge2', ['Button']]])
+  })
+})
+
+describe('mcp:impact (findImpact)', () => {
+  /** A page with a section holding a screen, a loose screen, and an instance nested in another instance. */
+  function file() {
+    const button = { name: 'Size=Large', parent: { type: 'COMPONENT_SET', name: 'Button' } }
+    const toggle = { name: 'Toggle', parent: { type: 'PAGE' } }
+    const instance = (id: string, main: unknown) => ({ id, type: 'INSTANCE', name: 'x', getMainComponentAsync: async () => main })
+    const pageA = tree({ type: 'PAGE', name: '  ↳ Web', loadAsync: async () => undefined } as Record<string, unknown>)
+    const section = tree({ id: 's:1', type: 'SECTION', name: 'Flow', parent: pageA })
+    const checkout = tree({ id: '1:1', type: 'FRAME', name: 'Checkout', parent: section }, [instance('1:2', button), instance('1:3', button), instance('1:4', toggle)])
+    const outer = tree({ id: '1:9', type: 'INSTANCE', name: 'Card', getMainComponentAsync: async () => ({ name: 'Card', parent: { type: 'PAGE' } }) }, [instance('1:10', button)])
+    const cart = tree({ id: '2:1', type: 'FRAME', name: 'Cart', parent: pageA }, [instance('2:2', button), outer])
+    section.children.push(checkout)
+    pageA.children.push(section, cart)
+    const all = [...checkout.children, ...cart.children, ...outer.children]
+    ;(pageA as unknown as { findAllWithCriteria: () => unknown[] }).findAllWithCriteria = () => all
+    return pageA
+  }
+
+  it('groups instances of the changed components by screen, skipping instances inside other instances', async () => {
+    const page = file()
+    installFigmaMock({ root: { children: [page] } as unknown as DocumentNode })
+    const result = await findImpact(['Button', 'toggle'])
+    expect(result).toEqual({
+      screens: [
+        { nodeId: '1:1', name: 'Checkout', page: 'Web', uses: [{ name: 'Button', count: 2 }, { name: 'Toggle', count: 1 }] },
+        { nodeId: '2:1', name: 'Cart', page: 'Web', uses: [{ name: 'Button', count: 1 }] },
+      ],
+      pages: 1, scanned: 5, truncated: false, // the instance nested in Card is skipped before counting
+    })
+  })
+
+  it('finds the screen of a node: the first layer under the page, looking through sections', () => {
+    const page = file()
+    const section = page.children[0] as { children: Array<{ children: unknown[] }> }
+    expect((screenOf(section.children[0]!.children[0] as BaseNode) as { name: string }).name).toBe('Checkout')
+    expect(screenOf(section as unknown as BaseNode)).toBeNull()
+    const outer = tree({ id: 's:2', type: 'SECTION', name: 'Outer', parent: page })
+    const inner = tree({ id: 's:3', type: 'SECTION', name: 'Inner', parent: outer })
+    const group = tree({ id: 'g:1', type: 'GROUP', name: 'Profile', parent: inner }, [{ id: 'g:2', type: 'INSTANCE', name: 'Avatar' }])
+    expect((screenOf(group.children[0] as BaseNode) as { name: string }).name).toBe('Profile')
+  })
+
+  it('does not count a component dropped straight on the page as a screen', async () => {
+    const page = tree({ type: 'PAGE', name: 'Samples', loadAsync: async () => undefined } as Record<string, unknown>)
+    const loose = { id: '5:1', type: 'INSTANCE', name: 'Button', parent: page, getMainComponentAsync: async () => ({ name: 'Button', parent: { type: 'PAGE' } }) }
+    page.children.push(loose)
+    ;(page as unknown as { findAllWithCriteria: () => unknown[] }).findAllWithCriteria = () => [loose]
+    installFigmaMock({ root: { children: [page] } as unknown as DocumentNode })
+    expect((await findImpact(['Button'])).screens).toEqual([])
+  })
+
+  it('rejects an empty list through the handler', async () => {
+    installFigmaMock({ root: { children: [] } as unknown as DocumentNode })
+    await expect(call(MSG.impact, { components: [] })).rejects.toThrow()
   })
 })

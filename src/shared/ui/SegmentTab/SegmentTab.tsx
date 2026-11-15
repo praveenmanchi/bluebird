@@ -1,5 +1,6 @@
 import type { ComponentChildren, JSX } from 'preact'
 import { Icon, type IconName } from '../Icon/Icon'
+import { StoryPoints } from '../StoryPoints/StoryPoints'
 import './SegmentTab.css'
 
 export interface SegmentTabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'icon' | 'selected'> {
@@ -9,12 +10,14 @@ export interface SegmentTabProps extends Omit<JSX.ButtonHTMLAttributes<HTMLButto
   children?: ComponentChildren
   /** Figma "Icon" (swap any UI Icons glyph). Omit for "Show icon" = false. */
   icon?: IconName
+  /** Figma "Number value": a count after the label, drawn by the Story Points chip. Omit for off. */
+  count?: ComponentChildren
   /** Force State=Hover or State=Focus (stories, visual regression). Disabled is the native `disabled`. */
   state?: 'default' | 'hover' | 'focus'
 }
 
 /** Figma "Tab selecters" (308:51054): one segment of the Tab sub menu. Renders <button role="tab">. */
-export function SegmentTab({ selected = false, children, icon, state, class: cls, type = 'button', ...rest }: SegmentTabProps) {
+export function SegmentTab({ selected = false, children, icon, count, state, class: cls, type = 'button', ...rest }: SegmentTabProps) {
   return (
     <button
       {...rest}
@@ -29,6 +32,7 @@ export function SegmentTab({ selected = false, children, icon, state, class: cls
       <span class="bb-segment-tab__container">
         {icon && <span class="bb-segment-tab__icon"><Icon name={icon} /></span>}
         {children !== undefined && <span class="bb-segment-tab__label">{children}</span>}
+        {count !== undefined && <StoryPoints class="bb-segment-tab__count">{count}</StoryPoints>}
       </span>
     </button>
   )
