@@ -22,8 +22,8 @@ const PRIORITY_OPTIONS: readonly FilterOption<PriorityFilter>[] = [
   ...PRIORITY_ORDER.map((p) => ({ value: p, label: PRIORITY_LABEL[p], display: `Priority: ${PRIORITY_LABEL[p]}` })),
 ]
 
-/** The Figma "Tab Icons" set has no filter glyph yet; `extract` (two sliders) stands in until one lands. */
-const FILTER_ICON: IconName = 'extract'
+/** Figma "Tab Icon=Filter" (Tab Icons set, 40002937:7174) — the funnel on the Filter toggle. */
+const FILTER_ICON: IconName = 'filter'
 
 /**
  * Figma "Jira board / Ticket list": header, the scope dropdown with search and
