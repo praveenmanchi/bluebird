@@ -1,4 +1,4 @@
-import { Button, ChangeStatus, Icon, LinkButton, MetaBadge, type IconName } from '@shared/ui'
+import { Button, ChangeCount, Icon, LinkButton, MetaBadge, type IconName } from '@shared/ui'
 import { teamShort } from '@shared/history/store'
 import type { HistoryEntry } from '@shared/history/types'
 import { STATUS_LABEL, STATUS_TONE, TYPE_LABEL, cardDate, changeCounts, countsLabel, typeTone } from '../format'
@@ -16,15 +16,15 @@ export interface EntryCardProps {
 }
 
 /**
- * One footer group: the icon, then a Change Status pill per count in the line
- * (Updated / Added / Removed) and whatever else the line says as text.
+ * One footer group: the icon, then an icon-only Change count chip per count in the
+ * line (Added / Modified / Removed) and whatever else the line says as text.
  */
 function Changes({ what, icon, line }: { what: string; icon: IconName; line: string }) {
   const parsed = changeCounts(line)
   return (
     <span class="bb-history-card__change" role="group" aria-label={countsLabel(what, parsed)}>
       <Icon name={icon} aria-hidden="true" />
-      {parsed.counts.map((c) => <ChangeStatus key={c.status} status={c.status} count={c.count} />)}
+      {parsed.counts.map((c) => <ChangeCount key={c.status} type={c.status} display="icon" count={c.count} />)}
       {parsed.rest && <span>{parsed.rest}</span>}
     </span>
   )
@@ -33,7 +33,7 @@ function Changes({ what, icon, line }: { what: string; icon: IconName; line: str
 /**
  * Figma "History Entry" (Molecules › History, 40002709:7089): type and title on the
  * left; Jira ticket, date, name and team on the right; what happened; then the
- * variable and component changes (Change Status pills, a rule between the two
+ * variable and component changes (Change count chips, a rule between the two
  * groups) and View details. Failed entries get the red stroke.
  */
 export function EntryCard({ entry, jiraSite, onOpen, onOpenUrl, hits }: EntryCardProps) {

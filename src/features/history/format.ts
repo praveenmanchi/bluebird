@@ -1,6 +1,6 @@
 // Display helpers for the History screens.
 import type { HistoryEntry, HistoryType } from '@shared/history/types'
-import type { ChangeStatusKind, MetaBadgeTone } from '@shared/ui'
+import type { ChangeCountType, MetaBadgeTone } from '@shared/ui'
 
 export const TYPE_LABEL: Record<HistoryType, string> = { extraction: 'Extraction', changelog: 'Changelog', report: 'Report', 'code-connect': 'Code Connect', mcp: 'MCP', 'ux-ai': 'UX AI' }
 /** Plural labels for the feature filter. */
@@ -14,17 +14,17 @@ export const STATUS_TONE: Record<HistoryEntry['status'], MetaBadgeTone> = { done
 /** A changelog a teammate approved reads "Approved", not "Done". */
 export const statusLabel = (e: HistoryEntry): string => e.review ? 'Approved' : STATUS_LABEL[e.status]
 
-export interface CardCount { status: ChangeStatusKind; count: string }
+export interface CardCount { status: ChangeCountType; count: string }
 export interface CardCounts { counts: CardCount[]; rest: string }
 
-const COUNT_WORD: Record<string, ChangeStatusKind> = { modified: 'updated', updated: 'updated', added: 'added', removed: 'removed' }
-/** The order of the pills on the Figma card: Updated, Added, Removed. */
-const COUNT_ORDER: readonly ChangeStatusKind[] = ['updated', 'added', 'removed']
+const COUNT_WORD: Record<string, ChangeCountType> = { modified: 'modified', updated: 'modified', added: 'added', removed: 'removed' }
+/** The order of the Change count chips on the Figma card: Added, Modified, Removed. */
+const COUNT_ORDER: readonly ChangeCountType[] = ['added', 'modified', 'removed']
 const COUNT_PART = /^(\d[\d,]*) (modified|updated|added|removed)$/
 
 /**
  * Splits a card line ("2 added · 5 modified · 1 removed · not pushed") into the
- * counts the card shows as Change Status pills and the text that is left over.
+ * counts the card shows as Change count chips and the text that is left over.
  * Lines other features write ("6 components", "14 bound") come back as text.
  */
 export function changeCounts(line: string): CardCounts {
@@ -38,7 +38,7 @@ export function changeCounts(line: string): CardCounts {
   return { counts: [...counts].sort((a, b) => COUNT_ORDER.indexOf(a.status) - COUNT_ORDER.indexOf(b.status)), rest: rest.join(' · ') }
 }
 
-/** "Variables: 5 updated, 2 added, 1 removed" for screen readers. */
+/** "Variables: 2 added, 5 modified, 1 removed" for screen readers. */
 export const countsLabel = (what: string, c: CardCounts): string =>
   `${what}: ${[...c.counts.map((n) => `${n.count} ${n.status}`), ...(c.rest ? [c.rest] : [])].join(', ')}`
 

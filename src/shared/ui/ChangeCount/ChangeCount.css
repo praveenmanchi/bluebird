@@ -1,0 +1,70 @@
+/* ChangeCount — Figma "Change count" (40002905:129272): Type × Display × Surface.
+ * Lead: outlined (no right border), icon + label. Count: filled with the type colour,
+ * its stroke the same colour, a hairline on the left where it meets the lead.
+ * App colours are change-count/<type>/*; Report colours are change-count/report/*. */
+.bb-change-count {
+  display: inline-flex;
+  align-items: stretch;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-type-size-10);
+  line-height: var(--bb-type-line-11);
+  font-weight: var(--bb-font-weight-strong);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.bb-change-count__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inline-xs);
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
+  border: var(--bb-border-width-default) solid var(--bb-border-default);
+  border-right-width: 0;
+  border-radius: var(--bb-radius-md) var(--bb-radius-none) var(--bb-radius-none) var(--bb-radius-md);
+  color: var(--bb-text-primary);
+}
+
+.bb-change-count__icon {
+  width: var(--bb-icon-size-sm);
+  height: var(--bb-icon-size-sm);
+  color: var(--bb-change-count-default-icon);
+}
+
+.bb-change-count__label--hidden {
+  position: absolute;
+  width: 1px; /* allow-raw: visually-hidden pattern */
+  height: 1px; /* allow-raw */
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bb-change-count__count {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--bb-space-inset-xs) var(--bb-space-inline-sm);
+  border: var(--bb-border-width-default) solid var(--bb-change-count-default-fill);
+  border-left-width: var(--bb-border-width-hairline);
+  border-radius: var(--bb-radius-none) var(--bb-radius-md) var(--bb-radius-md) var(--bb-radius-none);
+  background: var(--bb-change-count-default-fill);
+  color: var(--bb-change-count-default-fg);
+}
+
+/* App surface — per type */
+.bb-change-count[data-type='added'] .bb-change-count__icon { color: var(--bb-change-count-added-icon); }
+.bb-change-count[data-type='added'] .bb-change-count__count { background: var(--bb-change-count-added-fill); border-color: var(--bb-change-count-added-fill); color: var(--bb-change-count-added-fg); }
+.bb-change-count[data-type='modified'] .bb-change-count__icon { color: var(--bb-change-count-modified-icon); }
+.bb-change-count[data-type='modified'] .bb-change-count__count { background: var(--bb-change-count-modified-fill); border-color: var(--bb-change-count-modified-fill); color: var(--bb-change-count-modified-fg); }
+.bb-change-count[data-type='removed'] .bb-change-count__icon { color: var(--bb-change-count-removed-icon); }
+.bb-change-count[data-type='removed'] .bb-change-count__count { background: var(--bb-change-count-removed-fill); border-color: var(--bb-change-count-removed-fill); color: var(--bb-change-count-removed-fg); }
+
+/* Report surface — the white Figma report, same in every brand */
+.bb-change-count[data-surface='report'] .bb-change-count__lead { border-color: var(--bb-change-count-report-border); color: var(--bb-change-count-report-label); }
+.bb-change-count[data-surface='report'] .bb-change-count__icon { color: var(--bb-change-count-report-default-icon); }
+.bb-change-count[data-surface='report'] .bb-change-count__count { background: var(--bb-change-count-report-default-fill); border-color: var(--bb-change-count-report-default-fill); color: var(--bb-change-count-report-default-fg); }
+.bb-change-count[data-surface='report'][data-type='added'] .bb-change-count__icon { color: var(--bb-change-count-report-added-icon); }
+.bb-change-count[data-surface='report'][data-type='added'] .bb-change-count__count { background: var(--bb-change-count-report-added-fill); border-color: var(--bb-change-count-report-added-fill); color: var(--bb-change-count-report-added-fg); }
+.bb-change-count[data-surface='report'][data-type='modified'] .bb-change-count__icon { color: var(--bb-change-count-report-modified-icon); }
+.bb-change-count[data-surface='report'][data-type='modified'] .bb-change-count__count { background: var(--bb-change-count-report-modified-fill); border-color: var(--bb-change-count-report-modified-fill); color: var(--bb-change-count-report-modified-fg); }
+.bb-change-count[data-surface='report'][data-type='removed'] .bb-change-count__icon { color: var(--bb-change-count-report-removed-icon); }
+.bb-change-count[data-surface='report'][data-type='removed'] .bb-change-count__count { background: var(--bb-change-count-report-removed-fill); border-color: var(--bb-change-count-report-removed-fill); color: var(--bb-change-count-report-removed-fg); }
