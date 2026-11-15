@@ -1,106 +1,105 @@
-import { Checkbox, CodeSnippet, PublishEmptyState, SectionTitle, SegmentedControl, type IconName } from '@shared/ui'
-import { FRAMEWORKS, GENERATION_LOG, INCLUDE_LABELS, PATHS, STYLINGS, type IncludeOption } from '../fixtures'
-import { activeFile, checkResult, files, framework, generation, goTo, include, path, selection, styling } from '../state'
+import { Checkbox, CodeSnippet, Input, SectionTitle, SegmentedControl, type IconName } from '@shared/ui'
+import { INCLUDE_LABELS, INCLUDE_ORDER, STYLINGS, expectedOutputs, mcpSetup, outputPath, type HandoffMode } from '../prompt'
+import { branch, branchError, branchOverride, components, goTo, include, kind, localMcp, mode, prompt, promptInput, selection, styling, target, view, type HandoffView } from '../state'
 import { ActionBar } from './ActionBar'
 import { Card } from './cards'
 import { OptionSelect } from './OptionSelect'
 import './GenerateStep.css'
 
 export interface GenerateStepProps {
+  /** Copies the prompt; when that works the flow moves on to Track. */
   onCopyPrompt: () => void
+  /** On to Track without copying: the clipboard can be blocked, and the prompt can be selected by hand. */
+  onSkip: () => void
 }
 
-const INCLUDE_ORDER: readonly IncludeOption[] = ['codeConnect', 'story', 'test']
+const MODES: readonly { value: HandoffMode; label: string }[] = [{ value: 'build', label: 'New build' }, { value: 'update', label: 'Update existing' }]
+const VIEW_ICON: Readonly<Record<HandoffView, IconName>> = { prompt: 'ui-toolbar-dev-brackets', setup: 'ui-sidebar-saving-syncing', outputs: 'ui-toolbar-component' }
 
 function Options() {
+  const m = mode.value
   return (
     <>
-      <div class="bb-mcp-handoff__options">
-        <OptionSelect label="Framework" value={framework.value} options={FRAMEWORKS} onChange={(v) => { framework.value = v }} />
-        <OptionSelect label="Styling" value={styling.value} options={STYLINGS} onChange={(v) => { styling.value = v }} />
-        <OptionSelect label="Output path" value={path.value} options={PATHS} onChange={(v) => { path.value = v }} />
+      <SegmentedControl class="bb-mcp-handoff__files" aria-label="Kind of hand-off" options={MODES} value={m} onChange={(v) => { mode.value = v }} />
+      <div class="bb-mcp-handoff__fields">
+        <div class="bb-mcp-handoff__field"><OptionSelect label="Styling" value={styling.value} options={STYLINGS} onChange={(v) => { styling.value = v }} /></div>
+        <Input
+          class="bb-mcp-handoff__field"
+          label="Branch"
+          value={branch.value}
+          helperText={branchError.value ?? undefined}
+          error={branchError.value !== null}
+          maxLength={200}
+          spellcheck={false}
+          autoComplete="off"
+          onValueChange={(v) => { branchOverride.value = v }}
+        />
       </div>
       <div class="bb-mcp-handoff__toggles">
         {INCLUDE_ORDER.map((id) => (
-          <Checkbox
-            key={id}
-            label={INCLUDE_LABELS[id]}
-            checked={include.value[id]}
-            onChange={(checked) => { include.value = { ...include.value, [id]: checked } }}
-          />
+          <Checkbox key={id} label={INCLUDE_LABELS[m][id]} checked={include.value[id]} onChange={(checked) => { include.value = { ...include.value, [id]: checked } }} />
         ))}
       </div>
     </>
   )
 }
 
-/** What the checks counted, as the one-line summary under the preview and in the action bar. */
-export function generationSummary(): string {
-  const n = files.value.length
-  const st = checkResult.value?.stats
-  const filesPart = `${n} ${n === 1 ? 'file' : 'files'}`
-  if (!st) return filesPart
-  const raw = st.rawPaints + st.rawNumbers
-  return `${filesPart} · reuses ${st.libraryInstances} ${st.libraryInstances === 1 ? 'component' : 'components'} · ${raw} hardcoded ${raw === 1 ? 'value' : 'values'}`
-}
-
-/** The UI Icons glyph the Figma "Files" sub menu gives each generated file. */
-function fileIcon(name: string): IconName {
-  if (name.endsWith('.stories.tsx')) return 'ui-toolbar-component'
-  if (name.endsWith('.css')) return 'ui-style-fill'
-  return 'ui-toolbar-dev-brackets'
-}
-
-function Generated() {
-  const list = files.value
-  const shown = list.find((f) => f.name === activeFile.value) ?? list[0]!
-  const raw = (checkResult.value?.stats.rawPaints ?? 0) + (checkResult.value?.stats.rawNumbers ?? 0)
+/** The snippet under the view switch: the prompt, the MCP registration, or the files the prompt asks for. */
+function Snippet() {
+  const input = promptInput.value
+  const frame = selection.value?.frame ?? 'the selection'
+  const v = view.value
+  const outputs = mode.value === 'update' ? 'What gets updated' : 'What gets built'
+  const text = v === 'setup' ? mcpSetup(localMcp.value) : v === 'outputs' ? (input ? expectedOutputs(input).join('\n') : '') : (prompt.value ?? '')
+  const caption = v === 'setup' ? `MCP setup · ${localMcp.value ? 'desktop' : 'remote'} Figma MCP server` : v === 'outputs' ? `${outputs} · Claude Code decides the final file names` : `Prompt · built from ${frame} and its checks`
   return (
     <>
       <SegmentedControl
         class="bb-mcp-handoff__files"
-        aria-label="Generated files"
-        options={list.map((f) => ({ value: f.name, icon: fileIcon(f.name) }))}
-        value={shown.name}
-        onChange={(name) => { activeFile.value = name }}
+        aria-label="Hand-off views"
+        options={[{ value: 'prompt', label: 'Prompt', icon: VIEW_ICON.prompt }, { value: 'setup', label: 'MCP setup', icon: VIEW_ICON.setup }, { value: 'outputs', label: outputs, icon: VIEW_ICON.outputs }]}
+        value={v}
+        onChange={(next: HandoffView) => { view.value = next }}
       />
-      <CodeSnippet role="tabpanel" aria-label={shown.name} language={shown.caption} code={shown.code} />
-      <p class="bb-mcp-handoff__caption">
-        {raw > 0 ? `${raw} hardcoded ${raw === 1 ? 'value ships' : 'values ship'} as --bb-derived-* tokens until ${raw === 1 ? 'it is' : 'they are'} bound in Figma. ` : ''}
-        Preview of the output shape. The real files are generated in Claude Code or Cursor from {selection.value?.frame ?? 'the selection'} through the Figma MCP server — Copy prompt for Claude Code hands them the selection, your options and these checks.
-      </p>
+      <CodeSnippet role="tabpanel" aria-label={caption} language={caption} code={text} />
     </>
   )
 }
 
-/** Figma "MCP v2 · 3 Generate" and "Error · Generation failed" (the MCP call timed out). */
-export function GenerateStep({ onCopyPrompt }: GenerateStepProps) {
-  const failed = generation.value === 'failed'
+/** One line under the actions: what the prompt will ask for. */
+export function handoffSummary(): string {
+  const n = components.value.length
+  const t = target.value
+  const what = mode.value === 'update' ? 'Update prompt ready' : 'Prompt ready'
+  return `${what} · ${n} ${n === 1 ? 'component' : 'components'} to reuse · goes to ${t.repo}`
+}
+
+/** Figma "MCP v3 · 3 Hand off": the options, then the prompt Claude Code builds from. Nothing is generated here. */
+export function GenerateStep({ onCopyPrompt, onSkip }: GenerateStepProps) {
+  const input = promptInput.value
+  const t = target.value
+  const scenario = kind.value === 'screen' ? 'screen' : 'component'
   return (
     <>
       <div class="bb-mcp-handoff__panels">
-        <Card label="Generate code">
-          <SectionTitle title="Generate code" showCount={false} actionLabel="Copy prompt" onAction={onCopyPrompt} />
+        <Card label="Hand off">
+          <SectionTitle title="Hand off to Claude Code" showCount={false} showAction={false} />
           <Options />
-          {failed ? (
-            <>
-              <PublishEmptyState
-                state="failed"
-                icon="mcp"
-                title="Code generation failed"
-                body={`The MCP server timed out after 60 s while reading ${selection.value?.frame ?? 'the selection'}. Retry, or copy the prompt and run it in Claude Code.`}
-                actions={[{ label: 'Copy prompt', variant: 'secondary', onClick: onCopyPrompt }, { label: 'Retry', variant: 'primary', onClick: () => { generation.value = 'done' } }]}
-              />
-              <SectionTitle title="MCP log" showCount={false} showAction={false} />
-              <CodeSnippet language="Log" code={GENERATION_LOG} />
-            </>
-          ) : <Generated />}
+          <p class="bb-mcp-handoff__caption">
+            {t.framework} · writes to {input ? outputPath(input) : t.folder} in {t.repo} (base {t.branch}){t.designPackage ? ` · imports from ${t.designPackage}` : ''}. Set in Settings › MCP + code sync.
+          </p>
+          <Snippet />
+          <p class="bb-mcp-handoff__caption">
+            {mode.value === 'update'
+              ? `This prompt updates the existing ${scenario}. A variable whose value changed is left to the token push.`
+              : `Claude Code reads the ${scenario} through the Figma MCP server and writes the files in ${t.repo}. Run it inside that repository.`}
+          </p>
         </Card>
       </div>
       <ActionBar
-        summary={failed ? 'Nothing was generated.' : generationSummary()}
-        secondary={[{ label: 'Copy prompt for Claude Code', onClick: onCopyPrompt }, { label: 'Back', onClick: () => goTo(1) }]}
-        primary={{ label: 'Next: Ship', disabled: failed, onClick: () => goTo(3) }}
+        summary={handoffSummary()}
+        secondary={[{ label: 'Back', onClick: () => goTo(1) }, { label: 'Next: Track', disabled: branchError.value !== null, onClick: onSkip }]}
+        primary={{ label: 'Copy prompt', disabled: branchError.value !== null || prompt.value === null, onClick: onCopyPrompt }}
       />
     </>
   )

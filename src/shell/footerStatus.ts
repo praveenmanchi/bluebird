@@ -4,7 +4,7 @@
 // File from the shared library state (@shared/libraries/status).
 import { signal } from '@preact/signals'
 import { describeProvider, isProviderConfig, PROVIDER_LABEL, providerId, selectProvider } from '@shared/ai'
-import type { IntegrationSettings, IntegrationValues } from '@shared/integrations'
+import { MCP_SCENARIO_LABEL, connectedScenarios, mcpTarget, type IntegrationSettings, type IntegrationValues } from '@shared/integrations'
 import type { FooterPill } from '@shared/ui'
 
 /** Settings › Integrations as last loaded or saved; null until signed in and read. */
@@ -32,10 +32,11 @@ export function uxaiPill(ai: IntegrationValues<'ai'> | undefined): FooterPill {
   return { label: 'UXAI', status: 'good', title: `Answers with ${describeProvider(config)}. Use Test connection in Settings to check the key.` }
 }
 
+/** Settings › MCP + code sync: good once one scenario has its repository and token. */
 export function mcpPill(mcp: IntegrationValues<'mcp'> | undefined): FooterPill {
   if (!mcp) return { label: 'MCP', status: 'retry', title: 'Reading Settings…' }
   if (!mcp.enabled) return { label: 'MCP · off', status: 'issue', title: 'MCP + code sync is switched off in Settings, so pushes stay disabled.' }
-  const missing = [...(mcp.repo.trim() ? [] : ['repository']), ...(mcp.token.trim() ? [] : ['access token'])]
-  if (missing.length) return { label: 'MCP', status: 'issue', title: `Add the ${missing.join(' and ')} in Settings › MCP + code sync.` }
-  return { label: 'MCP', status: 'good', title: `Pushes to ${mcp.repo} (${mcp.baseBranch}). The token isn’t tested yet.` }
+  const targets = connectedScenarios(mcp).map((scenario) => `${MCP_SCENARIO_LABEL[scenario]}: ${mcpTarget(mcp, scenario).repo}`)
+  if (!targets.length) return { label: 'MCP', status: 'issue', title: 'Add a repository and access token for at least one scenario in Settings › MCP + code sync.' }
+  return { label: 'MCP', status: 'good', title: `Hand-offs go to ${targets.join(', ')}. Tokens aren’t tested yet.` }
 }

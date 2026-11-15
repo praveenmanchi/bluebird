@@ -9,6 +9,8 @@ export interface SegmentOption<T extends string = string> {
   /** Defaults to `value`. */
   label?: ComponentChildren
   icon?: IconName
+  /** The item's "Number value" count. Omit for off. */
+  count?: ComponentChildren
 }
 
 export interface SegmentedControlProps<T extends string = string> extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'value'> {
@@ -49,6 +51,7 @@ export function SegmentedControl<T extends string = string>({ options, value, ic
           aria-controls={controls}
           selected={o.value === value}
           icon={o.icon ?? icons?.[o.value]}
+          count={o.count}
           disabled={disabled}
           onClick={() => select(o.value)}
         >

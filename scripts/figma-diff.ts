@@ -296,10 +296,10 @@ export function diffSnapshots(before: Snapshot, after: Snapshot, root = ROOT, al
 
 // ------------------------------------------------------------------- report
 
-const MARK: Partial<Record<DriftKind, string>> = { 'variable-changed': '~', 'variable-added': '+', 'variable-removed': '-', 'prop-added': '+', 'prop-removed': '-', 'prop-renamed': '>', 'node-added': '+', 'node-removed': '-', 'node-renamed': '>', 'binding-added': '+', 'binding-removed': '-', 'variant-added': '+', 'variant-removed': '-', 'derived-added': '+', 'derived-removed': '-', 'icon-added': '+', 'icon-removed': '-' }
+const MARK: Partial<Record<DriftKind, string>> = { 'variable-changed': '~', 'variable-added': '+', 'variable-removed': '-', 'prop-added': '+', 'prop-removed': '-', 'prop-renamed': '>', 'set-added': '+', 'set-removed': '-', 'node-added': '+', 'node-removed': '-', 'node-renamed': '>', 'binding-added': '+', 'binding-removed': '-', 'variant-added': '+', 'variant-removed': '-', 'derived-added': '+', 'derived-removed': '-', 'icon-added': '+', 'icon-removed': '-' }
 const fmt = (v: unknown) => (v === undefined ? '' : typeof v === 'string' ? v : JSON.stringify(v))
 
-function line(f: DriftFinding): string {
+export function formatFinding(f: DriftFinding): string {
   const mark = MARK[f.kind] ?? '~'
   const label = f.kind.replace(/-(added|removed|changed|renamed|rebound|type-changed|default-changed|id-changed)$/, '')
   const where = f.path ? `${f.path} · ` : ''
@@ -315,12 +315,12 @@ function printReport(report: DriftReport) {
   if (report.layerDiffSkipped) console.log(`[figma:diff] LAYERS NOT COMPARED — ${report.layerDiffSkipped}\n[figma:diff] Reporting sets, variants and component properties only.`)
   console.log('')
   const tokens = report.findings.filter((f) => f.scope === 'tokens')
-  if (tokens.length) { console.log('tokens'); for (const f of tokens) console.log(line(f)); console.log('') }
+  if (tokens.length) { console.log('tokens'); for (const f of tokens) console.log(formatFinding(f)); console.log('') }
   const byComponent = new Map<string, DriftFinding[]>()
   for (const f of report.findings.filter((f) => f.scope === 'component')) byComponent.set(f.component ?? '?', [...(byComponent.get(f.component ?? '?') ?? []), f])
   for (const [code, list] of [...byComponent].sort(([a], [b]) => a.localeCompare(b))) {
     console.log(`${code}  (${list[0]?.files?.[0] ?? ''})  ${list.length} change${list.length === 1 ? '' : 's'}`)
-    for (const f of list) console.log(line(f))
+    for (const f of list) console.log(formatFinding(f))
     console.log('')
   }
   const icons = report.findings.filter((f) => f.scope === 'icons')

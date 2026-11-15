@@ -42,4 +42,8 @@ describe('FindingRow', () => {
     const { container } = render(<FindingRow fix={null} />)
     expect(container.querySelector('.bb-context-chip')).toBeNull()
   })
+  it('shows only the listed actions', () => {
+    render(<FindingRow actions={['locate', 'ignore']} />)
+    expect(screen.getAllByRole('button').map((b) => b.dataset.action)).toEqual(['locate', 'ignore'])
+  })
 })

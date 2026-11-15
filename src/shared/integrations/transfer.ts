@@ -3,7 +3,7 @@
 // and the sandbox store, which runs the same checks again before it writes anything.
 import * as z from 'zod/mini'
 import {
-  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, SECRET_FIELDS, migrateDualFile, sectionSchemas,
+  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, SECRET_FIELDS, migrateDualFile, migrateMcp, sectionSchemas,
   type IntegrationId, type IntegrationSettings, type IntegrationValues,
 } from './schema'
 import { validateIntegration } from './validate'
@@ -101,8 +101,9 @@ export function blockingErrors<K extends IntegrationId>(id: K, values: Integrati
 }
 
 function readSection(id: IntegrationId, input: unknown): { patch: SectionPatch } | { reason: string } {
-  // Files exported before one token + named files list File 1 / File 2; read them the new way.
-  const raw = id === 'dualFile' ? migrateDualFile(input) : input
+  // Files exported before one token + named files list File 1 / File 2, and before one repository
+  // per MCP scenario a single repository; read them the new way.
+  const raw = id === 'dualFile' ? migrateDualFile(input) : id === 'mcp' ? migrateMcp(input) : input
   if (!isRecord(raw)) return { reason: 'This section isn’t in a readable shape.' }
   const known = Object.keys(DEFAULT_INTEGRATIONS[id]).filter((key) => Object.prototype.hasOwnProperty.call(raw, key) && !isPersonal(id, key))
   const picked: Record<string, unknown> = Object.fromEntries(known.map((key) => [key, raw[key]]))

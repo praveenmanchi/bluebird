@@ -40,7 +40,6 @@ export const MODEL_OPTIONS = {
 /** Which provider answers UX AI and runs the agents. Shown as typed in the Settings select; `@shared/ai` maps it to an id. */
 export const PROVIDER_OPTIONS = ['Claude', 'OpenAI', 'Gemini'] as const
 
-export const OUTPUT_FORMATS = ['style-dictionary', 'tokens-studio', 'raw-json'] as const
 
 /** How often an open plugin checks Storage for teammates' new History entries. */
 export const REFRESH_OPTIONS = ['Every minute', 'Every 5 minutes', 'Every 15 minutes', 'Only when I refresh'] as const
@@ -66,6 +65,17 @@ export const defaultFileName = (index: number): string => `File ${index + 1}`
 /** A row as Add file creates it. The first file holds both; later ones usually a components library. */
 export const newLibraryFile = (index: number): LibraryFileEntry => ({ name: defaultFileName(index), id: '', role: index === 0 ? 'Variables + Components' : 'Components' })
 
+/**
+ * MCP hand-off scenarios (Settings › MCP + code sync). Each has its own repository and token, so
+ * each team connects only the scenario it works on.
+ */
+export const MCP_SCENARIOS = ['component', 'screen', 'library'] as const
+export type McpScenario = (typeof MCP_SCENARIOS)[number]
+/** What the hand-off prompt asks Claude Code to write in. */
+export const MCP_FRAMEWORKS = ['React + TypeScript', 'Preact + TypeScript', 'Vue + TypeScript', 'Angular', 'Web components'] as const
+/** How a library update is split into pull requests. */
+export const MCP_PULL_REQUESTS = ['One per screen', 'One for all screens'] as const
+
 export const sectionSchemas = {
   github: z.object({ apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean() }),
   notifications: z.object({ designSystemWebhook: text(), devTeamWebhook: text(), outlookWebhook: text(), emails: text() }),
@@ -87,7 +97,14 @@ export const sectionSchemas = {
     managedAgents: z.boolean(),
     instructions: z.string().check(z.maxLength(MAX_INSTRUCTIONS)),
   }),
-  mcp: z.object({ enabled: z.boolean(), repo: text(), baseBranch: text(), token: text(), filePath: text(), outputFormat: text(), branchTemplate: text(), enterpriseUrl: text() }),
+  /** One repository, branch and token per scenario (`<scenario>Repo`, …); the GitHub Enterprise host is shared. */
+  mcp: z.object({
+    enabled: z.boolean(),
+    componentRepo: text(), componentBranch: text(), componentToken: text(), componentFramework: text(), componentFolder: text(),
+    screenRepo: text(), screenBranch: text(), screenToken: text(), screenFramework: text(), screenFolder: text(), screenPackage: text(),
+    libraryRepo: text(), libraryBranch: text(), libraryToken: text(), libraryPullRequests: text(),
+    enterpriseUrl: text(),
+  }),
   jira: z.object({ enabled: z.boolean(), projectKey: text(), apiKey: text(), email: text(), siteUrl: text(), baseUrl: text(), proxyUrl: text() }),
   /**
    * Where the team History lives: a GitHub repository every designer's plugin reads and writes.
@@ -114,7 +131,7 @@ export const SECRET_FIELDS: { readonly [K in IntegrationId]: readonly (keyof Int
   zeroheight: ['apiKey'],
   dualFile: ['token'],
   ai: ['claudeKey', 'openaiKey', 'geminiKey'],
-  mcp: ['token'],
+  mcp: ['componentToken', 'screenToken', 'libraryToken'],
   jira: ['apiKey'],
   storage: ['apiKey'],
 }
@@ -145,7 +162,13 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
   dualFile: { enabled: true, token: '', files: [newLibraryFile(0)] },
   ai: { enabled: true, provider: 'Claude', claudeModel: 'claude-opus-5-5', claudeKey: '', openaiModel: 'gpt-5.5', openaiKey: '', geminiModel: 'gemini-3.5-flash', geminiKey: '', managedAgents: true, instructions: '' },
-  mcp: { enabled: true, repo: '', baseBranch: 'main', token: '', filePath: 'src/tokens/design-tokens.json', outputFormat: '', branchTemplate: '', enterpriseUrl: '' },
+  mcp: {
+    enabled: true,
+    componentRepo: '', componentBranch: 'main', componentToken: '', componentFramework: 'React + TypeScript', componentFolder: 'src/components',
+    screenRepo: '', screenBranch: 'main', screenToken: '', screenFramework: 'React + TypeScript', screenFolder: 'src/pages', screenPackage: '',
+    libraryRepo: '', libraryBranch: 'main', libraryToken: '', libraryPullRequests: 'One per screen',
+    enterpriseUrl: '',
+  },
   jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '' },
   storage: { sameAsGithub: true, apiKey: '', repo: '', branch: 'main', baseUrl: '', folder: '.bluebird/history', refresh: 'Every minute' },
 }
@@ -212,12 +235,31 @@ export function migrateDualFile(stored: unknown): unknown {
   }
 }
 
+/**
+ * MCP + code sync as stored before one repository per scenario (2026-11-15): a single repository,
+ * base branch and token. That repository was the Storybook one, so it becomes the Component scenario's.
+ */
+export function migrateMcp(stored: unknown): unknown {
+  if (!isRecord(stored) || 'componentRepo' in stored) return stored
+  if (!('repo' in stored || 'token' in stored || 'baseBranch' in stored)) return stored
+  const str = (k: string) => (typeof stored[k] === 'string' ? (stored[k] as string).trim() : '')
+  return {
+    ...(typeof stored.enabled === 'boolean' ? { enabled: stored.enabled } : {}),
+    componentRepo: str('repo'),
+    componentBranch: str('baseBranch') || 'main',
+    componentToken: str('token'),
+    enterpriseUrl: str('enterpriseUrl'),
+  }
+}
+
+const MIGRATIONS: Partial<Record<IntegrationId, (stored: unknown) => unknown>> = { dualFile: migrateDualFile, mcp: migrateMcp }
+
 /** Stored settings over the defaults, section by section; a section that no longer parses falls back to its defaults. */
 export function mergeIntegrations(stored: unknown): IntegrationSettings {
   const source = typeof stored === 'object' && stored !== null ? stored as Record<string, unknown> : {}
   const out = { ...DEFAULT_INTEGRATIONS }
   for (const id of INTEGRATION_IDS) {
-    const stored = id === 'dualFile' ? migrateDualFile(source[id]) : source[id]
+    const stored = (MIGRATIONS[id] ?? ((v: unknown) => v))(source[id])
     const parsed = z.safeParse(sectionSchemas[id], { ...DEFAULT_INTEGRATIONS[id], ...(stored as object | undefined) })
     if (parsed.success) (out as Record<IntegrationId, unknown>)[id] = parsed.data
   }

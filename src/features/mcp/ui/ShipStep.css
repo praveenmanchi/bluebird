@@ -4,6 +4,7 @@
 .bb-mcp-handoff__fields {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end; /* the Styling select has no label row: it lines up with the Branch field, not its label */
   gap: var(--bb-mcp-space-inline);
 }
 .bb-mcp-handoff__field {

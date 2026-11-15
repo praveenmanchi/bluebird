@@ -5,18 +5,17 @@ import {
   applySettingsFile, isSecretField, parseSettingsFile, DEFAULT_INTEGRATIONS, MAX_SETTINGS_FILE_BYTES, PERSONAL_FIELDS,
   type IntegrationId, type IntegrationSettings, type ParsedSettingsFile, type ParseResult,
 } from '@shared/integrations'
-import { SECTIONS, type BlockSpec, type ColumnSpec, type FieldSpec } from './sections'
+import { SECTIONS, flatFields, type LeafFieldSpec } from './sections'
 import { sectionStatus } from './status'
 
-const flat = (block: BlockSpec | ColumnSpec): FieldSpec[] => (Array.isArray(block) ? (block as readonly ColumnSpec[]).flatMap(flat) : [block as FieldSpec])
-const labels = (field: FieldSpec): [string, string][] => {
+const labels = (field: LeafFieldSpec): [string, string][] => {
   if (field.kind === 'provider') return [[field.model.key, field.model.label], [field.apiKey.key, field.apiKey.label]]
   return [[field.key, field.kind === 'switch' ? field.title : field.label]]
 }
 /** "Repository (owner/repo)" → "Repository": short enough to list three in a row. */
 const short = (label: string): string => label.replace(/\s*\(.*?\)/g, '').replace(/\s+-\s+.*$/, '').replace(/\s+—\s+/g, ' ').trim()
 const FIELD_LABELS: Readonly<Record<string, Readonly<Record<string, string>>>> = Object.fromEntries(
-  SECTIONS.map((spec) => [spec.id, Object.fromEntries(spec.blocks.flatMap(flat).flatMap(labels).map(([key, label]) => [key, short(label)]))]),
+  SECTIONS.map((spec) => [spec.id, Object.fromEntries(flatFields(spec.blocks).flatMap(labels).map(([key, label]) => [key, short(label)]))]),
 )
 
 export const sectionTitle = (id: IntegrationId): string => SECTIONS.find((s) => s.id === id)?.title ?? id

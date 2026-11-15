@@ -30,6 +30,25 @@ export const Report: Story = {
   decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>],
 }
 
+// One story per remaining Figma variant (Type × Display × Surface).
+export const DefaultIconApp: Story = { args: { type: 'default', display: 'icon', surface: 'app', count: 0 }, parameters: v('Type=Default, Display=Icon, Surface=App') }
+export const DefaultLabelApp: Story = { args: { type: 'default', display: 'label', surface: 'app', count: 0 }, parameters: v('Type=Default, Display=Label, Surface=App') }
+export const ModifiedIconApp: Story = { args: { type: 'modified', display: 'icon', surface: 'app', count: 0 }, parameters: v('Type=Modified, Display=Icon, Surface=App') }
+export const ModifiedLabelApp: Story = { args: { type: 'modified', display: 'label', surface: 'app', count: 0 }, parameters: v('Type=Modified, Display=Label, Surface=App') }
+export const RemovedIconApp: Story = { args: { type: 'removed', display: 'icon', surface: 'app', count: 0 }, parameters: v('Type=Removed, Display=Icon, Surface=App') }
+export const RemovedLabelApp: Story = { args: { type: 'removed', display: 'label', surface: 'app', count: 0 }, parameters: v('Type=Removed, Display=Label, Surface=App') }
+export const DefaultIconLabelReport: Story = { args: { type: 'default', display: 'icon-label', surface: 'report', count: 0 }, parameters: v('Type=Default, Display=Icon + label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const DefaultIconReport: Story = { args: { type: 'default', display: 'icon', surface: 'report', count: 0 }, parameters: v('Type=Default, Display=Icon, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const DefaultLabelReport: Story = { args: { type: 'default', display: 'label', surface: 'report', count: 0 }, parameters: v('Type=Default, Display=Label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const AddedIconReport: Story = { args: { type: 'added', display: 'icon', surface: 'report', count: 0 }, parameters: v('Type=Added, Display=Icon, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const AddedLabelReport: Story = { args: { type: 'added', display: 'label', surface: 'report', count: 0 }, parameters: v('Type=Added, Display=Label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const ModifiedIconLabelReport: Story = { args: { type: 'modified', display: 'icon-label', surface: 'report', count: 0 }, parameters: v('Type=Modified, Display=Icon + label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const ModifiedIconReport: Story = { args: { type: 'modified', display: 'icon', surface: 'report', count: 0 }, parameters: v('Type=Modified, Display=Icon, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const ModifiedLabelReport: Story = { args: { type: 'modified', display: 'label', surface: 'report', count: 0 }, parameters: v('Type=Modified, Display=Label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const RemovedIconLabelReport: Story = { args: { type: 'removed', display: 'icon-label', surface: 'report', count: 0 }, parameters: v('Type=Removed, Display=Icon + label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const RemovedIconReport: Story = { args: { type: 'removed', display: 'icon', surface: 'report', count: 0 }, parameters: v('Type=Removed, Display=Icon, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+export const RemovedLabelReport: Story = { args: { type: 'removed', display: 'label', surface: 'report', count: 0 }, parameters: v('Type=Removed, Display=Label, Surface=Report'), decorators: [(S) => <div style={{ background: 'var(--bb-a11y-report-surface-page)', padding: 12 }}><S /></div>] }
+
 const row = (display: 'icon-label' | 'icon' | 'label', surface: 'app' | 'report' = 'app') => (
   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
     <ChangeCount type="added" display={display} surface={surface} count={12} />

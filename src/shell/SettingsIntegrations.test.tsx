@@ -109,6 +109,42 @@ describe('SettingsIntegrations', () => {
     expect(api.save).not.toHaveBeenCalled()
   })
 
+  it('sets up one MCP scenario at a time: Set up, fill in, save, and the section reads Configured', async () => {
+    const api = fakeApi()
+    render(<SettingsIntegrations api={api} />)
+    const mcp = await section('MCP + code sync')
+    expect(within(mcp).getByText('Not configured')).toBeInTheDocument()
+    expect([...mcp.querySelectorAll('.bb-integrations__group')].map((g) => g.getAttribute('aria-label'))).toEqual(['Component to Storybook', 'Screen to code', 'Library update to screens'])
+    expect(within(mcp).getAllByRole('button', { name: 'Set up' })).toHaveLength(3)
+    expect(within(mcp).getByLabelText('GitHub Enterprise base URL (optional)')).toBeInTheDocument()
+
+    const screenCard = within(mcp).getByRole('group', { name: 'Screen to code' })
+    fireEvent.click(within(screenCard).getByRole('button', { name: 'Set up' }))
+    fireEvent.input(within(screenCard).getByLabelText('Repository (owner/repo)'), { target: { value: ' acme/web ' } })
+    fireEvent.input(within(screenCard).getByLabelText('Personal access token'), { target: { value: 'ghp_test' } })
+    expect(within(screenCard).getByText('Configured')).toBeInTheDocument()
+    expect(within(mcp).getByText('Not configured')).toBeInTheDocument()
+    fireEvent.click(within(mcp).getByRole('button', { name: 'Save configuration' }))
+    await within(mcp).findByText('Saved')
+    expect(api.save).toHaveBeenCalledWith('mcp', { ...DEFAULT_INTEGRATIONS.mcp, screenRepo: 'acme/web', screenToken: 'ghp_test' })
+    expect(within(mcp).queryByText('Not configured')).toBeNull()
+    expect(within(mcp).getAllByRole('button', { name: 'Set up' })).toHaveLength(2)
+  })
+
+  it('flags a bad MCP repository inside its scenario card and does not save', async () => {
+    const api = fakeApi({ ...DEFAULT_INTEGRATIONS, mcp: { ...DEFAULT_INTEGRATIONS.mcp, libraryRepo: 'acme/app', libraryToken: 'ghp_l' } })
+    render(<SettingsIntegrations api={api} />)
+    const mcp = await section('MCP + code sync')
+    const library = within(mcp).getByRole('group', { name: 'Library update to screens' })
+    const repo = within(library).getByLabelText('Repository (owner/repo)')
+    fireEvent.input(repo, { target: { value: 'app' } })
+    fireEvent.click(within(mcp).getByRole('button', { name: 'Save configuration' }))
+    expect(await within(mcp).findByText('Check the highlighted fields')).toBeInTheDocument()
+    expect(repo).toHaveAttribute('aria-invalid', 'true')
+    expect(repo).toHaveAccessibleDescription(expect.stringContaining('owner/repository'))
+    expect(api.save).not.toHaveBeenCalled()
+  })
+
   it('reports a save the store refused', async () => {
     render(<SettingsIntegrations api={fakeApi(DEFAULT_INTEGRATIONS, async () => { throw new Error('Disk full') })} />)
     const storybook = await section('Storybook')

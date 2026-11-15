@@ -1,10 +1,12 @@
 #!/bin/sh
-# Fast checks before a push. The full verify (coverage, build, size budget)
-# runs in GitHub Actions; the build is left out here because it bumps build-info.json.
+# Fast checks before a push: types, lint, the Figma drift gate and the unit tests.
+# The drift gate compares the code with the committed figma/*.json; it needs no network.
+# The build is left out because it bumps build-info.json; run `npm run verify` for the full set.
 # Skip once with: git push --no-verify
 set -e
 
-echo "pre-push: typecheck, lint, tests"
+echo "pre-push: typecheck, lint, drift gate, tests"
 npm run typecheck
 npm run lint
+npm run tokens:check
 npm run test

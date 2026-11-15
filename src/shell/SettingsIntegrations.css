@@ -42,7 +42,7 @@
   gap: var(--bb-settings-space-section);
 }
 /* Direct children only: the section header's own Switch is a .bb-toggle that must keep hugging its track. */
-:is(.bb-integrations__section, .bb-integrations__body, .bb-integrations__column, .bb-integrations__select, .bb-integrations__provider-model, .bb-integrations__provider-key) > :is(.bb-section-header, .bb-input, .bb-toggle, .bb-select-field, .bb-text-area, .bb-button-group) {
+:is(.bb-integrations__section, .bb-integrations__body, .bb-integrations__column, .bb-integrations__select, .bb-integrations__provider-model, .bb-integrations__provider-key, .bb-integrations__group, .bb-integrations__group-main, .bb-integrations__group-side) > :is(.bb-section-header, .bb-input, .bb-toggle, .bb-select-field, .bb-text-area, .bb-button-group) {
   width: 100%;
   max-width: none;
 }
@@ -162,6 +162,59 @@
   gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
 }
 .bb-integrations__files-hint {
+  flex: 1 1 200px; /* allow-raw: lets the hint wrap under the button when narrow */
+  font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
+  color: var(--bb-input-fg-helper);
+}
+
+/* MCP + code sync › one card per hand-off scenario, built like the "File n card" above: the title
+ * and its status, then the scenario's fields, or Set up while it has no repository or token. */
+.bb-integrations__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-fields);
+  padding: var(--bb-dimension-space-12);
+  border: var(--bb-settings-section-border-width) solid var(--bb-border-default);
+  border-radius: var(--bb-card-variable-radius);
+}
+.bb-integrations__group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bb-settings-space-columns);
+}
+.bb-integrations__group-title {
+  margin: 0;
+  color: var(--bb-input-fg-label);
+  font-family: var(--bb-input-label-font-family), ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--bb-input-label-font-size);
+  font-weight: var(--bb-input-label-font-weight);
+  line-height: var(--bb-input-label-line-height);
+}
+/* Top-aligned so a helper or error under one field doesn't push its neighbour down. */
+.bb-integrations__group-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+.bb-integrations__group-main,
+.bb-integrations__group-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-fields);
+  min-width: 0;
+}
+.bb-integrations__group-main { flex: 1 1 220px; } /* allow-raw: wrap point for the repository / token beside its select, as in the file card */
+.bb-integrations__group-side { flex: 0 1 176px; } /* allow-raw: the file card's "Contains" dropbox width (176) */
+.bb-integrations__group-setup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-settings-space-fields) var(--bb-settings-space-columns);
+}
+.bb-integrations__group-setup > .bb-button { flex: none; }
+.bb-integrations__group-hint {
   flex: 1 1 200px; /* allow-raw: lets the hint wrap under the button when narrow */
   font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
   color: var(--bb-input-fg-helper);

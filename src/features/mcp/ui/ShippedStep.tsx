@@ -1,73 +1,80 @@
 import { Button, ConnectionRow, Icon, Input, SectionTitle } from '@shared/ui'
-import { PULL_REQUEST, REVIEWER, issueUrl } from '../fixtures'
-import { afterPush, branch, files, linkedIssue, scenario, startOver, steps } from '../state'
-import { ActionBar } from './ActionBar'
+import type { TrackedPull, TrackResult } from '../messages'
+import { chosenScreens, target } from '../state'
 import { Card } from './cards'
-import { ShipStepsCard } from './ShipPushing'
+import { ShipStepsCard, trackRows } from './ShipPushing'
 import './ShippedStep.css'
 
 export interface ShippedStepProps {
+  /** The pull request GitHub answered with (never `waiting`). */
+  pull: TrackResult
   onOpenUrl: (url: string) => void
   onCopyLink: (url: string) => void
-  onCopyPrompt: () => void
 }
 
-/** Sum of the fixture step timings ("1s", "2s", …) — the "Shipped in" figure. */
-export function shippedSeconds(times: readonly string[]): number {
-  return times.reduce((sum, t) => sum + (Number.parseInt(t, 10) || 0), 0)
+const STATE = { open: 'is open', merged: 'is merged', closed: 'was closed' } as const
+
+/** A library update with one pull request per screen: every one of them, each with Open. */
+function PullList({ pulls, repo, onOpenUrl }: { pulls: readonly TrackedPull[]; repo: string; onOpenUrl: (url: string) => void }) {
+  const names = chosenScreens.value.map((s) => s.name)
+  const merged = pulls.every((p) => p.state === 'merged')
+  return (
+    <Card label="Pull requests">
+      <div class="bb-mcp-handoff__success">
+        <h3 class="bb-mcp-handoff__success-title">
+          <Icon name="status-good" class="bb-mcp-handoff__success-icon" />
+          {pulls.length} pull requests {merged ? 'are merged' : 'are open'}
+        </h3>
+        <p class="bb-mcp-handoff__caption">One per screen · {repo}</p>
+      </div>
+      <ul class="bb-mcp-handoff__stack">
+        {pulls.map((p, i) => (
+          <li key={p.branch}>
+            <ConnectionRow
+              name={`${names[i] ?? p.branch} · PR #${p.number}`}
+              detail={`${p.title ?? p.branch} · ${STATE[p.state as keyof typeof STATE]}`}
+              status={p.state === 'closed' ? 'issue' : 'good'}
+              actionLabel="Open"
+              onAction={() => { if (p.url) onOpenUrl(p.url) }}
+            />
+          </li>
+        ))}
+      </ul>
+    </Card>
+  )
 }
 
-/** Figma "MCP v2 · 6 Ship · PR link": the PR is open, with its link and what else changed. */
-export function ShippedStep({ onOpenUrl, onCopyLink, onCopyPrompt }: ShippedStepProps) {
-  const pr = PULL_REQUEST
-  const issue = linkedIssue.value
-  const opts = afterPush.value
-  const list = steps.value
-  const updated = [
-    issue && opts.moveIssue && { name: `Jira · ${issue.key}`, detail: `Moved to In review${opts.linkPr && opts.openPr ? ` · PR #${pr.number} linked` : ''}` },
-    { name: 'Figma', detail: `${scenario.value.selection.frame} marked Ready for dev` },
-    opts.openPr && { name: 'GitHub', detail: `Review requested from ${REVIEWER}` },
-  ].filter((u): u is { name: string; detail: string } => Boolean(u))
-
+/** Figma "MCP v3 · 5 Track · Pull request open": the developer's pull request, with its link. */
+export function ShippedStep({ pull, onOpenUrl, onCopyLink }: ShippedStepProps) {
+  const { rows, status } = trackRows()
+  if (pull.pulls) {
+    return (
+      <>
+        <PullList pulls={pull.pulls} repo={pull.repo} onOpenUrl={onOpenUrl} />
+        <ShipStepsCard steps={rows} status={status} />
+      </>
+    )
+  }
+  const url = pull.url ?? ''
   return (
     <>
-      <div class="bb-mcp-handoff__panels">
-        <Card label="Pull request">
-          <div class="bb-mcp-handoff__success">
-            <h3 class="bb-mcp-handoff__success-title">
-              <Icon name="status-good" class="bb-mcp-handoff__success-icon" />
-              {opts.openPr ? `PR #${pr.number} is open` : `${branch.value} is pushed`}
-            </h3>
-            <p class="bb-mcp-handoff__caption">{branch.value} → main · {files.value.length} files · +{pr.additions} lines</p>
-            <div class="bb-mcp-handoff__buttons">
-              {opts.openPr && <Button onClick={() => onOpenUrl(pr.url)}>Open PR</Button>}
-              {issue && <Button variant="secondary" onClick={() => onOpenUrl(issueUrl(issue.key))}>View {issue.key}</Button>}
-            </div>
+      <Card label="Pull request">
+        <div class="bb-mcp-handoff__success">
+          <h3 class="bb-mcp-handoff__success-title">
+            <Icon name={pull.state === 'closed' ? 'status-issue' : 'status-good'} class="bb-mcp-handoff__success-icon" />
+            PR #{pull.number} {STATE[pull.state as keyof typeof STATE]}
+          </h3>
+          <p class="bb-mcp-handoff__caption">{pull.branch} → {target.value.branch} · {pull.repo}</p>
+          <div class="bb-mcp-handoff__buttons">
+            <Button onClick={() => onOpenUrl(url)}>Open PR</Button>
+            <Button variant="secondary" onClick={() => onCopyLink(url)}>Copy link</Button>
           </div>
-          {opts.openPr && (
-            <>
-              <SectionTitle title="Pull request link" showCount={false} showAction={false} />
-              <Input label="Share it with your developer" value={pr.url} readOnly />
-              <div class="bb-mcp-handoff__buttons">
-                <Button onClick={() => onCopyLink(pr.url)}>Copy link</Button>
-                <Button variant="secondary" onClick={() => onOpenUrl(pr.url)}>Open pull request</Button>
-                <Button variant="secondary" onClick={onCopyPrompt}>Copy prompt</Button>
-              </div>
-              <p class="bb-mcp-handoff__caption">The PR description carries the frame link and a Claude Code prompt, so a developer can pull the same selection through the Figma MCP server.</p>
-            </>
-          )}
-          <SectionTitle title="Also updated" showCount={false} showAction={false} />
-          <ul class="bb-mcp-handoff__stack">
-            {updated.map((u) => <li key={u.name}><ConnectionRow name={u.name} detail={u.detail} showAction={false} /></li>)}
-          </ul>
-        </Card>
-        <ShipStepsCard steps={list} status={() => 'done'} />
-      </div>
-      <ActionBar
-        summary={`Shipped in ${shippedSeconds(list.map((s) => s.time))} s`}
-        secondary={[{ label: 'New handoff', onClick: startOver }]}
-        primary={{ label: 'Done', onClick: startOver }}
-      />
+        </div>
+        <SectionTitle title="Pull request link" showCount={false} showAction={false} />
+        <Input label="Share it with your team" value={url} readOnly />
+        <p class="bb-mcp-handoff__caption">Claude Code opened this pull request from the copied prompt. Bluebird matched it by its branch name.</p>
+      </Card>
+      <ShipStepsCard steps={rows} status={status} />
     </>
   )
 }

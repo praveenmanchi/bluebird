@@ -74,6 +74,12 @@ const TAB_COPY: Readonly<Record<string, TabCopy>> = {
     title: 'See what the whole team did',
     body: 'Every extraction, report, Code Connect template, MCP push and UX AI answer from everyone on the team, from one shared GitHub repository. Filter by date or feature and open any entry for the full changelog.',
   },
+  // No scene of its own yet: the Publish scene shows the same read → review → generate motion.
+  documentation: {
+    scene: 'publish',
+    title: 'Document components and hand off pages',
+    body: 'Select a component and get its anatomy, properties, tokens and brand differences as a doc that flags itself when it goes out of date. Or pick finished pages, check them and draft a hand-off for developers.',
+  },
   agents: {
     scene: 'agents',
     title: 'Expert agents that review your work',

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { dualFileWith } from './testing'
-import { DEFAULT_INTEGRATIONS, figmaFileKey, mergeIntegrations, normalizeIntegration } from './schema'
+import { DEFAULT_INTEGRATIONS, MCP_SCENARIOS, SECRET_FIELDS, figmaFileKey, mergeIntegrations, migrateMcp, normalizeIntegration } from './schema'
 
 describe('Dual File settings', () => {
   it('turns a pasted Figma URL into its file key (the main file key for a branch URL)', () => {
@@ -40,5 +40,48 @@ describe('Dual File settings', () => {
     const stored = dualFileWith(['X', { id: 'Y', name: 'Icons', role: 'Components' }], 'k')
     expect(mergeIntegrations({ dualFile: stored }).dualFile).toEqual(stored)
     expect(mergeIntegrations({ dualFile: dualFileWith(['A', 'B', 'C', 'D'], 'k') }).dualFile).toEqual(DEFAULT_INTEGRATIONS.dualFile)
+  })
+})
+
+describe('MCP + code sync settings', () => {
+  const D = DEFAULT_INTEGRATIONS.mcp
+
+  it('starts with no repository or token for any scenario, and keeps every token a secret', () => {
+    for (const scenario of MCP_SCENARIOS) {
+      expect(D[`${scenario}Repo`]).toBe('')
+      expect(D[`${scenario}Token`]).toBe('')
+      expect(D[`${scenario}Branch`]).toBe('main')
+    }
+    expect(SECRET_FIELDS.mcp).toEqual(['componentToken', 'screenToken', 'libraryToken'])
+  })
+
+  it('migrateMcp moves the old single repository, branch and token to the Component scenario', () => {
+    expect(migrateMcp({ enabled: false, repo: ' org/web-components ', baseBranch: 'develop', token: ' ghp_old ', filePath: 'tokens.json', outputFormat: 'raw-json', branchTemplate: 'ds/{date}', enterpriseUrl: 'https://github.acme.com' })).toEqual({
+      enabled: false, componentRepo: 'org/web-components', componentBranch: 'develop', componentToken: 'ghp_old', enterpriseUrl: 'https://github.acme.com',
+    })
+    expect(migrateMcp({ repo: 'org/web', token: 12 })).toEqual({ componentRepo: 'org/web', componentBranch: 'main', componentToken: '', enterpriseUrl: '' })
+  })
+
+  it('migrateMcp leaves the current shape, and anything that is not an old section, as stored', () => {
+    const current = { ...D, screenRepo: 'org/web', screenToken: 'ghp_s' }
+    expect(migrateMcp(current)).toBe(current)
+    // Both shapes at once: the current keys win, the old ones are dropped by the schema.
+    const both = { ...current, repo: 'org/old', token: 'ghp_old' }
+    expect(migrateMcp(both)).toBe(both)
+    expect(migrateMcp({ enabled: false })).toEqual({ enabled: false })
+    for (const value of [undefined, null, 'nope', 7, ['repo']]) expect(migrateMcp(value)).toBe(value)
+  })
+
+  it('mergeIntegrations reads a section stored before one repository per scenario', () => {
+    const merged = mergeIntegrations({ mcp: { enabled: true, repo: 'org/web-components', baseBranch: 'master', token: 'ghp_old', filePath: 'src/tokens/design-tokens.json', outputFormat: 'style-dictionary', branchTemplate: 'ds/token-update-{date}', enterpriseUrl: '' } })
+    expect(merged.mcp).toEqual({ ...D, componentRepo: 'org/web-components', componentBranch: 'master', componentToken: 'ghp_old' })
+    expect(mergeIntegrations({ mcp: { enabled: false, repo: '', baseBranch: '', token: '' } }).mcp).toEqual({ ...D, enabled: false })
+  })
+
+  it('mergeIntegrations keeps the current shape as stored and falls back to the defaults for one that no longer parses', () => {
+    const stored = { ...D, libraryRepo: 'org/app', libraryToken: 'ghp_l', libraryPullRequests: 'One for all screens' }
+    expect(mergeIntegrations({ mcp: stored }).mcp).toEqual(stored)
+    expect(mergeIntegrations({ mcp: { ...stored, libraryRepo: 12 } }).mcp).toEqual(D)
+    expect(mergeIntegrations({}).mcp).toEqual(D)
   })
 })

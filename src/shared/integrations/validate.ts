@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { FILE_ROLES, MAX_LIBRARY_FILES, MODEL_OPTIONS, OUTPUT_FORMATS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
+import { FILE_ROLES, MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -33,6 +33,7 @@ const emails: Rule = (v) => v.split(',').map((e) => e.trim()).filter(Boolean).ev
 const email: Rule = (v) => EMAIL.test(v) ? null : 'Enter one email address, e.g. user@company.com'
 // Personal access tokens are printable ASCII; a pasted newline or smart quote can't go in a request header.
 const token: Rule = (v) => /^[\x21-\x7E]+$/.test(v) ? null : 'The key has spaces or characters a Figma token never has. Paste it again'
+const githubToken: Rule = (v) => /^[\x21-\x7E]+$/.test(v) ? null : 'The token has spaces or characters a GitHub token never has. Paste it again'
 const fileId: Rule = (v) => FILE_ID.test(v) ? null : 'Paste the file URL or its ID from figma.com/design/<file-id>/…'
 const noSpaces: Rule = (v) => /\s/.test(v) ? 'Branch names can’t contain spaces' : null
 const jiraKey: Rule = (v) => JIRA_KEY.test(v) ? null : 'Use the uppercase project key, e.g. DS'
@@ -46,10 +47,11 @@ const localProxy: Rule = (v) => {
   const parts = URL_PARTS.exec(v)
   return isSafeUrl(v) && parts && LOCAL_HOSTS.has(parts[3]!.toLowerCase()) ? null : 'Use the local proxy address, e.g. http://localhost:8787'
 }
-const outputFormat: Rule = (v) => (OUTPUT_FORMATS as readonly string[]).includes(v) ? null : `Use one of: ${OUTPUT_FORMATS.join(', ')}`
 const oneOf = (options: readonly string[]): Rule => (v) => options.includes(v) ? null : `Pick one of: ${options.join(', ')}`
 // A repository folder: relative, no '..' segments, no leading slash — it ends up in a GitHub API path.
 const folder: Rule = (v) => /^(?!\/)(?!.*(^|\/)\.\.(\/|$))[\w.\-/]+$/.test(v) && !v.endsWith('/') ? null : 'Use a folder inside the repository, e.g. .bluebird/history'
+// An npm package name, optionally scoped: it is quoted in the hand-off prompt as an import source.
+const npmPackage: Rule = (v) => /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/.test(v) ? null : 'Use the package name as it is imported, e.g. @acme/ui'
 const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') ? null : 'Include {slug} or {name} so each component gets its own story'
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
@@ -59,7 +61,12 @@ const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, 
   zeroheight: { publicBaseUrl: url },
   dualFile: { token },
   ai: { provider: oneOf(PROVIDER_OPTIONS), claudeModel: oneOf(MODEL_OPTIONS.claude), openaiModel: oneOf(MODEL_OPTIONS.openai), geminiModel: oneOf(MODEL_OPTIONS.gemini) },
-  mcp: { repo, outputFormat, branchTemplate: noSpaces, enterpriseUrl: url },
+  mcp: {
+    componentRepo: repo, componentToken: githubToken, componentBranch: noSpaces, componentFramework: oneOf(MCP_FRAMEWORKS), componentFolder: folder,
+    screenRepo: repo, screenToken: githubToken, screenBranch: noSpaces, screenFramework: oneOf(MCP_FRAMEWORKS), screenFolder: folder, screenPackage: npmPackage,
+    libraryRepo: repo, libraryToken: githubToken, libraryBranch: noSpaces, libraryPullRequests: oneOf(MCP_PULL_REQUESTS),
+    enterpriseUrl: url,
+  },
   jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: localProxy },
   storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS) },
 }

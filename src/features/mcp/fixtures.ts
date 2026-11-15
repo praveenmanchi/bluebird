@@ -1,14 +1,12 @@
-// Sample data copied from the Figma "MCP flow v2 · 600" screens (happy path
-// 40000496:6690, empty states 40000497:7749, error states 40000497:8630), so the
-// default render reads like the design. In Figma the selection, the readiness
-// checks and the GitHub connection are real (sandbox/); the scenarios here feed
-// the mock, the stories and the Generate / Ship preview, which still run on
-// fixtures. Everything the tab hands to a developer — the prompt and the MCP
-// setup — is built from the real selection.
-import type { ConnectionRowStatus, IssueTypeKind, MetaBadgeTone, Priority, ReadinessMeterTone } from '@shared/ui'
-import type { CheckStats, GithubStatus, HandoffCheck, SelectionInfo } from './messages'
+// Sample data for the mock, the stories and the UI tests, so the default render reads like
+// the Figma "MCP flow v3 · 600" screens. In Figma the selection, the readiness checks, each
+// scenario's repository and the pull-request lookup are real (sandbox/); nothing here reaches
+// a developer — the prompt and the MCP setup are built from the real selection (prompt.ts).
+import { MCP_SCENARIO_LABEL, type McpScenario } from '@shared/integrations'
+import type { ConnectionRowStatus, ReadinessMeterTone } from '@shared/ui'
+import type { CheckStats, HandoffCheck, ImpactResult, LibraryRelease, SelectionInfo, TargetStatus, TrackResult, UsedComponent } from './messages'
 
-export type HandoffScenarioId = 'ready' | 'not-ready' | 'no-issue'
+export type HandoffScenarioId = 'ready' | 'not-ready' | 'screen'
 
 export interface HandoffConnection {
   id: 'figma'
@@ -20,49 +18,18 @@ export interface HandoffConnection {
   alternate: { detail: string; actionLabel: string }
 }
 
-export interface HandoffIssue {
-  key: string
-  title: string
-  issueType: IssueTypeKind
-  status: string
-  statusTone: MetaBadgeTone
-  priority: Priority
-  points: string
-  assignee: string
-  assigneeName: string
-}
-
-export interface GeneratedFile {
-  name: string
-  /** CodeSnippet "Language" caption. */
-  caption: string
-  code: string
-  /** Ship "Files to push" row detail. */
-  detail: string
-  /** Only produced when this Include option is checked. */
-  requires?: IncludeOption
-}
-
-export type IncludeOption = 'codeConnect' | 'story' | 'test'
-
 export interface HandoffScenario {
   id: HandoffScenarioId
   selection: SelectionInfo
-  issue: HandoffIssue | null
   readiness: { tone: ReadinessMeterTone; value: number }
   checks: readonly HandoffCheck[]
   stats: CheckStats
-  files: readonly GeneratedFile[]
-  summary: string
-  branch: string
-  commit: string
+  components: readonly UsedComponent[]
 }
 
-export const STEPS = [{ label: 'Select' }, { label: 'Check' }, { label: 'Generate' }, { label: 'Ship' }] as const
-
-/** The Figma MCP server endpoints Claude Code and Cursor connect to. */
-export const MCP_REMOTE_URL = 'https://mcp.figma.com/mcp'
-export const MCP_LOCAL_URL = 'http://127.0.0.1:3845/mcp'
+export const STEPS = [{ label: 'Select' }, { label: 'Check' }, { label: 'Hand off' }, { label: 'Track' }] as const
+/** The Library update scenario starts from a release, not a selection. */
+export const LIBRARY_STEPS = [{ label: 'Changes' }, { label: 'Impact' }, { label: 'Hand off' }, { label: 'Track' }] as const
 
 export const CONNECTIONS: readonly HandoffConnection[] = [
   {
@@ -71,91 +38,31 @@ export const CONNECTIONS: readonly HandoffConnection[] = [
   },
 ]
 
-/** Settings › MCP + Code Sync as the fixtures assume it. */
-export const SAMPLE_GITHUB: GithubStatus = { connected: true, repo: 'praveenmanchi/bluebird', branch: 'main' }
-export const NO_GITHUB: GithubStatus = { connected: false, repo: '', branch: 'main', problem: 'Add the repository and personal access token in Settings › MCP + code sync' }
-
-export const FRAMEWORKS = ['Preact + TypeScript', 'React + TypeScript', 'Web components'] as const
-export const STYLINGS = ['CSS variables (--bb-*)', 'CSS modules', 'Tailwind'] as const
-export const PATHS = ['src/shared/ui/TicketRow', 'src/features/jira/ui', 'src/components'] as const
-
-export const INCLUDE_LABELS: Record<IncludeOption, string> = {
-  codeConnect: 'Use Code Connect mappings',
-  story: 'Storybook story',
-  test: 'Vitest test',
+/** Settings › MCP + code sync as the fixtures assume it: every scenario has its own repository. */
+export const SAMPLE_TARGETS: Record<McpScenario, TargetStatus> = {
+  component: { connected: true, repo: 'acme/design-system', branch: 'main', framework: 'React + TypeScript', folder: 'src/components', designPackage: '', pullRequests: '' },
+  screen: { connected: true, repo: 'acme/web', branch: 'develop', framework: 'React + TypeScript', folder: 'src/pages', designPackage: '@acme/ui', pullRequests: '' },
+  library: { connected: true, repo: 'acme/web', branch: 'develop', framework: '', folder: '', designPackage: '', pullRequests: 'One per screen' },
 }
 
-/** Figma Code Snippet "Code" on the TicketRow.tsx tab (both screens). */
-const TICKET_ROW_TSX = `import { IssueType, PriorityIcon, StoryPoints, Avatar } from '@/shared/ui/jira';
-import { MetaBadge } from '@/shared/ui/MetaBadge';
-import './TicketRow.css';
-
-export function TicketRow({ issue, state = 'default' }: TicketRowProps) {
-  return (
-    <li className="ticket-row" data-state={state}>
-      <IssueType type={issue.type} />
-      <span className="ticket-row__key">{issue.key}</span>
-      <MetaBadge tone={toneFor(issue.status)} label={issue.status} />
-      <PriorityIcon priority={issue.priority} />
-      <StoryPoints points={issue.points} />
-      <Avatar initials={issue.assignee.initials} size="small" />
-      <p className="ticket-row__title">{issue.summary}</p>
-    </li>
-  );
-}`
-
-// Figma only draws the .tsx tab's contents; the other two are representative fixtures.
-const TICKET_ROW_CSS = `.ticket-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--bb-jira-space-tight);
-  padding: var(--bb-jira-space-row-y) var(--bb-jira-space-row-x);
-  border-radius: var(--bb-jira-radius-row);
-}
-.ticket-row[data-state='selected'] {
-  background: var(--bb-jira-row-bg-selected);
-}
-.ticket-row__key {
-  color: var(--bb-jira-text-key);
-  font-size: var(--bb-jira-font-size-caption);
-}
-.ticket-row__title {
-  margin: 0;
-  color: var(--bb-jira-text-title);
-  font-size: var(--bb-jira-font-size-body);
-}`
-
-const TICKET_ROW_STORIES = `import type { Meta, StoryObj } from '@storybook/preact-vite';
-import { TicketRow } from './TicketRow';
-
-const meta = { title: 'Jira/Ticket Row', component: TicketRow } satisfies Meta<typeof TicketRow>;
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = { args: { state: 'default' } };
-export const Hover: Story = { args: { state: 'hover' } };
-export const Selected: Story = { args: { state: 'selected' } };`
-
-// Figma copy says "var" + "(--bb-jira-*)"; the \x28 escape keeps tokens:check from reading it as a CSS var read.
-const JIRA_VARS = 'var\x28--bb-jira-*)'
-
-function files(tsxCaption: string): readonly GeneratedFile[] {
-  return [
-    { name: 'TicketRow.tsx', caption: tsxCaption, code: TICKET_ROW_TSX, detail: 'New · 62 lines · uses MetaBadge, PriorityIcon, Avatar' },
-    { name: 'TicketRow.css', caption: tsxCaption.replace(/^TSX/, 'CSS'), code: TICKET_ROW_CSS, detail: `New · 41 lines · 21 ${JIRA_VARS} tokens` },
-    { name: 'TicketRow.stories.tsx', caption: tsxCaption, code: TICKET_ROW_STORIES, detail: 'New · 15 lines · Default, Hover, Selected', requires: 'story' },
-  ]
-}
-
-export const BB_142: HandoffIssue = {
-  key: 'BB-142', title: 'Jira tab: ticket list and detail view in Brand UI', issueType: 'story',
-  status: 'IN PROGRESS', statusTone: 'accent', priority: 'high', points: '5', assignee: 'PM', assigneeName: 'Praveen Manchi',
-}
+/** A scenario nobody set up in Settings yet. */
+export const noTarget = (scenario: McpScenario): TargetStatus => ({
+  connected: false, repo: '', branch: 'main', framework: '', folder: '', designPackage: '', pullRequests: '',
+  problem: `Add the repository and personal access token for ${MCP_SCENARIO_LABEL[scenario]} in Settings › MCP + code sync`,
+})
 
 /** Figma "Ticket Row" component set: what mcp:selection answers in the mock. */
 export const TICKET_ROW: SelectionInfo = {
-  nodeId: '40000267:8004', frame: 'Ticket Row', path: 'Plugin UI › Components › Jira · 3 variants', type: 'COMPONENT_SET', variants: 3, layers: 42,
+  nodeId: '40000267:8004', frame: 'Ticket Row', path: 'Molecules › Jira · 3 variants', type: 'COMPONENT_SET', variants: 3, layers: 42,
   description: 'One issue in the Jira tab’s ticket list: type, key, status, priority, points, assignee and summary.',
+  variantAxes: [{ name: 'State', options: ['Default', 'Hover', 'Selected'] }],
+  properties: ['Key', 'Title', 'Show assignee'],
+}
+
+/** A designer's screen, for the Screen to code scenario. */
+export const CHECKOUT: SelectionInfo = {
+  nodeId: '40002716:9813', frame: 'Checkout', path: 'Web › Checkout flow', type: 'FRAME', variants: 0, layers: 212,
+  description: '', variantAxes: [], properties: [],
 }
 
 export const FILE_NAME = 'Bluebird · Plugin UI'
@@ -174,23 +81,21 @@ const READY_STATS: CheckStats = {
   boundPaints: 31, rawPaints: 0, boundNumbers: 18, rawNumbers: 1, texts: 7, styledTexts: 7, defaultNames: 1,
 }
 
+const READY_COMPONENTS: readonly UsedComponent[] = [
+  { name: 'Meta Badge', count: 6, library: true },
+  { name: 'Avatar', count: 3, library: true },
+  { name: 'Issue Type', count: 3, library: true },
+  { name: 'Priority Icon', count: 2, library: true },
+]
+
 const READY: HandoffScenario = {
-  id: 'ready',
-  selection: TICKET_ROW,
-  issue: BB_142,
-  readiness: { tone: 'success', value: 84 },
-  checks: READY_CHECKS,
-  stats: READY_STATS,
-  files: files('TSX · generated from Ticket Row'),
-  summary: `Reuses 14 library components · 49 tokens as ${JIRA_VARS} · 1 hardcoded value · 3 files`,
-  branch: 'feat/BB-142-ticket-row',
-  commit: 'feat(jira): add Ticket Row (BB-142)',
+  id: 'ready', selection: TICKET_ROW, readiness: { tone: 'success', value: 84 }, checks: READY_CHECKS, stats: READY_STATS, components: READY_COMPONENTS,
 }
 
 export const SCENARIOS: Record<HandoffScenarioId, HandoffScenario> = {
-  /** Figma "MCP v2 · 1 Select" … "6 Ship · PR link". */
+  /** Figma "MCP v3 · Component · 1 Select" … "3 Hand off". */
   ready: READY,
-  /** Figma "MCP v2 · Error · Not ready": two failing checks lock Generate. */
+  /** Figma "MCP v2 · Error · Not ready": two failing checks lock Hand off. */
   'not-ready': {
     ...READY,
     id: 'not-ready',
@@ -204,104 +109,63 @@ export const SCENARIOS: Record<HandoffScenarioId, HandoffScenario> = {
       { id: 'description', status: 'pass', title: 'Description', detail: 'The component description becomes the generated doc comment' },
     ],
     stats: { ...READY_STATS, instances: 12, libraryInstances: 12, detached: 2, boundPaints: 17, rawPaints: 14, boundNumbers: 15, rawNumbers: 3, defaultNames: 0 },
-    files: files('TSX · preview only'),
-    summary: 'Preview contains 17 hardcoded values. They would ship as --bb-derived-* tokens until they are bound in Figma.',
   },
-  /** Figma "MCP v2 · Empty · No Jira issue": the selection is fine but nothing links it to Jira. */
-  'no-issue': { ...READY, id: 'no-issue', issue: null, branch: 'feat/ticket-row', commit: 'feat(jira): add Ticket Row' },
+  /** Figma "MCP v3 · Screen · 1 Select" … "3 Hand off". */
+  screen: {
+    id: 'screen',
+    selection: CHECKOUT,
+    readiness: { tone: 'warning', value: 84 },
+    checks: [
+      { id: 'components', status: 'warning', title: 'Components', detail: '2 of 38 instances come from local components, not the library: Order Summary, Promo Banner', actionLabel: 'Publish' },
+      { id: 'variables', status: 'warning', title: 'Variables', detail: '92% bound to variables · 3 raw colours (#0C8CE9, #FFFFFF, #242424)', actionLabel: 'Fix' },
+      { id: 'auto-layout', status: 'pass', title: 'Auto layout', detail: 'Every frame uses auto layout' },
+      { id: 'text', status: 'pass', title: 'Typography', detail: '31 text layers use text styles or typography variables' },
+      { id: 'naming', status: 'pass', title: 'Layer names', detail: 'Every layer is named — names become class and prop names' },
+    ],
+    stats: { layers: 212, instances: 38, libraryInstances: 36, detached: 0, frames: 24, autoLayout: 24, boundPaints: 80, rawPaints: 3, boundNumbers: 61, rawNumbers: 0, texts: 31, styledTexts: 31, defaultNames: 0 },
+    components: [
+      { name: 'Button', count: 12, library: true },
+      { name: 'Input Box', count: 6, library: true },
+      { name: 'Dropdown', count: 4, library: true },
+      { name: 'Order Summary', count: 1, library: false },
+      { name: 'Promo Banner', count: 1, library: false },
+    ],
+  },
 }
 
-/** What "Link issue" attaches in the fixture (the issue the ready selection carries). */
-export const SUGGESTED_ISSUE = BB_142
-
-/** Figma "Ship steps" rows, in order; the Jira rows only run when an issue is linked and the option is on. */
-export type ShipStepId = 'commit' | 'push' | 'openPr' | 'linkPr' | 'moveIssue'
-
-export interface ShipStepFixture { id: ShipStepId; title: string; detail: string; time: string }
-
-export interface PullRequest { number: number; url: string; additions: number }
-
-export const PULL_REQUEST: PullRequest = { number: 63, url: 'https://github.com/praveenmanchi/bluebird/pull/63', additions: 118 }
-export const REVIEWER = '@anita'
-/** Settings › Integrations placeholder site; the real one comes from the Jira integration later. */
-export const JIRA_SITE = 'https://yourteam.atlassian.net'
-export const issueUrl = (key: string): string => `${JIRA_SITE}/browse/${encodeURIComponent(key)}`
-
-/** One row per step that will run for this push, with Figma's sample timings. */
-export function shipSteps(o: { repo: string; branch: string; commit: string; files: number; issueKey: string | null; openPr: boolean; linkPr: boolean; moveIssue: boolean }): readonly ShipStepFixture[] {
-  const steps: ShipStepFixture[] = [
-    { id: 'commit', title: `Commit ${o.files} ${o.files === 1 ? 'file' : 'files'}`, detail: `${o.branch} · ${o.commit}`, time: '1s' },
-    { id: 'push', title: 'Push branch', detail: `${o.repo} · origin/${o.branch}`, time: '2s' },
-  ]
-  if (o.openPr) steps.push({ id: 'openPr', title: 'Open pull request', detail: `base main · reviewer ${REVIEWER}`, time: '4s' })
-  if (o.issueKey && o.linkPr && o.openPr) steps.push({ id: 'linkPr', title: `Link PR to ${o.issueKey}`, detail: 'Jira comment + development panel', time: '1s' })
-  if (o.issueKey && o.moveIssue) steps.push({ id: 'moveIssue', title: `Move ${o.issueKey} to In review`, detail: 'Jira workflow transition', time: '1s' })
-  return steps
+/** What mcp:track answers in the mock once the developer has opened the pull request. */
+export const SAMPLE_PULL: Required<Pick<TrackResult, 'number' | 'url' | 'title'>> = {
+  number: 63, url: 'https://github.com/acme/design-system/pull/63', title: 'feat: add Ticket Row',
 }
 
-/** Figma "MCP log" on "Generation failed". */
-export const GENERATION_LOG = `→ get_design_context  node 40000267:8004  (Ticket Row)
-→ get_code_connect_map  3 mappings
-→ generate  preact-ts  css-vars
-✕ timeout after 60000 ms  (mcp.figma.com/mcp)
-  request id 7f3c-91a2 · retry is safe`
+/** Team History releases the mock lists (Figma "MCP v3 · Library update · 1 Changes"). */
+export const SAMPLE_RELEASES: readonly LibraryRelease[] = [
+  {
+    id: 'cl1bridge2', kind: 'changelog', title: 'Bridge DS 2.0', at: '2026-11-14T10:20:00.000Z', by: 'Anita Rao', file: 'Bridge DS', ticket: 'BB-351',
+    link: 'https://github.com/acme/design-system/pull/80',
+    components: [
+      { name: 'Button', change: 'modified', note: 'New Size property · padding tokens changed', breaking: false },
+      { name: 'Date picker', change: 'modified', note: 'Header rebuilt · 2 new variants', breaking: false },
+      { name: 'Toggle', change: 'removed', note: 'Replaced by Switch', breaking: true },
+      { name: 'Switch', change: 'added', note: 'Replaces Toggle', breaking: false },
+    ],
+    variables: { added: 2, modified: 5, removed: 1 },
+  },
+  {
+    id: 'ex1button', kind: 'extraction', title: 'Button refresh', at: '2026-11-12T08:05:00.000Z', by: 'Praveen Manchi', file: 'Bridge DS', ticket: 'BB-342',
+    components: [{ name: 'Button', change: 'modified', note: 'button/bg/primary · radius/control · 12 variants', breaking: false }],
+    variables: { added: 0, modified: 3, removed: 0 },
+  },
+]
 
-/** Figma "Git output" on "Push rejected". */
-export function rejectedLog(repo: string, branch: string): string {
-  return `$ git push origin ${branch}
- ! [rejected]  ${branch} -> ${branch} (fetch first)
-error: failed to push some refs to github.com/${repo}`
-}
-
-/** The Figma URL of a node, when the plugin knows the file key (private plugins only). */
-export function nodeUrl(fileKey: string | null, nodeId: string): string | null {
-  return fileKey ? `https://www.figma.com/design/${encodeURIComponent(fileKey)}?node-id=${encodeURIComponent(nodeId.replace(':', '-'))}` : null
-}
-
-/** How Claude Code registers the Figma MCP server the Connections card points at. */
-export function mcpSetup(local: boolean): string {
-  const url = local ? MCP_LOCAL_URL : MCP_REMOTE_URL
-  return [
-    local
-      ? '# Figma desktop MCP server: Figma › Preferences › Enable local MCP server, then:'
-      : '# Figma remote MCP server (signs in with your Figma account on first use):',
-    `claude mcp add --transport http figma ${url}`,
-    '',
-    '# Cursor / other MCP clients: add to mcp.json',
-    JSON.stringify({ mcpServers: { figma: { type: 'http', url } } }, null, 2),
-  ].join('\n')
-}
-
-export interface PromptInput {
-  selection: SelectionInfo
-  fileName: string
-  fileKey: string | null
-  checks: readonly HandoffCheck[]
-  framework: string
-  styling: string
-  path: string
-  include: Record<IncludeOption, boolean>
-  issue: HandoffIssue | null
-  branch: string
-  commit: string
-}
-
-/** The prompt "Copy prompt for Claude Code" puts on the clipboard: the real selection, where to read it, and what the checks found. */
-export function buildPrompt(o: PromptInput): string {
-  const s = o.selection
-  const url = nodeUrl(o.fileKey, s.nodeId)
-  const include = (Object.keys(o.include) as IncludeOption[]).filter((k) => o.include[k]).map((k) => INCLUDE_LABELS[k])
-  const gaps = o.checks.filter((c) => c.status !== 'pass').map((c) => `- ${c.title}: ${c.detail}`)
-  const kind = s.type === 'COMPONENT_SET' ? 'component set' : s.type === 'COMPONENT' ? 'component' : s.type === 'INSTANCE' ? 'instance' : 'frame'
-  return [
-    `Implement the Figma ${kind} "${s.frame}" (${s.path}) using the Figma MCP server.`,
-    url ? `Read it with get_design_context on ${url} (node ${s.nodeId}).` : `Read it with get_design_context: node ${s.nodeId} in the file "${o.fileName}" (select it in Figma for the desktop server).`,
-    s.description ? `Description: ${s.description}` : '',
-    `Framework: ${o.framework}. Styling: ${o.styling}. Write to ${o.path}.`,
-    include.length ? `Include: ${include.join(', ')}.` : '',
-    'Reuse the existing design-system components and tokens; never hardcode a value that has a variable.',
-    gaps.length ? `Known gaps in the design (keep them visible as TODOs, do not paper over them):\n${gaps.join('\n')}` : 'The readiness checks passed: every value is bound and every instance comes from the library.',
-    o.issue ? `Jira: ${o.issue.key} — ${o.issue.title}.` : 'No Jira issue is linked.',
-    `Branch: ${o.branch}. Commit: ${o.commit}.`,
-  ].filter(Boolean).join('\n')
+/** What mcp:impact answers for Bridge DS 2.0 in the mock (Figma "MCP v3 · Library update · 2 Impact"). */
+export const SAMPLE_IMPACT: ImpactResult = {
+  screens: [
+    { nodeId: '40002716:9813', name: 'Checkout', page: 'Web', uses: [{ name: 'Button', count: 12 }, { name: 'Toggle', count: 2 }] },
+    { nodeId: '40002716:10491', name: 'Cart', page: 'Web', uses: [{ name: 'Button', count: 7 }, { name: 'Date picker', count: 2 }] },
+    { nodeId: '40002716:11020', name: 'Sign in', page: 'Web', uses: [{ name: 'Toggle', count: 3 }] },
+  ],
+  pages: 4,
+  scanned: 612,
+  truncated: false,
 }

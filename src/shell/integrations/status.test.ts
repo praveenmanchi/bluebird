@@ -33,8 +33,16 @@ describe('sectionStatus', () => {
     expect(sectionStatus('dualFile', { ...D.dualFile, token: 'k' })).toBe('missing')
   })
 
-  it('agrees with the footer on MCP and UX AI', () => {
-    expect(sectionStatus('mcp', { ...D.mcp, repo: 'a/b', token: 't' })).toBe('configured')
+  it('counts MCP as configured once one scenario has its repository and token', () => {
+    expect(sectionStatus('mcp', D.mcp)).toBe('missing')
+    expect(sectionStatus('mcp', { ...D.mcp, componentRepo: 'a/b' })).toBe('missing')
+    expect(sectionStatus('mcp', { ...D.mcp, componentRepo: 'a/b', screenToken: 't' })).toBe('missing')
+    expect(sectionStatus('mcp', { ...D.mcp, libraryRepo: 'a/b', libraryToken: 't' })).toBe('configured')
+    expect(sectionStatus('mcp', { ...D.mcp, libraryRepo: 'a/b', libraryToken: 't', screenRepo: 'a/c' })).toBe('configured')
+    expect(sectionStatus('mcp', { ...D.mcp, enabled: false, libraryRepo: 'a/b', libraryToken: 't' })).toBe('off')
+  })
+
+  it('agrees with the footer on UX AI', () => {
     expect(sectionStatus('ai', D.ai)).toBe('missing')
     expect(sectionStatus('ai', { ...D.ai, claudeKey: 'k' })).toBe('configured')
   })

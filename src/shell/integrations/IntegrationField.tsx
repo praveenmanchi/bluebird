@@ -1,6 +1,7 @@
 import { Icon, Input, TextArea, Toggle } from '@shared/ui'
 import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors, type LibraryFileEntry } from '@shared/integrations'
 import { LibraryFilesList } from './LibraryFilesList'
+import { ScenarioGroup } from './ScenarioGroup'
 import { SelectInput } from './SelectInput'
 import type { ColumnSpec, FieldSpec } from './sections'
 
@@ -17,7 +18,7 @@ export interface FieldContext {
 
 const str = (v: FieldValues[string] | undefined) => typeof v === 'string' ? v : ''
 
-/** One Figma instance of a settings section: Input Box, dropbox, Toggle, Text Area or an AI provider row. */
+/** One Figma instance of a settings section: Input Box, dropbox, Toggle, Text Area, an AI provider row or a group card of them. */
 export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldContext }) {
   const { values, errors, onChange } = ctx
   const disabled = ctx.disabled || ('key' in spec && ctx.locked?.has(spec.key) === true)
@@ -59,6 +60,8 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
         />
       )
     }
+    case 'group':
+      return <ScenarioGroup spec={spec} ctx={ctx} />
     case 'provider':
       return (
         <div class="bb-integrations__provider">

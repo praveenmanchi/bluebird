@@ -30,7 +30,7 @@ describe('ConfigPage', () => {
     expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
       expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
     ])
-    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(11)
+    expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(12)
   })
 
   it('saves a hidden tab, a new order and a section set here as one patch for that brand', async () => {

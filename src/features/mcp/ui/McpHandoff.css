@@ -61,6 +61,15 @@
 .bb-mcp-handoff__steps > li > *,
 .bb-mcp-handoff__checks > li > * { width: 100%; box-sizing: border-box; }
 
+/* Library update › Screens impacted: the screen's row, then "Show in Figma" beside it. */
+.bb-mcp-handoff__screen {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-mcp-space-inline);
+}
+.bb-mcp-handoff__screen > .bb-connection-row { flex: 1 1 auto; min-width: 0; }
+.bb-mcp-handoff__screen > .bb-link-button { flex: none; }
+
 /* Include and After push: HORIZONTAL, gap mcp/space/panel, hugging Checkboxes. */
 .bb-mcp-handoff__toggles {
   display: flex;

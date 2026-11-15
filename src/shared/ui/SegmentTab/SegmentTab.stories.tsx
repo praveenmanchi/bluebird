@@ -23,6 +23,8 @@ export const Selected: Story = { args: { selected: true }, parameters: { figma: 
 export const Disabled: Story = { args: { disabled: true }, parameters: { figma: { variant: 'State=Disabled' } } }
 export const Focus: Story = { args: { state: 'focus' }, parameters: { figma: { variant: 'State=Focus' } } }
 export const TextOnly: Story = { args: { icon: undefined } }
+/** Figma "Number value" on. */
+export const WithCount: Story = { args: { count: '5' } }
 
 /** State × Show icon. */
 export const Matrix: Story = {

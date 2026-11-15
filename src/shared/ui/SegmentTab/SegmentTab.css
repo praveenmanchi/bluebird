@@ -1,6 +1,6 @@
 /* SegmentTab — Figma "Tab selecters" set (308:51054): State = Default / Hover / Selected /
  * Disabled / Focus (a border/focus stroke inside the frame; data-state="focus" forces it). Every state is the same row: the Icon instance (dimension/size/icon-18) then the
- * Label, dimension/space/3 apart, at least chip-filter/icon/size (24) high with
+ * Label and the optional Story Points count (Number value), dimension/space/6 apart, at least chip-filter/icon/size (24) high with
  * dimension/space/4 · dimension/space/8 side insets and a dimension/radius/4 corner.
  * Fills: Hover dropdown/item/bg-hover, Selected surface/accent-strong. Label: input/fg/helper,
  * tab/fg/default on Hover, text/on-accent when Selected, icon/glyph/muted when Disabled. The
@@ -37,7 +37,7 @@
 .bb-segment-tab__container {
   display: inline-flex;
   align-items: center;
-  gap: var(--bb-dimension-space-3);
+  gap: var(--bb-dimension-space-6);
 }
 .bb-segment-tab__icon {
   display: inline-flex;
@@ -48,6 +48,7 @@
 }
 .bb-segment-tab__icon > .bb-icon { width: 100%; height: 100%; }
 .bb-segment-tab__label { display: inline-block; }
+.bb-segment-tab__count { flex: none; }
 
 .bb-segment-tab:not(:disabled):not([data-selected]):is(:hover, [data-state="hover"]) {
   background: var(--bb-dropdown-item-bg-hover);
