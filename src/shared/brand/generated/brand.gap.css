@@ -66,11 +66,11 @@
   --bb-search-bar-padding-x: 13px;
   --bb-search-bar-height: 32px;
   --bb-chip-filter-bg-default: #ffffff00;
-  --bb-chip-filter-bg-selected: #0f2441;
+  --bb-chip-filter-bg-selected: #1a51a4;
   --bb-chip-filter-fg-default: #ffffff;
-  --bb-chip-filter-fg-selected: #80d2ee;
+  --bb-chip-filter-fg-selected: #ffffff;
   --bb-chip-filter-border-default: #454545;
-  --bb-chip-filter-border-selected: #2992c7;
+  --bb-chip-filter-border-selected: #1a51a4;
   --bb-chip-filter-icon-size: 24px;
   --bb-chip-filter-radius: 6px;
   --bb-chip-filter-gap: 7px;
@@ -78,6 +78,7 @@
   --bb-chip-filter-height: 32px;
   --bb-tab-fg-default: #ffffff;
   --bb-tab-fg-active: #ffffff;
+  --bb-tab-bg-hover: #000000;
   --bb-tab-icon-default: #f8f7f6;
   --bb-tab-icon-active: #ffffff;
   --bb-tab-icon-size: 24px;
@@ -373,9 +374,10 @@
   --bb-menu-divider-color: #333333;
   --bb-menu-item-bg-default: #ffffff00;
   --bb-menu-item-bg-hover: #000000;
-  --bb-menu-item-bg-selected: #0f2441;
+  --bb-menu-item-bg-selected: #1a51a4;
   --bb-menu-item-fg-default: #ffffff;
-  --bb-menu-item-fg-selected: #80d2ee;
+  --bb-menu-item-fg-selected: #ffffff;
+  --bb-menu-item-count-selected: #ffffff;
   --bb-menu-item-fg-disabled: #808080;
   --bb-menu-item-height: 28px;
   --bb-menu-item-padding-x: 9px;

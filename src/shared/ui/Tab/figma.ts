@@ -3,7 +3,7 @@ import { scaleGaps } from '../../brand/scaleGaps'
 export const figma = {
   setId: '91:1989',
   name: 'Tab',
-  props: { 'Property 1': 'variant (default | active | variant3); Focus is state="focus"', Label: 'children', Icon: 'icon', 'Show Header Icons': 'showIcon', 'Variant 3 text': 'showVariant3Text' },
+  props: { 'Property 1': 'variant (default | active | variant3); Hover is :hover / state="hover"; Focus is state="focus"', Label: 'children', Icon: 'icon', 'Show Header Icons': 'showIcon', 'Variant 3 text': 'showVariant3Text' },
   figmaGaps: { ...scaleGaps('font/weight-medium', 'icon/size/lg') },
   derivedGaps: {
     '--bb-derived-tab-uxai-as-assister-font-family': 'A raw font name on the label ("Noto Sans", no variable bound); code reads the same family through --bb-font-family-ui.',

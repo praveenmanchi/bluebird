@@ -3797,7 +3797,7 @@
               "p": "Mode=Single, State=Selected/Count",
               "t": "TEXT",
               "b": {
-                "fill": "menu/item/icon/color",
+                "fill": "menu/item/count/selected",
                 "fontSize": "menu/item/font-size",
                 "fontFamily": "menu/item/font-family",
                 "fontWeight": "font/weight-regular"
@@ -4156,7 +4156,7 @@
               "p": "Mode=Multi, State=Selected/Count",
               "t": "TEXT",
               "b": {
-                "fill": "menu/item/icon/color",
+                "fill": "menu/item/count/selected",
                 "fontSize": "menu/item/font-size",
                 "fontFamily": "menu/item/font-family",
                 "fontWeight": "font/weight-regular"
@@ -12532,6 +12532,105 @@
               "t": "TEXT",
               "b": {
                 "fill": "tab/fg/default",
+                "fontSize": "tab/font/size",
+                "fontWeight": "font/weight-medium",
+                "lineHeight": "tab/line-height"
+              },
+              "r": {
+                "text": "UXAI as assister",
+                "font": "Noto Sans",
+                "style": "Medium"
+              },
+              "pr": {
+                "characters": "Label"
+              }
+            }
+          ]
+        },
+        {
+          "id": "40002939:7169",
+          "key": "b9d0930ffeef72e3689bb8063bd627f42ea6837d",
+          "name": "Property 1=Hover",
+          "props": {
+            "Property 1": "Hover"
+          },
+          "nodes": [
+            {
+              "id": "40002939:7169",
+              "p": "Property 1=Hover",
+              "t": "COMPONENT",
+              "b": {
+                "fill": "tab/bg/hover",
+                "itemSpacing": "tab/gap",
+                "paddingLeft": "tab/padding-x",
+                "paddingRight": "tab/padding-x",
+                "paddingTop": "tab/padding-y",
+                "paddingBottom": "tab/padding-y"
+              },
+              "r": {
+                "layout": "HORIZONTAL MIN CENTER HUG HUG",
+                "size": [
+                  130,
+                  40
+                ]
+              }
+            },
+            {
+              "id": "40002939:7170",
+              "p": "Property 1=Hover/Tab Icons",
+              "t": "INSTANCE",
+              "b": {
+                "width": "icon/size/lg",
+                "height": "icon/size/lg"
+              },
+              "r": {
+                "size": [
+                  24,
+                  24
+                ]
+              },
+              "i": "Tab Icon=Variables, Size=Large <Tab Icons>",
+              "mc": "91:1958",
+              "cp": {
+                "Tab Icon": "Variables",
+                "Size": "Large"
+              },
+              "pr": {
+                "visible": "Show Header Icons"
+              }
+            },
+            {
+              "id": "I40002939:7170;91:1904",
+              "p": "Property 1=Hover/Tab Icons/Vector",
+              "t": "VECTOR",
+              "b": {
+                "fill": "tab/icon/active"
+              },
+              "o": [
+                "boundVariables",
+                "fills",
+                "opacity"
+              ]
+            },
+            {
+              "id": "40002939:7171",
+              "p": "Property 1=Hover/Container",
+              "t": "FRAME",
+              "b": {},
+              "r": {
+                "layout": "VERTICAL MIN CENTER HUG HUG",
+                "size": [
+                  84,
+                  16
+                ]
+              }
+            },
+            {
+              "id": "40002939:7172",
+              "p": "Property 1=Hover/Container/UXAI as assister",
+              "t": "TEXT",
+              "b": {
+                "fill": "tab/fg/active",
                 "fontSize": "tab/font/size",
                 "fontWeight": "font/weight-medium",
                 "lineHeight": "tab/line-height"

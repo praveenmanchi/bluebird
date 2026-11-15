@@ -23,7 +23,7 @@ export const Active: Story = { args: { variant: 'active' }, parameters: v('Prope
 export const Variant3: Story = { args: { variant: 'variant3', icon: 'uxai' }, parameters: v('Property 1=Variant3') }
 export const Focus: Story = { args: { state: 'focus' }, parameters: v('Property 1=Focus') }
 
-export const Hover: Story = { args: { state: 'hover' } }
+export const Hover: Story = { args: { state: 'hover' }, parameters: v('Property 1=Hover') }
 export const NoIcon: Story = { args: { showIcon: false } }
 export const Variant3WithText: Story = { args: { variant: 'variant3', icon: 'uxai', showVariant3Text: true } }
 export const NavbarIcon: Story = { args: { variant: 'variant3', icon: 'navbar-tab-icon' } }
@@ -31,8 +31,8 @@ export const NavbarIcon: Story = { args: { variant: 'variant3', icon: 'navbar-ta
 /** Property 1 × Show Header Icons. */
 export const Matrix: Story = {
   render: (args) => (
-    <VariantGrid columns={['Icon', 'No icon']} rows={['Default', 'Active', 'Variant3', 'Focus']}>
-      {(row, col) => <Tab {...args} variant={row === 'Focus' ? 'default' : (row.toLowerCase() as 'default' | 'active' | 'variant3')} state={row === 'Focus' ? 'focus' : undefined} showIcon={col === 'Icon'} />}
+    <VariantGrid columns={['Icon', 'No icon']} rows={['Default', 'Hover', 'Active', 'Variant3', 'Focus']}>
+      {(row, col) => <Tab {...args} variant={row === 'Focus' || row === 'Hover' ? 'default' : (row.toLowerCase() as 'default' | 'active' | 'variant3')} state={row === 'Focus' ? 'focus' : row === 'Hover' ? 'hover' : undefined} showIcon={col === 'Icon'} />}
     </VariantGrid>
   ),
 }

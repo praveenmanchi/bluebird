@@ -78,6 +78,7 @@
   --bb-chip-filter-height: 32px;
   --bb-tab-fg-default: #f5f6fb;
   --bb-tab-fg-active: #f5f6fb;
+  --bb-tab-bg-hover: #ffffff00;
   --bb-tab-icon-default: #f5f6fb;
   --bb-tab-icon-active: #f5f6fb;
   --bb-tab-icon-size: 18px;
@@ -376,6 +377,7 @@
   --bb-menu-item-bg-selected: #002d72;
   --bb-menu-item-fg-default: #f5f6fb;
   --bb-menu-item-fg-selected: #89b8ef;
+  --bb-menu-item-count-selected: #b4b5b9;
   --bb-menu-item-fg-disabled: #85868a;
   --bb-menu-item-height: 28px;
   --bb-menu-item-padding-x: 9px;

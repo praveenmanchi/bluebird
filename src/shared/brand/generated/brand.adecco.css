@@ -78,6 +78,7 @@
   --bb-chip-filter-height: 32px;
   --bb-tab-fg-default: #000000;
   --bb-tab-fg-active: #000000;
+  --bb-tab-bg-hover: #ffffff00;
   --bb-tab-icon-default: #000000;
   --bb-tab-icon-active: #000000;
   --bb-tab-icon-size: 18px;
@@ -376,6 +377,7 @@
   --bb-menu-item-bg-selected: #fde6ec;
   --bb-menu-item-fg-default: #000000;
   --bb-menu-item-fg-selected: #39119a;
+  --bb-menu-item-count-selected: #5c5c5c;
   --bb-menu-item-fg-disabled: #8a7c7e;
   --bb-menu-item-height: 28px;
   --bb-menu-item-padding-x: 9px;
