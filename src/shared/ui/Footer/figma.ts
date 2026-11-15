@@ -10,15 +10,18 @@ export const figma = {
     'Dual File': 'dualFile (or pills[3])',
     'info (instance)': 'meta',
     'size expander (instance)': 'size / onSizeChange',
-    'footer-chevron (glyph)': 'onExpand',
+    'Minimize (minimize-corners icon)': 'onMinimize',
+    'Intro info (Footer Info instance)': 'onHelp / helpActive',
   },
   figmaGaps: {
     ...scaleGaps('dimension/space/6', 'dimension/space/5', 'dimension/space/3', 'dimension/opacity/30'),
     'footer/segment/fg': 'the size expander step label, read by the composed SizeExpander',
+    'dimension/space/18': 'The old size-group gap. Figma regrouped the controls on 2026-11-15 (one row at space/inline-md); the committed snapshot predates it and the next pull drops this binding.',
   },
   derivedGaps: {
-    '--bb-derived-footer-vector-1-width': 'The footer-chevron glyph vector (133:1663, 8.7x8.7 in its 16px frame; layer "Vector 1"). Icon draws it; only the glyph box is CSS.',
-    '--bb-derived-footer-vector-1-height': 'The footer-chevron glyph vector (133:1663, 8.7x8.7 in its 16px frame; layer "Vector 1"). Icon draws it; only the glyph box is CSS.',
+    '--bb-derived-footer-frame-1430102625-gap': 'The old 29px controls gap from the mirrored Minimize / grip frames. Figma regrouped the row on 2026-11-15 to space/inline-md (8px); the next pull drops this derived value.',
+    '--bb-derived-footer-frame-width': 'The resize grip’s outer 16px Frame (133:1665); code sizes the grip from its Container (footer-container-*), also 16px.',
+    '--bb-derived-footer-frame-height': 'The resize grip’s outer 16px Frame (133:1665); code sizes the grip from its Container (footer-container-*), also 16px.',
   },
   notes: 'The Figma frame is 595px wide; code stretches to the host width. The 16×0 "Line 57/58/59" hairlines are drawn rotated in Figma, so code renders them as 16px-tall vertical rules. footer/segment/radius and footer/padding-x are instance overrides on the size expander and are applied through .bb-footer__size.',
 } as const

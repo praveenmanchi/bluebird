@@ -14,8 +14,8 @@ export const activePersonaId = signal<string | null>(defaultPersona?.id ?? null)
 export const activeTabId = signal<string | null>(defaultPersona?.tabs[0]?.id ?? null)
 export const brandStatus = signal<BrandTokensResult | null>(null)
 
-/** Access-code session. `boot` until session:status answers; first run after sign-in goes `splash` → `persona` → `onboarding` (the tour). */
-export type Screen = 'boot' | 'login' | 'splash' | 'persona' | 'onboarding' | 'team-setup' | 'app' | 'settings'
+/** Access-code session. `boot` until session:status answers; first run after sign-in goes `splash` → `persona` → `onboarding` (the tour) → `team-setup` → `figma-key` → `app`. */
+export type Screen = 'boot' | 'login' | 'splash' | 'persona' | 'onboarding' | 'team-setup' | 'figma-key' | 'app' | 'settings'
 export const screen = signal<Screen>('boot')
 export const session = signal<Session | null>(null)
 /** True while the persona screen was opened from Settings, so it can go back there and skips the intro. */
@@ -25,6 +25,8 @@ export const replayingTour = signal(false)
 export const connection = signal<TransportStatus>('connected')
 /** Current plugin window size; the footer's S / M / L, expand and grip all go through shell:resize. */
 export const windowSize = signal<WindowSize>({ width: config.window.width, height: config.window.height })
+/** True while the plugin is shrunk to its Mini Launcher; windowSize keeps the size to restore. */
+export const minimized = signal(false)
 
 /** Personas as the signed-in brand sees them: its tab list (plugin.config.json) hides and orders tabs. */
 export const brandPersonas = computed<readonly ResolvedPersona[]>(() => session.value ? resolvePersonas(config, session.value.brandId) : personas)

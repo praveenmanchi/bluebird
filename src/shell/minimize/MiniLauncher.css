@@ -1,0 +1,32 @@
+/* Mini Launcher — Figma 40002969:7868: a 64 × 64 window (surface/canvas) holding a 56px circle
+ * on the brand colour (surface/brand-banner) with the persona's bird; Hover adds a border/focus ring. */
+.bb-mini-launcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--bb-surface-canvas);
+  cursor: pointer;
+  appearance: none;
+}
+.bb-mini-launcher__bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* Figma: 56 inside the 64 window, a 4px (dimension/space/4) inset all round. */
+  width: calc(100% - 2 * var(--bb-dimension-space-4));
+  height: calc(100% - 2 * var(--bb-dimension-space-4));
+  border-radius: 50%;
+  background: var(--bb-surface-brand-banner);
+  overflow: hidden;
+}
+.bb-mini-launcher__bird { width: 72%; height: 72%; }
+.bb-mini-launcher:is(:hover, :focus-visible) .bb-mini-launcher__bubble {
+  box-shadow: inset 0 0 0 var(--bb-dimension-stroke-2) var(--bb-border-focus);
+}
+.bb-mini-launcher:focus-visible { outline: none; }

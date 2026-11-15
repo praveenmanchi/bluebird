@@ -133,7 +133,7 @@ describe('access-code session', () => {
 })
 
 describe('first-run tour', () => {
-  it('follows the first sign-in, then the team setup screen, and never shows again', async () => {
+  it('follows the first sign-in, then the team setup and Figma key screens, and never shows again', async () => {
     mount(null, false)
     fireEvent.input(await dom.findByLabelText('Access code'), { target: { value: 'bridge-2026' } })
     fireEvent.click(dom.getByRole('button', { name: 'Sign in' }))
@@ -143,6 +143,10 @@ describe('first-run tour', () => {
     // The team setup file gets a screen of its own after the tour, skipped or finished.
     await waitFor(() => expect(screen.value).toBe('team-setup'))
     expect(dom.getByRole('heading', { name: 'Set up from your team’s file' })).toBeInTheDocument()
+    fireEvent.click(dom.getByRole('button', { name: 'Skip for now' }))
+    // Then the Figma API key screen (Figma "After the tour · Figma API key"), skipped or connected.
+    await waitFor(() => expect(screen.value).toBe('figma-key'))
+    expect(await dom.findByRole('heading', { name: 'Add your Figma API key' })).toBeInTheDocument()
     fireEvent.click(dom.getByRole('button', { name: 'Skip for now' }))
     await waitFor(() => expect(screen.value).toBe('app'))
     fireEvent.click(dom.getByRole('button', { name: 'Settings' }))

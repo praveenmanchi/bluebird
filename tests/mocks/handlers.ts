@@ -16,12 +16,14 @@ import { createMockHandlers as varsearch } from '@features/varsearch/mock'
 import { createMockHandlers as varmapper } from '@features/varmapper/mock'
 import { createMockHandlers as audit } from '@features/audit/mock'
 import { createMockHandlers as documentation } from '@features/documentation/mock'
-import { config } from '@shared/config'
+import { config, WINDOW_MINI } from '@shared/config'
 import { readIntegrations } from '@shared/integrations/effective'
 import { createSessionHandlers, type SessionStore } from '../../src/sandbox/session'
 import { createIntegrationsHandlers } from '../../src/sandbox/integrations'
 import { createOnboardingHandlers, ONBOARDING_KEY } from '../../src/sandbox/onboarding'
 import { createPersonaHandlers, PERSONA_KEY } from '../../src/sandbox/persona'
+import { createIntroHandlers, INTRO_KEY } from '../../src/sandbox/intro'
+import { createFigmaKeyHandlers } from '../../src/sandbox/figmaKey'
 import { createLibrariesHandlers } from '@shared/libraries/handlers'
 import { LIBRARIES_MSG } from '@shared/libraries/types'
 import type { HttpFetch } from '@shared/libraries/rest'
@@ -42,6 +44,18 @@ export interface MockOptions {
   persona?: string | null
   /** Fetch for Dual File Mode's Figma REST calls. Defaults to the browser's in the dev harness; tests get none. */
   fetch?: HttpFetch
+  /**
+   * Whether the coach-mark intros (layout + every tab) are already done and every tab is known.
+   * Defaults to done in tests, so no overlay covers the tabs; the persisted dev harness keeps what it stored
+   * unless `?intros=done` asks for done.
+   */
+  introsDone?: boolean
+}
+
+/** Tests: a token starting `figd_` passes GET /v1/me, anything else is rejected like Figma does. */
+const fakeFigmaMe: HttpFetch = async (_url, init) => {
+  const ok = /^figd_/.test(init.headers['X-Figma-Token'] ?? '')
+  return { status: ok ? 200 : 403, text: async () => JSON.stringify(ok ? { handle: 'Test designer' } : { err: 'Invalid token' }) }
 }
 
 /** Tests never reach the network: a Dual File call without an injected fetch fails like an offline machine. */
@@ -60,9 +74,13 @@ export function mockSessionStore(persist = false): SessionStore {
   }
 }
 
-export function createMockHandlers({ scenario = 'default', brandId = 'bridge', sessionBrand, persist = false, onResize, onboarded = !persist, persona = persist ? undefined : config.activePersona, fetch }: MockOptions = {}): HandlerMap {
+export function createMockHandlers({ scenario = 'default', brandId = 'bridge', sessionBrand, persist = false, onResize, onboarded = !persist, persona = persist ? undefined : config.activePersona, fetch, introsDone = persist ? undefined : onboarded }: MockOptions = {}): HandlerMap {
   const store = mockSessionStore(persist)
   if (onboarded) void store.set(ONBOARDING_KEY, { completedAt: new Date().toISOString(), skipped: false })
+  if (introsDone) {
+    const tabs = Object.keys(config.tabs)
+    void store.set(INTRO_KEY, { layoutDone: true, seenTabs: tabs, knownTabs: tabs, announced: [] })
+  }
   if (persona) void store.set(PERSONA_KEY, persona)
   else if (persona === null) void store.delete(PERSONA_KEY)
   if (sessionBrand !== undefined) {
@@ -78,10 +96,14 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
     }),
     'shell:close': async () => undefined,
     'shell:resize': async (payload: { width: number; height: number }) => { onResize?.(payload) },
+    'shell:minimize': async () => { onResize?.(WINDOW_MINI) },
     ...createSessionHandlers(config, store),
     ...createIntegrationsHandlers(store),
     ...createOnboardingHandlers(store),
     ...createPersonaHandlers(config, store),
+    ...createIntroHandlers(store),
+    // The Figma key screen checks the pasted token: the real API from the dev harness, a fake in tests.
+    ...createFigmaKeyHandlers({ fetch: fetch ?? (persist ? (url, init) => globalThis.fetch(url, init) : fakeFigmaMe) }),
     // Dual File Mode reads the real Figma REST API from the dev harness (api.figma.com allows any origin).
     // Dev builds and tests only, so the plugin bundle doesn't ship a second REST loader (the sandbox has it).
     ...(import.meta.env.DEV

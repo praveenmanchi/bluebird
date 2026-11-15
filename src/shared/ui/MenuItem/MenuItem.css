@@ -58,6 +58,7 @@
   background: var(--bb-menu-item-bg-selected);
   color: var(--bb-menu-item-fg-selected);
 }
+.bb-menu-item:is([aria-selected="true"], [aria-checked="true"]) .bb-menu-item__count { color: var(--bb-menu-item-count-selected); }
 .bb-menu-item[aria-disabled="true"] {
   color: var(--bb-menu-item-fg-disabled);
   opacity: var(--bb-dimension-opacity-50);

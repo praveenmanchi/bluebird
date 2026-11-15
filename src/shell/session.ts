@@ -7,6 +7,7 @@ import { ONBOARDING_MSG, PERSONA_MSG, SESSION_MSG, type OnboardingStatus, type P
 import { loadLibraryState } from '@shared/libraries/status'
 import { loadEditorMode } from '@shared/editor'
 import { brandPersonas, brandStatus, changingPersona, replayingTour, screen, session, selectPersona, syncTabs, windowSize } from './state'
+import { introState } from './intro/state'
 
 /** Point the UI at a brand: generated [data-brand] CSS first, then the tokens resolved from the Figma document. */
 export async function activateBrand(client: RpcClient, brandId: string): Promise<void> {
@@ -115,8 +116,13 @@ export async function completeOnboarding(client: RpcClient, skipped: boolean): P
   }
 }
 
-/** Leaves the team setup screen, with or without a file imported. */
+/** Leaves the team setup screen, with or without a file imported: the Figma API key screen is next. */
 export function finishTeamSetup(): void {
+  screen.value = 'figma-key'
+}
+
+/** Leaves the Figma API key screen (skipped, connected, or a key was already saved). */
+export function finishFigmaKey(): void {
   screen.value = 'app'
 }
 
@@ -163,6 +169,8 @@ export const canSignOut = (): boolean => singleBrand(config) === null
 function leave(): void {
   clearTokens()
   session.value = null
+  // Reset wipes the stored intro progress; the next sign-in reads it afresh.
+  introState.value = null
   brandStatus.value = null
   document.documentElement.dataset.brand = config.brand.active
   // Single-brand: reset() boots straight back in, so hold on the blank boot screen rather than flash the login.

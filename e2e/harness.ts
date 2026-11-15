@@ -30,10 +30,12 @@ export interface OpenOptions {
   target?: 'build' | 'dev'
   /** Mock data set: default, empty, many, slow or error. */
   data?: string
+  /** Coach-mark intros: 'done' (default) keeps them out of the flows; 'pending' shows them. */
+  intros?: 'done' | 'pending'
 }
 
 /** Opens the built plugin with the mock sandbox and records anything that goes wrong while it runs. */
-export async function openPlugin(page: Page, { brand, persona, signedIn = true, target = 'build', data }: OpenOptions): Promise<Problems> {
+export async function openPlugin(page: Page, { brand, persona, signedIn = true, target = 'build', data, intros = 'done' }: OpenOptions): Promise<Problems> {
   if (target === 'build' && !existsSync(BUILD)) throw new Error('dist/index.html is missing. Run `npm run build` before the smoke tests.')
   const problems: Problems = { errors: [], requests: [] }
   page.on('pageerror', (e) => problems.errors.push(`uncaught: ${e.message}`))
@@ -52,20 +54,22 @@ export async function openPlugin(page: Page, { brand, persona, signedIn = true, 
   const query = new URLSearchParams({ mode: 'mock', brand, session: signedIn ? brand : 'none' })
   if (persona) query.set('persona', persona)
   if (data) query.set('data', data)
+  if (intros === 'done') query.set('intros', 'done')
   // embed=1 keeps the dev server from redirecting a bare visit to the dev harness page.
   if (target === 'dev') query.set('embed', '1')
   await page.goto(target === 'dev' ? `/index.html?${query.toString()}` : `${pathToFileURL(BUILD).href}?${query.toString()}`)
   return problems
 }
 
-/** Signed-in sessions start on the first-run tour, then the team setup screen; skip both and wait for the tab bar. */
+/** Signed-in sessions start on the first-run tour, then the team setup and Figma key screens; skip all three and wait for the tab bar. */
 export async function skipTour(page: Page): Promise<void> {
   const tabBar = page.getByRole('navigation', { name: 'Sections' })
   const skip = page.getByRole('button', { name: 'Skip', exact: true })
   await expect(tabBar.or(skip).first()).toBeVisible()
   if (await skip.isVisible()) {
     await skip.click()
-    await page.getByRole('button', { name: 'Skip for now', exact: true }).click()
+    await page.getByRole('region', { name: 'Team setup' }).getByRole('button', { name: 'Skip for now', exact: true }).click()
+    await page.getByRole('region', { name: 'Figma API key' }).getByRole('button', { name: 'Skip for now', exact: true }).click()
   }
   await expect(tabBar).toBeVisible()
 }

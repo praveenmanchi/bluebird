@@ -16,6 +16,10 @@ export const WINDOW_DEFAULT: WindowPreset = 'M'
 
 export const WINDOW_BOUNDS = { minWidth: 360, maxWidth: 760, minHeight: 480, maxHeight: 960 } as const
 export const WINDOW_MAX: WindowSize = { width: WINDOW_BOUNDS.maxWidth, height: WINDOW_BOUNDS.maxHeight }
+/** The minimized plugin (Figma "Mini Launcher"): outside WINDOW_BOUNDS on purpose, applied by shell:minimize only. */
+export const WINDOW_MINI: WindowSize = { width: 64, height: 64 }
+
+export const isMiniWindow = ({ width, height }: WindowSize): boolean => width === WINDOW_MINI.width && height === WINDOW_MINI.height
 
 export function clampWindow({ width, height }: WindowSize): WindowSize {
   return {

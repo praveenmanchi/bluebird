@@ -39,7 +39,8 @@
 .bb-tab__icon > .bb-icon { width: 100%; height: 100%; }
 .bb-tab__label { display: inline-block; }
 
-.bb-tab:not(:disabled):is(:hover, [data-state="hover"]) { color: var(--bb-tab-fg-active); }
+/* Figma "Property 1=Hover": tab/bg/hover is black in Gap (same as menu and segment hover) and transparent elsewhere. */
+.bb-tab:not(:disabled):is(:hover, [data-state="hover"]) { background: var(--bb-tab-bg-hover); color: var(--bb-tab-fg-active); }
 .bb-tab:not(:disabled):is(:hover, [data-state="hover"]) .bb-tab__icon { color: var(--bb-tab-icon-active); }
 
 /* ------------------------------------------------------------------ Active */

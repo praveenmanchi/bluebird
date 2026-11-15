@@ -12,10 +12,12 @@ export interface TabBarProps {
   settingsActive?: boolean
   /** Fired after a tab is selected (the shell uses it to leave the settings screen). */
   onTab?: (id: string) => void
+  /** Tabs added since this person last looked (Figma section 4, "New tab added"): a New badge until opened. */
+  newTabs?: ReadonlySet<string>
 }
 
 /** Tab row from the Figma screen: Tab instances (Active / Default) left, the settings icon right, `Border` rule below. */
-export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProps) {
+export function TabBar({ onSettings, settingsActive = false, onTab, newTabs }: TabBarProps) {
   const tabs = visibleTabs.value
   const active = activeTabId.value
   const unseen = historyUnseen.value
@@ -25,11 +27,13 @@ export function TabBar({ onSettings, settingsActive = false, onTab }: TabBarProp
         {tabs.map((tab) => (
           <Tab
             key={tab.id}
+            data-tab={tab.id}
             variant={tab.id === active && !settingsActive ? 'active' : 'default'}
             icon={isIconName(tab.icon) ? tab.icon : 'variables'}
             onClick={() => { selectTab(tab.id); onTab?.(tab.id) }}
           >
             {tab.label}
+            {newTabs?.has(tab.id) && <span class="bb-tabbar__badge bb-tabbar__badge--new">New</span>}
             {tab.id === 'history' && unseen > 0 && tab.id !== active && (
               <span class="bb-tabbar__badge" aria-label={`${unseen} new from teammates`}>{unseen > 99 ? '99+' : unseen}</span>
             )}

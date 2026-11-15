@@ -9,5 +9,5 @@ export { loadConfig, resolvePersonas, personaTabIds, brandTabRows, activeBrand, 
 export type { PluginConfig, BrandConfig, BrandTabConfig, PersonaConfig, TabConfig, DeployConfig, DeployMode, FigmaPluginConfig } from './schema'
 export { DEPLOY_MODES } from './schema'
 export type { ResolvedTab, ResolvedPersona, BrandTabRow } from './load'
-export { WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor } from './window'
+export { WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_MAX, WINDOW_MINI, WINDOW_DEFAULT, clampWindow, isMiniWindow, presetFor } from './window'
 export type { WindowPreset, WindowSize } from './window'

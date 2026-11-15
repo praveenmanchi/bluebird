@@ -41,3 +41,37 @@ export const PERSONA_MSG = {
   status: 'persona:status',
   select: 'persona:select',
 } as const
+
+/**
+ * The coach-mark intros (Figma page Onboarding, sections 1.5 / 2.x / 4). One clientStorage entry
+ * per user, so Reset brings every intro back.
+ */
+export interface IntroState {
+  /** The plugin-chrome tour (tabs, settings, statuses, sizes, minimize, resize) was finished or skipped. */
+  layoutDone: boolean
+  /** Tabs whose first-open intro was finished or skipped. */
+  seenTabs: readonly string[]
+  /**
+   * Tabs this person already knows about: every tab they could see on first run, plus each new tab
+   * once opened. Null until the first run records it. A visible tab missing here carries a New badge.
+   */
+  knownTabs: readonly string[] | null
+  /** New tabs already shown in the What's new pop-up, so it shows once per tab. */
+  announced: readonly string[]
+}
+
+export const INTRO_DEFAULT: IntroState = { layoutDone: false, seenTabs: [], knownTabs: null, announced: [] }
+
+export const INTRO_MSG = {
+  status: 'intro:status',
+  /** Merges a partial IntroState into the stored one and answers the result. */
+  save: 'intro:save',
+} as const
+
+/** Figma API key screen: checks a personal access token against GET /v1/me. */
+export interface FigmaKeyCheckRequest { token: string }
+export interface FigmaKeyCheckResult { handle: string }
+
+export const FIGMA_KEY_MSG = {
+  check: 'figma-key:check',
+} as const

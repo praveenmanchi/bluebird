@@ -109,7 +109,14 @@ import { resolve } from 'node:path'
 // 2026-11-15 (MCP v3 + Library update): user raised the budget to 1650 KB. Per-scenario repositories,
 // pull-request tracking and the Library update flow (releases, impact scan, per-screen hand-off) added
 // ~17 KB; build 1642.2 KB. Same levers as above.
-const BUDGET_KB = 1650
+// 2026-11-15 (Variable search report + UI fixes): user raised the budget to 1670 KB. Copy and Add to Figma
+// on Search results (report model, action bar), the report/* tokens for the white canvas report, plus the
+// day's UI fixes (Gap states, full-width switches, recent-search expand, search bar Show icon) took the
+// build to 1653.0 KB. Same levers as above.
+// 2026-11-15 (Intro screens): user raised the budget to 1740 KB. The Figma API key screen (with the
+// designer's 25 KB token-list screenshot), the coach-mark layout + 12 tab intros, What's new and the
+// footer info button, plus 31 intro/* Brand UI tokens × 8 brands took the build to 1731.3 KB.
+const BUDGET_KB = 1740
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

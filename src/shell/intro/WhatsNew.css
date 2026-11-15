@@ -1,0 +1,51 @@
+/* What's new pop-up — Figma page "↳ Onboarding", section 4 "New tab added after an update"
+ * (40002980:38340): a dialog on the intro scrim, built from the coach-mark card tokens. */
+.bb-whats-new__scrim { fill: var(--bb-intro-scrim); }
+.bb-whats-new {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-stack-md);
+  box-sizing: border-box;
+  width: calc(var(--bb-intro-card-width) + var(--bb-intro-card-padding) * 6);
+  max-width: calc(100% - var(--bb-space-inset-xl) * 2);
+  padding: var(--bb-space-inset-xl);
+  border: var(--bb-border-width-default) solid var(--bb-intro-card-border);
+  border-radius: var(--bb-intro-card-radius);
+  background: var(--bb-intro-card-surface);
+  color: var(--bb-intro-card-title);
+  transform: translate(-50%, -50%);
+}
+.bb-whats-new__header { display: flex; align-items: center; gap: var(--bb-space-inline-md); }
+.bb-whats-new__tile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--bb-size-icon-lg) * 2);
+  height: calc(var(--bb-size-icon-lg) * 2);
+  border-radius: var(--bb-radius-md);
+  background: var(--bb-surface-accent-subtle);
+  color: var(--bb-intro-card-accent);
+}
+.bb-whats-new__tile .bb-icon { width: var(--bb-size-icon-lg); height: var(--bb-size-icon-lg); }
+.bb-whats-new__titles { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); min-width: 0; }
+.bb-whats-new__eyebrow { color: var(--bb-intro-card-accent); font-size: var(--bb-type-size-10); font-weight: var(--bb-type-weight-500); line-height: var(--bb-type-line-14); }
+.bb-whats-new__title { margin: 0; font-size: var(--bb-type-size-16); font-weight: var(--bb-type-weight-600); line-height: var(--bb-type-line-22); }
+.bb-whats-new__body { margin: 0; color: var(--bb-intro-card-body); font-size: var(--bb-type-size-12); line-height: var(--bb-type-line-18); }
+.bb-whats-new__list { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); margin: 0; padding: 0; list-style: none; }
+.bb-whats-new__row {
+  display: grid;
+  grid-template-columns: var(--bb-size-icon-sm) max-content minmax(0, 1fr);
+  align-items: center;
+  gap: var(--bb-space-inline-sm);
+  color: var(--bb-intro-card-body);
+  font-size: var(--bb-type-size-11);
+  line-height: var(--bb-type-line-15);
+}
+.bb-whats-new__row .bb-icon { width: var(--bb-size-icon-sm); height: var(--bb-size-icon-sm); }
+.bb-whats-new__name { color: var(--bb-intro-card-title); font-weight: var(--bb-type-weight-500); }
+.bb-whats-new__desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bb-whats-new__actions { display: flex; justify-content: flex-end; gap: var(--bb-space-inline-sm); }
