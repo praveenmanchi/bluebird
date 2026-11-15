@@ -1,0 +1,111 @@
+/* Coach marks — Figma page "↳ Onboarding", Building blocks 40002953:8511 (Coach Mark, Intro Progress,
+ * Intro Skip) on the 50% scrim of sections 1.5 / 2.x. Every value is an intro/* token, a shared
+ * semantic token or the onboarding dot tokens the progress reuses. */
+.bb-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  font-family: var(--bb-font-family-ui), ui-sans-serif, system-ui, sans-serif;
+}
+.bb-intro__scrim,
+.bb-intro__arrow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.bb-intro__scrim { pointer-events: auto; }
+.bb-intro__scrim path { fill: var(--bb-intro-scrim); }
+
+.bb-intro__ring {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: var(--bb-intro-spotlight-radius);
+  box-shadow: 0 0 0 var(--bb-intro-ring-width) var(--bb-intro-ring);
+  pointer-events: none;
+}
+
+.bb-intro__line {
+  fill: none;
+  stroke: var(--bb-intro-arrow);
+  stroke-width: var(--bb-intro-arrow-width);
+  stroke-linecap: round;
+}
+.bb-intro__head,
+.bb-intro__dot { fill: var(--bb-intro-arrow); }
+
+/* Intro Skip — outside the card, in the plugin's top-right corner. */
+.bb-intro__skip {
+  position: absolute;
+  top: var(--bb-space-inset-lg-alt);
+  right: var(--bb-space-inset-lg-alt);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-space-inset-sm);
+  padding: var(--bb-space-inset-sm) var(--bb-space-inset-md);
+  border: var(--bb-border-width-default) solid var(--bb-intro-skip-border);
+  border-radius: var(--bb-radius-pill);
+  background: var(--bb-intro-skip-bg);
+  color: var(--bb-intro-skip-fg);
+  font: inherit;
+  font-size: var(--bb-type-size-11);
+  font-weight: var(--bb-type-weight-500);
+  line-height: var(--bb-type-line-15);
+  cursor: pointer;
+}
+.bb-intro__skip svg {
+  width: var(--bb-type-size-12);
+  height: var(--bb-type-size-12);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--bb-border-width-icon);
+  stroke-linecap: round;
+}
+.bb-intro__skip:focus-visible { outline: var(--bb-intro-ring-width) solid var(--bb-intro-ring); outline-offset: var(--bb-border-width-default); }
+
+/* Coach Mark card. */
+.bb-intro__card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-intro-card-gap);
+  box-sizing: border-box;
+  width: var(--bb-intro-card-width);
+  max-width: calc(100% - var(--bb-space-inset-xl) * 2);
+  padding: var(--bb-intro-card-padding);
+  border: var(--bb-border-width-default) solid var(--bb-intro-card-border);
+  border-radius: var(--bb-intro-card-radius);
+  background: var(--bb-intro-card-surface);
+  color: var(--bb-intro-card-title);
+}
+.bb-intro__count {
+  color: var(--bb-intro-card-meta);
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-500);
+  line-height: var(--bb-type-line-14);
+}
+.bb-intro__copy { display: flex; flex-direction: column; gap: var(--bb-intro-card-copy-gap); }
+.bb-intro__title {
+  margin: 0;
+  color: var(--bb-intro-card-title);
+  font-size: var(--bb-type-size-14);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-20);
+}
+.bb-intro__body {
+  margin: 0;
+  color: var(--bb-intro-card-body);
+  font-size: var(--bb-type-size-12);
+  line-height: var(--bb-type-line-18);
+}
+.bb-intro__actions { display: flex; align-items: center; gap: var(--bb-intro-card-gap); }
+.bb-intro__spacer { flex: 1 1 auto; }
+
+/* Intro Progress — the onboarding tour's dots: the current step is the wide pill. */
+.bb-intro__dots { display: inline-flex; align-items: center; gap: var(--bb-space-inline-xs); }
+.bb-intro__progress-dot {
+  width: var(--bb-onboarding-dot-size);
+  height: var(--bb-onboarding-dot-size);
+  border-radius: var(--bb-onboarding-dot-radius);
+  background: var(--bb-onboarding-dot-idle);
+}
+.bb-intro__progress-dot[data-active] { width: var(--bb-onboarding-dot-width-active); background: var(--bb-onboarding-dot-active); }

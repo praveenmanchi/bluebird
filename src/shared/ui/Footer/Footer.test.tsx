@@ -3,6 +3,18 @@ import { render, screen, fireEvent } from '@testing-library/preact'
 import { Footer } from './Footer'
 
 describe('Footer', () => {
+  it('shows the info button only when it has a handler, pressed while the intro is open', () => {
+    const onHelp = vi.fn()
+    const { rerender } = render(<Footer resizable={false} />)
+    expect(screen.queryByRole('button', { name: 'Show tab intro' })).toBeNull()
+    rerender(<Footer resizable={false} onHelp={onHelp} />)
+    const help = screen.getByRole('button', { name: 'Show tab intro' })
+    expect(help).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.click(help)
+    expect(onHelp).toHaveBeenCalledTimes(1)
+    rerender(<Footer resizable={false} onHelp={onHelp} helpActive />)
+    expect(screen.getByRole('button', { name: 'Show tab intro' })).toHaveAttribute('aria-pressed', 'true')
+  })
   it('renders a <footer> with the four default status pills and the meta line', () => {
     render(<Footer />)
     expect(screen.getByRole('contentinfo')).toHaveClass('bb-footer')
@@ -20,20 +32,22 @@ describe('Footer', () => {
     expect(pill).toHaveTextContent('Cloud')
     expect(pill.dataset.status).toBe('error')
   })
-  it('hides the size steps, expand and grip when the panel cannot be resized', () => {
-    const { container } = render(<Footer resizable={false} onExpand={() => undefined} />)
+  it('hides the size steps, minimize and grip when the panel cannot be resized', () => {
+    const { container } = render(<Footer resizable={false} onMinimize={() => undefined} />)
     expect(container.querySelector('.bb-footer__controls')).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Expand' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Minimize' })).toBeNull()
   })
 
-  it('forwards size changes and the expand click', () => {
+  it('forwards size changes and the minimize click', () => {
     const onSizeChange = vi.fn()
-    const onExpand = vi.fn()
-    render(<Footer size="S" onSizeChange={onSizeChange} onExpand={onExpand} />)
+    const onMinimize = vi.fn()
+    render(<Footer size="S" onSizeChange={onSizeChange} onMinimize={onMinimize} />)
     fireEvent.click(screen.getByRole('radio', { name: 'L' }))
     expect(onSizeChange).toHaveBeenCalledWith('L')
-    fireEvent.click(screen.getByRole('button', { name: 'Expand' }))
-    expect(onExpand).toHaveBeenCalledTimes(1)
+    const minimize = screen.getByRole('button', { name: 'Minimize' })
+    expect(minimize.querySelector('[data-icon="ui-sidebar-minimize-corners"]')).not.toBeNull()
+    fireEvent.click(minimize)
+    expect(onMinimize).toHaveBeenCalledTimes(1)
   })
 
   it('shows a live status for a default pill, with its detail on hover', () => {

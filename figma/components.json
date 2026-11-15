@@ -16443,7 +16443,7 @@
             },
             {
               "id": "133:1662",
-              "p": "footer/Frame 1430102625/Frame 1430102622/Frame",
+              "p": "footer/Frame 1430102625/Frame 1430102622/Minimize",
               "t": "FRAME",
               "b": {},
               "r": {
@@ -16454,17 +16454,21 @@
               }
             },
             {
-              "id": "133:1663",
-              "p": "footer/Frame 1430102625/Frame 1430102622/Frame/Vector 1",
-              "t": "VECTOR",
-              "b": {
-                "fill": "icon/glyph/muted"
-              },
+              "id": "40002969:9230",
+              "p": "footer/Frame 1430102625/Frame 1430102622/Minimize/Minimize icon",
+              "t": "INSTANCE",
+              "b": {},
               "r": {
                 "size": [
-                  8.7,
-                  8.7
+                  16,
+                  16
                 ]
+              },
+              "i": "Icon=minimize-ui, Size=Small <UI Icons / Sidebar>",
+              "mc": "40002805:10903",
+              "cp": {
+                "Icon": "minimize-ui",
+                "Size": "Small"
               }
             },
             {

@@ -25,6 +25,8 @@ export interface DevParams {
   session?: BrandId | 'none'
   /** true when rendered inside the harness iframe. */
   embed: boolean
+  /** `?intros=done` marks every coach-mark intro as seen (e2e flows); absent keeps what the persisted mock holds. */
+  introsDone?: boolean
 }
 
 export function readDevParams(search = location.search): DevParams {
@@ -39,5 +41,6 @@ export function readDevParams(search = location.search): DevParams {
     status: status === 'connecting' || status === 'disconnected' ? status : 'connected',
     session: q.get('session') === 'none' ? 'none' : BRANDS.includes(q.get('session') as BrandId) ? (q.get('session') as BrandId) : undefined,
     embed: q.get('embed') === '1',
+    introsDone: q.get('intros') === 'done' ? true : undefined,
   }
 }

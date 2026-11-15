@@ -1,11 +1,13 @@
 // Figma sandbox entry. Has access to the `figma` global, no DOM.
-import { config, brand, clampWindow, type WindowSize } from '@shared/config'
+import { config, brand, clampWindow, WINDOW_MINI, type WindowSize } from '@shared/config'
 import { createSessionHandlers, clientStorageStore, SESSION_KEY } from './session'
 import { createIntegrationsHandlers } from './integrations'
 import { readIntegrations } from '@shared/integrations/effective'
 import { createLibrariesHandlers } from '@shared/libraries/handlers'
 import { createOnboardingHandlers } from './onboarding'
 import { createPersonaHandlers } from './persona'
+import { createIntroHandlers } from './intro'
+import { createFigmaKeyHandlers } from './figmaKey'
 import type { Session } from '@shared/session'
 import { createRouter, type HandlerMap } from '@shared/bridge'
 import { resolveBrandTokens } from '@shared/brand/resolve'
@@ -38,6 +40,9 @@ const coreHandlers: HandlerMap = {
   ...createIntegrationsHandlers(store),
   ...createOnboardingHandlers(store),
   ...createPersonaHandlers(config, store),
+  ...createIntroHandlers(store),
+  // Figma API key screen: GET /v1/me with the pasted token, before it is saved.
+  ...createFigmaKeyHandlers({ fetch: (url, init) => fetch(url, init) }),
   // Dual File Mode: library files read over the Figma REST API, shared by the tabs that ask.
   ...createLibrariesHandlers({
     readSettings: async () => (await readIntegrations((k) => store.get(k))).dualFile,
@@ -50,6 +55,11 @@ const coreHandlers: HandlerMap = {
     if (editorMode === 'dev') return
     const { width, height } = clampWindow(size)
     figma.ui.resize(width, height)
+  },
+  // Minimize: the window shrinks to the 64 × 64 launcher; shell:resize brings it back.
+  'shell:minimize': () => {
+    if (editorMode === 'dev') return
+    figma.ui.resize(WINDOW_MINI.width, WINDOW_MINI.height)
   },
   // Design-token snapshot for scripts/figma-pull.ts (plugin backend). Read-only.
   'figma:snapshot': (manifest: ExtractManifest) => extractAll(manifest),

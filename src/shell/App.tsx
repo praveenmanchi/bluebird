@@ -5,19 +5,23 @@ import type { RpcClient, Transport } from '@shared/bridge'
 import { features } from './registry.generated'
 import { Banner } from './Banner'
 import { TabBar } from './TabBar'
-import { activePersonaId, activeTabId, brandPersonas, brandStatus, changingPersona, connection, screen, selectTab, session, visibleTabs, windowSize } from './state'
+import { activePersonaId, activeTabId, brandPersonas, brandStatus, changingPersona, connection, screen, selectTab, session, visibleTabs, windowSize, minimized } from './state'
 import { LoginScreen } from './LoginScreen'
 import { SettingsScreen } from './SettingsScreen'
 import { OnboardingScreen } from './OnboardingScreen'
 import { TeamSetupScreen } from './TeamSetupScreen'
+import { FigmaKeyScreen } from './FigmaKeyScreen'
+import { IntroLayer } from './intro/IntroLayer'
+import { introState, newTabsOf } from './intro/state'
 import { SplashScreen } from './SplashScreen'
 import { PersonaScreen } from './PersonaScreen'
 import { PersonaHandOver } from './persona/HandOver'
-import { bootSession, canSignOut, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, finishTeamSetup, login, loginWithSso, logout, replayOnboarding, reset } from './session'
+import { MiniLauncher } from './minimize/MiniLauncher'
+import { bootSession, canSignOut, cancelPersonaChange, changePersona, choosePersona, completeOnboarding, finishFigmaKey, finishTeamSetup, login, loginWithSso, logout, replayOnboarding, reset } from './session'
 import { integrationsApi } from './integrations/client'
 import { DEFAULT_INTEGRATIONS, INTEGRATIONS_MSG, refreshMs, type IntegrationSettings } from '@shared/integrations'
 import { historyUnseen, watchHistory } from '@shared/history/watch'
-import { WINDOW_PRESETS, WINDOW_MAX, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
+import { WINDOW_PRESETS, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { OPEN_SETTINGS_EVENT, OPEN_TAB_EVENT } from '@shared/navigation'
 import { ensureLibraryState, libraryPill, libraryState, loadLibraryState } from '@shared/libraries/status'
 import { inDevMode } from '@shared/editor'
@@ -95,12 +99,15 @@ export function App({ client, transport }: AppProps) {
   const pillSettings = integrationSettings.value
   const entry = features.find((f) => f.manifest.id === activeTabId.value)
 
-  const beforeExpand = useRef<WindowSize | null>(null)
   /** The persona just confirmed: its bird flies on over the screen that opens next. */
   const [departed, setDeparted] = useState<string | null>(null)
+  /** Footer info button presses: each one replays the open tab's intro. */
+  const [introReplay, setIntroReplay] = useState(0)
+  const [introOpen, setIntroOpen] = useState(false)
+  const introTabs = useMemo(() => visibleTabs.value.map((t) => ({ id: t.id, label: t.label, icon: t.icon })), [visibleTabs.value])
+  const newTabs = useMemo(() => new Set(newTabsOf(introState.value, introTabs.map((t) => t.id))), [introState.value, introTabs])
   const dragStart = useRef<WindowSize | null>(null)
   const size = windowSize.value
-  const isMax = size.width === WINDOW_MAX.width && size.height === WINDOW_MAX.height
 
   function resize(next: WindowSize) {
     const clamped = clampWindow(next)
@@ -108,11 +115,16 @@ export function App({ client, transport }: AppProps) {
     windowSize.value = clamped
     void client.call('shell:resize', clamped).catch(() => undefined)
   }
-  const onPreset = (preset: WindowPreset) => { beforeExpand.current = null; resize(WINDOW_PRESETS[preset]) }
-  const onExpand = () => {
-    if (isMax) { resize(beforeExpand.current ?? WINDOW_PRESETS[WINDOW_DEFAULT]); beforeExpand.current = null; return }
-    beforeExpand.current = size
-    resize(WINDOW_MAX)
+  const onPreset = (preset: WindowPreset) => { resize(WINDOW_PRESETS[preset]) }
+  /** Minimize: the window shrinks to the Mini Launcher; windowSize keeps the size to come back to. */
+  const onMinimize = () => {
+    minimized.value = true
+    void client.call('shell:minimize').catch(() => undefined)
+  }
+  /** Restore always resizes, even to the size windowSize already holds: the window itself is still 64 × 64. */
+  const onRestore = () => {
+    minimized.value = false
+    void client.call('shell:resize', windowSize.value).catch(() => undefined)
   }
   const onResizeDrag = (delta: { dx: number; dy: number }, phase: 'move' | 'end') => {
     dragStart.current ??= size
@@ -165,12 +177,23 @@ export function App({ client, transport }: AppProps) {
       </RpcProvider>
     )
   }
+  if (current === 'figma-key') {
+    return (
+      <RpcProvider client={client}>
+        <div class="h-full flex flex-col bb-canvas">
+          <FigmaKeyScreen client={client} brand={session.value?.brandId as BrandId | undefined} load={integrations.load} save={integrations.save} onFinish={finishFigmaKey} />
+        </div>
+      </RpcProvider>
+    )
+  }
   const inSettings = current === 'settings'
   return (
     <RpcProvider client={client}>
-      <div class="h-full flex flex-col bb-canvas">
+      {minimized.value && <MiniLauncher personaId={activePersonaId.value ?? ''} onRestore={onRestore} />}
+      {/* Kept mounted while minimized, so every tab keeps its state. */}
+      <div class="h-full flex flex-col bb-canvas" style={minimized.value ? { display: 'none' } : undefined}>
         <Banner />
-        <TabBar settingsActive={inSettings} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
+        <TabBar settingsActive={inSettings} newTabs={newTabs} onSettings={() => { screen.value = inSettings ? 'app' : 'settings' }} onTab={() => { if (inSettings) screen.value = 'app' }} />
         <main class="flex-1 min-h-0 overflow-y-auto">
           {inSettings
             ? <SettingsScreen session={session.value} brand={brandStatus.value} onLogout={canSignOut() ? () => logout(client) : undefined} onReset={() => reset(client)} personas={brandPersonas.value} personaId={activePersonaId.value} onChangePersona={changePersona} integrations={integrations} onReplayTour={replayOnboarding} />
@@ -179,7 +202,8 @@ export function App({ client, transport }: AppProps) {
               : <EmptyState icon="inspect" title="No tabs enabled" description="Turn a tab on for this brand in dev.html › Plugin configuration (or plugin.config.json) and rebuild." />}
         </main>
         {handOver}
-        <Footer resizable={!inDevMode.value} size={presetFor(size)} onSizeChange={onPreset} expanded={isMax} onExpand={onExpand} onResizeDrag={onResizeDrag} git={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} statuses={{ git: gitPill(pillSettings?.github), uxai: uxaiPill(pillSettings?.ai), mcp: mcpPill(pillSettings?.mcp), dualFile: libraryPill(libraryState.value) }} />
+        {!inSettings && !minimized.value && <IntroLayer client={client} tabs={introTabs} activeTab={activeTabId.value} replay={introReplay} onOpenChange={setIntroOpen} onOpenTab={selectTab} />}
+        <Footer onHelp={inSettings ? undefined : () => { setIntroReplay((n) => n + 1) }} helpActive={introOpen} resizable={!inDevMode.value} size={presetFor(size)} onSizeChange={onPreset} onMinimize={onMinimize} onResizeDrag={onResizeDrag} git={!inSettings} uxai={!inSettings} mcp={!inSettings} dualFile={!inSettings} statuses={{ git: gitPill(pillSettings?.github), uxai: uxaiPill(pillSettings?.ai), mcp: mcpPill(pillSettings?.mcp), dualFile: libraryPill(libraryState.value) }} />
       </div>
     </RpcProvider>
   )

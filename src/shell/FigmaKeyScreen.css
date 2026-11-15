@@ -1,0 +1,56 @@
+/* Figma API key screen — Figma "After the tour · Figma API key" (40002976:36098). It borrows the
+ * team setup screen's header, copy and footer; the content scrolls on its own, without the card. */
+.bb-figma-key__counter { display: flex; align-items: center; gap: var(--bb-space-inline-sm); }
+.bb-figma-key__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-space-stack-md);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Intro Warning (40002986:41502): a light tint of the warning colour with its border and glyph. */
+.bb-figma-key__warning {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-space-inset-lg-alt);
+  border: var(--bb-border-width-default) solid var(--bb-intro-warning-border);
+  border-radius: var(--bb-radius-md);
+  background: color-mix(in srgb, var(--bb-intro-warning-bg) 12%, var(--bb-surface-transparent));
+}
+.bb-figma-key__warning-icon { flex: none; width: var(--bb-intro-info-size); height: var(--bb-intro-info-size); fill: var(--bb-intro-warning-icon); }
+.bb-figma-key__warning-outline { fill: none; stroke: var(--bb-intro-warning-icon); stroke-width: var(--bb-border-width-icon); stroke-linejoin: round; }
+.bb-figma-key__warning-copy { display: flex; flex-direction: column; gap: var(--bb-space-stack-xs); min-width: 0; }
+.bb-figma-key__warning-title { color: var(--bb-text-primary); font-size: var(--bb-type-size-11); font-weight: var(--bb-type-weight-600); line-height: var(--bb-type-line-15); }
+.bb-figma-key__warning-body { color: var(--bb-text-secondary); font-size: var(--bb-type-size-12); line-height: var(--bb-type-line-18); }
+
+.bb-figma-key__how { display: flex; flex: none; flex-direction: column; gap: var(--bb-space-stack-md); }
+.bb-figma-key__heading { margin: 0; color: var(--bb-text-primary); font-size: var(--bb-type-size-12); font-weight: var(--bb-type-weight-600); line-height: var(--bb-type-line-18); }
+.bb-figma-key__steps { display: flex; flex-direction: column; gap: var(--bb-space-stack-md); margin: 0; padding: 0; list-style: none; }
+.bb-figma-key__step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-space-inline-md);
+  color: var(--bb-text-secondary);
+  font-size: var(--bb-type-size-12);
+  line-height: var(--bb-type-line-18);
+}
+.bb-figma-key__marker {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--bb-type-size-20);
+  height: var(--bb-type-size-20);
+  border-radius: var(--bb-radius-pill);
+  background: var(--bb-surface-accent-subtle);
+  color: var(--bb-text-accent);
+  font-size: var(--bb-type-size-10);
+  font-weight: var(--bb-type-weight-600);
+  line-height: var(--bb-type-line-14);
+}
+.bb-figma-key__shot { flex: none; display: block; width: 100%; height: auto; border-radius: var(--bb-radius-md); }
+.bb-figma-key .bb-meta-badge { align-self: flex-start; }

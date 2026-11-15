@@ -6,7 +6,7 @@ import type { Transport } from '@shared/bridge'
 import { createMockHandlers } from '../../tests/mocks/handlers'
 import { ASK_PERSONA, readDevParams } from './dev-params'
 import { connection, selectPersona, windowSize } from '@shell/state'
-import { clampWindow } from '@shared/config'
+import { clampWindow, isMiniWindow } from '@shared/config'
 import './index.css'
 
 // Mode selection:
@@ -42,6 +42,7 @@ function createTransport(): Transport {
     brandId: dev?.brand ?? brand.id,
     sessionBrand: dev?.session === 'none' ? null : dev?.session,
     persona: dev?.persona === ASK_PERSONA ? null : dev?.persona,
+    introsDone: dev?.introsDone,
     persist: true,
     onResize: (size) => window.parent.postMessage({ type: 'bb:resize', ...size }, '*'),
   }))
@@ -56,7 +57,7 @@ if (dev) {
   if (dev.embed) {
     window.addEventListener('message', (e: MessageEvent) => {
       const d = e.data as { type?: string; width?: number; height?: number } | null
-      if (d?.type === 'bb:set-size' && typeof d.width === 'number' && typeof d.height === 'number') windowSize.value = clampWindow({ width: d.width, height: d.height })
+      if (d?.type === 'bb:set-size' && typeof d.width === 'number' && typeof d.height === 'number' && !isMiniWindow({ width: d.width, height: d.height })) windowSize.value = clampWindow({ width: d.width, height: d.height })
     })
   }
 }

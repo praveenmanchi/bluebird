@@ -40,16 +40,20 @@ export interface FooterProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'size
   /** Active step of the "size expander" instance. */
   size?: SizeExpanderValue
   onSizeChange?: (size: SizeExpanderValue) => void
-  /** Click on the footer-chevron glyph (expand / collapse the panel). */
-  onExpand?: () => void
+  /** The Minimize button (minimize-corners glyph): shrinks the plugin to its launcher. */
+  onMinimize?: () => void
   /** Pointer drag on the grip, reported as the total offset from the drag start. */
   onResizeDrag?: (delta: { dx: number; dy: number }, phase: 'move' | 'end') => void
-  /** Marks the expand glyph as active (panel is at its maximum size). */
-  expanded?: boolean
-  /** Accessible name of the chevron button. */
-  expandLabel?: string
-  /** False hides the size steps, expand and grip (Dev Mode, where the plugin fills the Inspect panel). */
+  /** Accessible name of the Minimize button. */
+  minimizeLabel?: string
+  /** False hides the size steps, Minimize and grip (Dev Mode, where the plugin fills the Inspect panel). */
   resizable?: boolean
+  /** The info button (Figma "Footer Info", 40002953:8551): replays the current tab's intro. Omit to hide it. */
+  onHelp?: () => void
+  /** Figma "Footer Info" State=Active: the intro is open. */
+  helpActive?: boolean
+  /** Accessible name of the info button. */
+  helpLabel?: string
 }
 
 function resolvePills({ git = true, uxai = true, mcp = true, dualFile = true, pills, statuses }: FooterProps): readonly FooterPill[] {
@@ -58,9 +62,9 @@ function resolvePills({ git = true, uxai = true, mcp = true, dualFile = true, pi
   return (Object.keys(FOOTER_DEFAULT_PILLS) as (keyof typeof FOOTER_DEFAULT_PILLS)[]).filter((k) => flags[k]).map((k) => statuses?.[k] ?? FOOTER_DEFAULT_PILLS[k])
 }
 
-/** Figma "footer" (133:1675): status pills, an info meta line, the size expander, an expand chevron and a resize grip. */
+/** Figma "footer" (133:1675): status pills and an info meta line left; one right-aligned row (8px apart) of the info button, the size expander, Minimize and the resize grip. */
 export function Footer(props: FooterProps) {
-  const { git: _g, uxai: _u, mcp: _m, dualFile: _d, pills: _p, statuses: _s, meta = ['20m', 'V2.11.0'], size, onSizeChange, onExpand, onResizeDrag, expanded, expandLabel = 'Expand', resizable = true, class: cls, ...rest } = props
+  const { git: _g, uxai: _u, mcp: _m, dualFile: _d, pills: _p, statuses: _s, meta = ['20m', 'V2.11.0'], size, onSizeChange, onMinimize, onResizeDrag, minimizeLabel = 'Minimize', resizable = true, onHelp, helpActive = false, helpLabel = 'Show tab intro', class: cls, ...rest } = props
 
   const startDrag = (e: PointerEvent) => {
     if (!onResizeDrag) return
@@ -91,14 +95,19 @@ export function Footer(props: FooterProps) {
         ))}
       </div>
       <InfoMeta items={meta} class="bb-footer__meta" />
-      {resizable && <div class="bb-footer__controls">
-        <div class="bb-footer__size-group">
-          <SizeExpander value={size} onChange={onSizeChange} class="bb-footer__size" />
-          <button type="button" class="bb-footer__expand" aria-label={expandLabel} aria-pressed={expanded} onClick={onExpand}>
-            <Icon name="footer-chevron" />
+      {(resizable || onHelp) && <div class="bb-footer__controls">
+        {onHelp && (
+          <button type="button" class="bb-footer__help" aria-label={helpLabel} title={helpLabel} aria-pressed={helpActive} data-active={helpActive || undefined} onClick={onHelp}>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" class="bb-footer__help-ring" /><rect x="7.375" y="7" width="1.25" height="4.25" rx="0.625" /><circle cx="8" cy="5.1" r="0.8" /></svg>
           </button>
-        </div>
-        <span class="bb-footer__grip" role={onResizeDrag ? 'separator' : undefined} aria-label={onResizeDrag ? 'Resize' : undefined} aria-hidden={onResizeDrag ? undefined : 'true'} data-draggable={onResizeDrag ? '' : undefined} onPointerDown={startDrag}><Icon name="footer-grip" /></span>
+        )}
+        {resizable && <>
+          <SizeExpander value={size} onChange={onSizeChange} class="bb-footer__size" />
+          <button type="button" class="bb-footer__minimize" aria-label={minimizeLabel} title={minimizeLabel} onClick={onMinimize}>
+            <Icon name="ui-sidebar-minimize-corners" />
+          </button>
+          <span class="bb-footer__grip" role={onResizeDrag ? 'separator' : undefined} aria-label={onResizeDrag ? 'Resize' : undefined} aria-hidden={onResizeDrag ? undefined : 'true'} data-draggable={onResizeDrag ? '' : undefined} onPointerDown={startDrag}><Icon name="footer-grip" /></span>
+        </>}
       </div>}
     </footer>
   )

@@ -49,17 +49,13 @@
   background: var(--bb-icon-glyph-default);
 }
 .bb-footer__meta { flex: none; }
+/* Right-aligned row (Figma 133:1673, regrouped 2026-11-15): info button, size expander, Minimize, grip,
+ * space/inline-md (8) apart and centred. */
 .bb-footer__controls {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: center;
   flex: none;
-  gap: var(--bb-derived-footer-frame-1430102625-gap);
-}
-.bb-footer__size-group {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--bb-dimension-space-18);
+  gap: var(--bb-space-inline-md);
 }
 /* The size expander instance is overridden in the footer (Figma 133:1629):
  * `Background` fill with a half-pixel `Border` stroke and footer/segment/radius
@@ -76,14 +72,14 @@
 }
 /* The four status pills override their glyph fill to connection/icon/ok. */
 .bb-footer .bb-status-pill[data-status="good"] .bb-status-pill__icon { color: var(--bb-connection-icon-ok); }
-.bb-footer__expand {
+.bb-footer__minimize {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: none;
   box-sizing: border-box;
-  width: var(--bb-derived-footer-frame-width);
-  height: var(--bb-derived-footer-frame-height);
+  width: var(--bb-derived-footer-minimize-width);
+  height: var(--bb-derived-footer-minimize-height);
   padding: 0;
   border: 0;
   border-radius: var(--bb-footer-segment-radius);
@@ -92,11 +88,11 @@
   cursor: pointer;
   appearance: none;
 }
-.bb-footer__expand:focus-visible {
+.bb-footer__minimize:focus-visible {
   outline: var(--bb-border-width-default) solid var(--bb-border-focus);
   outline-offset: var(--bb-space-inset-xs);
 }
-.bb-footer__expand > .bb-icon { width: 100%; height: 100%; }
+.bb-footer__minimize > .bb-icon { width: 100%; height: 100%; }
 .bb-footer__grip {
   display: inline-flex;
   flex: none;
@@ -106,3 +102,26 @@
 }
 .bb-footer__grip > .bb-icon { width: 100%; height: 100%; }
 .bb-footer__grip[data-draggable] { cursor: nwse-resize; touch-action: none; }
+/* Footer Info (40002953:8551, page Onboarding › Tab intro building blocks): replays the tab intro.
+ * Default is a bare glyph; Hover gets the segment fill; Active (intro open) the selected segment. */
+.bb-footer__help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: content-box;
+  width: var(--bb-intro-info-size);
+  height: var(--bb-intro-info-size);
+  padding: var(--bb-space-inset-xs);
+  border: 0;
+  border-radius: var(--bb-footer-segment-radius);
+  background: var(--bb-surface-transparent);
+  color: var(--bb-intro-info-icon);
+  cursor: pointer;
+  appearance: none;
+}
+.bb-footer__help svg { width: 100%; height: 100%; fill: currentColor; }
+.bb-footer__help .bb-footer__help-ring { fill: none; stroke: currentColor; stroke-width: var(--bb-border-width-icon); }
+.bb-footer__help:hover { background: var(--bb-footer-segment-bg); }
+.bb-footer__help[data-active] { background: var(--bb-intro-info-bg-active); color: var(--bb-intro-info-icon-active); }
+.bb-footer__help:focus-visible { outline: var(--bb-border-width-default) solid var(--bb-border-focus); outline-offset: var(--bb-space-inset-xs); }

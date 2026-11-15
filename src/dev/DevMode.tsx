@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks'
 import { Icon } from '@shared/ui'
 import { BRANDS, BRAND_LABELS, type BrandId } from '@shared/brand'
-import { brand as activeBrand, personas, WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_DEFAULT, clampWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
+import { brand as activeBrand, personas, WINDOW_PRESETS, WINDOW_BOUNDS, WINDOW_DEFAULT, clampWindow, isMiniWindow, presetFor, type WindowPreset, type WindowSize } from '@shared/config'
 import { ASK_PERSONA, readDevParams, SCENARIOS, SCENARIO_LABELS, type Scenario } from '../ui/dev-params'
 import type { TransportStatus } from '@shared/bridge'
 
@@ -26,7 +26,11 @@ export function DevMode() {
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
       const d = e.data as { type?: string; width?: number; height?: number } | null
-      if (d?.type === 'bb:resize' && typeof d.width === 'number' && typeof d.height === 'number') setSize(clampWindow({ width: d.width, height: d.height }))
+      if (d?.type === 'bb:resize' && typeof d.width === 'number' && typeof d.height === 'number') {
+        const next = { width: d.width, height: d.height }
+        // The minimized launcher is smaller than the window bounds on purpose.
+        setSize(isMiniWindow(next) ? next : clampWindow(next))
+      }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
