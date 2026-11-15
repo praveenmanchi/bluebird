@@ -156,15 +156,23 @@
           },
           {
             "id": "documentation",
-            "enabled": false
+            "enabled": true
           }
         ],
         "personas": {
+          "developer": [
+            "mcp",
+            "varsearch",
+            "jira",
+            "history",
+            "publish"
+          ],
           "design-system": [
             "audit",
             "varsearch",
             "varmapper",
             "publish",
+            "documentation",
             "extraction",
             "a11y",
             "uxai",
@@ -172,13 +180,6 @@
             "history",
             "jira",
             "mcp"
-          ],
-          "developer": [
-            "mcp",
-            "varsearch",
-            "jira",
-            "history",
-            "publish"
           ]
         }
       }
