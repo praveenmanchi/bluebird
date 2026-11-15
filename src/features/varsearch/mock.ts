@@ -7,6 +7,7 @@ import {
   MSG, type GotoResult, type PageInfo, type PagesResult, type RecentSearch, type SearchRequest, type SearchResult,
   type SelectResult, type Usage, type VariableMatch,
 } from './messages'
+import type { ReportResult, SearchReport } from './report'
 
 const PAGE_NAMES = ['Cover', 'Colours', 'Typography', 'Icons', 'Atoms', 'Molecules', 'Organisms', 'Login', 'Onboarding', 'Tokens',
   'Accessibility', 'Jira', 'MCP', 'UXAI', 'AI Agents', 'Publish', 'Documentation', 'Variable Search', 'Settings']
@@ -69,8 +70,9 @@ export function createMockHandlers(scenario: MockScenario = 'default', now: () =
         const usages = v.usages.filter((u) => (u.kind === 'text-style' || pageIds.has(u.pageId)) && (payload.types.length === 0 || payload.types.includes(u.kind)))
         return usages.length ? [{ ...v, usages, totalNodes: usages.reduce((n, u) => n + u.count, 0) }] : []
       })
-      return { query: payload.query, matched: found.length, variables: rankVariables(payload.query, variables), scannedPages: pages.length, visited: pages.length * 640, durationMs: delay }
+      return { query: payload.query, matched: found.length, variables: rankVariables(payload.query, variables), scannedPages: pages.length, visited: pages.length * 640, durationMs: delay, fileKey: 'MOCKFILEKEY' }
     },
+    [MSG.report]: async (payload: { report: SearchReport }): Promise<ReportResult> => ({ frameName: payload.report.frameName, page: 'Molecules' }),
     [MSG.select]: async (payload: { nodeIds: readonly string[] }): Promise<SelectResult> => ({ selected: payload.nodeIds.length, page: 'Molecules', elsewhere: 0 }),
     [MSG.goto]: async (payload: { nodeId: string }): Promise<GotoResult> => ({ page: 'Molecules', name: payload.nodeId.replace(/^n:/, '') }),
     [MSG.recent]: async (payload?: { add?: RecentSearch }): Promise<RecentSearch[]> => {

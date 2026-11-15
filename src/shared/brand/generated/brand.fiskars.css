@@ -1076,6 +1076,13 @@
   --bb-a11y-report-annotation-heading: #5c1f8f;
   --bb-a11y-report-annotation-landmark: #035817;
   --bb-a11y-report-annotation-on: #ffffff;
+  --bb-report-surface-page: #ffffff;
+  --bb-report-surface-subtle: #f7f7f7;
+  --bb-report-border-default: #dedede;
+  --bb-report-text-title: #161616;
+  --bb-report-text-body: #4d4d4d;
+  --bb-report-text-meta: #757575;
+  --bb-report-text-link: #0b57d0;
   --bb-intro-scrim: #00000080;
   --bb-intro-ring: #ff8e00;
   --bb-intro-arrow: #35332d;

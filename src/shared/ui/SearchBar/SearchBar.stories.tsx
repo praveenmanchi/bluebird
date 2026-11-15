@@ -18,6 +18,8 @@ export const Default: Story = { parameters: { figma: { variant: 'search bar' } }
 
 export const WithValue: Story = { args: { value: 'color/primary' } }
 export const Disabled: Story = { args: { disabled: true } }
+/** Show icon off — Variable search, where a Search button sits beside the field. */
+export const NoIcon: Story = { args: { showIcon: false } }
 
 export const Interactive: Story = {
   render: (args) => {

@@ -78,6 +78,14 @@
   overflow-y: auto;
 }
 
+/* Content and the toast share this box, so the toast sits above the report bar. */
+.bb-varsearch__main {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
 .bb-varsearch__content {
   display: flex;
   flex: 1 1 auto;
@@ -117,4 +125,29 @@
   right: var(--bb-space-inset-lg-alt);
   bottom: var(--bb-space-inset-lg-alt);
   left: var(--bb-space-inset-lg-alt);
+}
+
+/* Figma "Actions" under Search results: summary, then Copy and Add to Figma on one row. */
+.bb-varsearch__actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bb-space-inline-md);
+  padding: var(--bb-dimension-space-12) var(--bb-dimension-space-13);
+  border-top: var(--bb-border-width-default) solid var(--bb-card-variable-divider-color);
+}
+.bb-varsearch__actions-summary {
+  flex: 1 1 10rem; /* allow-raw: wrap threshold, not a Figma value */
+  min-width: 0;
+  margin: 0;
+  color: var(--bb-text-secondary);
+  font-size: var(--bb-font-size-caption);
+  line-height: var(--bb-font-line-caption);
+}
+.bb-varsearch__actions-buttons {
+  display: flex;
+  flex: none;
+  gap: var(--bb-space-inline-md);
+  margin-inline-start: auto;
 }

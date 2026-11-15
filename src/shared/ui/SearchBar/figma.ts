@@ -3,7 +3,7 @@ import { scaleGaps } from '../../brand/scaleGaps'
 export const figma = {
   setId: '7:44532',
   name: 'search bar',
-  props: { 'Enter Variables here ': 'placeholder' },
+  props: { 'Enter Variables here ': 'placeholder', 'Show icon': 'showIcon' },
   figmaGaps: { ...scaleGaps('space/inset-lg-alt') },
   derivedGaps: {
     '--bb-derived-search-bar-vector-1-width': 'Inner vector of the search glyph (both of its parts are named "Vector"). Icon `search` draws it; only the glyph box is CSS.',
