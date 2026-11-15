@@ -6,7 +6,7 @@
 .bb-brand-logo[data-logo="bridge"]    { width: var(--bb-derived-brand-logo-root-brand-bridge-width);    height: var(--bb-derived-brand-logo-root-brand-bridge-height); }
 /* Ikea's frame hugs its 106.3x35 oval with no padding. Both ikea vectors are named "Vector", so the
  * oval is the position-indexed `vector--1`; the plain `vector` name holds the wordmark (figma.ts). */
-.bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-vector--1-brand-ikea-width); height: var(--bb-derived-brand-logo-vector--1-brand-ikea-height); }
+.bb-brand-logo[data-logo="ikea"]      { width: var(--bb-derived-brand-logo-vector-1-brand-ikea-width); height: var(--bb-derived-brand-logo-vector-1-brand-ikea-height); }
 .bb-brand-logo[data-logo="richemont"] { width: var(--bb-derived-brand-logo-root-brand-richemont-width); height: var(--bb-derived-brand-logo-root-brand-richemont-height); }
 /* Disney's frame hugs its vector (2px / 5px padding) instead of carrying a fixed size. */
 .bb-brand-logo[data-logo="disney"]    { width: calc(var(--bb-derived-brand-logo-vector-brand-disney-width) + var(--bb-derived-brand-logo-root-brand-disney-padding-left) + var(--bb-derived-brand-logo-root-brand-disney-padding-right)); height: calc(var(--bb-derived-brand-logo-vector-brand-disney-height) + var(--bb-derived-brand-logo-root-brand-disney-padding-top) + var(--bb-derived-brand-logo-root-brand-disney-padding-bottom)); }

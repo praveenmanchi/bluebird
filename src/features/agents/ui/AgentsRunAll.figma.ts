@@ -19,12 +19,16 @@ export const figma = {
     ...composed('MetaBadge', [...META_BADGE, 'feedback/success', 'border/accent', 'border/subtle']),
   },
   derivedGaps: {
+    '--bb-derived-agents-run-all-meta-badge-done-2-width': 'Button / Link Button / Meta Badge label box — a HUG size Figma measured from its content, not a design value.',
+    '--bb-derived-agents-run-all-meta-badge-done-3-width': 'Button / Link Button / Meta Badge label box — a HUG size Figma measured from its content, not a design value.',
+    '--bb-derived-agents-run-all-meta-badge-done-width': 'Button / Link Button / Meta Badge label box — a HUG size Figma measured from its content, not a design value.',
+    '--bb-derived-agents-run-all-meta-badge-running-width': 'Button / Link Button / Meta Badge label box — a HUG size Figma measured from its content, not a design value.',
     '--bb-derived-agents-run-all-root-height': ROOT_HEIGHT,
     ...measured([
-      '--bb-derived-agents-run-all-button--1-width', '--bb-derived-agents-run-all-button--2-width', '--bb-derived-agents-run-all-button-agents-body-width',
+      '--bb-derived-agents-run-all-button-stop-all-width', '--bb-derived-agents-run-all-button-open-merged-report-width', '--bb-derived-agents-run-all-button-apply-12-safe-width',
       '--bb-derived-agents-run-all-link-button-width', '--bb-derived-agents-run-all-link-button-height',
       ...['1', '2', '3', '4', '6'].map((n) => `--bb-derived-agents-run-all-meta-badge--${n}-width`),
-      '--bb-derived-agents-run-all-meta-badge-agents-body-width', '--bb-derived-agents-run-all-meta-badge-height',
+      '--bb-derived-agents-run-all-meta-badge-skipped-width', '--bb-derived-agents-run-all-meta-badge-skipped-height',
     ], 'Button / Link Button / Meta Badge label box'),
     ...ownedBy('Button', ['--bb-derived-agents-run-all-button-stroke-width']),
     ...ownedBy('MetaBadge', ['--bb-derived-agents-run-all-meta-badge-stroke-width']),

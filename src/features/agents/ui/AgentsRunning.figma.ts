@@ -22,8 +22,8 @@ export const figma = {
     '--bb-derived-agents-running-root-height': ROOT_HEIGHT,
     ...measured([
       '--bb-derived-agents-running-button-width',
-      '--bb-derived-agents-running-thinking-step--1-width', '--bb-derived-agents-running-thinking-step--2-width', '--bb-derived-agents-running-thinking-step--3-width',
-      '--bb-derived-agents-running-thinking-step-agents-body-width', '--bb-derived-agents-running-thinking-step-height',
+      '--bb-derived-agents-running-thinking-step-loaded-rule-pack-width', '--bb-derived-agents-running-thinking-step-resolved-brand-ui-width', '--bb-derived-agents-running-thinking-step-checked-contrast-3-width',
+      '--bb-derived-agents-running-thinking-step-checking-target-size-width', '--bb-derived-agents-running-thinking-step-checking-target-size-height',
     ], 'Button / Thinking Step label box'),
     ...ownedBy('Button', ['--bb-derived-agents-running-button-stroke-width']),
     ...ownedBy('FindingRow', ['--bb-derived-agents-running-finding-row-stroke-width']),

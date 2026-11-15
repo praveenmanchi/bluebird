@@ -27,9 +27,9 @@ export const figma = {
     '--bb-derived-agents-results--font-weight': 'The "!" text inside the icon artwork of the nested Tab sub menu items (Filters › Item 2–5 › Icon › Union); the composed SegmentedControl draws that icon as a glyph, not as text.',
     ...segmentTabs('results', ['tab-selecters'], ['tab-selecters'], ['tab-selecters--1', 'tab-selecters--2', 'tab-selecters--3', 'tab-selecters--4', 'tab-selecters--5', 'tab-selecters-agents-body']),
     ...measured([
-      '--bb-derived-agents-results-button--1-width', '--bb-derived-agents-results-button-agents-body-width',
-      '--bb-derived-agents-results-meta-badge--1-width', '--bb-derived-agents-results-meta-badge--2-width', '--bb-derived-agents-results-meta-badge--3-width',
-      '--bb-derived-agents-results-meta-badge-agents-body-width', '--bb-derived-agents-results-meta-badge-height',
+      '--bb-derived-agents-results-button-export-report-width', '--bb-derived-agents-results-button-apply-6-safe-width',
+      '--bb-derived-agents-results-meta-badge-2-critical-width', '--bb-derived-agents-results-meta-badge-4-serious-width', '--bb-derived-agents-results-meta-badge-6-moderate-width',
+      '--bb-derived-agents-results-meta-badge-2-minor-width', '--bb-derived-agents-results-meta-badge-2-minor-height',
     ], 'Button / Meta Badge label box'),
     ...ownedBy('Button', ['--bb-derived-agents-results-button-stroke-width']),
     ...ownedBy('MetaBadge', ['--bb-derived-agents-results-meta-badge-stroke-width']),

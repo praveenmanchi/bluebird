@@ -43,8 +43,8 @@ export const figma = {
     'mcp/text/meta',
   ]),
   derivedGaps: {
-    '--bb-derived-check-step-button--1-width': DERIVED.hug,
-    '--bb-derived-check-step-button-mcp-handoff-width': DERIVED.hug,
+    '--bb-derived-check-step-button-back-width': DERIVED.hug,
+    '--bb-derived-check-step-button-next-generate-width': DERIVED.hug,
     '--bb-derived-check-step-check-item-height': DERIVED.height,
     '--bb-derived-check-step-check-item-width': DERIVED.fill,
     '--bb-derived-check-step-figma-link-card-height': DERIVED.height,

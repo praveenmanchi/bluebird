@@ -48,8 +48,8 @@ export const figma = {
     'mcp/text/meta',
   ]),
   derivedGaps: {
-    '--bb-derived-ship-pushing-button--1-width': DERIVED.hug,
-    '--bb-derived-ship-pushing-button-mcp-handoff-width': DERIVED.hug,
+    '--bb-derived-ship-pushing-button-discard-width': DERIVED.hug,
+    '--bb-derived-ship-pushing-button-opening-pr-width': DERIVED.hug,
     '--bb-derived-ship-pushing-notice-height': DERIVED.height,
     '--bb-derived-ship-pushing-notice-width': DERIVED.fill,
     '--bb-derived-ship-pushing-publish-step-height': DERIVED.height,

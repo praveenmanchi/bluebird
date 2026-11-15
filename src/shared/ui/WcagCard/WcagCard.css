@@ -175,8 +175,8 @@
   padding-top: var(--bb-rating-padding);
 }
 .bb-wcag-card__row-label {
-  flex: 0 0 var(--bb-derived-wcag-card-row-label-width);
-  width: var(--bb-derived-wcag-card-row-label-width);
+  flex: 0 0 var(--bb-derived-wcag-card-row-label-themes-width);
+  width: var(--bb-derived-wcag-card-row-label-themes-width);
   font-family: var(--bb-wcag-card-font-family), ui-sans-serif, system-ui, sans-serif;
   font-size: var(--bb-wcag-card-meta-font-size);
   font-weight: var(--bb-type-weight-600);

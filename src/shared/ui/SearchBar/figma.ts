@@ -6,8 +6,8 @@ export const figma = {
   props: { 'Enter Variables here ': 'placeholder' },
   figmaGaps: { ...scaleGaps('space/inset-lg-alt') },
   derivedGaps: {
-    '--bb-derived-search-bar-vector--1-width': 'Inner vector of the search glyph (both of its parts are named "Vector"). Icon `search` draws it; only the glyph box is CSS.',
-    '--bb-derived-search-bar-vector--1-height': 'Inner vector of the search glyph (both of its parts are named "Vector"). Icon `search` draws it; only the glyph box is CSS.',
+    '--bb-derived-search-bar-vector-1-width': 'Inner vector of the search glyph (both of its parts are named "Vector"). Icon `search` draws it; only the glyph box is CSS.',
+    '--bb-derived-search-bar-vector-1-height': 'Inner vector of the search glyph (both of its parts are named "Vector"). Icon `search` draws it; only the glyph box is CSS.',
   },
   notes: [
     'The Figma placeholder text is a static layer; code exposes value/placeholder on a native <input type="search">.',
