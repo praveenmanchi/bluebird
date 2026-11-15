@@ -1,7 +1,8 @@
 /* KPI Tile — Figma "KPI Tile" (40000447:8612). Row = Icon box beside a left-aligned Text
- * stack (value + label on one baseline, caption under it). The tile carries an inside
- * a11y/surface/panel-border stroke because a11y/surface/sunken equals the panel on the light
- * brands, which left the tiles without edges; the stroke weight is raw → derived. */
+ * stack (value + label on one baseline, caption under it). Since 2026-11-15 the tile takes the
+ * panel colour (a11y/surface/panel) it sits on, as on the light brands, instead of the darker
+ * sunken surface; the inside a11y/surface/panel-border stroke gives it its edge. The stroke
+ * weight is raw → derived. */
 .bb-kpi-tile {
   display: flex;
   flex-direction: column;
@@ -9,7 +10,7 @@
   box-sizing: border-box;
   padding: var(--bb-a11y-space-inline);
   border-radius: var(--bb-a11y-radius-control);
-  background: var(--bb-a11y-surface-sunken);
+  background: var(--bb-a11y-surface-panel);
   box-shadow: inset 0 0 0 var(--bb-a11y-border-width) var(--bb-a11y-surface-panel-border);
   font-family: var(--bb-a11y-font-family), ui-sans-serif, system-ui, sans-serif;
 }

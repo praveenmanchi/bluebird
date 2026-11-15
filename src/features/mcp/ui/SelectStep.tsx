@@ -6,7 +6,7 @@ import {
   selectionError, selectionPhase, target,
 } from '../state'
 import { ActionBar } from './ActionBar'
-import { Card, ConnectionList, RepositoryList, SCENARIO_TAB, ScenarioSwitch, SelectionLink, type SelectionLinkProps } from './cards'
+import { Card, ConnectionList, RepositoryList, SCENARIO_TAB, SelectionLink, type SelectionLinkProps } from './cards'
 
 export interface SelectStepProps extends Pick<SelectionLinkProps, 'onOpenNode' | 'onCopyLink'> {
   /** Next: Check — moves on and runs the checks. */
@@ -141,7 +141,6 @@ export function SelectStep({ onOpenNode, onCopyLink, onCheck, onCopySetup, onUse
   return (
     <>
       <div class="bb-mcp-handoff__panels">
-        <ScenarioSwitch />
         {blockedBy === 'mcp' && <McpServerCard onCopySetup={onCopySetup} />}
         {blockedBy === 'repository' && <><RepositoryCard /><RepositoryList /></>}
         {blockedBy === null && (

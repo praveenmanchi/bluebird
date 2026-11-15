@@ -76,7 +76,9 @@
   font-weight: var(--bb-jira-font-weight-strong);
   line-height: var(--bb-jira-font-line-label);
 }
-.bb-jira-board__tabs { align-self: flex-start; }
+/* Figma "Activity tabs": the Tab sub menu fills the detail column and Comments / History / Work log share it equally. */
+.bb-jira-board__tabs { align-self: stretch; flex-shrink: 0; }
+.bb-jira-board__tabs .bb-segmented-control__segment { flex: 1 1 0; }
 /* "Scope tabs & search": the scope Dropdown fills the row and the "Search toggle" /
  * "Filter toggle" Buttons hug beside it; each opens its (hidden in Figma) panel below. */
 .bb-jira-board__scope-search {

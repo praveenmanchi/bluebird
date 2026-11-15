@@ -8,6 +8,7 @@ import { ChangesStep } from './library/ChangesStep'
 import { ImpactStep } from './library/ImpactStep'
 import { LibraryHandOff } from './library/LibraryHandOff'
 import { GenerateStep } from './GenerateStep'
+import { ScenarioSwitch } from './cards'
 import { SelectStep } from './SelectStep'
 import { ShipStep } from './ShipStep'
 import './McpHandoff.css'
@@ -33,7 +34,7 @@ export interface McpHandoffProps {
 export const clock = (d: Date): string => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 
 /**
- * Figma "MCP flow v3 · 600": a Stepper (Select → Check → Hand off → Track) over one scrolling
+ * Figma "MCP flow v3 · 600": the Scenario switch (first step only, full width), then a Stepper (Select → Check → Hand off → Track) over one scrolling
  * column of cards and a sticky action bar. Select and Check read the canvas, Hand off builds the
  * prompt, and Track looks for the developer's pull request on GitHub. No code is written here.
  */
@@ -79,6 +80,7 @@ export function McpHandoff({ onOpenNode, onOpenUrl, onCheck, onUseSelection, onT
 
   return (
     <div class="bb-mcp-handoff">
+      {step.value === 0 && <ScenarioSwitch />}
       <Stepper class="bb-mcp-handoff__stepper" steps={library ? LIBRARY_STEPS : STEPS} current={step.value} aria-label="Handoff steps" />
       {screen}
     </div>
