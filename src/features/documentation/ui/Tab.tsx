@@ -41,9 +41,9 @@ export function DocumentationTab({ preloaded = false }: DocumentationTabProps) {
         aria-label="Documentation mode"
         controls={PANEL_ID}
         options={[
-          { value: 'components', label: 'Components', icon: 'ui-toolbar-component' },
-          { value: 'handoff', label: 'Handoff', icon: 'ui-toolbar-dev-brackets' },
-          { value: 'styleguide', label: 'Style guide', icon: 'ui-variable-color' },
+          { value: 'components', label: 'Components', icon: 'component-audit' },
+          { value: 'handoff', label: 'Handoff', icon: 'ui-toolbar-ready-for-dev' },
+          { value: 'styleguide', label: 'Style guide', icon: 'ui-library-ui-kits' },
         ]}
         value={mode.value}
         onChange={pick}
