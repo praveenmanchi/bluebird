@@ -79,9 +79,12 @@ export function expectNoProblems(problems: Problems): void {
   expect(problems.requests, 'network requests from the mock build').toEqual([])
 }
 
-/** Opens one tab in the dev server build as the Gap design-system persona, the one that sees every tab. */
-export async function openTab(page: Page, label: string, data?: string): Promise<Problems> {
-  const problems = await openPlugin(page, { brand: 'gap', persona: 'design-system', target: 'dev', data })
+/**
+ * Opens one tab in the dev server build as a Gap persona: Design System by default, which sees most
+ * tabs. Pass another persona for a tab Gap gives elsewhere (Publish is Developer-only for Gap).
+ */
+export async function openTab(page: Page, label: string, data?: string, persona = 'design-system'): Promise<Problems> {
+  const problems = await openPlugin(page, { brand: 'gap', persona, target: 'dev', data })
   await skipTour(page)
   const tab = page.getByRole('navigation', { name: 'Sections' }).getByRole('tab', { name: label, exact: true })
   await tab.click()

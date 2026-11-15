@@ -167,11 +167,25 @@
             "history",
             "publish"
           ],
+          "ui-designer": [
+            "a11y",
+            "varsearch",
+            "varmapper",
+            "jira",
+            "mcp",
+            "uxai",
+            "agents",
+            "documentation"
+          ],
+          "content": [
+            "agents",
+            "uxai",
+            "jira"
+          ],
           "design-system": [
             "audit",
             "varsearch",
             "varmapper",
-            "publish",
             "documentation",
             "extraction",
             "a11y",

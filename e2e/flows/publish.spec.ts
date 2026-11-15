@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test'
 import { expectNoProblems, openTab } from '../harness'
 
 test('publish: extract, write release notes, review and publish', async ({ page }) => {
-  const problems = await openTab(page, 'Publish')
+  // Gap gives Publish to the Developer persona only (plugin.config.json › brand.brands.gap.personas).
+  const problems = await openTab(page, 'Publish', undefined, 'developer')
   const main = page.getByRole('main')
 
   await main.getByRole('button', { name: 'Run extract' }).click()
