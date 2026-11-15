@@ -40,8 +40,8 @@ export const figma = {
     'mcp/text/meta',
   ]),
   derivedGaps: {
-    '--bb-derived-shipped-step-button--1-width': DERIVED.hug,
-    '--bb-derived-shipped-step-button-mcp-handoff-width': DERIVED.hug,
+    '--bb-derived-shipped-step-button-new-handoff-width': DERIVED.hug,
+    '--bb-derived-shipped-step-button-done-width': DERIVED.hug,
     '--bb-derived-shipped-step-connection-row-height': DERIVED.height,
     '--bb-derived-shipped-step-connection-row-width': DERIVED.fill,
     '--bb-derived-shipped-step-copy-link-width': DERIVED.hug,

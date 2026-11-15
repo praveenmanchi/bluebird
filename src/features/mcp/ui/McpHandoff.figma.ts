@@ -24,8 +24,8 @@ export const figma = {
     'mcp/radius/control', 'mcp/space/row-x', 'mcp/space/row-y', 'mcp/surface/field',
   ]),
   derivedGaps: {
-    '--bb-derived-mcp-handoff-button--1-width': DERIVED.hug,
-    '--bb-derived-mcp-handoff-button-mcp-handoff-width': DERIVED.hug,
+    '--bb-derived-mcp-handoff-button-change-selection-width': DERIVED.hug,
+    '--bb-derived-mcp-handoff-button-next-check-width': DERIVED.hug,
     '--bb-derived-mcp-handoff-connection-row-height': DERIVED.height,
     '--bb-derived-mcp-handoff-connection-row-width': DERIVED.fill,
     '--bb-derived-mcp-handoff-figma-link-card-height': DERIVED.height,

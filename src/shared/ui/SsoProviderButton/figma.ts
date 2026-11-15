@@ -16,6 +16,18 @@ export const figma = {
   props: { Provider: 'provider (microsoft | okta | google)', State: ':hover / :focus-visible (state forces hover | focus)', Label: 'children (defaults to "Continue with <Provider>")' },
   figmaGaps: { 'dimension/opacity/99': 'Bound on two Google logo vectors; figma/logos/google.svg draws the opacity.' },
   derivedGaps: {
+    '--bb-derived-sso-provider-button-vector-1-fill': 'Google logo artwork colour: colours live in figma/logos/google.svg, not in tokens.',
+    '--bb-derived-sso-provider-button-vector-1-height': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-1-width': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-2-fill': 'Google logo artwork colour: colours live in figma/logos/google.svg, not in tokens.',
+    '--bb-derived-sso-provider-button-vector-2-height': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-2-width': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-3-fill': 'Google logo artwork colour: colours live in figma/logos/google.svg, not in tokens.',
+    '--bb-derived-sso-provider-button-vector-3-height': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-3-width': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-4-fill': 'Google logo artwork colour: colours live in figma/logos/google.svg, not in tokens.',
+    '--bb-derived-sso-provider-button-vector-4-height': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
+    '--bb-derived-sso-provider-button-vector-4-width': 'Google logo artwork: its SVG in figma/logos draws this part and the Frame sizes the logo.',
     ...Object.fromEntries([
       ...artwork('Microsoft', sized(vector('microsoft')), DRAWN),
       ...artwork('Okta', sized(vector('okta')), DRAWN),

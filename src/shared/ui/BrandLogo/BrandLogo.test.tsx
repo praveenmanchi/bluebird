@@ -67,10 +67,10 @@ describe('BrandLogo', () => {
       const style = getComputedStyle(container.querySelector('svg')!)
       return [style.width, style.height]
     })
-    expect(size).toEqual(['var(--bb-derived-brand-logo-vector--1-brand-ikea-width)', 'var(--bb-derived-brand-logo-vector--1-brand-ikea-height)'])
+    expect(size).toEqual(['var(--bb-derived-brand-logo-vector-1-brand-ikea-width)', 'var(--bb-derived-brand-logo-vector-1-brand-ikea-height)'])
     // Both ikea vectors are named "Vector": `vector--1` is the oval only while it stays the first of them.
-    expect(derived).toContain('--bb-derived-brand-logo-vector--1-brand-ikea-width: 106.3px;')
-    expect(derived).toContain('--bb-derived-brand-logo-vector--1-brand-ikea-height: 35px;')
+    expect(derived).toContain('--bb-derived-brand-logo-vector-1-brand-ikea-width: 106.3px;')
+    expect(derived).toContain('--bb-derived-brand-logo-vector-1-brand-ikea-height: 35px;')
   })
   it('renders the current fiskars export, whose box fills the 140x30 frame instead of letterboxing', () => {
     const { container } = render(<BrandLogo brand="fiskars" />)

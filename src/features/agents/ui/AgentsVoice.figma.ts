@@ -19,8 +19,8 @@ export const figma = {
   derivedGaps: {
     '--bb-derived-agents-voice-root-height': ROOT_HEIGHT,
     ...measured([
-      '--bb-derived-agents-voice-prompt-chip--1-width', '--bb-derived-agents-voice-prompt-chip--2-width', '--bb-derived-agents-voice-prompt-chip-agents-body-width', '--bb-derived-agents-voice-prompt-chip-height',
-      '--bb-derived-agents-voice-thinking-step--1-width', '--bb-derived-agents-voice-thinking-step--2-width', '--bb-derived-agents-voice-thinking-step-agents-body-width', '--bb-derived-agents-voice-thinking-step-height',
+      '--bb-derived-agents-voice-prompt-chip-yes-fix-the-width', '--bb-derived-agents-voice-prompt-chip-show-me-first-width', '--bb-derived-agents-voice-prompt-chip-create-jira-issues-width', '--bb-derived-agents-voice-prompt-chip-create-jira-issues-height',
+      '--bb-derived-agents-voice-thinking-step-scope-checkout-flow-width', '--bb-derived-agents-voice-thinking-step-rules-1-4-width', '--bb-derived-agents-voice-thinking-step-found-6-issues-width', '--bb-derived-agents-voice-thinking-step-found-6-issues-height',
     ], 'Prompt Chip / Thinking Step label box'),
     ...ownedBy('PromptChip', ['--bb-derived-agents-voice-prompt-chip-stroke-width']),
     ...ownedBy('VoiceBar', ['--bb-derived-agents-voice-voice-bar-height', '--bb-derived-agents-voice-voice-bar-stroke-width']),

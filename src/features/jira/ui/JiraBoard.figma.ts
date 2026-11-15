@@ -36,6 +36,9 @@ export const figma = {
     'icon/glyph/default': 'Bound on the "Search toggle" glyph override; Button.css colours its icon with currentColor from the same token.',
   },
   derivedGaps: {
+    '--bb-derived-jira-board-checkbox-ticket-detail-layout-height': 'Checkbox hugs its 16px box; Checkbox.css sizes it.',
+    '--bb-derived-jira-board-checkbox-ticket-list-layout-height': 'Checkbox hugs its 16px box; Checkbox.css sizes it.',
+    '--bb-derived-jira-board-checkbox-wire-jira-rest-height': 'Checkbox hugs its 16px box; Checkbox.css sizes it.',
     ...tabSubMenuDerived('--bb-derived-jira-board-tab-sub-menu'),
     ...Object.fromEntries(['comments', 'history', 'work-log'].flatMap((tab) =>
       ['fill', 'stroke', 'stroke-width', 'height', 'width', 'radius', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']
@@ -44,9 +47,9 @@ export const figma = {
       .map((name) => [name, segment])),
     ...Object.fromEntries(['131', '138', '155', '157', '160'].flatMap((k) => [`--bb-derived-jira-board-bb-${k}-height`, `--bb-derived-jira-board-bb-${k}-width`]).map((n) => [n, row])),
     '--bb-derived-jira-board-bb-142-width': row,
-    '--bb-derived-jira-board-checkbox--1-width': hug, '--bb-derived-jira-board-checkbox--2-width': hug,
-    '--bb-derived-jira-board-checkbox--3-width': hug, '--bb-derived-jira-board-checkbox-jira-board-width': hug,
-    '--bb-derived-jira-board-checkbox-height': 'Checkbox hugs its 16px box; Checkbox.css sizes it.',
+    '--bb-derived-jira-board-checkbox-ticket-list-layout-width': hug, '--bb-derived-jira-board-checkbox-ticket-detail-layout-width': hug,
+    '--bb-derived-jira-board-checkbox-wire-jira-rest-width': hug, '--bb-derived-jira-board-checkbox-write-back-comments-width': hug,
+    '--bb-derived-jira-board-checkbox-write-back-comments-height': 'Checkbox hugs its 16px box; Checkbox.css sizes it.',
     '--bb-derived-jira-board-comment-composer-width': fill, '--bb-derived-jira-board-comment-composer-height': 'CommentComposer hugs its textarea and toolbar; the 80 is the instance\'s fixed mock height.',
     '--bb-derived-jira-board-comment-width': fill, '--bb-derived-jira-board-comment-height': 'Comment height depends on the body text (data).',
     '--bb-derived-jira-board-count-width': hug, '--bb-derived-jira-board-count-height': 'MetaBadge sizes itself.', '--bb-derived-jira-board-count-stroke-width': 'MetaBadge.css draws its own stroke.',
