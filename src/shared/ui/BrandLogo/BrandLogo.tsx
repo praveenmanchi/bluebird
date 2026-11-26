@@ -2,6 +2,7 @@ import { LOGOS, type LogoName } from '@logos'
 import type { BrandId } from '../../brand/generated/tokens'
 import { BRANDS } from '../../brand/generated/tokens'
 import './BrandLogo.css'
+import './reveal.generated.css'
 
 export type { LogoName }
 
@@ -27,7 +28,9 @@ export function BrandLogo({ brand, logo, title, size = 'md', class: cls }: Brand
   return (
     <>
       {names.map((name) => {
-        const art = LOGOS[name as LogoName]
+        // Brand artwork is figma/logos/brand-<id>.svg, so it never clashes with a same-named
+        // integration mark (github, microsoft); `logo` forces non-brand artwork by its bare name.
+        const art = logo ? LOGOS[logo] : LOGOS[`brand-${name}` as LogoName]
         if (!art) return null
         // The exported frame is the intrinsic size; BrandLogo.css overrides it where Figma sizes the variant.
         const [, , width, height] = art.viewBox.split(' ')

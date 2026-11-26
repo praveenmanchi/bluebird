@@ -55,11 +55,11 @@ export function singleBrandConfig(raw: unknown, brandId: string): PluginConfig &
 const entryKey = (line: string): string | undefined => /^ {2}"?([a-z0-9-]+)"?\s*[:,]/.exec(line)?.[1]
 
 /**
- * src/shared/ui/BrandLogo/generated.ts without the other brands' artwork. Each logo is one
- * `  "id": { … },` line; brand-independent artwork (HCL, Fabric, integration logos) stays.
+ * src/shared/ui/BrandLogo/generated.ts without the other brands' artwork. Each brand logo is one
+ * `  "brand-<id>": { … },` line; brand-independent artwork (HCL, Fabric, integration logos) stays.
  */
 export function stripLogos(source: string, others: readonly string[]): string {
-  const drop = new Set(others)
+  const drop = new Set(others.map((id) => `brand-${id}`))
   return source.split('\n').filter((line) => !drop.has(entryKey(line) ?? '')).join('\n')
 }
 
@@ -135,7 +135,7 @@ export function findLeaks(bundle: string, raw: unknown, keep: string): Leak[] {
     if (b.accessCodeHash && bundle.includes(b.accessCodeHash)) leaks.push({ brand: id, what: 'access code hash', severity: 'blocking' })
     if (id === keep) continue
     if (brandSelector([id]).test(bundle)) leaks.push({ brand: id, what: 'brand-scoped CSS', severity: 'blocking' })
-    if (new RegExp(`"${id}":\\s*\\{\\s*viewBox`).test(bundle)) leaks.push({ brand: id, what: 'logo artwork', severity: 'blocking' })
+    if (new RegExp(`"brand-${id}":\\s*\\{\\s*viewBox`).test(bundle)) leaks.push({ brand: id, what: 'logo artwork', severity: 'blocking' })
     if (new RegExp(`["'\`>]${escapeRegExp(b.label)}["'\`<]`).test(bundle)) leaks.push({ brand: id, what: `its name ("${b.label}") in sample data`, severity: 'warning' })
   }
   return leaks

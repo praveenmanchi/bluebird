@@ -23,13 +23,14 @@ afterEach(async () => {
 })
 
 describe('ConfigPage', () => {
-  it('lists the eight brands and the selected brand’s tabs', async () => {
+  it('lists every brand and the selected brand’s tabs', async () => {
     serve()
     render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
     const brands = await screen.findByRole('complementary', { name: 'Brands' })
-    expect(within(brands).getAllByRole('button').map((b) => b.textContent)).toEqual([
-      expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Richemont'), expect.stringContaining('Disney'), expect.stringContaining('Fiskars'), expect.stringContaining('AkzoNobel'), expect.stringContaining('Adecco'), expect.stringContaining('Gap Inc.'),
-    ])
+    const labels = within(brands).getAllByRole('button').map((b) => b.textContent)
+    expect(labels).toHaveLength(40)
+    expect(labels.slice(0, 4)).toEqual([expect.stringContaining('Bridge'), expect.stringContaining('Ikea'), expect.stringContaining('Gap Inc.'), expect.stringContaining('IBM')])
+    expect(labels.at(-1)).toEqual(expect.stringContaining('Figma'))
     expect(within(screen.getByRole('list', { name: 'Tab order' })).getAllByRole('listitem')).toHaveLength(12)
   })
 
@@ -92,9 +93,9 @@ describe('ConfigPage', () => {
 
   it('blocks Save when a brand would have no tab left', async () => {
     serve()
-    render(<ConfigPage brandId="disney" onBrand={() => undefined} onPreview={() => undefined} />)
+    render(<ConfigPage brandId="microsoft" onBrand={() => undefined} onPreview={() => undefined} />)
     for (const tab of await screen.findAllByRole('switch', { name: /^Show / })) fireEvent.click(tab)
-    expect(screen.getByText(/Disney: turn at least one tab on/)).toBeInTheDocument()
+    expect(screen.getByText(/Microsoft: turn at least one tab on/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
   })
 

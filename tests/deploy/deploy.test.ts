@@ -50,8 +50,8 @@ describe('singleBrandConfig', () => {
 
 describe('source rewrites', () => {
   it('drops other brands’ logos and keeps brand-independent artwork', () => {
-    const source = ['export const LOGOS = {', '  "bridge": { viewBox: "0 0 1 1", body: "b" },', '  "fabric": { viewBox: "0 0 1 1", body: "f" },', '  "gap": { viewBox: "0 0 1 1", body: "g" },', '  "ikea": { viewBox: "0 0 1 1", body: "i" },', '} as const'].join('\n')
-    expect(stripLogos(source, ['bridge', 'ikea'])).toBe(['export const LOGOS = {', '  "fabric": { viewBox: "0 0 1 1", body: "f" },', '  "gap": { viewBox: "0 0 1 1", body: "g" },', '} as const'].join('\n'))
+    const source = ['export const LOGOS = {', '  "brand-bridge": { viewBox: "0 0 1 1", body: "b" },', '  "fabric": { viewBox: "0 0 1 1", body: "f" },', '  "brand-gap": { viewBox: "0 0 1 1", body: "g" },', '  "brand-ikea": { viewBox: "0 0 1 1", body: "i" },', '  "github": { viewBox: "0 0 1 1", body: "h" },', '} as const'].join('\n')
+    expect(stripLogos(source, ['bridge', 'ikea'])).toBe(['export const LOGOS = {', '  "fabric": { viewBox: "0 0 1 1", body: "f" },', '  "brand-gap": { viewBox: "0 0 1 1", body: "g" },', '  "github": { viewBox: "0 0 1 1", body: "h" },', '} as const'].join('\n'))
   })
 
   it('trims BRANDS and BRAND_LABELS only', () => {
@@ -82,7 +82,7 @@ describe('stripBrandCss', () => {
 
 describe('findLeaks', () => {
   it('blocks hashes, brand CSS and logos, and only warns about names', () => {
-    const bundle = `${hashAccessCode('GAP')} [data-brand=ikea]{} "bridge": { viewBox: "0 0 1 1" } label:"Ikea"`
+    const bundle = `${hashAccessCode('GAP')} [data-brand=ikea]{} "brand-bridge": { viewBox: "0 0 1 1" } label:"Ikea"`
     expect(findLeaks(bundle, rawConfig(), 'gap')).toEqual([
       { brand: 'bridge', what: 'logo artwork', severity: 'blocking' },
       { brand: 'ikea', what: 'brand-scoped CSS', severity: 'blocking' },

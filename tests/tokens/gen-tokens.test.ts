@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { generate, readInputs, derivedDeclarations, derivedLayerCollisions, assertNoCollisions, normalizeSvg, normalizeUiSvg, uiIconTones, minifyPathData } from '../../scripts/gen-tokens'
+import { mkdtempSync, mkdirSync, writeFileSync, readdirSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { generate, readInputs, brandDefaults, removeStaleBrandFiles, derivedDeclarations, derivedLayerCollisions, assertNoCollisions, normalizeSvg, normalizeUiSvg, uiIconTones, minifyPathData } from '../../scripts/gen-tokens'
 import { cssValueFor, cssVarName, brandIdFromMode, parseVariantName } from '../../src/shared/brand/snapshot'
 import type { ComponentsSnapshot } from '../../src/shared/brand/snapshot'
 
@@ -59,7 +62,7 @@ describe('snapshot helpers', () => {
     expect(cssValueFor('x', 'FLOAT', 'nope')).toBeNull()
   })
   it('derives brand ids and parses variant names', () => {
-    expect(brandIdFromMode('Richemont')).toBe('richemont')
+    expect(brandIdFromMode('GEVernova')).toBe('gevernova')
     expect(parseVariantName('Type=Primary, State=Default')).toEqual({ Type: 'Primary', State: 'Default' })
   })
 })
@@ -73,11 +76,12 @@ describe('generate()', () => {
     expect(names).toEqual(expect.arrayContaining([
       'src/shared/brand/generated/base.css',
       'src/shared/brand/generated/derived.css',
+      'src/shared/brand/generated/brand.default.css',
       'src/shared/brand/generated/brand.bridge.css',
       'src/shared/brand/generated/brand.ikea.css',
-      'src/shared/brand/generated/brand.richemont.css',
-      'src/shared/brand/generated/brand.disney.css',
-      'src/shared/brand/generated/brand.fiskars.css',
+      'src/shared/brand/generated/brand.gap.css',
+      'src/shared/brand/generated/brand.ibm.css',
+      'src/shared/brand/generated/brand.figma.css',
       'src/shared/brand/generated/all.css',
       'src/shared/brand/generated/active.css',
       'src/shared/brand/generated/tokens.ts',
@@ -95,21 +99,58 @@ describe('generate()', () => {
     expect(active).not.toContain('--bb-derived-bot-scene-')
     expect(files['src/shared/brand/generated/plugin.css']).toContain('derived.active.css')
   })
+  const vars = (css: string | undefined) => new Map([...(css ?? '').matchAll(/(--bb-[a-z0-9-]+): ([^;]+);/g)].map((m) => [m[1]!, m[2]!]))
+  const defaults = vars(files['src/shared/brand/generated/brand.default.css'])
+  /** What a [data-brand] element ends up with: its own declaration over brand.default.css, var() chains resolved on that element. */
+  const effective = (brand: string, token: string): string | undefined => {
+    const own = vars(files[`src/shared/brand/generated/brand.${brand}.css`])
+    const lookup = (name: string, depth = 0): string | undefined => {
+      const value = own.get(name) ?? defaults.get(name)
+      const ref = value && /^var\((--bb-[a-z0-9-]+)\)$/.exec(value)
+      return ref && depth < 20 ? lookup(ref[1]!, depth + 1) : value
+    }
+    return lookup(token)
+  }
+  it('resolves every Brand UI token of every brand to its Figma value', () => {
+    const brand = inputs.tokens.collections.find((c) => c.key === 'brand')!
+    let checked = 0
+    for (const mode of brand.modes) {
+      for (const v of brand.variables) {
+        const want = cssValueFor(v.name, v.type, v.values[mode] ?? null)
+        if (want === null) continue
+        expect(`${mode} ${v.name} ${effective(brandIdFromMode(mode), cssVarName(v.name))}`).toBe(`${mode} ${v.name} ${want}`)
+        checked++
+      }
+    }
+    expect(checked).toBeGreaterThan(brand.variables.length * brand.modes.length * 0.9)
+  })
   it('resolves brand values per mode', () => {
-    expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-button-primary-bg-default: #0978c8;')
-    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-bg-default: #161616;')
-    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-button-primary-radius: 64px;')
-    expect(files['src/shared/brand/generated/brand.richemont.css']).toContain('--bb-button-primary-radius: 0px;')
-    expect(files['src/shared/brand/generated/brand.fiskars.css']).toContain('[data-brand="fiskars"]')
+    expect(effective('bridge', '--bb-button-primary-bg-default')).toBe('#0978c8')
+    expect(effective('ikea', '--bb-button-primary-bg-default')).toBe('#161616')
+    expect(effective('ikea', '--bb-button-primary-radius')).toBe('64px')
+    expect(effective('ibm', '--bb-button-primary-radius')).toBe('0px')
+    expect(effective('siemens', '--bb-button-primary-bg-default')).toBe('#00cccc')
+    expect(files['src/shared/brand/generated/brand.ibm.css']).toContain('[data-brand="ibm"]')
+  })
+  it('puts the most common brand value on :root and keeps only the differences in each brand file', () => {
+    const defaultCss = files['src/shared/brand/generated/brand.default.css']!
+    expect(defaultCss).toContain(':root, [data-brand] {')
+    expect(defaultCss).toContain('--bb-surface-canvas: #ffffff;')
+    // Aliases inside Brand UI stay references, so they follow whichever brand the element has.
+    expect(defaultCss).toContain('--bb-button-primary-bg-default: var(--bb-surface-accent);')
+    expect(files['src/shared/brand/generated/brand.ikea.css']).not.toContain('--bb-surface-canvas')
+    expect(files['src/shared/brand/generated/brand.siemens.css']).toContain('--bb-surface-canvas: #000028;')
+    expect(files['src/shared/brand/generated/plugin.css']).toMatch(/brand\.default\.css";\n@import "\.\/brand\.bridge\.css/)
+    expect(files['src/shared/brand/generated/active.css']).toContain('@import "./brand.default.css";')
   })
   it('keeps primitives on :root and emits semantics per brand mode', () => {
     const base = files['src/shared/brand/generated/base.css']!
     expect(base).toContain(':root {')
     expect(base).toContain('--bb-bridge-color-primary-400-brand: #0c8ce9;')
     expect(base).not.toContain('--bb-surface-canvas')
-    expect(files['src/shared/brand/generated/brand.bridge.css']).toContain('--bb-surface-canvas: #151515;')
-    expect(files['src/shared/brand/generated/brand.ikea.css']).toContain('--bb-surface-canvas: #ffffff;')
-    expect(files['src/shared/brand/generated/brand.richemont.css']).toContain('--bb-font-family-display: "Noto Serif";')
+    expect(effective('bridge', '--bb-surface-canvas')).toBe('#151515')
+    expect(effective('ikea', '--bb-surface-canvas')).toBe('#ffffff')
+    expect(effective('ibm', '--bb-font-family-ui')).toBe('"IBM Plex Sans"')
   })
   it('promotes raw Figma values to derived tokens', () => {
     const derived = files['src/shared/brand/generated/derived.css']!
@@ -250,5 +291,25 @@ describe('generate()', () => {
     expect(Object.values(tones)).toContain('currentColor')
     expect(Object.values(tones)).toContain('var(--bb-surface-canvas)')
     expect(Object.keys(tones)).toHaveLength(4)
+  })
+})
+
+describe('brandDefaults()', () => {
+  it('picks the value most brands share, the earliest brand on a tie', () => {
+    const d = (value: string) => [{ name: '--x', value }, { name: '--y', value: '1' }]
+    expect(brandDefaults([d('a'), d('b'), d('b')])).toEqual([{ name: '--x', value: 'b' }, { name: '--y', value: '1' }])
+    expect(brandDefaults([d('a'), d('b')])).toEqual([{ name: '--x', value: 'a' }, { name: '--y', value: '1' }])
+  })
+})
+
+describe('removeStaleBrandFiles()', () => {
+  it('deletes brand css for modes that are gone and keeps everything else', () => {
+    const root = mkdtempSync(join(tmpdir(), 'bb-gen-'))
+    const dir = join(root, 'src/shared/brand/generated')
+    mkdirSync(dir, { recursive: true })
+    for (const f of ['brand.default.css', 'brand.bridge.css', 'brand.fiskars.css', 'base.css']) writeFileSync(join(dir, f), '')
+    const kept = { 'src/shared/brand/generated/brand.default.css': '', 'src/shared/brand/generated/brand.bridge.css': '' }
+    expect(removeStaleBrandFiles(kept, root)).toEqual(['src/shared/brand/generated/brand.fiskars.css'])
+    expect(readdirSync(dir).sort()).toEqual(['base.css', 'brand.bridge.css', 'brand.default.css'])
   })
 })

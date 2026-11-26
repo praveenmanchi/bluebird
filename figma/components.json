@@ -5321,22 +5321,54 @@
     {
       "code": "BrandLogo",
       "id": "40000064:9865",
-      "key": "1efa48104a23341f66857bd96af9c55bb55b3aee",
+      "key": "b28fc0a528e57bc658fdac74d8b5e80a27a5c46f",
       "name": "brand logos",
-      "description": "Client brand logos — IKEA, Richemont, Disney, Fiskars, The Bridge, HCLTech.",
+      "description": "",
       "props": {
         "Brand": {
           "type": "VARIANT",
           "options": [
-            "richemont",
-            "disney",
-            "fiskars",
             "bridge",
             "ikea",
             "HCL",
-            "akzonobel",
-            "adecco",
-            "gap"
+            "gap",
+            "ibm",
+            "jpmorganchase",
+            "americanairlines",
+            "sanofi",
+            "cisco",
+            "adobe",
+            "shieldai",
+            "merckgroup",
+            "elililly",
+            "maersk",
+            "hyundaimotorgroup",
+            "bentleysystems",
+            "siemens",
+            "klm",
+            "southwest",
+            "doordash",
+            "ups",
+            "microsoft",
+            "sonatype",
+            "sap",
+            "salesforce",
+            "gevernova",
+            "github",
+            "hertz",
+            "optum",
+            "meta",
+            "amazon",
+            "vanguard",
+            "atlassian",
+            "omnicom",
+            "deltaairlines",
+            "lowes",
+            "tmobile",
+            "verizon",
+            "anthropic",
+            "apple",
+            "figma"
           ],
           "default": "ikea"
         }
@@ -5344,7 +5376,7 @@
       "variants": [
         {
           "id": "40000064:9864",
-          "key": "729c69fc0ec5fe53c7981ae8c7b81a01583bce2d",
+          "key": "6474b8495fc275ac5c98da16761b3c973b3a11de",
           "name": "Brand=ikea",
           "props": {
             "Brand": "ikea"
@@ -5394,182 +5426,8 @@
           ]
         },
         {
-          "id": "40000064:9863",
-          "key": "1684857d0490bea0df5e58f85b6e43480cccdecf",
-          "name": "Brand=richemont",
-          "props": {
-            "Brand": "richemont"
-          },
-          "nodes": [
-            {
-              "id": "40000064:9863",
-              "p": "Brand=richemont",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "size": [
-                  162.7,
-                  48
-                ]
-              }
-            },
-            {
-              "id": "40000045:6524",
-              "p": "Brand=richemont/Group",
-              "t": "GROUP",
-              "b": {},
-              "r": {
-                "size": [
-                  152,
-                  9.1
-                ]
-              }
-            },
-            {
-              "id": "40000045:6525",
-              "p": "Brand=richemont/Group/Vector 1",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#a8996e",
-                "size": [
-                  152,
-                  9.1
-                ]
-              }
-            },
-            {
-              "id": "40000045:6526",
-              "p": "Brand=richemont/Group/Vector 2",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#a8996e",
-                "size": [
-                  15.3,
-                  8.9
-                ]
-              }
-            },
-            {
-              "id": "40000045:6527",
-              "p": "Brand=richemont/Vector 3",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#ffffff",
-                "size": [
-                  151.9,
-                  9.4
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "id": "40000064:9861",
-          "key": "c97780383222be7f12228f01b4203165153649ba",
-          "name": "Brand=disney",
-          "props": {
-            "Brand": "disney"
-          },
-          "nodes": [
-            {
-              "id": "40000064:9861",
-              "p": "Brand=disney",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "layout": "VERTICAL MIN MIN HUG HUG",
-                "itemSpacing": 10,
-                "paddingLeft": 2,
-                "paddingRight": 2,
-                "paddingTop": 5,
-                "paddingBottom": 5,
-                "size": [
-                  91.9,
-                  47.3
-                ]
-              }
-            },
-            {
-              "id": "40000045:7705",
-              "p": "Brand=disney/Vector",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#ffffff",
-                "size": [
-                  87.9,
-                  37.3
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "id": "40000064:9860",
-          "key": "31c56870790b339ece52dc19a98a82260e3b2fac",
-          "name": "Brand=fiskars",
-          "props": {
-            "Brand": "fiskars"
-          },
-          "nodes": [
-            {
-              "id": "40000064:9860",
-              "p": "Brand=fiskars",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "size": [
-                  140,
-                  30
-                ]
-              }
-            },
-            {
-              "id": "40000060:9543",
-              "p": "Brand=fiskars/Group 14741",
-              "t": "GROUP",
-              "b": {},
-              "r": {
-                "size": [
-                  140.4,
-                  29.6
-                ]
-              }
-            },
-            {
-              "id": "40000045:7716",
-              "p": "Brand=fiskars/Group 14741/Vector 1",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#000000",
-                "size": [
-                  140.4,
-                  29.6
-                ]
-              }
-            },
-            {
-              "id": "40000045:7718",
-              "p": "Brand=fiskars/Group 14741/Vector 2",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#de8a2e",
-                "size": [
-                  120.9,
-                  14.4
-                ]
-              }
-            }
-          ]
-        },
-        {
           "id": "40000064:9862",
-          "key": "7b4a3c556f18e7190fc215cb7d49f32f37a21b72",
+          "key": "436e3b0ce7e5008c46624b4e9535981872938239",
           "name": "Brand=bridge",
           "props": {
             "Brand": "bridge"
@@ -5592,7 +5450,7 @@
               "p": "Brand=bridge/Vector",
               "t": "VECTOR",
               "b": {
-                "fill": "color/white/solid",
+                "fill": "lib:VariableID:dba1a00ef0462e7a62aeafbbe92f8339949f0a40/124:2029",
                 "opacity": "opacity/100"
               },
               "r": {
@@ -5606,7 +5464,7 @@
         },
         {
           "id": "40000100:13634",
-          "key": "690b1d7414877d6d09807954bc3c8cb0a462e019",
+          "key": "2f2b2aced296973fdcaa5eed58f9042a1294b24c",
           "name": "Brand=HCL",
           "props": {
             "Brand": "HCL"
@@ -5654,7 +5512,7 @@
         },
         {
           "id": "40002444:66792",
-          "key": "f60e2da060a2cafafb848cffe1134e84d19aa509",
+          "key": "3f60fa4f257c3efd04d591fce52698f7ef663366",
           "name": "Brand=gap",
           "props": {
             "Brand": "gap"
@@ -5699,124 +5557,6 @@
                 "size": [
                   33.4,
                   30
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "id": "40002394:43169",
-          "key": "7afa5d319b73e104cf4563e0c1387135dde25f8f",
-          "name": "Brand=akzonobel",
-          "props": {
-            "Brand": "akzonobel"
-          },
-          "nodes": [
-            {
-              "id": "40002394:43169",
-              "p": "Brand=akzonobel",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
-                "itemSpacing": 10,
-                "paddingLeft": 3,
-                "paddingRight": 3,
-                "paddingTop": 3,
-                "paddingBottom": 3,
-                "size": [
-                  165.6,
-                  29.3
-                ]
-              }
-            },
-            {
-              "id": "40002394:43172",
-              "p": "Brand=akzonobel/Frame",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "size": [
-                  159.6,
-                  23.3
-                ]
-              }
-            },
-            {
-              "id": "40002394:43173",
-              "p": "Brand=akzonobel/Frame/Group",
-              "t": "GROUP",
-              "b": {},
-              "r": {
-                "size": [
-                  159.5,
-                  23.3
-                ]
-              }
-            },
-            {
-              "id": "40002394:43174",
-              "p": "Brand=akzonobel/Frame/Group/Vector",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#ffffff",
-                "size": [
-                  159.5,
-                  23.3
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "id": "40002394:43179",
-          "key": "e638655dcf44ae50eb5199561e191f1daeec431f",
-          "name": "Brand=adecco",
-          "props": {
-            "Brand": "adecco"
-          },
-          "nodes": [
-            {
-              "id": "40002394:43179",
-              "p": "Brand=adecco",
-              "t": "COMPONENT",
-              "b": {},
-              "r": {
-                "layout": "HORIZONTAL CENTER CENTER HUG HUG",
-                "itemSpacing": 10,
-                "paddingLeft": 3,
-                "paddingRight": 3,
-                "paddingTop": 3,
-                "paddingBottom": 3,
-                "size": [
-                  115,
-                  65.3
-                ]
-              }
-            },
-            {
-              "id": "40002394:43187",
-              "p": "Brand=adecco/Frame",
-              "t": "FRAME",
-              "b": {},
-              "r": {
-                "size": [
-                  109,
-                  59.3
-                ]
-              }
-            },
-            {
-              "id": "40002394:43189",
-              "p": "Brand=adecco/Frame/Vector",
-              "t": "VECTOR",
-              "b": {},
-              "r": {
-                "fill": "#ffffff",
-                "size": [
-                  92.5,
-                  22.7
                 ]
               }
             }

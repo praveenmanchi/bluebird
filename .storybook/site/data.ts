@@ -2,14 +2,7 @@
 // can never drift from what the plugin ships. Re-run `npm run gen:tokens` and the
 // pages follow.
 import baseCss from '../../src/shared/brand/generated/base.css?raw'
-import bridgeCss from '../../src/shared/brand/generated/brand.bridge.css?raw'
-import ikeaCss from '../../src/shared/brand/generated/brand.ikea.css?raw'
-import richemontCss from '../../src/shared/brand/generated/brand.richemont.css?raw'
-import disneyCss from '../../src/shared/brand/generated/brand.disney.css?raw'
-import fiskarsCss from '../../src/shared/brand/generated/brand.fiskars.css?raw'
-import akzonobelCss from '../../src/shared/brand/generated/brand.akzonobel.css?raw'
-import adeccoCss from '../../src/shared/brand/generated/brand.adecco.css?raw'
-import gapCss from '../../src/shared/brand/generated/brand.gap.css?raw'
+import defaultCss from '../../src/shared/brand/generated/brand.default.css?raw'
 import { BRANDS, type BrandId } from '../../src/shared/brand/generated/tokens'
 
 export interface TokenVar { name: string; value: string }
@@ -29,17 +22,24 @@ export function parseVars(css: string): TokenVar[] {
 /** Foundations + Semantics: one :root block shared by every brand. */
 export const BASE_VARS = parseVars(baseCss)
 
-/** Brand UI collection, one list per mode. */
-export const BRAND_VARS: Record<BrandId, TokenVar[]> = {
-  bridge: parseVars(bridgeCss),
-  ikea: parseVars(ikeaCss),
-  richemont: parseVars(richemontCss),
-  disney: parseVars(disneyCss),
-  fiskars: parseVars(fiskarsCss),
-  akzonobel: parseVars(akzonobelCss),
-  adecco: parseVars(adeccoCss),
-  gap: parseVars(gapCss),
+const brandCss = import.meta.glob<string>('../../src/shared/brand/generated/brand.*.css', { query: '?raw', import: 'default', eager: true })
+
+/** Replaces var(--bb-…) references (Brand UI aliases) with the value they resolve to in the same brand. */
+function resolveRefs(list: TokenVar[]): TokenVar[] {
+  const byName = new Map(list.map((v) => [v.name, v.value]))
+  const resolve = (value: string, depth = 0): string => {
+    const ref = /^var\((--bb-[a-z0-9-]+)\)$/.exec(value)
+    const next = ref ? byName.get(ref[1]!) : undefined
+    return next !== undefined && depth < 20 ? resolve(next, depth + 1) : value
+  }
+  return list.map((v) => ({ name: v.name, value: resolve(v.value) }))
 }
+
+/** Brand UI collection, one full list per mode: brand.default.css with that brand's differences on top. */
+export const BRAND_VARS = Object.fromEntries(BRANDS.map((brand) => [
+  brand,
+  resolveRefs(parseVars(defaultCss + (brandCss[`../../src/shared/brand/generated/brand.${brand}.css`] ?? ''))),
+])) as Record<BrandId, TokenVar[]>
 
 const baseIndex = new Map(BASE_VARS.map((v) => [v.name, v.value]))
 const brandIndex = Object.fromEntries(

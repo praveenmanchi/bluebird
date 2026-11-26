@@ -1,5 +1,5 @@
 // Print the hash to paste into plugin.config.json → brand.brands.<id>.accessCodeHash.
-//   npm run access-code -- FISKARS-2026
+//   npm run access-code -- IBM-2026
 import { hashAccessCode, normalizeAccessCode } from '../src/shared/session/sha256'
 
 const code = process.argv.slice(2).join(' ')

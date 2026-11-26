@@ -49,13 +49,16 @@ describe('docTheme fallback colours', () => {
     const { FALLBACK } = await import('../ui/docTheme')
     const dir = resolve(import.meta.dirname, '../../../shared/brand/generated')
     const brands = readdirSync(dir).filter((f) => /^brand\..+\.css$/.test(f))
+    // Brand files only carry what differs from brand.default.css, so a missing token falls back to it.
+    const defaults = readFileSync(resolve(dir, 'brand.default.css'), 'utf8')
+    const tokenIn = (css: string, name: string) => new RegExp(`--bb-${name}:\\s*([^;]+);`).exec(css)?.[1]
     expect(brands.length).toBeGreaterThan(0)
     const reportTokens = Object.entries(FALLBACK).filter(([name]) => name.startsWith('a11y-report-'))
     expect(reportTokens.length).toBeGreaterThan(0)
     for (const file of brands) {
       const css = readFileSync(resolve(dir, file), 'utf8')
       for (const [name, hex] of reportTokens) {
-        const value = new RegExp(`--bb-${name}:\\s*([^;]+);`).exec(css)?.[1]
+        const value = tokenIn(css, name) ?? tokenIn(defaults, name)
         expect(`${file} ${name} ${normalizeHex(value ?? '')}`).toBe(`${file} ${name} ${hex}`)
       }
     }

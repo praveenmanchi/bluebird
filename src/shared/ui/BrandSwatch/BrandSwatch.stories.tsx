@@ -13,7 +13,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = { parameters: { figma: { variant: 'Brand Swatch' } } }
-export const BrandMode: Story = { args: { brand: 'fiskars', hex: '#FF8E00', color: 'var(--bb-surface-accent)' } }
+export const BrandMode: Story = { args: { brand: 'ibm', hex: '#0F62FE', color: 'var(--bb-surface-accent)' } }
 
 export const AcrossBrands: Story = {
   render: () => (

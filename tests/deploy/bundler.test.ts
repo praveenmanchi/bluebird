@@ -13,7 +13,7 @@ function repo(deploy?: unknown): string {
   writeFileSync(files.config, JSON.stringify(rawConfig(deploy)))
   mkdirSync(join(root, 'src/shared/ui/BrandLogo'), { recursive: true })
   mkdirSync(join(root, 'src/shared/brand/generated'), { recursive: true })
-  writeFileSync(files.logos, 'export const LOGOS = {\n  "ikea": { viewBox: "0 0 1 1", body: "i" },\n  "gap": { viewBox: "0 0 1 1", body: "g" },\n}\n')
+  writeFileSync(files.logos, 'export const LOGOS = {\n  "brand-ikea": { viewBox: "0 0 1 1", body: "i" },\n  "brand-gap": { viewBox: "0 0 1 1", body: "g" },\n}\n')
   writeFileSync(files.tokens, 'export const BRANDS = [\n  "bridge",\n  "ikea",\n  "gap",\n] as const\n')
   return root
 }

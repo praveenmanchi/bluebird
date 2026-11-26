@@ -27,7 +27,7 @@ describe('SsoProviderButton', () => {
     expect(logoOf('okta')).toHaveAttribute('aria-hidden', 'true')
   })
   // Both marks are bound to login/provider/glyph: a fixed white would vanish on the white buttons
-  // of Ikea, Richemont, AkzoNobel and Adecco.
+  // of light brands such as Ikea or IBM.
   it.each(['microsoft', 'okta'] as const)('draws the %s mark in the glyph colour', (provider) => {
     expect(new Set(fills(logoOf(provider)))).toEqual(new Set(['currentColor']))
     expect(css).toMatch(/\.bb-sso-provider__logo \{[^}]*color: var\(--bb-login-provider-glyph\)/)
