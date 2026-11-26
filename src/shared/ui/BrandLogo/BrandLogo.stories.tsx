@@ -17,11 +17,9 @@ const v = (variant: string) => ({ figma: { variant } })
 export const FollowsBrand: Story = {}
 export const Bridge: Story = { args: { brand: 'bridge' }, parameters: v('Brand=bridge') }
 export const Ikea: Story = { args: { brand: 'ikea' }, parameters: v('Brand=ikea') }
-export const Richemont: Story = { args: { brand: 'richemont' }, parameters: v('Brand=richemont') }
-export const Disney: Story = { args: { brand: 'disney' }, parameters: v('Brand=disney') }
-export const Fiskars: Story = { args: { brand: 'fiskars' }, parameters: v('Brand=fiskars') }
-export const AkzoNobel: Story = { args: { brand: 'akzonobel' }, parameters: v('Brand=akzonobel') }
-export const Adecco: Story = { args: { brand: 'adecco' }, parameters: v('Brand=adecco') }
+export const Ibm: Story = { args: { brand: 'ibm' } }
+export const Microsoft: Story = { args: { brand: 'microsoft' } }
+export const Hertz: Story = { args: { brand: 'hertz' } }
 export const Gap: Story = { args: { brand: 'gap' }, parameters: v('Brand=gap') }
 export const Hcl: Story = { args: { logo: 'hcltech' }, parameters: v('Brand=HCL') }
 

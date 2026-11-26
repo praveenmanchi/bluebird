@@ -11,7 +11,7 @@
 //
 // Everything is deterministic: `npm run tokens:check` regenerates in memory
 // and fails when the files on disk differ.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { brandIdFromMode, cssValueFor, cssVarName } from '../src/shared/brand/snapshot'
 import type { ComponentsSnapshot, ComponentSetSnapshot, IconsSnapshot, TokenSnapshot, UiIconSet } from '../src/shared/brand/snapshot'
@@ -22,6 +22,7 @@ const GEN_DIR = 'src/shared/brand/generated'
 const ICON_GEN = 'src/shared/ui/Icon/generated.ts'
 const ICON_ACTIVE_GEN = 'src/shared/ui/Icon/generated.active.ts'
 const LOGO_GEN = 'src/shared/ui/BrandLogo/generated.ts'
+const LOGO_REVEAL_GEN = 'src/shared/ui/BrandLogo/reveal.generated.css'
 const LOGO_DIR = 'figma/logos'
 /** Single-colour artwork in figma/logos that should follow currentColor (everything else keeps its fills). */
 const MONO_LOGOS = new Set(['hcltech', 'github', 'microsoft', 'okta', 'ai', 'database', 'dual-file', 'mcp'])
@@ -107,6 +108,28 @@ export function usedDerivedNames(root: string): Set<string> {
   return used
 }
 
+/**
+ * Brand UI declarations for one mode, keeping aliases inside Brand UI as var() references
+ * (button/primary/bg → var(--bb-surface-accent)). The shared [data-brand] rule resolves them on
+ * each brand element, so a brand file only overrides the values that are really its own.
+ */
+function brandDeclarationsFor(input: GenInputs, mode: string): Declaration[] {
+  const collection = input.tokens.collections.find((c) => c.key === 'brand')
+  if (!collection) throw new Error('tokens.json has no "brand" collection')
+  const prefix = `${collection.name}/`
+  const own = new Map(collection.variables.map((v) => [v.name, v]))
+  const out: Declaration[] = []
+  for (const v of collection.variables) {
+    const value = cssValueFor(v.name, v.type, v.values[mode] ?? null)
+    if (value === null) continue
+    const alias = v.aliases?.[mode]
+    const target = alias?.startsWith(prefix) ? own.get(alias.slice(prefix.length)) : undefined
+    const aliased = target && cssValueFor(target.name, target.type, target.values[mode] ?? null) !== null
+    out.push({ name: cssVarName(v.name), value: aliased ? `var(${cssVarName(target.name)})` : value })
+  }
+  return out
+}
+
 function declarationsFor(input: GenInputs, collectionKey: string, mode: string): Declaration[] {
   const collection = input.tokens.collections.find((c) => c.key === collectionKey)
   if (!collection) throw new Error(`tokens.json has no "${collectionKey}" collection`)
@@ -117,6 +140,24 @@ function declarationsFor(input: GenInputs, collectionKey: string, mode: string):
     out.push({ name: cssVarName(v.name), value })
   }
   return out
+}
+
+/** Per token, the value most brands share (ties go to the earliest brand), in first-seen order. */
+export function brandDefaults(brands: readonly Declaration[][]): Declaration[] {
+  const counts = new Map<string, Map<string, number>>()
+  for (const declarations of brands) {
+    for (const d of declarations) {
+      const byValue = counts.get(d.name) ?? new Map<string, number>()
+      byValue.set(d.value, (byValue.get(d.value) ?? 0) + 1)
+      counts.set(d.name, byValue)
+    }
+  }
+  return [...counts].map(([name, byValue]) => {
+    let best = ''
+    let bestCount = -1
+    for (const [value, count] of byValue) if (count > bestCount) { best = value; bestCount = count }
+    return { name, value: best }
+  })
 }
 
 function block(selector: string, declarations: Declaration[]): string {
@@ -445,17 +486,32 @@ export function generate(input: GenInputs): Record<string, string> {
     `/* The ${activeDerived.length} of ${derived.length} derived tokens that src reads. Storybook and the drift gate load derived.css instead. */\n` +
     block(':root', activeDerived)
 
-  for (const mode of brand.modes) {
+  const perBrand = new Map(brand.modes.map((mode) => [mode, [
+    ...(semanticsPerBrand ? declarationsFor(input, 'semantics', semanticsModeFor(mode)) : []),
+    ...brandDeclarationsFor(input, mode),
+  ]]))
+  // Every brand's CSS is inlined into the plugin, so brand files only carry what differs from
+  // the most common value. Values are resolved (no var()), so :root fallback is exact.
+  const defaults = brandDefaults([...perBrand.values()])
+  // On every [data-brand] element (not :root) so the var() aliases resolve against that element's own brand values.
+  files[`${GEN_DIR}/brand.default.css`] = HEADER +
+    `/* The most common value of each Brand UI token across the ${brand.modes.length} brand modes; aliases stay var() so they follow each brand. brand.<id>.css overrides only what differs. */\n` +
+    block(':root, [data-brand]', defaults)
+  const defaultValue = new Map(defaults.map((d) => [d.name, d.value]))
+  for (const [mode, declarations] of perBrand) {
     const id = brandIdFromMode(mode)
-    const perBrand = [
-      ...(semanticsPerBrand ? declarationsFor(input, 'semantics', semanticsModeFor(mode)) : []),
-      ...declarationsFor(input, 'brand', mode),
-    ]
-    files[`${GEN_DIR}/brand.${id}.css`] = HEADER + block(`[data-brand="${id}"]`, perBrand)
+    files[`${GEN_DIR}/brand.${id}.css`] = HEADER + block(`[data-brand="${id}"]`, declarations.filter((d) => defaultValue.get(d.name) !== d.value))
   }
-  files[`${GEN_DIR}/all.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n${brandIds.map((id) => `@import "./brand.${id}.css";`).join('\n')}\n`
-  files[`${GEN_DIR}/plugin.css`] = HEADER + `@import "./base.css";\n@import "./derived.active.css";\n${brandIds.map((id) => `@import "./brand.${id}.css";`).join('\n')}\n`
-  files[`${GEN_DIR}/active.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n@import "./brand.${input.activeBrand}.css";\n`
+  // BrandLogo renders every brand's artwork and the NEAREST [data-brand] reveals one (inherited custom
+  // properties, so a nested brand scope never shows two logos).
+  files[LOGO_REVEAL_GEN] = HEADER +
+    `[data-brand] { ${brandIds.map((id) => `--brand-logo-${id}: none;`).join(' ')} }\n` +
+    brandIds.map((id) => `[data-brand="${id}"] { --brand-logo-${id}: block; }\n`).join('') +
+    brandIds.map((id) => `.bb-brand-logo[data-logo="${id}"] { display: var(--brand-logo-${id}, none); }\n`).join('')
+  const brandImports = ['default', ...brandIds].map((id) => `@import "./brand.${id}.css";`).join('\n')
+  files[`${GEN_DIR}/all.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n${brandImports}\n`
+  files[`${GEN_DIR}/plugin.css`] = HEADER + `@import "./base.css";\n@import "./derived.active.css";\n${brandImports}\n`
+  files[`${GEN_DIR}/active.css`] = HEADER + `@import "./base.css";\n@import "./derived.css";\n@import "./brand.default.css";\n@import "./brand.${input.activeBrand}.css";\n`
 
   const tokenNames = [...new Set([
     ...base.map((d) => d.name),
@@ -513,7 +569,8 @@ export function generate(input: GenInputs): Record<string, string> {
     `export type LogoName = keyof typeof LOGOS\n`
   // The plugin bundle inlines everything, so it only ships the active brand's logo plus the
   // brand-independent artwork (HCL mark, Fabric wordmark, integration logos).
-  const activeEntries = logoEntries.filter((line) => line.startsWith(`  ${JSON.stringify(input.activeBrand)}:`) || !brandIds.some((id) => line.startsWith(`  ${JSON.stringify(id)}:`)))
+  // Brand artwork is keyed brand-<id>; bare keys are brand-independent marks (github, microsoft …).
+  const activeEntries = logoEntries.filter((line) => !line.startsWith('  "brand-') || line.startsWith(`  ${JSON.stringify(`brand-${input.activeBrand}`)}:`))
   files[LOGO_GEN.replace(/generated\.ts$/, 'generated.active.ts')] = logoHeader +
     `// Active brand only (plugin.config.json → brand.active = ${input.activeBrand}). Storybook and tests alias @logos to ./generated.ts instead.\n` +
     `import type { LogoName } from './generated'\n` +
@@ -539,6 +596,15 @@ export function generate(input: GenInputs): Record<string, string> {
   return files
 }
 
+/** Deletes generated brand.<id>.css files whose Brand mode is gone from Figma (writeFiles only adds and updates). */
+export function removeStaleBrandFiles(files: Record<string, string>, root = ROOT): string[] {
+  const dir = resolve(root, GEN_DIR)
+  if (!existsSync(dir)) return []
+  const stale = readdirSync(dir).filter((f) => /^brand\..+\.css$/.test(f) && !(`${GEN_DIR}/${f}` in files))
+  for (const f of stale) rmSync(resolve(dir, f))
+  return stale.map((f) => `${GEN_DIR}/${f}`)
+}
+
 export function writeFiles(files: Record<string, string>, root = ROOT): string[] {
   const changed: string[] = []
   for (const [rel, content] of Object.entries(files)) {
@@ -555,7 +621,9 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename
   const inputs = readInputs()
   const files = generate(inputs)
   const changed = writeFiles(files)
+  const removed = removeStaleBrandFiles(files)
   console.log(`[tokens] ${Object.keys(files).length} files, ${changed.length} changed${changed.length ? `: ${changed.join(', ')}` : ''}`)
+  if (removed.length) console.log(`[tokens] removed ${removed.length} brand file(s) for modes no longer in Figma: ${removed.join(', ')}`)
   const collisions = derivedLayerCollisions(inputs.components).length
   if (collisions) console.warn(`[tokens] ${collisions} group(s) of same-named Figma layers needed position-indexed derived tokens (\`--<n>\`) — \`npm run tokens:check\` lists them`)
 }

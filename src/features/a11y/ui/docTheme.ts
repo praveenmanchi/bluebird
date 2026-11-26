@@ -36,7 +36,7 @@ export function normalizeHex(value: string): string | null {
 
 /** The brand logo as a standalone SVG string, or '' when the brand has none. */
 export function logoSvg(brand: string | undefined): string {
-  const art = brand ? LOGOS[brand as LogoName] : undefined
+  const art = brand ? LOGOS[`brand-${brand}` as LogoName] : undefined
   if (!art) return ''
   const [, , width, height] = art.viewBox.split(' ')
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${art.viewBox}" width="${width}" height="${height}" fill="none">${art.body}</svg>`

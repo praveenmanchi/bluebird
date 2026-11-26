@@ -22,12 +22,12 @@ describe('AnalyticsPage', () => {
   it('scopes every number to the filters', () => {
     render(<AnalyticsPage />)
     fireEvent.click(screen.getByRole('button', { name: 'Last 7 days' }))
-    fireEvent.change(screen.getByRole('combobox', { name: 'Brand' }), { target: { value: 'disney' } })
+    fireEvent.change(screen.getByRole('combobox', { name: 'Brand' }), { target: { value: 'ibm' } })
     expect(screen.getByRole('button', { name: 'Last 7 days' })).toHaveAttribute('aria-pressed', 'true')
-    expect((screen.getByRole('combobox', { name: 'Brand' }) as HTMLSelectElement).value).toBe('disney')
+    expect((screen.getByRole('combobox', { name: 'Brand' }) as HTMLSelectElement).value).toBe('ibm')
     expect(screen.getAllByText(/vs previous 7 days/).length).toBeGreaterThan(0)
     const users = screen.getByRole('region', { name: 'Top users' })
-    expect(within(users).getAllByRole('cell', { name: 'Disney' }).length).toBeGreaterThan(0)
+    expect(within(users).getAllByRole('cell', { name: 'IBM' }).length).toBeGreaterThan(0)
     expect(within(users).queryByRole('cell', { name: 'Ikea' })).toBeNull()
   })
 
@@ -41,8 +41,8 @@ describe('AnalyticsPage', () => {
   it('filters the page by clicking a brand bar, and clears it again', () => {
     render(<AnalyticsPage />)
     const card = screen.getByRole('region', { name: 'Installs by brand' })
-    fireEvent.click(within(card).getByRole('button', { name: /Fiskars/ }))
-    expect((screen.getByRole('combobox', { name: 'Brand' }) as HTMLSelectElement).value).toBe('fiskars')
+    fireEvent.click(within(card).getByRole('button', { name: /Microsoft/ }))
+    expect((screen.getByRole('combobox', { name: 'Brand' }) as HTMLSelectElement).value).toBe('microsoft')
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
     expect((screen.getByRole('combobox', { name: 'Brand' }) as HTMLSelectElement).value).toBe('all')
   })

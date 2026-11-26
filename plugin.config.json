@@ -20,88 +20,6 @@
           "mode": "Ikea"
         }
       },
-      "richemont": {
-        "label": "Richemont",
-        "accessCodeHash": "befc12be9b11c22edb1d940a302240e169d9bf1fe5f3b792045c69f68b740624",
-        "source": {
-          "collection": "Brand UI",
-          "mode": "Richemont"
-        }
-      },
-      "disney": {
-        "label": "Disney",
-        "accessCodeHash": "a399f6987cdc072eca9071441ccb9b12942e0ab9ac5ace642986e9073e066483",
-        "source": {
-          "collection": "Brand UI",
-          "mode": "Disney"
-        }
-      },
-      "fiskars": {
-        "label": "Fiskars",
-        "accessCodeHash": "9f81f02453c606871fa84256f439fd334b4e47a402cb1edacd80ebf4f9796577",
-        "source": {
-          "collection": "Brand UI",
-          "mode": "Fiskars"
-        }
-      },
-      "akzonobel": {
-        "label": "AkzoNobel",
-        "accessCodeHash": "0139f022ff66fe24375d6ba0b34b2e2395e7ecc43d9dfe4e2500775708b1ac62",
-        "source": {
-          "collection": "Brand UI",
-          "mode": "AkzoNobel"
-        },
-        "tabs": [
-          {
-            "id": "a11y",
-            "enabled": true
-          },
-          {
-            "id": "jira",
-            "enabled": true
-          },
-          {
-            "id": "varmapper",
-            "enabled": true
-          },
-          {
-            "id": "uxai",
-            "enabled": true
-          },
-          {
-            "id": "agents",
-            "enabled": true
-          },
-          {
-            "id": "varsearch",
-            "enabled": true
-          },
-          {
-            "id": "audit",
-            "enabled": true
-          },
-          {
-            "id": "mcp",
-            "enabled": true
-          },
-          {
-            "id": "publish",
-            "enabled": false
-          },
-          {
-            "id": "documentation",
-            "enabled": false
-          }
-        ]
-      },
-      "adecco": {
-        "label": "Adecco",
-        "accessCodeHash": "4a2aa946346f2810d67b797f5dd41f3722d491c2b3ef394e4625933332bb5ee3",
-        "source": {
-          "collection": "Brand UI",
-          "mode": "Adecco"
-        }
-      },
       "gap": {
         "label": "Gap Inc.",
         "accessCodeHash": "4f5cd1f98e6bbab5f2c5345e2933a23855fb229c84600917470ff5425344b0e6",
@@ -195,6 +113,302 @@
             "jira",
             "mcp"
           ]
+        }
+      },
+      "ibm": {
+        "label": "IBM",
+        "accessCodeHash": "9766c3562014ce71ff7d71a6874ea2f656b0180024ff8bc07f3e3dfe53321a09",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "IBM"
+        }
+      },
+      "jpmorganchase": {
+        "label": "JPMorgan Chase",
+        "accessCodeHash": "3b51d48edb11c9fdbd30f13bbc1b4192a3b081e46dd058787ff5e6a7c2a1a96f",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "JPMorganChase"
+        }
+      },
+      "americanairlines": {
+        "label": "American Airlines",
+        "accessCodeHash": "7cb5266329fb6dc72a8021ccc9e34017764442cbf149f4e535af5842916a4d51",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "AmericanAirlines"
+        }
+      },
+      "sanofi": {
+        "label": "Sanofi",
+        "accessCodeHash": "f334c92c559465444e816a3f2d58cc9c60fa6e44c3b7f21a80849bf85dd41b09",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Sanofi"
+        }
+      },
+      "cisco": {
+        "label": "Cisco",
+        "accessCodeHash": "92e490549c01618a059e4d74c025a1c6436d333e3a39cb2ea91b37e6bf703ed6",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Cisco"
+        }
+      },
+      "adobe": {
+        "label": "Adobe",
+        "accessCodeHash": "a4f78e26c3a4a8ae2aff767da7a205d4280b6c85633f4c0ddd89caadcd1a5332",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Adobe"
+        }
+      },
+      "shieldai": {
+        "label": "Shield AI",
+        "accessCodeHash": "d2eddb62183b6c51c7f86a65ad5734309575a18531ff36e0e83408202da3f549",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "ShieldAI"
+        }
+      },
+      "merckgroup": {
+        "label": "Merck Group",
+        "accessCodeHash": "c400cbac31187e44fad50be648a3f5c4a9e9f549ecabd5086ae590da13d0bc48",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "MerckGroup"
+        }
+      },
+      "elililly": {
+        "label": "Eli Lilly",
+        "accessCodeHash": "d2fac0c4571dcc4e596d293bf4b786756a881acab69eeed6580035f4114d07a7",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "EliLilly"
+        }
+      },
+      "maersk": {
+        "label": "Maersk",
+        "accessCodeHash": "29bc176a79a3ec24c49be564e238b02c1c91656c1e4a02a356d5db46629f8e45",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Maersk"
+        }
+      },
+      "hyundaimotorgroup": {
+        "label": "Hyundai Motor Group",
+        "accessCodeHash": "725fd65086712344810499e9e305d542b08450f699b3350ecb404ddc9d11c457",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "HyundaiMotorGroup"
+        }
+      },
+      "bentleysystems": {
+        "label": "Bentley Systems",
+        "accessCodeHash": "0489c71a4f28352398c9ab7f4ad4fb3d0b70856bba6de1f07d6fce0796422867",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "BentleySystems"
+        }
+      },
+      "siemens": {
+        "label": "Siemens",
+        "accessCodeHash": "d28a89af8cd02696cee80e0f455044f4b15c67b8b491b09a4bf766bd6e6c0eaa",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Siemens"
+        }
+      },
+      "klm": {
+        "label": "KLM",
+        "accessCodeHash": "53df6e0620fa85049c9eb10b6b2dacba28a3b2da125b2a3829f8f10bd3b94205",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "KLM"
+        }
+      },
+      "southwest": {
+        "label": "Southwest Airlines",
+        "accessCodeHash": "9dd3d59f6d505dbc9a11e7a172527121f6fb65f46e168da6c4ff727a2597aac3",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Southwest"
+        }
+      },
+      "doordash": {
+        "label": "DoorDash",
+        "accessCodeHash": "4cacf8580df8fae62d82e086d3835b3a0ba69139ec315b26d03e610b2f9f8716",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "DoorDash"
+        }
+      },
+      "ups": {
+        "label": "UPS",
+        "accessCodeHash": "082665ae096aa1af862d0bae24a1983a225ee35ff0a3e4624fac828a4f8874cf",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "UPS"
+        }
+      },
+      "microsoft": {
+        "label": "Microsoft",
+        "accessCodeHash": "6b5cb0019cb4f4812ad45ae47f55df9a5605c7612e3dc1194af1e8d2ef935f7a",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Microsoft"
+        }
+      },
+      "sonatype": {
+        "label": "Sonatype",
+        "accessCodeHash": "49d7a5f22ee28a9637e79b42f712bb8630ea7b4f7f615b28c85863e14b4ec52f",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Sonatype"
+        }
+      },
+      "sap": {
+        "label": "SAP",
+        "accessCodeHash": "f29b11eb5a154391ada8df205a63074565fb9f5b52d5f1649e2210a11220e4fe",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "SAP"
+        }
+      },
+      "salesforce": {
+        "label": "Salesforce",
+        "accessCodeHash": "b3373c5b9c6c861aab28807c652f2cec768bfe69b0b2b6c16a3202863d471c00",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Salesforce"
+        }
+      },
+      "gevernova": {
+        "label": "GE Vernova",
+        "accessCodeHash": "cf5cd5b6846103adcb23f6e68a8e9a59f088e607e2c5a79472311d40c67bd712",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "GEVernova"
+        }
+      },
+      "github": {
+        "label": "GitHub",
+        "accessCodeHash": "5f5e7f9888d5e4b0c30c08b378942aa667008c7aed14ba6f91098272527fc186",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "GitHub"
+        }
+      },
+      "hertz": {
+        "label": "Hertz",
+        "accessCodeHash": "395734e451357fea74ddeb46770a905ec7f9a25bd5991c1259bdd637fd260494",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Hertz"
+        }
+      },
+      "optum": {
+        "label": "Optum",
+        "accessCodeHash": "9f9ef66b150426ff7d52a2605389518d41ee6c0892048d17db5fe61371e7180f",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Optum"
+        }
+      },
+      "meta": {
+        "label": "Meta",
+        "accessCodeHash": "f6252dee0ae293b1bae42878ab9925a2035ce25dd00395809cb00a0050b61c20",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Meta"
+        }
+      },
+      "amazon": {
+        "label": "Amazon",
+        "accessCodeHash": "752e6c01a7d2cecb9518f55d5494af84239f6a18778d06059faadfdda0a3121f",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Amazon"
+        }
+      },
+      "vanguard": {
+        "label": "Vanguard",
+        "accessCodeHash": "c1de36c5fa7fa14ea4bbea8eb6560af933df87ea5391591284ac56659450cda6",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Vanguard"
+        }
+      },
+      "atlassian": {
+        "label": "Atlassian",
+        "accessCodeHash": "8bd17a62cee51870e9bf4002640f8f50907673379ccf99858275af69ccdf199e",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Atlassian"
+        }
+      },
+      "omnicom": {
+        "label": "Omnicom Global Solutions",
+        "accessCodeHash": "7c01a27e3c7540ba4ebfc40158858418d6ad9ac59bcf74afc0b3acf43c4a3aad",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Omnicom"
+        }
+      },
+      "deltaairlines": {
+        "label": "Delta Air Lines",
+        "accessCodeHash": "7edd221e9da94248a8dc69a1d32f59abfd328a6f2c0186756b44c7664bcd2426",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "DeltaAirLines"
+        }
+      },
+      "lowes": {
+        "label": "Lowe's",
+        "accessCodeHash": "9708f705719dd1dfdb141be9ae8a26a910f98499413988e1772da31badbaaaae",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Lowes"
+        }
+      },
+      "tmobile": {
+        "label": "T-Mobile",
+        "accessCodeHash": "c749fb0d6a73ec36efe134cbb9fed5e839d18fbec99f24c8395e3d111c2fed69",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "TMobile"
+        }
+      },
+      "verizon": {
+        "label": "Verizon",
+        "accessCodeHash": "d0e6fa2bd1cfd28de25330a4d1397629ed973de7f81ad3a2afacf3bbef776e71",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Verizon"
+        }
+      },
+      "anthropic": {
+        "label": "Anthropic",
+        "accessCodeHash": "e58b730ef0fa6f55c1b42a5b268271872269886bca94b6ba555ed3e48f7f86a3",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Anthropic"
+        }
+      },
+      "apple": {
+        "label": "Apple",
+        "accessCodeHash": "e653caed3a87cb6def7d406b5304aaf1e980bdd855dac1f1a2301a3dc9a56da8",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Apple"
+        }
+      },
+      "figma": {
+        "label": "Figma",
+        "accessCodeHash": "b5eb8f4c163c6b1821405e4fe05c6ee312b29234e331d6abfa11dd301618d7dc",
+        "source": {
+          "collection": "Brand UI",
+          "mode": "Figma"
         }
       }
     }
@@ -326,5 +540,8 @@
   "window": {
     "width": 480,
     "height": 640
+  },
+  "deploy": {
+    "mode": "multi"
   }
 }

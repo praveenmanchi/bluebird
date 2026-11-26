@@ -18,8 +18,8 @@ describe('mock analytics', () => {
   })
 
   it('keeps people to the filtered brand and sorts every ranked list', () => {
-    const data = buildAnalytics(30, 'fiskars')
-    expect(new Set(data.users.map((u) => u.brand))).toEqual(new Set(['Fiskars']))
+    const data = buildAnalytics(30, 'microsoft')
+    expect(new Set(data.users.map((u) => u.brand))).toEqual(new Set(['Microsoft']))
     const sorted = (xs: readonly number[]) => xs.every((x, i) => i === 0 || xs[i - 1]! >= x)
     expect(sorted(data.features.map((f) => f.sessions))).toBe(true)
     expect(sorted(data.brands.map((b) => b.installs))).toBe(true)

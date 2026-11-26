@@ -93,10 +93,10 @@ describe('access-code session', () => {
     fireEvent.click(dom.getByRole('button', { name: 'Sign in' }))
     expect(await dom.findByText(/not recognised/)).toBeInTheDocument()
     expect(dom.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
-    fireEvent.input(input, { target: { value: 'fiskars-2026' } })
+    fireEvent.input(input, { target: { value: 'ibm-2026' } })
     fireEvent.click(dom.getByRole('button', { name: 'Sign in' }))
     await waitFor(() => expect(screen.value).toBe('app'))
-    expect(document.documentElement.dataset.brand).toBe('fiskars')
+    expect(document.documentElement.dataset.brand).toBe('ibm')
     expect(dom.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
   })
 
@@ -123,7 +123,7 @@ describe('access-code session', () => {
   })
 
   it('reset asks for confirmation, then returns to login', async () => {
-    mount('disney')
+    mount('microsoft')
     await waitFor(() => expect(screen.value).toBe('app'))
     fireEvent.click(dom.getByRole('button', { name: 'Settings' }))
     fireEvent.click(await dom.findByRole('button', { name: 'Reset all settings' }))

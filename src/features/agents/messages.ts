@@ -60,8 +60,8 @@ export const runRequestSchema = z.object({
   scope: scopeIdSchema,
   /** Rule ids switched on in Setup; an empty list means every rule. */
   rules: z.array(z.string().check(z.maxLength(64))).check(z.maxLength(64)),
-  /** Brand modes to check (the Accessibility agent); empty means the file's current mode only. */
-  brandModes: z.array(z.string().check(z.maxLength(64))).check(z.maxLength(16)),
+  /** Brand modes to check (the Accessibility agent); empty means the file's current mode only. Figma caps a collection at 40 modes. */
+  brandModes: z.array(z.string().check(z.maxLength(64))).check(z.maxLength(64)),
   mode: z.enum(RUN_MODES),
 })
 export type RunRequest = z.infer<typeof runRequestSchema>

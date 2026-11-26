@@ -24,15 +24,20 @@ If your team lead installed it for you, skip to **Sign in**.
 
 Each brand has its own access code. Enter yours on the login screen and accept the terms.
 
+Every code is the brand's Figma mode name in capitals plus `-2026`. All 40 were checked against `accessCodeHash` in `plugin.config.json` on 2026-11-26.
+
 | Brand | Access code |
 |---|---|
 | Bridge | `BRIDGE-2026` |
-| Ikea | _verify `IKEA-2026` against the config hash, then fill in_ |
-| Richemont | _verify `RICHEMONT-2026` against the config hash, then fill in_ |
-| Disney | _verify `DISNEY-2026` against the config hash, then fill in_ |
-| Fiskars | _verify `FISKARS-2026` against the config hash, then fill in_ |
+| Ikea | `IKEA-2026` |
+| Gap Inc. | `GAP-2026` |
+| IBM | `IBM-2026` |
+| GE Vernova | `GEVERNOVA-2026` |
+| Delta Air Lines | `DELTAAIRLINES-2026` |
+| T-Mobile | `TMOBILE-2026` |
+| Lowe's | `LOWES-2026` |
 
-Bridge is confirmed: `npm run access-code -- BRIDGE-2026` prints the hash stored for that brand. The other four follow the same `<BRAND>-2026` pattern but are not yet confirmed here. Run the script for each and check the printed hash against `accessCodeHash` in `plugin.config.json` before handing them out.
+The other brands follow the same rule, for example `JPMORGANCHASE-2026`, `HYUNDAIMOTORGROUP-2026`, `OMNICOM-2026`. `npm run access-code -- <CODE>` prints the hash to compare.
 
 The **Sign in with SSO** buttons are visible but not connected yet. They show a message pointing you back to the access code. That is expected.
 
