@@ -42,7 +42,7 @@ describe('ConfigPage', () => {
     const github = screen.getByRole('region', { name: 'GitHub output configuration' })
     fireEvent.click(within(github).getByText('Set here'))
     fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'ikea/tokens' } })
-    expect(within(github).getByLabelText('API key')).toBeDisabled()
+    expect(within(github).getByLabelText('Access token')).toBeDisabled()
     expect(screen.getByText(/Unsaved changes: Ikea/)).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))

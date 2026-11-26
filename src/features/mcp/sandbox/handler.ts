@@ -4,7 +4,7 @@
 // request exists yet. Nothing is pushed from here: Claude Code or Cursor
 // writes the code and opens the pull request from the prompt the tab copies.
 import type { HandlerMap } from '@shared/bridge'
-import { MCP_SCENARIOS, MCP_SCENARIO_LABEL, mcpTarget, mcpTargetProblem, type IntegrationValues, type McpScenario } from '@shared/integrations'
+import { MCP_SCENARIOS, MCP_SCENARIO_LABEL, githubHost, mcpTarget, mcpTargetProblem, type IntegrationValues, type McpScenario } from '@shared/integrations'
 import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'
 import { isStorageProblem, resolveStorage } from '@shared/history/config'
 import { listEntries } from '@shared/history/github'
@@ -77,8 +77,6 @@ async function impact(payload: unknown): Promise<ImpactResult> {
   return findImpact(components)
 }
 
-const trimSlash = (s: string) => s.trim().replace(/\/+$/, '')
-
 /** The client's messages point at Settings › GitHub and ask for write access; this lookup uses the scenario's own token and only reads. */
 function trackError(error: unknown, scenario: McpScenario, repo: string): Error {
   if (!(error instanceof GithubError)) return error instanceof Error ? error : new Error('GitHub could not be reached')
@@ -96,8 +94,7 @@ export async function track(payload: unknown, deps: TrackDeps): Promise<TrackRes
   const problem = mcpTargetProblem(mcp, scenario)
   if (problem) throw new Error(problem)
   const target = mcpTarget(mcp, scenario)
-  const base = trimSlash(mcp.enterpriseUrl)
-  const client = createGithubClient({ api: base ? `${base}/api/v3` : 'https://api.github.com', token: target.token, repo: target.repo, branch: target.branch, tokenPath: '' }, deps.fetch)
+  const client = createGithubClient({ api: githubHost(mcp.enterpriseUrl).api, token: target.token, repo: target.repo, branch: target.branch, tokenPath: '' }, deps.fetch)
   if (branches) {
     const fail = (error: unknown): never => { throw trackError(error, scenario, target.repo) }
     const recent = await client.recentPulls(target.branch).catch(fail)

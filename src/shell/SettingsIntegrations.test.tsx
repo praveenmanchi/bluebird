@@ -323,7 +323,7 @@ describe('SettingsIntegrations', () => {
       const github = await section('GitHub output configuration')
       expect(within(github).getByText('Set by Ikea')).toBeInTheDocument()
       expect(within(github).getByLabelText('Repository (owner/repo)')).toBeDisabled()
-      expect(within(github).getByLabelText('API key')).not.toBeDisabled()
+      expect(within(github).getByLabelText('Access token')).not.toBeDisabled()
       expect(within(github).getByRole('button', { name: 'Save configuration' })).toBeInTheDocument()
     })
 
@@ -351,5 +351,88 @@ describe('SettingsIntegrations team setup file', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply settings' }))
     await waitFor(() => expect(within(screen.getByRole('region', { name: 'Storybook' })).getByText('Configured')).toBeInTheDocument())
     expect(within(screen.getByRole('dialog', { name: 'Import settings' })).getByText('Settings imported')).toBeInTheDocument()
+  })
+})
+
+describe('SettingsIntegrations · Connection card', () => {
+  const withGithub = (github: Partial<IntegrationSettings['github']>): IntegrationSettings => ({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, ...github } })
+  const withJira = (jira: Partial<IntegrationSettings['jira']>): IntegrationSettings => ({ ...DEFAULT_INTEGRATIONS, jira: { ...DEFAULT_INTEGRATIONS.jira, enabled: true, ...jira } })
+  const card = (region: HTMLElement, name: string) => within(within(region).getByRole('group', { name }))
+
+  it('asks where GitHub is, names what it found, and offers a token while no broker exists', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const github = await section('GitHub output configuration')
+    const connection = card(github, 'GitHub connection')
+    expect(connection.getByText('GitHub.com')).toBeInTheDocument()
+    expect(connection.getByRole('tab', { name: 'Sign in' })).toBeDisabled()
+    expect(connection.getByText(/Sign-in needs Bluebird Cloud/)).toBeInTheDocument()
+    expect(connection.getByLabelText('Access token')).toBeInTheDocument()
+    fireEvent.input(within(github).getByLabelText('Where’s your GitHub?'), { target: { value: 'acme.ghe.com' } })
+    expect(connection.getByText('GitHub Enterprise Cloud')).toBeInTheDocument()
+  })
+
+  it('signs in through the company gateway and saves the sign-in like a token', async () => {
+    const fetch = vi.fn(async (url: string) => url.endsWith('/keys')
+      ? { status: 200, json: async () => ({ read: 'r'.repeat(32), write: 'w'.repeat(32) }) }
+      : { status: 200, json: async () => ({ accessToken: 'gho_maria', account: '@maria-r', expiresAt: '' }) })
+    vi.stubGlobal('fetch', fetch)
+    const api = { ...fakeApi(withGithub({ gatewayUrl: 'https://gw.acme.internal', repo: 'acme/tokens' })), openExternal: vi.fn(async () => undefined) }
+    try {
+      render(<SettingsIntegrations api={api} />)
+      const github = await section('GitHub output configuration')
+      const connection = card(github, 'GitHub connection')
+      fireEvent.click(connection.getByRole('tab', { name: 'Sign in' }))
+      fireEvent.click(connection.getByRole('button', { name: 'Sign in with GitHub' }))
+      expect(await connection.findByText('Connected as @maria-r')).toBeInTheDocument()
+      expect(api.openExternal).toHaveBeenCalledWith(`https://gw.acme.internal/auth/github/start?host=github.com&write=${'w'.repeat(32)}`)
+      fireEvent.click(within(github).getByRole('button', { name: 'Save configuration' }))
+      await waitFor(() => expect(api.save).toHaveBeenCalledWith('github', expect.objectContaining({ method: 'signin', apiKey: 'gho_maria', signinAccount: '@maria-r' })))
+      fireEvent.click(connection.getByRole('button', { name: 'Disconnect' }))
+      expect(connection.getByRole('button', { name: 'Sign in with GitHub' })).toBeInTheDocument()
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('says when a sign-in expired and offers to sign in again', async () => {
+    render(<SettingsIntegrations api={fakeApi(withGithub({ gatewayUrl: 'https://gw.acme.internal', method: 'signin', apiKey: 'gho_old', signinAccount: '@maria-r', signinExpires: '2020-01-01T00:00:00Z' }))} />)
+    const github = await section('GitHub output configuration')
+    expect(within(github).getByText('Your GitHub sign-in expired')).toBeInTheDocument()
+    expect(card(github, 'GitHub connection').getByRole('button', { name: 'Sign in again' })).toBeInTheDocument()
+  })
+
+  it('asks Jira Cloud for an API token and email, and Data Center for a personal token only', async () => {
+    const { unmount } = render(<SettingsIntegrations api={fakeApi(withJira({ siteUrl: 'https://acme.atlassian.net' }))} />)
+    let jira = await section('Jira integration')
+    expect(card(jira, 'Jira connection').getByText('Jira Cloud')).toBeInTheDocument()
+    expect(within(jira).getByLabelText('API token')).toBeInTheDocument()
+    expect(within(jira).getByLabelText('Email')).toBeInTheDocument()
+    unmount()
+    render(<SettingsIntegrations api={fakeApi(withJira({ baseUrl: 'https://jira.acme.internal' }))} />)
+    jira = await section('Jira integration')
+    expect(card(jira, 'Jira connection').getByText('Jira Data Center')).toBeInTheDocument()
+    expect(within(jira).getByLabelText('Personal access token')).toBeInTheDocument()
+    expect(within(jira).queryByLabelText('Email')).toBeNull()
+  })
+
+  it('files a Cloud address under the site and anything else under the base URL', async () => {
+    const api = fakeApi(withJira({}))
+    render(<SettingsIntegrations api={api} />)
+    const jira = await section('Jira integration')
+    fireEvent.input(within(jira).getByLabelText('Where’s your Jira?'), { target: { value: 'jira.acme.internal' } })
+    fireEvent.input(within(jira).getByLabelText('Personal access token'), { target: { value: 'pat' } })
+    fireEvent.click(within(jira).getByRole('button', { name: 'Save configuration' }))
+    await waitFor(() => expect(api.save).toHaveBeenCalledWith('jira', expect.objectContaining({ baseUrl: 'https://jira.acme.internal', siteUrl: '' })))
+  })
+
+  it('shows the gateway address only while the gateway is on, and clears it when turned off', async () => {
+    const api = fakeApi(withJira({ siteUrl: 'https://acme.atlassian.net', proxyUrl: 'https://gw.acme.internal' }))
+    render(<SettingsIntegrations api={api} />)
+    const jira = await section('Jira integration')
+    expect((within(jira).getByLabelText('Company gateway URL') as HTMLInputElement).value).toBe('https://gw.acme.internal')
+    fireEvent.click(within(jira).getByRole('switch', { name: /Use a company gateway/ }))
+    expect(within(jira).queryByLabelText('Company gateway URL')).toBeNull()
+    fireEvent.click(within(jira).getByRole('button', { name: 'Save configuration' }))
+    await waitFor(() => expect(api.save).toHaveBeenCalledWith('jira', expect.objectContaining({ proxyUrl: '' })))
   })
 })

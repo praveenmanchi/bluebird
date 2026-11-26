@@ -66,13 +66,16 @@ describe('jira api · adf', () => {
 describe('jira api · settings and transport', () => {
   it('turns Settings into a connection, or says what is missing', () => {
     expect(configFromSettings({ ...DEFAULT_INTEGRATIONS.jira })).toEqual({ reason: 'disabled', missing: [] })
-    expect(configFromSettings(jira({ siteUrl: '', apiKey: '' }))).toEqual({ reason: 'incomplete', missing: ['Site URL', 'Jira API key'] })
+    expect(configFromSettings(jira({ siteUrl: '', apiKey: '' }))).toEqual({ reason: 'incomplete', missing: ['Jira address', 'API token'] })
     const cloud = configFromSettings(jira({ projectKey: ' DS ' }))
     expect(isConfig(cloud) && cloud).toMatchObject({ flavor: 'cloud', site: 'https://team.atlassian.net', endpoint: 'http://localhost:8787', projectKey: 'DS', authorization: `Basic ${base64('me@acme.com:tok')}` })
-    // The token only goes to an atlassian.net site through a local proxy: stored values are re-checked.
-    expect(configFromSettings(jira({ siteUrl: 'https://evil.example.com' }))).toEqual({ reason: 'invalid', missing: ['Site URL'] })
-    expect(configFromSettings(jira({ proxyUrl: 'https://proxy.example.com' }))).toEqual({ reason: 'invalid', missing: ['Proxy URL'] })
-    expect(configFromSettings(jira({ projectKey: 'ds" OR 1=1' }))).toEqual({ reason: 'invalid', missing: ['Project key'] })
+    // The token only goes to an atlassian.net site, through an https gateway or the local proxy: stored values are re-checked.
+    expect(configFromSettings(jira({ siteUrl: 'https://evil.example.com' }))).toEqual({ reason: 'invalid', missing: ['Jira address'] })
+    expect(configFromSettings(jira({ proxyUrl: 'http://proxy.example.com' }))).toEqual({ reason: 'invalid', missing: ['company gateway URL'] })
+    expect(configFromSettings(jira({ projectKey: 'ds" OR 1=1' }))).toEqual({ reason: 'invalid', missing: ['project key'] })
+    // A sign-in token is a bearer token and needs no email.
+    const signedIn = configFromSettings(jira({ method: 'signin', email: '' }))
+    expect(isConfig(signedIn) && signedIn.authorization).toBe('Bearer tok')
     const server = configFromSettings(jira({ baseUrl: 'https://jira.acme.com', email: '', proxyUrl: '' }))
     expect(isConfig(server) && server).toMatchObject({ flavor: 'server', site: 'https://jira.acme.com', endpoint: 'https://jira.acme.com', authorization: 'Bearer tok' })
   })
@@ -104,7 +107,7 @@ describe('jira api · settings and transport', () => {
     await expect(request('GET', '/field')).rejects.toThrow('Jira rejected the email or API token')
     await expect(request('GET', '/issue/X-1')).rejects.toThrow('Field x is bad')
     const down = createRequest(config, async () => { throw new TypeError('Failed to fetch') })
-    await expect(down('GET', '/myself')).rejects.toThrow('npm run jira:proxy')
+    await expect(down('GET', '/myself')).rejects.toThrow('Couldn’t reach the company gateway')
   })
 })
 
@@ -231,8 +234,8 @@ describe('jira sandbox handlers (live wiring)', () => {
   it('reports Not connected without calling Jira when Settings are incomplete', async () => {
     const fetchImpl = vi.fn<HttpFetch>()
     const h = createJiraHandlers(deps(jira({ apiKey: '' }), fetchImpl))
-    await expect(call<LoadResult>(h, MSG.load)).resolves.toEqual({ status: 'not-connected', reason: 'incomplete', missing: ['Jira API key'] })
-    await expect(call(h, MSG.issue, { key: 'DS-7' })).rejects.toThrow('Add your Jira API key in Settings')
+    await expect(call<LoadResult>(h, MSG.load)).resolves.toEqual({ status: 'not-connected', reason: 'incomplete', missing: ['API token'] })
+    await expect(call(h, MSG.issue, { key: 'DS-7' })).rejects.toThrow('Add your API token in Settings')
     expect(fetchImpl).not.toHaveBeenCalled()
   })
 
@@ -263,8 +266,8 @@ describe('jira sandbox handlers (live wiring)', () => {
     const h = createJiraHandlers(deps(jira({ apiKey: '' }), fetchImpl))
     await expect(call(h, MSG.test, jira({ enabled: false }))).resolves.toEqual({ message: 'Connected to team.atlassian.net through the proxy as Praveen Manchi.' })
     expect(calls[0]!.headers.authorization).toBe(`Basic ${base64('me@acme.com:tok')}`)
-    await expect(call(h, MSG.test, jira({ siteUrl: 'https://evil.example.com' }))).rejects.toThrow('Fix the Site URL')
-    await expect(call(h, MSG.test, jira({ apiKey: '' }))).rejects.toThrow('Add your Jira API key')
+    await expect(call(h, MSG.test, jira({ siteUrl: 'https://evil.example.com' }))).rejects.toThrow('Fix the Jira address')
+    await expect(call(h, MSG.test, jira({ apiKey: '' }))).rejects.toThrow('Add your API token')
     await expect(call(h, MSG.test, { siteUrl: 42 })).rejects.toThrow('incomplete')
     const denied = createJiraHandlers(deps(jira(), fakeJira({ 'GET /myself': { status: 401 } }).fetchImpl))
     await expect(call(denied, MSG.test, jira())).rejects.toThrow('Jira rejected the email or API token')

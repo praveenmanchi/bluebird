@@ -219,3 +219,49 @@
   font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
   color: var(--bb-input-fg-helper);
 }
+
+/* Connection card (Figma "Settings · 600 · Sign-in or token", 40003043:19074): where the service is,
+   alerts, then one bordered card with the detected service, the Sign in / Token switch and that state. */
+.bb-connection,
+.bb-connection__gateway {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+}
+.bb-connection > :is(.bb-input, .bb-notice),
+.bb-connection__gateway > :is(.bb-input, .bb-toggle),
+.bb-connection__card > :is(.bb-input, .bb-segmented-control, .bb-connection__signin),
+.bb-connection .bb-integrations__row > .bb-input {
+  width: 100%;
+  max-width: none;
+}
+.bb-connection__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-settings-space-section);
+  padding: var(--bb-dimension-space-12);
+  border: var(--bb-settings-section-border-width) solid var(--bb-border-default);
+  border-radius: var(--bb-card-variable-radius);
+}
+.bb-connection__head,
+.bb-connection__row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-settings-space-columns);
+}
+.bb-connection__head { justify-content: space-between; }
+/* Full width, like the two items of the Figma card's switch. */
+.bb-connection__method .bb-segmented-control__segment { flex: 1 1 0; justify-content: center; }
+.bb-connection__caption {
+  margin: 0;
+  font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);
+  color: var(--bb-input-fg-helper);
+}
+.bb-connection__who {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--bb-dimension-space-2);
+  min-width: 0;
+}
+.bb-connection__row > :is(.bb-button, .bb-avatar, svg) { flex: none; }

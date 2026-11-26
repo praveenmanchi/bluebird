@@ -2,7 +2,7 @@
 // plugin.config.json and turned back into the patch the dev server writes.
 import { brandTabRows, personaTabIds, type BrandTabConfig, type PluginConfig } from '@shared/config'
 import {
-  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, isSecretField, normalizeIntegration, validateIntegration,
+  DEFAULT_INTEGRATIONS, INTEGRATION_IDS, PERSONAL_FIELDS, isSecretField, normalizeIntegration, validateIntegration,
   type FieldErrors, type IntegrationId, type IntegrationValues,
 } from '@shared/integrations'
 
@@ -84,14 +84,17 @@ export function managedDefaults(section: IntegrationId): FieldValues {
   return withoutSecrets(section, DEFAULT_INTEGRATIONS[section] as FieldValues)
 }
 
+/** Keys and each person's own fields (who signed in): never set by a brand. */
+const personOnly = (section: IntegrationId, key: string): boolean => isSecretField(section, key) || (PERSONAL_FIELDS[section] ?? []).includes(key)
+
 export function withoutSecrets(section: IntegrationId, values: FieldValues): FieldValues {
-  return Object.fromEntries(Object.entries(values).filter(([key]) => !isSecretField(section, key)))
+  return Object.fromEntries(Object.entries(values).filter(([key]) => !personOnly(section, key)))
 }
 
 /** Field rules the plugin runs, minus the ones about keys: those are each person's to add. */
 export function managedErrors(section: IntegrationId, values: FieldValues): FieldErrors {
   const all = validateIntegration(section, { ...DEFAULT_INTEGRATIONS[section], ...values } as IntegrationValues)
-  return Object.fromEntries(Object.entries(all).filter(([key]) => !isSecretField(section, key)))
+  return Object.fromEntries(Object.entries(all).filter(([key]) => !personOnly(section, key)))
 }
 
 /** Every brand's sections with a field error, for the save bar. */

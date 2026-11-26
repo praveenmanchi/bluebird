@@ -58,6 +58,7 @@ export function SettingsIntegrations({ api, managed, managedBy, brandId }: Setti
             locked={managed?.[spec.id] ? Object.keys(managed[spec.id]!) : undefined}
             lockedBy={managedBy}
             onTest={api.test && TESTABLE_INTEGRATIONS.includes(spec.id) ? api.test : undefined}
+            openExternal={api.openExternal ? (url) => { void api.openExternal!(url).catch(() => undefined) } : undefined}
           />
       ))}
       {state.kind === 'ready' && (

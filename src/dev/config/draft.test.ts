@@ -54,7 +54,7 @@ describe('persona features', () => {
 
 describe('managed sections', () => {
   it('start from the defaults without keys or tokens', () => {
-    expect(managedDefaults('github')).toEqual({ repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true })
+    expect(managedDefaults('github')).toEqual({ repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '' })
   })
 
   it('report field errors but not the missing keys each person adds', () => {
