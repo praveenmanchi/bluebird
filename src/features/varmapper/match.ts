@@ -128,7 +128,7 @@ function valueIn(v: LibraryVariable, modes: MatchContext['modes']): string | und
 export function createMatcher(variables: readonly LibraryVariable[]): (input: MatchInput) => Recommendation {
   const collections = new Map<string, readonly string[]>()
   for (const v of variables) if (v.values.length > 1) collections.set(v.collection, v.values.map((m) => m.mode))
-  // A name that starts with a mode ("akzonobel/color/…") is that brand's own palette.
+  // A name that starts with a mode ("ibm/color/…") is that brand's own palette.
   const brands = new Set([...collections.values()].flat().map((m) => m.toLowerCase()))
   const entries = variables.map((variable): Entry => ({
     variable, key: variable.key, words: wordsOf(variable.name), first: prefixOf(variable.name, 1), firstTwo: prefixOf(variable.name, 2),

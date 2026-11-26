@@ -98,7 +98,7 @@ export function createMockHandlers({ scenario = 'default', brandId = 'bridge', s
     'shell:resize': async (payload: { width: number; height: number }) => { onResize?.(payload) },
     'shell:minimize': async () => { onResize?.(WINDOW_MINI) },
     ...createSessionHandlers(config, store),
-    ...createIntegrationsHandlers(store),
+    ...createIntegrationsHandlers(store, undefined, (url) => { window.open(url, '_blank', 'noopener') }),
     ...createOnboardingHandlers(store),
     ...createPersonaHandlers(config, store),
     ...createIntroHandlers(store),

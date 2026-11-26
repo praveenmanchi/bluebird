@@ -18,6 +18,19 @@ const ALL = Object.keys(DEFAULT_INTEGRATIONS) as (keyof IntegrationSettings)[]
 const NOW = new Date('2026-11-13T10:00:00.000Z')
 
 describe('buildSettingsFile', () => {
+  it('never writes a sign-in, even with keys included', () => {
+    const signedIn: IntegrationSettings = {
+      ...CONFIGURED,
+      github: { ...CONFIGURED.github, method: 'signin', apiKey: 'gho_maria', signinAccount: '@maria-r', signinExpires: '2026-12-01T00:00:00Z', gatewayUrl: 'https://gw.acme.internal' },
+    }
+    const github = buildSettingsFile(signedIn, { sections: ALL, includeKeys: true, now: NOW }).sections.github!
+    expect(github).not.toHaveProperty('apiKey')
+    expect(github).not.toHaveProperty('signinAccount')
+    expect(github).not.toHaveProperty('signinExpires')
+    // How the team connects, and where its gateway is, are shared.
+    expect(github).toMatchObject({ method: 'signin', gatewayUrl: 'https://gw.acme.internal' })
+  })
+
   it('includes the shared keys but never a personal Figma token', () => {
     const file = buildSettingsFile(CONFIGURED, { sections: ALL, includeKeys: true, brand: 'Bridge', now: NOW })
     expect(file).toMatchObject({ kind: SETTINGS_FILE_KIND, version: 1, exportedAt: NOW.toISOString(), brand: 'Bridge', includesKeys: true })

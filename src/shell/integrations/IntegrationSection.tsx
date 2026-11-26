@@ -20,6 +20,8 @@ export interface IntegrationSectionProps {
   lockedBy?: string
   /** The other sections' saved values, for a section whose status borrows one (Storage uses GitHub's). */
   others?: Partial<IntegrationSettings>
+  /** Opens sign-in and help pages in the browser. */
+  openExternal?: (url: string) => void
 }
 
 type Status =
@@ -42,7 +44,7 @@ const STATUS: Readonly<Record<SectionStatus, { label: string; tone: MetaBadgeTon
 }
 
 /** One bordered settings section: a header row (logo, title, description, status, arrow) that opens the fields and Test / Save actions. */
-export function IntegrationSection({ spec, initial, onSave, onTest, locked = [], lockedBy = 'your brand', others }: IntegrationSectionProps) {
+export function IntegrationSection({ spec, initial, onSave, onTest, locked = [], lockedBy = 'your brand', others, openExternal }: IntegrationSectionProps) {
   const [values, setValues] = useState<FieldValues>(initial as FieldValues)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
@@ -96,7 +98,7 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
   const lockedKeys = new Set(locked)
   // Nothing left for the person to fill (a managed section without keys): no Save / Test to offer.
   const editable = sectionFieldKeys(spec).some((key) => !lockedKeys.has(key))
-  const ctx = { values, errors, disabled: saving || testing, locked: lockedKeys, onChange }
+  const ctx = { values, errors, disabled: saving || testing, locked: lockedKeys, onChange, openExternal }
   const badge = STATUS[sectionStatus(spec.id, saved, others)]
   return (
     <section class="bb-integrations__section" aria-label={spec.title} data-section={spec.id} data-columns={spec.columns}>

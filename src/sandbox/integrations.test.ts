@@ -31,6 +31,24 @@ describe('integrations handlers', () => {
     expect(store.data.has(INTEGRATIONS_KEY)).toBe(true)
   })
 
+  it('opens https sign-in and help pages in the browser, and nothing else', async () => {
+    const opened: string[] = []
+    const h = createIntegrationsHandlers(memoryStore(), undefined, (url) => { opened.push(url) })
+    await call(h, INTEGRATIONS_MSG.open, { url: 'https://gw.acme.internal/auth/github/start?write=abc' })
+    await call(h, INTEGRATIONS_MSG.open, { url: 'http://localhost:8787/auth/jira/start' })
+    for (const url of ['javascript:alert(1)', 'http://evil.example.com', 'https://user:pw@evil.example.com', 'file:///etc/passwd']) {
+      await expect(call(h, INTEGRATIONS_MSG.open, { url })).rejects.toThrow('can’t be opened')
+    }
+    expect(opened).toEqual(['https://gw.acme.internal/auth/github/start?write=abc', 'http://localhost:8787/auth/jira/start'])
+  })
+
+  it('reads settings stored before the connection method existed as a pasted token', async () => {
+    const store = memoryStore()
+    store.data.set(INTEGRATIONS_KEY, { github: { apiKey: 'ghp_old', repo: 'a/b', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true } })
+    const all = await call(createIntegrationsHandlers(store), INTEGRATIONS_MSG.get) as typeof DEFAULT_INTEGRATIONS
+    expect(all.github).toMatchObject({ apiKey: 'ghp_old', method: 'token', gatewayUrl: '', signinAccount: '' })
+  })
+
   it('rejects an unknown section, a wrong shape and a value that fails the field rules', async () => {
     const h = createIntegrationsHandlers(memoryStore())
     await expect(call(h, INTEGRATIONS_MSG.save, { section: 'slack', values: {} })).rejects.toThrow('isn’t recognised')

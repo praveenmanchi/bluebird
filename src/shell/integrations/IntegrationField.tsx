@@ -1,5 +1,7 @@
 import { Icon, Input, TextArea, Toggle } from '@shared/ui'
 import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors, type LibraryFileEntry } from '@shared/integrations'
+import { ConnectionCard } from './ConnectionCard'
+import { GatewayField } from './GatewayField'
 import { LibraryFilesList } from './LibraryFilesList'
 import { ScenarioGroup } from './ScenarioGroup'
 import { SelectInput } from './SelectInput'
@@ -14,7 +16,11 @@ export interface FieldContext {
   /** Brand-managed keys: shown, not editable. */
   locked?: ReadonlySet<string>
   onChange: (key: string, value: FieldValues[string]) => void
+  /** Opens a sign-in or help page in the browser (the sandbox's figma.openExternal in the plugin). */
+  openExternal?: (url: string) => void
 }
+
+const openInTab = (url: string) => { window.open(url, '_blank', 'noopener') }
 
 const str = (v: FieldValues[string] | undefined) => typeof v === 'string' ? v : ''
 
@@ -62,6 +68,10 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
     }
     case 'group':
       return <ScenarioGroup spec={spec} ctx={ctx} />
+    case 'connection':
+      return <ConnectionCard spec={spec} ctx={ctx} openExternal={ctx.openExternal ?? openInTab} />
+    case 'gateway':
+      return <GatewayField spec={spec} ctx={ctx} />
     case 'provider':
       return (
         <div class="bb-integrations__provider">

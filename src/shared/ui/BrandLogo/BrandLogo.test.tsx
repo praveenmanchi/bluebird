@@ -5,9 +5,11 @@ import { fileURLToPath } from 'node:url'
 import { render } from '@testing-library/preact'
 import type { ComponentChild } from 'preact'
 import { BrandLogo } from './BrandLogo'
+import { BRANDS } from '../../brand/generated/tokens'
 
 // Vitest blanks CSS imports (even ?raw), so the stylesheet is read from disk.
-const css = readFileSync(fileURLToPath(import.meta.url).replace(/\.test\.tsx$/, '.css'), 'utf8')
+const here = dirname(fileURLToPath(import.meta.url))
+const css = readFileSync(resolve(here, 'BrandLogo.css'), 'utf8') + readFileSync(resolve(here, 'reveal.generated.css'), 'utf8')
 const derived = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../brand/generated/derived.css'), 'utf8')
 
 /** jsdom cascades stylesheet rules but neither inherits custom properties nor substitutes var(): do both. */
@@ -36,13 +38,12 @@ function shownLogos(ui: ComponentChild): (string | null)[] {
   return withStyles(ui, (container) => [...container.querySelectorAll('svg[data-logo]')].filter((n) => display(n) !== 'none').map((n) => n.getAttribute('data-logo')))
 }
 
-const BRANDS = ['bridge', 'ikea', 'richemont', 'disney', 'fiskars', 'akzonobel', 'adecco', 'gap'] as const
 
 describe('BrandLogo', () => {
   it('renders every brand logo so [data-brand] can reveal the active one', () => {
     const { container } = render(<BrandLogo />)
     const logos = [...container.querySelectorAll('svg[data-logo]')].map((n) => n.getAttribute('data-logo'))
-    expect(logos).toEqual(['bridge', 'ikea', 'richemont', 'disney', 'fiskars', 'akzonobel', 'adecco', 'gap'])
+    expect(logos).toEqual([...BRANDS])
     expect(container.querySelector('[data-forced]')).toBeNull()
   })
   it('renders a single forced logo when brand is given', () => {
@@ -67,18 +68,20 @@ describe('BrandLogo', () => {
       const style = getComputedStyle(container.querySelector('svg')!)
       return [style.width, style.height]
     })
-    expect(size).toEqual(['var(--bb-derived-brand-logo-vector-1-brand-ikea-width)', 'var(--bb-derived-brand-logo-vector-1-brand-ikea-height)'])
+    expect(size).toEqual(['var(--bb-derived-brand-logo-vector-1-width)', 'var(--bb-derived-brand-logo-vector-1-height)'])
     // Both ikea vectors are named "Vector": `vector--1` is the oval only while it stays the first of them.
-    expect(derived).toContain('--bb-derived-brand-logo-vector-1-brand-ikea-width: 106.3px;')
-    expect(derived).toContain('--bb-derived-brand-logo-vector-1-brand-ikea-height: 35px;')
+    expect(derived).toContain('--bb-derived-brand-logo-vector-1-width: 106.3px;')
+    expect(derived).toContain('--bb-derived-brand-logo-vector-1-height: 35px;')
   })
-  it('renders the current fiskars export, whose box fills the 140x30 frame instead of letterboxing', () => {
-    const { container } = render(<BrandLogo brand="fiskars" />)
-    const svg = container.querySelector('svg')!
-    expect(svg.getAttribute('viewBox')).toBe('0 0 141 30')
-    // The 140.4x29.6 box starts at the origin; the orange wordmark replaced the white one on 2026-09-23.
-    expect(svg.querySelector('path')?.getAttribute('d')).toMatch(/^M0 0H140\.4/)
-    expect(svg.innerHTML).toContain('fill="#DE8A2E"')
+  it('draws client brands from their brand-<id> export, so a same-named integration mark is untouched', () => {
+    const svg = render(<BrandLogo brand="github" />).container.querySelector('svg')!
+    expect(svg.getAttribute('data-logo')).toBe('github')
+    // The Figma variant is 105x34 (white wordmark for the dark banner); the integration mark github.svg is a square glyph.
+    expect(svg.getAttribute('viewBox')).toBe('0 0 105 34')
+    expect(render(<BrandLogo logo="github" />).container.querySelector('svg')!.getAttribute('viewBox')).not.toBe('0 0 105 34')
+  })
+  it('ships artwork for every brand mode', () => {
+    for (const brand of BRANDS) expect(render(<BrandLogo brand={brand} />).container.querySelector('svg'), brand).not.toBeNull()
   })
   it('reveals the logo of the nearest [data-brand], so a nested brand scope shows only its own', () => {
     expect(shownLogos(<div data-brand="ikea"><BrandLogo /></div>)).toEqual(['ikea'])

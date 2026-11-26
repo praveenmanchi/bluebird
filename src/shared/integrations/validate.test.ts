@@ -28,7 +28,8 @@ describe('validateIntegration', () => {
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, projectKey: 'DS', email: 'user@company.com', siteUrl: 'https://team.atlassian.net' })).toEqual({})
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, proxyUrl: 'http://localhost:8787' })).toEqual({})
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, proxyUrl: 'http://proxy.acme.com' }).proxyUrl).toBeDefined()
-    expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, proxyUrl: 'https://proxy.acme.com' }).proxyUrl).toBeDefined()
+    // The company gateway is any https address.
+    expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, proxyUrl: 'https://bluebird-gateway.acme.com' })).toEqual({})
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, siteUrl: 'https://evil.example.com' }).siteUrl).toBeDefined()
     expect(validateIntegration('jira', { ...DEFAULT_INTEGRATIONS.jira, siteUrl: 'http://team.atlassian.net' }).siteUrl).toBeDefined()
   })

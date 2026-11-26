@@ -21,10 +21,10 @@ describe('applyBrandPatch', () => {
   })
 
   it('clears an override with null and drops sections left empty', () => {
-    const once = applyBrandPatch(raw(), { disney: { tabs: [{ id: 'mcp', enabled: true }], integrations: { storybook: { baseUrl: 'https://sb.example.com' } } } })
-    const cleared = applyBrandPatch(once, { disney: { tabs: null, integrations: { storybook: {} } } })
-    expect(cleared.brand.brands.disney).not.toHaveProperty('tabs')
-    expect(cleared.brand.brands.disney).not.toHaveProperty('integrations')
+    const once = applyBrandPatch(raw(), { ibm: { tabs: [{ id: 'mcp', enabled: true }], integrations: { storybook: { baseUrl: 'https://sb.example.com' } } } })
+    const cleared = applyBrandPatch(once, { ibm: { tabs: null, integrations: { storybook: {} } } })
+    expect(cleared.brand.brands.ibm).not.toHaveProperty('tabs')
+    expect(cleared.brand.brands.ibm).not.toHaveProperty('integrations')
   })
 
   it('writes and clears a brand’s persona features, and refuses ones the config doesn’t have', () => {

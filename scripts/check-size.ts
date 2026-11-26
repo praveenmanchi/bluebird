@@ -116,6 +116,11 @@ import { resolve } from 'node:path'
 // 2026-11-15 (Intro screens): user raised the budget to 1740 KB. The Figma API key screen (with the
 // designer's 25 KB token-list screenshot), the coach-mark layout + 12 tab intros, What's new and the
 // footer info button, plus 31 intro/* Brand UI tokens × 8 brands took the build to 1731.3 KB.
+// 2026-11-26 (40 brand modes): no raise. Richemont, Disney, Fiskars, AkzoNobel and Adecco left and 37
+// client brands arrived (40 modes, Figma's cap). gen-tokens now writes one shared brand.default.css on
+// [data-brand] with Brand UI aliases kept as var(), so each brand file holds only its own values (~2 KB
+// instead of ~41 KB): brand CSS went from ~330 KB for 8 brands to ~116 KB for 40. The 37 logos add
+// ~175 KB; build 1728.5 KB.
 const BUDGET_KB = 1740
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024

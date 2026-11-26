@@ -2,6 +2,7 @@
 // fields it needs are filled in, not that a connection was tested (Test Connection does that).
 import { isProviderConfig, selectProvider } from '@shared/ai'
 import { connectedScenarios, type IntegrationId, type IntegrationSettings, type IntegrationValues } from '@shared/integrations'
+import { configFromSettings, isConfig } from '@shared/jira/http'
 
 export type SectionStatus = 'configured' | 'missing' | 'off'
 
@@ -12,7 +13,6 @@ const REQUIRED: Partial<Readonly<Record<IntegrationId, readonly string[]>>> = {
   github: ['apiKey', 'repo'],
   storybook: ['baseUrl'],
   zeroheight: ['apiKey', 'styleguideId'],
-  jira: ['projectKey', 'apiKey', 'email', 'siteUrl'],
 }
 
 const filled = (values: Bag, key: string) => typeof values[key] === 'string' && (values[key] as string).trim() !== ''
@@ -32,6 +32,8 @@ export function sectionStatus(id: IntegrationId, values: IntegrationValues, othe
   }
   // One connected scenario is enough: each team sets up only the hand-off it works on.
   if (id === 'mcp') return connectedScenarios(values as IntegrationValues<'mcp'>).length > 0 ? 'configured' : 'missing'
+  // Cloud needs an email with its API token; Data Center and a sign-in don't.
+  if (id === 'jira') return isConfig(configFromSettings(values as IntegrationValues<'jira'>)) ? 'configured' : 'missing'
   if (id === 'notifications') return ['designSystemWebhook', 'devTeamWebhook', 'outlookWebhook', 'emails'].some((k) => filled(bag, k)) ? 'configured' : 'missing'
   return (REQUIRED[id] ?? []).every((k) => filled(bag, k)) ? 'configured' : 'missing'
 }

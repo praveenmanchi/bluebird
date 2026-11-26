@@ -20,7 +20,13 @@ export const MAX_SETTINGS_FILE_BYTES = 256 * 1024
  */
 export const PERSONAL_FIELDS: { readonly [K in IntegrationId]?: readonly string[] } = {
   dualFile: ['token'],
+  // Who signed in, and until when: a sign-in belongs to the person.
+  github: ['signinAccount', 'signinExpires'],
+  jira: ['signinAccount', 'signinExpires'],
 }
+
+/** A signed-in section's apiKey holds that person's sign-in token, so it never goes in a file, even with keys included. */
+const signedInToken = (values: Record<string, unknown>, key: string): boolean => key === 'apiKey' && values.method === 'signin'
 
 const isPersonal = (id: IntegrationId, key: string): boolean => (PERSONAL_FIELDS[id] ?? []).includes(key)
 /** Keys, tokens and signed webhook URLs the team shares: in the file only when keys are included. */
@@ -52,8 +58,9 @@ export function buildSettingsFile(settings: IntegrationSettings, options: Export
   const sections: Record<string, SectionPatch> = {}
   for (const id of INTEGRATION_IDS) {
     if (!options.sections.includes(id)) continue
-    const entries = Object.entries(settings[id] as Record<string, unknown>)
-      .filter(([key]) => !isPersonal(id, key) && (options.includeKeys || !isSharedSecret(id, key)))
+    const values = settings[id] as Record<string, unknown>
+    const entries = Object.entries(values)
+      .filter(([key]) => !isPersonal(id, key) && !signedInToken(values, key) && (options.includeKeys || !isSharedSecret(id, key)))
     sections[id] = Object.fromEntries(entries)
   }
   return {

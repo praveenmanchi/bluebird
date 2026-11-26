@@ -39,9 +39,9 @@ describe('dev config middleware', () => {
   it('serves the config and writes a valid patch to the file', async () => {
     const handler = middleware(file)
     expect((await request(handler, 'GET')).json.ok).toBe(true)
-    const put = await request(handler, 'PUT', JSON.stringify({ fiskars: { tabs: [{ id: 'publish', enabled: true }] } }), json)
+    const put = await request(handler, 'PUT', JSON.stringify({ ibm: { tabs: [{ id: 'publish', enabled: true }] } }), json)
     expect(put.status).toBe(200)
-    expect(JSON.parse(readFileSync(file, 'utf8')).brand.brands.fiskars.tabs).toEqual([{ id: 'publish', enabled: true }])
+    expect(JSON.parse(readFileSync(file, 'utf8')).brand.brands.ibm.tabs).toEqual([{ id: 'publish', enabled: true }])
   })
 
   it('refuses other origins, non-JSON bodies, invalid configs and other methods, leaving the file alone', async () => {

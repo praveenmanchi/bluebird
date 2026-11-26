@@ -2,13 +2,13 @@
 // API base + token and wraps the handful of calls a release needs. Runs in the
 // Figma sandbox (no URL, btoa or TextEncoder there): bodies are JSON strings and
 // files are sent as tree `content`, so nothing needs base64.
-import { validateIntegration, type IntegrationValues } from '@shared/integrations'
+import { githubHost, validateIntegration, type IntegrationValues } from '@shared/integrations'
 import { base64, decodeBase64 } from './base64'
 
 export type GithubFetch = (url: string, init: { method: string; headers: Record<string, string>; body?: string }) => Promise<{ status: number; text(): Promise<string> }>
 
 export interface GithubConfig {
-  /** REST root without trailing slash: https://api.github.com, or <baseUrl>/api/v3 for GitHub Enterprise Server. */
+  /** REST root without trailing slash: https://api.github.com, api.<tenant>.ghe.com, or <baseUrl>/api/v3 for GitHub Enterprise Server. */
   api: string
   token: string
   /** owner/repository */
@@ -20,8 +20,6 @@ export interface GithubConfig {
 
 export type GithubProblem = { reason: 'incomplete' | 'invalid'; fields: string[] }
 
-const trimSlash = (s: string) => s.trim().replace(/\/+$/, '')
-
 /** The connection Settings › GitHub describes, or why there is none. */
 export function configFromSettings(s: IntegrationValues<'github'>): GithubConfig | GithubProblem {
   const missing = [...(s.repo.trim() ? [] : ['Repository']), ...(s.apiKey.trim() ? [] : ['Access token'])]
@@ -29,9 +27,8 @@ export function configFromSettings(s: IntegrationValues<'github'>): GithubConfig
   // Stored values are re-checked: the token is only ever sent to a host these rules allow.
   const invalid = Object.keys(validateIntegration('github', s))
   if (invalid.length) return { reason: 'invalid', fields: invalid }
-  const base = trimSlash(s.baseUrl)
   return {
-    api: base ? `${base}/api/v3` : 'https://api.github.com',
+    api: githubHost(s.baseUrl).api,
     token: s.apiKey.trim(),
     repo: s.repo.trim(),
     branch: s.branch.trim() || 'main',

@@ -5,11 +5,16 @@ import {
   applySettingsFile, isSecretField, parseSettingsFile, DEFAULT_INTEGRATIONS, MAX_SETTINGS_FILE_BYTES, PERSONAL_FIELDS,
   type IntegrationId, type IntegrationSettings, type ParsedSettingsFile, type ParseResult,
 } from '@shared/integrations'
-import { SECTIONS, flatFields, type LeafFieldSpec } from './sections'
+import { CONNECTION_KEYS, SECTIONS, flatFields, type LeafFieldSpec } from './sections'
 import { sectionStatus } from './status'
 
+/** What the Connection card's keys are called in a file summary. */
+// The method is always set and a sign-in is never in a file, so neither is listed.
+const CONNECTION_LABELS: Readonly<Record<string, string>> = { baseUrl: 'Address', siteUrl: 'Address', apiKey: 'API key', email: 'Email' }
 const labels = (field: LeafFieldSpec): [string, string][] => {
   if (field.kind === 'provider') return [[field.model.key, field.model.label], [field.apiKey.key, field.apiKey.label]]
+  if (field.kind === 'connection') return CONNECTION_KEYS[field.service].filter((key) => key in CONNECTION_LABELS).map((key) => [key, CONNECTION_LABELS[key]!])
+  if (field.kind === 'gateway') return [[field.key, 'Company gateway']]
   return [[field.key, field.kind === 'switch' ? field.title : field.label]]
 }
 /** "Repository (owner/repo)" → "Repository": short enough to list three in a row. */
@@ -29,7 +34,7 @@ const hasValue = (value: unknown): boolean => {
 
 /** "Repository, branch and 2 more": the filled-in text fields among `keys`. */
 export function describeFields(id: IntegrationId, values: Readonly<Record<string, unknown>>, keys: readonly string[] = Object.keys(values)): string {
-  const names = keys.filter((key) => hasValue(values[key])).map((key) => FIELD_LABELS[id]?.[key] ?? key)
+  const names = keys.filter((key) => hasValue(values[key]) && FIELD_LABELS[id]?.[key] !== undefined).map((key) => FIELD_LABELS[id]![key]!)
   if (names.length === 0) return 'Switches only'
   const shown = names.slice(0, 3)
   const rest = names.length - shown.length

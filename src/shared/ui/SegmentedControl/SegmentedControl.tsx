@@ -11,6 +11,8 @@ export interface SegmentOption<T extends string = string> {
   icon?: IconName
   /** The item's "Number value" count. Omit for off. */
   count?: ComponentChildren
+  /** Figma State=Disabled for this item alone: shown, not selectable. */
+  disabled?: boolean
 }
 
 export interface SegmentedControlProps<T extends string = string> extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'value'> {
@@ -36,8 +38,10 @@ export function SegmentedControl<T extends string = string>({ options, value, ic
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!step || items.length === 0 || disabled) return
     e.preventDefault()
-    const index = items.findIndex((o) => o.value === value)
-    const next = items[(index + step + items.length) % items.length]!.value
+    const enabled = items.filter((o) => !o.disabled)
+    if (enabled.length === 0) return
+    const index = enabled.findIndex((o) => o.value === value)
+    const next = enabled[(index + step + enabled.length) % enabled.length]!.value
     select(next)
     ;(e.currentTarget as HTMLElement).querySelector<HTMLElement>(`[data-option="${CSS.escape(next)}"]`)?.focus()
   }
@@ -52,8 +56,8 @@ export function SegmentedControl<T extends string = string>({ options, value, ic
           selected={o.value === value}
           icon={o.icon ?? icons?.[o.value]}
           count={o.count}
-          disabled={disabled}
-          onClick={() => select(o.value)}
+          disabled={disabled || o.disabled}
+          onClick={() => { if (!o.disabled) select(o.value) }}
         >
           {o.label ?? o.value}
         </SegmentTab>

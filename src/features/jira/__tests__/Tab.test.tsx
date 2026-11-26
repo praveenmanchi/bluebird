@@ -206,7 +206,7 @@ describe('jira Tab', () => {
     window.addEventListener(OPEN_SETTINGS_EVENT, opened)
     mount({}, createMockHandlers('not-connected'))
     expect(await screen.findByRole('heading', { name: 'Connect your Jira site' })).toBeInTheDocument()
-    expect(screen.getByText(/Add your Site URL, Jira API key, Email ID in Settings/)).toBeInTheDocument()
+    expect(screen.getByText(/Add your Jira address, API token, email in Settings/)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Open Settings' }))
     expect(opened).toHaveBeenCalledTimes(1)
     window.removeEventListener(OPEN_SETTINGS_EVENT, opened)

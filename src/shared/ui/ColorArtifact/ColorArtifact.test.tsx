@@ -6,8 +6,8 @@ describe('ColorArtifact', () => {
   it('renders one brand swatch per brand mode, each resolving in its own brand', () => {
     const { container } = render(<ColorArtifact />)
     const brands = [...container.querySelectorAll('.bb-color-swatch')].map((n) => n.getAttribute('data-brand'))
-    expect(brands).toEqual(['bridge', 'ikea', 'richemont', 'disney', 'fiskars'])
-    expect(screen.getByText('#FF8E00')).toBeInTheDocument()
+    expect(brands).toEqual(['bridge', 'ikea', 'gap', 'ibm', 'microsoft'])
+    expect(screen.getByText('#0F6CBD')).toBeInTheDocument()
     expect((container.querySelector('.bb-color-swatch') as HTMLElement).getAttribute('style')).toContain('var(--bb-surface-accent)')
   })
   it('titles the header with the variable and uses the colors glyph', () => {

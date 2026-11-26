@@ -2,12 +2,15 @@
 // shell screen and the mock. Values live in figma.clientStorage under one
 // `bluebird:` key, so "Reset all Settings" already clears them.
 import * as z from 'zod/mini'
+import { normalizeGithubAddress, normalizeJiraAddress, repoFromLink } from './hosts'
 
 export const INTEGRATIONS_MSG = {
   get: 'integrations:get',
   save: 'integrations:save',
   /** Applies a team setup file (see transfer.ts) to the person's stored settings. */
   import: 'integrations:import',
+  /** Opens a sign-in page or a token help page in the browser (the sandbox owns figma.openExternal). */
+  open: 'integrations:open',
 } as const
 
 export const INTEGRATIONS_KEY = 'bluebird:integrations'
@@ -76,8 +79,24 @@ export const MCP_FRAMEWORKS = ['React + TypeScript', 'Preact + TypeScript', 'Vue
 /** How a library update is split into pull requests. */
 export const MCP_PULL_REQUESTS = ['One per screen', 'One for all screens'] as const
 
+/**
+ * How a GitHub or Jira section connects (Settings › Connection card): a token the person pastes, or a sign-in
+ * through a Bluebird broker (Bluebird Cloud, or the company's gateway) that leaves a token in the same field.
+ */
+export const CONNECT_METHODS = ['token', 'signin'] as const
+export type ConnectMethod = (typeof CONNECT_METHODS)[number]
+
 export const sectionSchemas = {
-  github: z.object({ apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean() }),
+  github: z.object({
+    apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean(),
+    /** One of CONNECT_METHODS; absent in settings stored before 2026-11-26 → token. */
+    method: z._default(text(), 'token'),
+    /** The company's Bluebird gateway: where sign-in goes when the GitHub is only reachable on the VPN. */
+    gatewayUrl: z._default(text(), ''),
+    /** Who signed in ("@maria-r") and when that sign-in expires (ISO); both empty for a pasted token. */
+    signinAccount: z._default(text(), ''),
+    signinExpires: z._default(text(), ''),
+  }),
   notifications: z.object({ designSystemWebhook: text(), devTeamWebhook: text(), outlookWebhook: text(), emails: text() }),
   storybook: z.object({ baseUrl: text(), storyPathTemplate: text(), indexUrl: text(), linksEnabled: z.boolean() }),
   zeroheight: z.object({ apiKey: text(), styleguideId: text(), publicBaseUrl: text(), linksEnabled: z.boolean() }),
@@ -105,7 +124,13 @@ export const sectionSchemas = {
     libraryRepo: text(), libraryBranch: text(), libraryToken: text(), libraryPullRequests: text(),
     enterpriseUrl: text(),
   }),
-  jira: z.object({ enabled: z.boolean(), projectKey: text(), apiKey: text(), email: text(), siteUrl: text(), baseUrl: text(), proxyUrl: text() }),
+  /** `proxyUrl` is the company gateway (Settings › Use a company gateway), or the local proxy in development. */
+  jira: z.object({
+    enabled: z.boolean(), projectKey: text(), apiKey: text(), email: text(), siteUrl: text(), baseUrl: text(), proxyUrl: text(),
+    method: z._default(text(), 'token'),
+    signinAccount: z._default(text(), ''),
+    signinExpires: z._default(text(), ''),
+  }),
   /**
    * Where the team History lives: a GitHub repository every designer's plugin reads and writes.
    * `sameAsGithub` borrows the repository and token from the GitHub section; the folder is its own.
@@ -156,7 +181,7 @@ export function applyManaged(settings: IntegrationSettings, managed: ManagedInte
 
 /** First-run values: switches as the Figma screen shows them, selects on the Figma value, text empty. */
 export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
-  github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true },
+  github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '', signinAccount: '', signinExpires: '' },
   notifications: { designSystemWebhook: '', devTeamWebhook: '', outlookWebhook: '', emails: '' },
   storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true },
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
@@ -169,7 +194,7 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
     libraryRepo: '', libraryBranch: 'main', libraryToken: '', libraryPullRequests: 'One per screen',
     enterpriseUrl: '',
   },
-  jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '' },
+  jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '', method: 'token', signinAccount: '', signinExpires: '' },
   storage: { sameAsGithub: true, apiKey: '', repo: '', branch: 'main', baseUrl: '', folder: '.bluebird/history', refresh: 'Every minute' },
 }
 
@@ -198,10 +223,28 @@ const normalizeFile = (f: Partial<LibraryFileEntry>, i: number): LibraryFileEntr
 
 /** Trims every text value (pasted keys and URLs often carry spaces); Dual File rows also accept the whole file URL. */
 export function normalizeIntegration<K extends IntegrationId>(values: IntegrationValues<K>, section?: K): IntegrationValues<K> {
-  return Object.fromEntries(Object.entries(values).map(([k, v]) => {
+  const out = Object.fromEntries(Object.entries(values).map(([k, v]) => {
     if (section === 'dualFile' && k === 'files' && Array.isArray(v)) return [k, (v as Partial<LibraryFileEntry>[]).map(normalizeFile)]
     return [k, typeof v === 'string' ? v.trim() : v]
-  })) as IntegrationValues<K>
+  })) as Record<string, unknown>
+  if (section === 'github') return normalizeGithub(out) as IntegrationValues<K>
+  if (section === 'jira') return normalizeJira(out) as IntegrationValues<K>
+  return out as IntegrationValues<K>
+}
+
+const str = (v: unknown): string => (typeof v === 'string' ? v : '')
+
+/** "Where's your GitHub?" takes a bare host or a repository link: it keeps the host, and fills an empty repository from the link. */
+function normalizeGithub(v: Record<string, unknown>): Record<string, unknown> {
+  const typed = str(v.baseUrl)
+  if (!typed) return v
+  const repo = str(v.repo) || repoFromLink(typed) || ''
+  return { ...v, baseUrl: normalizeGithubAddress(typed), repo }
+}
+
+/** Jira addresses lose any path and gain https:// when typed bare ("acme.atlassian.net"). */
+function normalizeJira(v: Record<string, unknown>): Record<string, unknown> {
+  return { ...v, siteUrl: str(v.siteUrl) && normalizeJiraAddress(str(v.siteUrl)), baseUrl: str(v.baseUrl) && normalizeJiraAddress(str(v.baseUrl)) }
 }
 
 type OldSlot = readonly [id: string, key: string, role: string]

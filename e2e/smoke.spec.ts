@@ -46,8 +46,11 @@ for (const brand of BRANDS) {
 }
 
 test('every enabled tab is reachable from some persona', async ({ page }) => {
+  // A brand without its own tabs/personas gets the defaults, so the active brand stands in for all of them.
+  const { active, brands: all } = config.brand as { active?: string; brands: Record<string, { tabs?: unknown; personas?: unknown }> }
+  const brands = BRANDS.filter((id) => id === active || all[id]?.tabs || all[id]?.personas)
   const seen = new Set<string>()
-  for (const brand of BRANDS) {
+  for (const brand of brands) {
     for (const persona of PERSONAS) {
       await openPlugin(page, { brand, persona })
       await skipTour(page)

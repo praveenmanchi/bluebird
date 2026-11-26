@@ -10,10 +10,10 @@ describe('BrandSwatch', () => {
     expect(screen.getByText('#0A84FF')).toBeInTheDocument()
   })
   it('puts the brand mode on the swatch only and labels it with the brand name', () => {
-    const { container } = render(<BrandSwatch brand="richemont" hex="#004165" />)
-    expect(container.querySelector('.bb-color-swatch')?.getAttribute('data-brand')).toBe('richemont')
+    const { container } = render(<BrandSwatch brand="ibm" hex="#0F62FE" />)
+    expect(container.querySelector('.bb-color-swatch')?.getAttribute('data-brand')).toBe('ibm')
     expect(container.querySelector('.bb-brand-swatch')?.hasAttribute('data-brand')).toBe(false)
-    expect(screen.getByText('Richemont')).toBeInTheDocument()
+    expect(screen.getByText('IBM')).toBeInTheDocument()
   })
   it('passes a token colour through and honours a label override', () => {
     const { container } = render(<BrandSwatch brand="ikea" color="var(--bb-surface-accent)" label="IKEA (dark)" />)

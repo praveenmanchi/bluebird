@@ -23,7 +23,7 @@ export interface JiraConfig {
 export type SettingsProblem = { reason: 'disabled' | 'incomplete' | 'invalid'; missing: string[] }
 
 const trimSlash = (s: string) => s.trim().replace(/\/+$/, '')
-const FIELD_LABELS: Record<string, string> = { siteUrl: 'Site URL', baseUrl: 'Base URL', proxyUrl: 'Proxy URL', email: 'Email ID', projectKey: 'Project key' }
+const FIELD_LABELS: Record<string, string> = { siteUrl: 'Jira address', baseUrl: 'Jira address', proxyUrl: 'company gateway URL', email: 'email', projectKey: 'project key', method: 'connection method' }
 
 /** Host of a URL, lowercased — string work, not `new URL`: the sandbox has no URL. */
 function hostOf(url: string): string {
@@ -42,18 +42,20 @@ export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | S
   // into: Cloud removed /rest/api/*/search (CHANGE-2046), so a misfiled site would otherwise page
   // a dead endpoint and the board would come back empty.
   const server = hasBase && !isCloudHost(s.baseUrl)
+  // A sign-in leaves an OAuth bearer token in apiKey, so it needs no email.
+  const signedIn = s.method === 'signin'
   const missing = [
-    ...(hasBase || s.siteUrl.trim() ? [] : ['Site URL']),
-    ...(s.apiKey.trim() ? [] : ['Jira API key']),
-    ...(server || s.email.trim() ? [] : ['Email ID']),
+    ...(hasBase || s.siteUrl.trim() ? [] : ['Jira address']),
+    ...(s.apiKey.trim() ? [] : [signedIn ? 'Jira sign-in' : 'API token']),
+    ...(server || signedIn || s.email.trim() ? [] : ['email']),
   ]
   if (missing.length) return { reason: 'incomplete', missing }
   // Stored values are re-checked here: the token is only ever sent to a host these rules allow.
   const invalid = Object.keys(validateIntegration('jira', s))
   if (invalid.length) return { reason: 'invalid', missing: invalid.map((k) => FIELD_LABELS[k] ?? k) }
   const site = trimSlash(hasBase ? s.baseUrl : s.siteUrl)
-  // Server / DC personal access tokens are bearer tokens; Cloud API tokens are basic auth with the email.
-  const authorization = s.email.trim() ? `Basic ${base64(`${s.email.trim()}:${s.apiKey.trim()}`)}` : `Bearer ${s.apiKey.trim()}`
+  // Sign-in tokens and Server / DC personal access tokens are bearer tokens; Cloud API tokens are basic auth with the email.
+  const authorization = !signedIn && s.email.trim() ? `Basic ${base64(`${s.email.trim()}:${s.apiKey.trim()}`)}` : `Bearer ${s.apiKey.trim()}`
   return { flavor: server ? 'server' : 'cloud', site, endpoint: trimSlash(s.proxyUrl) || site, authorization, projectKey: s.projectKey.trim() }
 }
 
@@ -133,7 +135,7 @@ function failure(status: number, body: string, viaProxy: boolean): JiraError {
   switch (status) {
     case 401: return new JiraError('Jira rejected the email or API token. Check them in Settings › Jira integration.', status)
     case 403: return new JiraError(`Your Jira account isn’t allowed to do that.${said}`, status)
-    case 404: return new JiraError(`Jira couldn’t find that. Check the Site URL in Settings.${said}`, status)
+    case 404: return new JiraError(`Jira couldn’t find that. Check the Jira address in Settings.${said}`, status)
     case 429: return new JiraError('Jira is rate-limiting requests. Wait a minute and try again.', status)
     case 502: case 504: return new JiraError(viaProxy ? `The proxy couldn’t reach Jira.${said}` : `Jira didn’t respond.${said}`, status)
     default: return new JiraError(detail || `Jira answered ${status}.`, status)
@@ -155,8 +157,8 @@ export function createRequest(config: JiraConfig, fetchImpl: HttpFetch): JiraReq
       res = await fetchImpl(`${config.endpoint}/rest/api/${version}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) })
     } catch {
       throw new JiraError(viaProxy
-        ? 'Couldn’t reach the Jira proxy. Start it with `npm run jira:proxy` and check Settings › Proxy URL.'
-        : 'Couldn’t reach Jira from Figma. Jira Cloud blocks direct plugin calls — set a Proxy URL in Settings › Jira integration.', 0)
+        ? 'Couldn’t reach the company gateway. Check its address in Settings › Jira integration, and that you’re on the VPN.'
+        : 'Couldn’t reach Jira from Figma. Jira blocks direct plugin calls: turn on “Use a company gateway” in Settings › Jira integration.', 0)
     }
     const text = await res.text()
     if (res.status < 200 || res.status >= 300) throw failure(res.status, text, viaProxy)
@@ -164,7 +166,7 @@ export function createRequest(config: JiraConfig, fetchImpl: HttpFetch): JiraReq
     try {
       return JSON.parse(text) as T
     } catch {
-      throw new JiraError('Jira sent a response that isn’t JSON. Check the Site URL points at Jira.', res.status)
+      throw new JiraError('Jira sent a response that isn’t JSON. Check the Jira address points at Jira.', res.status)
     }
   }
 }

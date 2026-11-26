@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { FILE_ROLES, MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
+import { CONNECT_METHODS, FILE_ROLES, MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -38,15 +38,13 @@ const fileId: Rule = (v) => FILE_ID.test(v) ? null : 'Paste the file URL or its 
 const noSpaces: Rule = (v) => /\s/.test(v) ? 'Branch names can’t contain spaces' : null
 const jiraKey: Rule = (v) => JIRA_KEY.test(v) ? null : 'Use the uppercase project key, e.g. DS'
 // The Jira API token travels to these two, so they are pinned harder than a plain https URL:
-// Cloud sites live on atlassian.net, and the CORS proxy runs on this machine (npm run jira:proxy).
+// Cloud sites live on atlassian.net; the gateway is https (or the local proxy, npm run jira:proxy).
 const jiraSite: Rule = (v) => {
   const host = URL_PARTS.exec(v)?.[3]?.toLowerCase() ?? ''
   return isSafeUrl(v) && v.toLowerCase().startsWith('https://') && /^[a-z0-9-]+\.atlassian\.net$/.test(host) ? null : 'Use your Atlassian Cloud site, e.g. https://yourteam.atlassian.net'
 }
-const localProxy: Rule = (v) => {
-  const parts = URL_PARTS.exec(v)
-  return isSafeUrl(v) && parts && LOCAL_HOSTS.has(parts[3]!.toLowerCase()) ? null : 'Use the local proxy address, e.g. http://localhost:8787'
-}
+// The company's Bluebird gateway (or, in development, the local proxy): the token travels through it.
+const gateway: Rule = (v) => isSafeUrl(v) ? null : 'Use the gateway address IT gave you, e.g. https://bluebird-gateway.yourcompany.com'
 const oneOf = (options: readonly string[]): Rule => (v) => options.includes(v) ? null : `Pick one of: ${options.join(', ')}`
 // A repository folder: relative, no '..' segments, no leading slash — it ends up in a GitHub API path.
 const folder: Rule = (v) => /^(?!\/)(?!.*(^|\/)\.\.(\/|$))[\w.\-/]+$/.test(v) && !v.endsWith('/') ? null : 'Use a folder inside the repository, e.g. .bluebird/history'
@@ -55,7 +53,7 @@ const npmPackage: Rule = (v) => /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-
 const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') ? null : 'Include {slug} or {name} so each component gets its own story'
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
-  github: { repo, baseUrl: url },
+  github: { repo, baseUrl: url, gatewayUrl: gateway, method: oneOf(CONNECT_METHODS) },
   notifications: { designSystemWebhook: url, devTeamWebhook: url, outlookWebhook: url, emails },
   storybook: { baseUrl: url, indexUrl: url, storyPathTemplate: storyTemplate },
   zeroheight: { publicBaseUrl: url },
@@ -67,7 +65,7 @@ const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, 
     libraryRepo: repo, libraryToken: githubToken, libraryBranch: noSpaces, libraryPullRequests: oneOf(MCP_PULL_REQUESTS),
     enterpriseUrl: url,
   },
-  jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: localProxy },
+  jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: gateway, method: oneOf(CONNECT_METHODS) },
   storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS) },
 }
 

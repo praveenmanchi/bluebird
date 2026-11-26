@@ -20,9 +20,9 @@ export interface ColorArtifactUsage {
 const SWATCHES: readonly ColorArtifactSwatch[] = [
   { brand: 'bridge', hex: '#0C8CE9' }, // allow-raw: sample content mirroring the Figma component, shown as data
   { brand: 'ikea', hex: '#161616' }, // allow-raw: sample content mirroring the Figma component, shown as data
-  { brand: 'richemont', hex: '#004165' }, // allow-raw: sample content mirroring the Figma component, shown as data
-  { brand: 'disney', hex: '#0063E5' }, // allow-raw: sample content mirroring the Figma component, shown as data
-  { brand: 'fiskars', hex: '#FF8E00' }, // allow-raw: sample content mirroring the Figma component, shown as data
+  { brand: 'gap', hex: '#007DBB' }, // allow-raw: sample content mirroring the Figma component, shown as data
+  { brand: 'ibm', hex: '#0F62FE' }, // allow-raw: sample content mirroring the Figma component, shown as data
+  { brand: 'microsoft', hex: '#0F6CBD' }, // allow-raw: sample content mirroring the Figma component, shown as data
 ]
 const CHAIN: readonly string[] = ['surface/accent', 'bridge/color/primary/400-brand', '#0C8CE9'] // allow-raw: sample content mirroring the Figma component, shown as data
 const USAGE: readonly ColorArtifactUsage[] = [

@@ -14,9 +14,12 @@ import { readIntegrations, readManaged, type Brands } from '@shared/integrations
 import type { SessionStore } from './session'
 
 const importRequestSchema = z.object({ file: z.unknown(), keepExisting: z.boolean() })
+const openRequestSchema = z.object({ url: z.string().check(z.maxLength(2048)) })
+// https only (sign-in pages, token help), or a local gateway in development.
+const OPENABLE = /^(https:\/\/[^\s/?#@]+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)([/?#]\S*)?$/i
 
-/** `brands` defaults to plugin.config.json; tests pass their own. */
-export function createIntegrationsHandlers(store: SessionStore, brands?: Brands): HandlerMap {
+/** `brands` defaults to plugin.config.json; tests pass their own, and their own `open`. */
+export function createIntegrationsHandlers(store: SessionStore, brands?: Brands, open: (url: string) => void = (url) => figma.openExternal(url)): HandlerMap {
   /** The person's own values: what gets written back. */
   const stored = async (): Promise<IntegrationSettings> => mergeIntegrations(await store.get(INTEGRATIONS_KEY))
   /** What the plugin acts on: stored values with the brand's managed ones on top. */
@@ -30,6 +33,11 @@ export function createIntegrationsHandlers(store: SessionStore, brands?: Brands)
   }
   return {
     [INTEGRATIONS_MSG.get]: read,
+    [INTEGRATIONS_MSG.open]: async (payload: unknown): Promise<void> => {
+      const request = z.safeParse(openRequestSchema, payload)
+      if (!request.success || !OPENABLE.test(request.data.url)) throw new Error('That link can’t be opened.')
+      open(request.data.url)
+    },
     [INTEGRATIONS_MSG.save]: async (payload: unknown): Promise<IntegrationValues> => {
       const request = z.safeParse(saveRequestSchema, payload)
       if (!request.success) throw new Error('That settings section isn’t recognised.')

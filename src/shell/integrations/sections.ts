@@ -14,8 +14,21 @@ export interface TextAreaSpec { kind: 'textarea'; key: string; label: string; pl
 export interface ProviderSpec { kind: 'provider'; provider: 'claude' | 'openai' | 'gemini'; model: SelectFieldSpec; apiKey: TextFieldSpec }
 /** Dual File Mode's library files: named cards of Contains + Figma file URL, with Add file / Remove (Figma "Settings · 600 · Integrations open"). */
 export interface FilesListSpec { kind: 'files'; key: 'files'; label: string }
+/**
+ * Where the GitHub or Jira is, then a Connection card: sign in, or paste a token (Figma "Settings · 600 ·
+ * Sign-in or token", 40003043:19074). Edits CONNECTION_KEYS[service].
+ */
+export interface ConnectionSpec { kind: 'connection'; service: 'github' | 'jira' }
+/** "Use a company gateway": a switch that shows the gateway's address. Turning it off clears the address. */
+export interface GatewaySpec { kind: 'gateway'; key: string; description: string }
 /** A field that edits values itself: everything but a group. */
-export type LeafFieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec
+export type LeafFieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec | ConnectionSpec | GatewaySpec
+
+/** The value keys a Connection card edits. */
+export const CONNECTION_KEYS: Readonly<Record<ConnectionSpec['service'], readonly string[]>> = {
+  github: ['baseUrl', 'method', 'apiKey', 'signinAccount', 'signinExpires'],
+  jira: ['siteUrl', 'baseUrl', 'method', 'apiKey', 'email', 'signinAccount', 'signinExpires'],
+}
 /**
  * A bordered card of fields with its own status, e.g. one MCP hand-off scenario. `requires` are the
  * keys that make it "set up" (its repository and its token). Groups do not nest.
@@ -72,18 +85,14 @@ export const SECTIONS: readonly SectionSpec[] = [
     id: 'github', logo: 'github', title: 'GitHub output configuration', columns: 'halves',
     description: 'Configure the GitHub repository where extracted variables will be committed via Pull Request.',
     blocks: [
+      { kind: 'connection', service: 'github' },
+      { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/repository' },
       [
-        [
-          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'GitHub personal access token', secret: true },
-          { kind: 'select', key: 'branch', label: 'Branch', icon: 'branch', options: BRANCHES },
-        ],
-        [
-          { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/repository' },
-          { kind: 'select', key: 'tokenPath', label: 'Token storage location (file/folder path)', icon: 'folder', options: ['tokens.json', 'tokens', 'design-tokens.json'] },
-        ],
+        { kind: 'select', key: 'branch', label: 'Branch', icon: 'branch', options: BRANCHES },
+        { kind: 'select', key: 'tokenPath', label: 'Token storage location (file/folder path)', icon: 'folder', options: ['tokens.json', 'tokens', 'design-tokens.json'] },
       ],
-      { kind: 'text', key: 'baseUrl', label: 'Base URL - Enterprise (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: GITHUB_ENTERPRISE_HELPER },
       { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Publish tab compares local variables against the last pushed version on GitHub, showing what changed.' },
+      { kind: 'gateway', key: 'gatewayUrl', description: 'Only if IT runs the Bluebird gateway for a VPN-only GitHub. Sign-in goes through it.' },
     ],
   },
   {
@@ -180,18 +189,9 @@ export const SECTIONS: readonly SectionSpec[] = [
     id: 'jira', logo: 'jira', title: 'Jira integration', toggleKey: 'enabled', columns: 'halves',
     description: 'Connect Jira to browse and pull tickets into the Jira board tab. Tickets can be sent to UXAI for AI-assisted analysis.',
     blocks: [
-      [
-        [
-          { kind: 'text', key: 'projectKey', label: 'Project key', icon: 'api-key', placeholder: 'PROJ' },
-          { kind: 'text', key: 'apiKey', label: 'Jira API key', icon: 'api-key', placeholder: 'your-jira-api-token', secret: true },
-        ],
-        [
-          { kind: 'text', key: 'email', label: 'Email ID', icon: 'message', placeholder: 'user@company.com' },
-          { kind: 'text', key: 'siteUrl', label: 'Site URL', icon: 'api-key', placeholder: 'https://yourteam.atlassian.net' },
-        ],
-      ],
-      { kind: 'text', key: 'baseUrl', label: 'Base URL - Enterprise (optional)', icon: 'url', placeholder: 'https://jira.yourcompany.com', helper: 'For Jira Server or Data Center only. Leave blank for Atlassian Cloud (Site URL above).' },
-      { kind: 'text', key: 'proxyUrl', label: 'Proxy URL', icon: 'url', placeholder: 'http://localhost:8787', helper: 'Jira blocks direct calls from Figma plugins. Run `npm run jira:proxy` and enter http://localhost:8787.' },
+      { kind: 'connection', service: 'jira' },
+      { kind: 'text', key: 'projectKey', label: 'Project key', icon: 'api-key', placeholder: 'PROJ', helper: 'Optional. Shows only this project’s tickets.' },
+      { kind: 'gateway', key: 'proxyUrl', description: 'Jira blocks plugin calls, so requests go through a gateway IT runs (in development: npm run jira:proxy).' },
     ],
   },
 ]
@@ -206,7 +206,11 @@ export function flatFields(blocks: readonly (BlockSpec | ColumnSpec)[]): LeafFie
 }
 
 /** The value keys one field edits: an AI provider row edits its model and its key. */
-export const fieldKeys = (field: LeafFieldSpec): string[] => (field.kind === 'provider' ? [field.model.key, field.apiKey.key] : [field.key])
+export function fieldKeys(field: LeafFieldSpec): string[] {
+  if (field.kind === 'provider') return [field.model.key, field.apiKey.key]
+  if (field.kind === 'connection') return [...CONNECTION_KEYS[field.service]]
+  return [field.key]
+}
 
 /** Every value key a section's fields edit, header switch and the fields inside groups included. */
 export function sectionFieldKeys(spec: SectionSpec): string[] {
