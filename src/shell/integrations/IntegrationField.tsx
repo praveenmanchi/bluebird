@@ -1,11 +1,11 @@
-import { Icon, Input, TextArea, Toggle } from '@shared/ui'
+import { Icon, Input, SegmentedControl, TextArea, Toggle } from '@shared/ui'
 import { MAX_INSTRUCTIONS, MAX_TEXT, type FieldErrors, type LibraryFileEntry } from '@shared/integrations'
 import { ConnectionCard } from './ConnectionCard'
 import { GatewayField } from './GatewayField'
 import { LibraryFilesList } from './LibraryFilesList'
 import { ScenarioGroup } from './ScenarioGroup'
 import { SelectInput } from './SelectInput'
-import type { ColumnSpec, FieldSpec } from './sections'
+import type { ColumnSpec, FieldSpec, HostSpec } from './sections'
 
 export type FieldValues = Record<string, string | boolean | readonly LibraryFileEntry[]>
 
@@ -31,14 +31,17 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
   switch (spec.kind) {
     case 'text': {
       const error = errors[spec.key]
+      const bitbucket = spec.hostKey !== undefined && values[spec.hostKey] === 'bitbucket'
+      if (spec.onlyBitbucket && !bitbucket) return null
+      const copy = bitbucket ? { ...spec, ...spec.bitbucket } : spec
       return (
         <Input
-          label={spec.label}
+          label={copy.label}
           icon={spec.icon}
           password={spec.secret}
           value={str(values[spec.key])}
-          placeholder={spec.placeholder}
-          helperText={error ?? spec.helper}
+          placeholder={copy.placeholder}
+          helperText={error ?? copy.helper}
           error={error !== undefined}
           disabled={disabled}
           maxLength={MAX_TEXT}
@@ -72,6 +75,8 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
       return <ConnectionCard spec={spec} ctx={ctx} openExternal={ctx.openExternal ?? openInTab} />
     case 'gateway':
       return <GatewayField spec={spec} ctx={ctx} />
+    case 'host':
+      return <HostField spec={spec} ctx={ctx} disabled={disabled} />
     case 'provider':
       return (
         <div class="bb-integrations__provider">
@@ -81,6 +86,23 @@ export function IntegrationField({ spec, ctx }: { spec: FieldSpec; ctx: FieldCon
         </div>
       )
   }
+}
+
+const HOSTS = [{ value: 'github', label: 'GitHub' }, { value: 'bitbucket', label: 'Bitbucket' }] as const
+
+/** "Where's your code?": GitHub or Bitbucket. Switching clears the token and sign-in, which belong to the other host. */
+function HostField({ spec, ctx, disabled }: { spec: HostSpec; ctx: FieldContext; disabled: boolean }) {
+  const value = ctx.values[spec.key] === 'bitbucket' ? 'bitbucket' : 'github'
+  const pick = (next: string) => {
+    for (const key of spec.clears) ctx.onChange(key, '')
+    ctx.onChange(spec.key, next)
+  }
+  return (
+    <div class="bb-integrations__host">
+      {spec.label && <span class="bb-integrations__group-title">{spec.label}</span>}
+      <SegmentedControl aria-label={spec.label ?? 'Code host'} value={value} options={HOSTS} disabled={disabled} onChange={pick} />
+    </div>
+  )
 }
 
 /** A column of a row: one field, or a stack of fields. */

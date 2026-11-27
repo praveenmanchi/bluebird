@@ -58,6 +58,14 @@ export function sha256Hex(text: string): string {
 }
 
 /** Access codes are compared case-insensitively and ignoring surrounding whitespace. */
+/**
+ * One-way key of a Figma user id for login analytics (src/shared/analytics/login.ts). Made in the
+ * sandbox so the raw id never leaves Figma; the broker keys it again with its own secret.
+ */
+export function userKeyFor(figmaUserId: string): string {
+  return sha256Hex(`bluebird-login:${figmaUserId}`)
+}
+
 export function normalizeAccessCode(code: string): string {
   return code.trim().toUpperCase()
 }

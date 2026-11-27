@@ -19,7 +19,7 @@ describe('history storage', () => {
   })
 
   it('says which section to fix', () => {
-    expect(resolveStorage(storage, DEFAULT_INTEGRATIONS.github)).toEqual({ problem: expect.stringMatching(/Settings › GitHub, or turn off/) })
+    expect(resolveStorage(storage, DEFAULT_INTEGRATIONS.github)).toEqual({ problem: expect.stringMatching(/Settings › Code repository, or turn off/) })
     expect(resolveStorage({ ...storage, sameAsGithub: false }, github)).toEqual({ problem: 'Add the repository and API key in Settings › Storage' })
     expect(resolveStorage({ ...storage, folder: '../escape' }, github)).toEqual({ problem: 'Fix the history folder in Settings › Storage' })
     expect(resolveStorage({ ...storage, sameAsGithub: false, repo: 'acme/history', apiKey: 'k', baseUrl: 'http://evil.example' }, github)).toEqual({ problem: 'Fix the base URL in Settings › Storage' })

@@ -11,7 +11,7 @@ export interface ToolbarProps {
 function hint(): string {
   const s = status.value, r = result.value
   if (!s) return 'Checking GitHub…'
-  if (!s.repo.connected) return 'Extractions are saved to the repository in Settings › GitHub.'
+  if (!s.repo.connected) return 'Extractions are saved to the repository in Settings › Code repository.'
   if (r) {
     if (!r.baseline) return r.branch ? `${r.branch} has no extraction yet · everything in this file counts as new` : 'No branches yet · everything in this file counts as new'
     const k = countKinds(r.changes)

@@ -2,7 +2,7 @@
 // figma.clientStorage (per user, per plugin) so it survives plugin reopens.
 import type { HandlerMap } from '@shared/bridge'
 import { singleBrand, type PluginConfig } from '@shared/config'
-import { hashAccessCode, SESSION_KEY, SESSION_MSG, type Session, type SessionLoginRequest } from '@shared/session'
+import { hashAccessCode, SESSION_KEY, SESSION_MSG, userKeyFor, type LoginResult, type Session, type SessionLoginRequest } from '@shared/session'
 
 export { SESSION_KEY }
 
@@ -36,8 +36,9 @@ function isSession(v: unknown): v is Session {
  * session:status | login | logout | reset — same HandlerMap shape as the other
  * core handlers. A session persists across plugin runs until logout or reset.
  * A single-brand build has no sign-in: see singleBrandHandlers.
+ * `userId` is the Figma user id (main.ts); login answers only a one-way key of it, for analytics.
  */
-export function createSessionHandlers(config: PluginConfig, store: SessionStore): HandlerMap {
+export function createSessionHandlers(config: PluginConfig, store: SessionStore, userId: () => string | null = () => null): HandlerMap {
   const locked = singleBrand(config)
   if (locked) return singleBrandHandlers(locked, store)
   const current = async (): Promise<Session | null> => {
@@ -46,14 +47,15 @@ export function createSessionHandlers(config: PluginConfig, store: SessionStore)
   }
   return {
     [SESSION_MSG.status]: current,
-    [SESSION_MSG.login]: async (payload: SessionLoginRequest): Promise<Session> => {
+    [SESSION_MSG.login]: async (payload: SessionLoginRequest): Promise<LoginResult> => {
       const code = typeof payload?.code === 'string' ? payload.code : ''
       if (!code.trim()) throw new Error('Enter the access code you received from your design-system team.')
       const brandId = brandForCode(config, code)
       if (!brandId) throw new Error('That access code is not recognised.')
       const session: Session = { brandId, since: new Date().toISOString() }
       await store.set(SESSION_KEY, session)
-      return session
+      const id = userId()
+      return { ...session, userKey: id ? userKeyFor(id) : null }
     },
     [SESSION_MSG.logout]: async () => { await store.delete(SESSION_KEY) },
     [SESSION_MSG.reset]: () => resetAll(store),

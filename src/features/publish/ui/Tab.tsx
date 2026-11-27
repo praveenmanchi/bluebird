@@ -19,7 +19,7 @@ export interface PublishTabProps {
  * Publish tab — Figma "Publish flow v2 · 600": Review changes → Release notes →
  * Final review → Publish. The sandbox reads the file, diffs it against the last
  * release (kept in document plugin data) and publishes to the repository in
- * Settings › GitHub: one commit, then a pull request or a push, then the CI run.
+ * Settings › Code repository: one commit, then a pull request or a push, then the CI run.
  */
 export function PublishTab({ preloaded = false }: PublishTabProps) {
   const rpc = useRpc()

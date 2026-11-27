@@ -1,7 +1,7 @@
 // Field rules for Settings › Integrations. Empty optional fields pass; the
 // rules only reject a value that cannot work. The sandbox runs them again
 // before storing, so the screen and the store agree on what is valid.
-import { CONNECT_METHODS, FILE_ROLES, MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
+import { CODE_HOSTS, CONNECT_METHODS, FILE_ROLES, MAX_LIBRARY_FILES, MCP_FRAMEWORKS, MCP_PULL_REQUESTS, MODEL_OPTIONS, PROVIDER_OPTIONS, REFRESH_OPTIONS, type IntegrationId, type IntegrationValues } from './schema'
 
 export type FieldErrors = Partial<Record<string, string>>
 
@@ -33,7 +33,8 @@ const emails: Rule = (v) => v.split(',').map((e) => e.trim()).filter(Boolean).ev
 const email: Rule = (v) => EMAIL.test(v) ? null : 'Enter one email address, e.g. user@company.com'
 // Personal access tokens are printable ASCII; a pasted newline or smart quote can't go in a request header.
 const token: Rule = (v) => /^[\x21-\x7E]+$/.test(v) ? null : 'The key has spaces or characters a Figma token never has. Paste it again'
-const githubToken: Rule = (v) => /^[\x21-\x7E]+$/.test(v) ? null : 'The token has spaces or characters a GitHub token never has. Paste it again'
+const githubToken: Rule = (v) => /^[\x21-\x7E]+$/.test(v) ? null : 'The token has spaces or characters a GitHub or Bitbucket token never has. Paste it again'
+const host: Rule = (v) => (CODE_HOSTS as readonly string[]).includes(v) ? null : 'Pick GitHub or Bitbucket'
 const fileId: Rule = (v) => FILE_ID.test(v) ? null : 'Paste the file URL or its ID from figma.com/design/<file-id>/…'
 const noSpaces: Rule = (v) => /\s/.test(v) ? 'Branch names can’t contain spaces' : null
 const jiraKey: Rule = (v) => JIRA_KEY.test(v) ? null : 'Use the uppercase project key, e.g. DS'
@@ -45,6 +46,8 @@ const jiraSite: Rule = (v) => {
 }
 // The company's Bluebird gateway (or, in development, the local proxy): the token travels through it.
 const gateway: Rule = (v) => isSafeUrl(v) ? null : 'Use the gateway address IT gave you, e.g. https://bluebird-gateway.yourcompany.com'
+// Atlassian site ids are UUIDs; anything else could reach another api.atlassian.com path.
+const cloudId: Rule = (v) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v) ? null : 'Sign in again: the Jira site id isn’t valid'
 const oneOf = (options: readonly string[]): Rule => (v) => options.includes(v) ? null : `Pick one of: ${options.join(', ')}`
 // A repository folder: relative, no '..' segments, no leading slash — it ends up in a GitHub API path.
 const folder: Rule = (v) => /^(?!\/)(?!.*(^|\/)\.\.(\/|$))[\w.\-/]+$/.test(v) && !v.endsWith('/') ? null : 'Use a folder inside the repository, e.g. .bluebird/history'
@@ -53,7 +56,7 @@ const npmPackage: Rule = (v) => /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-
 const storyTemplate: Rule = (v) => v.includes('{slug}') || v.includes('{name}') ? null : 'Include {slug} or {name} so each component gets its own story'
 
 const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, Rule>> } = {
-  github: { repo, baseUrl: url, gatewayUrl: gateway, method: oneOf(CONNECT_METHODS) },
+  github: { repo, baseUrl: url, gatewayUrl: gateway, method: oneOf(CONNECT_METHODS), host, email },
   notifications: { designSystemWebhook: url, devTeamWebhook: url, outlookWebhook: url, emails },
   storybook: { baseUrl: url, indexUrl: url, storyPathTemplate: storyTemplate },
   zeroheight: { publicBaseUrl: url },
@@ -64,9 +67,10 @@ const RULES: { [K in IntegrationId]: Partial<Record<keyof IntegrationValues<K>, 
     screenRepo: repo, screenToken: githubToken, screenBranch: noSpaces, screenFramework: oneOf(MCP_FRAMEWORKS), screenFolder: folder, screenPackage: npmPackage,
     libraryRepo: repo, libraryToken: githubToken, libraryBranch: noSpaces, libraryPullRequests: oneOf(MCP_PULL_REQUESTS),
     enterpriseUrl: url,
+    componentHost: host, componentEmail: email, screenHost: host, screenEmail: email, libraryHost: host, libraryEmail: email,
   },
-  jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: gateway, method: oneOf(CONNECT_METHODS) },
-  storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS) },
+  jira: { projectKey: jiraKey, email, siteUrl: jiraSite, baseUrl: url, proxyUrl: gateway, method: oneOf(CONNECT_METHODS), cloudId },
+  storage: { repo, apiKey: token, branch: noSpaces, baseUrl: url, folder, refresh: oneOf(REFRESH_OPTIONS), host, email },
 }
 
 /** Longest name a library file can have: it is a label in Settings and UX AI's sources. */

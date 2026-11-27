@@ -2,19 +2,21 @@ import { describe, expect, it, vi } from 'vitest'
 import { pollSignIn, requestKeys, signInBroker, signInExpired, startUrl, SignInError } from './signin'
 
 type Reply = { status: number; body?: unknown } | Error
-const KEYS = { read: 'r'.repeat(32), write: 'w'.repeat(32) }
+const KEYS = { read: 'r'.repeat(32), write: 'w'.repeat(32), code: 'K7Q-X92' }
 
 /** Answers each request with the next reply. */
 function fakeFetch(replies: Reply[]) {
   const urls: string[] = []
-  const fetch = vi.fn(async (url: string) => {
+  const headers: Record<string, string>[] = []
+  const fetch = vi.fn(async (url: string, init: { headers: Record<string, string> }) => {
     urls.push(url)
+    headers.push(init.headers)
     const reply = replies.shift()
     if (!reply) throw new Error('no more replies')
     if (reply instanceof Error) throw reply
     return { status: reply.status, json: async () => reply.body }
   })
-  return { fetch, urls }
+  return { fetch, urls, headers }
 }
 const noSleep = async () => undefined
 
@@ -32,7 +34,11 @@ describe('sign-in broker', () => {
     const ok = fakeFetch([{ status: 200, body: KEYS }])
     await expect(requestKeys('https://gw', 'jira', { fetch: ok.fetch })).resolves.toEqual(KEYS)
     expect(ok.urls).toEqual(['https://gw/auth/jira/keys'])
+    expect(ok.headers[0]).toEqual({ 'x-connect-client': 'bluebird' })
     await expect(requestKeys('https://gw', 'jira', { fetch: fakeFetch([{ status: 200, body: { read: 'x' } }]).fetch })).rejects.toThrow(SignInError)
+    // The confirm code is what stops a phished start link: a broker that sends none (or a malformed one) is refused.
+    await expect(requestKeys('https://gw', 'jira', { fetch: fakeFetch([{ status: 200, body: { ...KEYS, code: undefined } }]).fetch })).rejects.toThrow(SignInError)
+    await expect(requestKeys('https://gw', 'jira', { fetch: fakeFetch([{ status: 200, body: { ...KEYS, code: '<b>hi</b>' } }]).fetch })).rejects.toThrow(SignInError)
     await expect(requestKeys('https://gw', 'jira', { fetch: fakeFetch([{ status: 500 }]).fetch })).rejects.toThrow('answered 500')
     await expect(requestKeys('https://gw', 'jira', { fetch: fakeFetch([new TypeError('Failed to fetch')]).fetch })).rejects.toThrow('Couldn’t reach the sign-in service')
   })
@@ -40,10 +46,15 @@ describe('sign-in broker', () => {
 
 describe('pollSignIn', () => {
   it('waits while the broker says pending, then returns the token', async () => {
-    const { fetch, urls } = fakeFetch([{ status: 202 }, { status: 204 }, { status: 200, body: { accessToken: 'gho_x', account: '@maria-r', expiresAt: '2026-12-01T00:00:00Z' } }])
+    const { fetch, urls, headers } = fakeFetch([{ status: 202 }, { status: 204 }, { status: 200, body: { accessToken: 'gho_x', account: '@maria-r', expiresAt: '2026-12-01T00:00:00Z' } }])
     await expect(pollSignIn('https://gw/', KEYS.read, { fetch, sleep: noSleep })).resolves.toEqual({ accessToken: 'gho_x', account: '@maria-r', expiresAt: '2026-12-01T00:00:00Z' })
+    const site = { cloudId: '0a1b2c3d-4e5f-6789-abcd-ef0123456789', url: 'https://acme.atlassian.net' }
+    const jira = fakeFetch([{ status: 200, body: { accessToken: 'atl', account: 'Maria Rossi', expiresAt: '', site } }])
+    await expect(pollSignIn('https://gw/', KEYS.read, { fetch: jira.fetch, sleep: noSleep })).resolves.toMatchObject({ site })
     expect(urls).toHaveLength(3)
-    expect(urls[0]).toBe(`https://gw/auth/poll?read=${KEYS.read}`)
+    // The read key goes in a header, never the URL.
+    expect(urls[0]).toBe('https://gw/auth/poll')
+    expect(headers[0]).toEqual({ 'x-connect-client': 'bluebird', 'x-connect-read': KEYS.read })
   })
 
   it('says when the key expired, the answer is unreadable, or it took too long', async () => {

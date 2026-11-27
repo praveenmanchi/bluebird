@@ -24,7 +24,7 @@ export const openRequestSchema = z.object({ url: z.string().check(z.regex(/^http
 export interface RepoStatus {
   connected: boolean
   repo: string
-  /** Why it isn't connected, e.g. "Add the access token in Settings › GitHub". */
+  /** Why it isn't connected, e.g. "Add the access token in Settings › Code repository". */
   problem?: string
 }
 

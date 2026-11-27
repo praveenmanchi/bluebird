@@ -1,7 +1,7 @@
-// Publishing a release to GitHub: one commit with the token file, the release
-// record, the release store and the changelog, then either a pull request or a
-// fast-forward of the branch, an optional tag, a short watch of the GitHub Actions
-// run it starts, and the Teams post when the designer asked for one.
+// Publishing a release to the team's code host (GitHub or Bitbucket, see @shared/codehost): one
+// commit with the token file, the release record, the release store and the changelog, on a release
+// branch with a pull request or fast-forwarded onto the branch, an optional tag, a short watch of the
+// CI run it starts (GitHub Actions or Bitbucket Pipelines), and the Teams post when asked for.
 import type { IntegrationValues } from '@shared/integrations'
 import { allowedWebhook, hostOf, normalizeWebhook } from '@shared/integrations/webhooks'
 import { cardPayload } from '@shared/integrations/card'
@@ -10,13 +10,14 @@ export { allowedWebhook }
 import { changelogMarkdown } from '../notes'
 import { PREVIEW_CHARS, type CommitPreview, type CommitPreviewFile, type PipelineStepState, type PublishRequest, type PublishResult } from '../messages'
 import type { Change, ReleaseStore, ReleaseSummary, Snapshot } from '../types'
-import { GithubError, type CommitFile, type GithubClient, type GithubFetch, type WorkflowRun } from './client'
+import type { GithubFetch } from './client'
+import { CodeHostError as GithubError, type CodeHost, type CommitFile, type WorkflowRun } from '@shared/codehost'
 
 export const CHANGELOG_PATH = 'CHANGELOG.md'
 /**
  * The release store, committed with every release. Tokens Studio keeps the repository as
  * the source of truth and compares the file against it; Bluebird keeps the baseline in the
- * Figma file for speed, and this copy lets Settings › GitHub › "Enable diff comparison"
+ * Figma file for speed, and this copy lets Settings › Code repository › "Enable diff comparison"
  * recover it when the file has none or the repository is ahead.
  */
 export const STORE_PATH = '.bluebird/releases.json'
@@ -178,7 +179,7 @@ export async function notifyTeams(input: NotifyInput): Promise<{ posted: number;
 // ── GitHub ───────────────────────────────────────────────────────────────────
 
 export interface GithubReleaseInput {
-  client: GithubClient
+  client: CodeHost
   request: PublishRequest
   release: ReleaseSummary
   /** The snapshot the release publishes (the old baseline with the included changes applied). */
@@ -213,18 +214,21 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
     emit([...steps])
   }
 
-  // 1 — one commit with every file, not yet on any branch.
+  // 1 — every file, built on the branch as it stands now; step 2 decides where the commit lands.
   const started = now().getTime()
   set('commit', { status: 'running', detail: `${repo} · preparing ${release.version}`, time: '…' })
-  const head = await client.branchHead()
+  const parent = await client.branchHead()
   const section = changelogMarkdown(release.version, release.title, input.entries)
   const files = commitFiles({
     tokenPath: client.config.tokenPath, release, snapshot: input.snapshot, entries: input.entries, store: input.store,
     existingChangelog: await client.readFile(CHANGELOG_PATH),
   })
-  const commit = await client.commit(head, commitMessage(release), files)
+  const message = commitMessage(release)
+  const runOf = (run: WorkflowRun) => `${client.ciName}${run.run_number ? ` #${run.run_number}` : ''}`
+  /** "GitHub Actions run #12", "Bitbucket Pipelines run", for sentences. */
+  const runPhrase = (run: WorkflowRun) => `${client.ciName} run${run.run_number ? ` #${run.run_number}` : ''}`
 
-  /** The Teams post, after the release is on GitHub. Adds its note to the result message. */
+  /** The Teams post, after the release is on the code host. Adds its note to the result message. */
   async function notify(link: string | undefined, linkLabel: string | undefined): Promise<string> {
     if (!request.options.postToTeams) return ''
     if (!input.webhooks.length) {
@@ -243,16 +247,11 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
     return ` The changelog was posted to Teams.`
   }
 
-  // 2a — pull request: a release branch from the commit, then the PR.
+  // 2a — pull request: the commit on a new release branch (a fresh name if that one exists), then the PR.
   if (request.options.openPr) {
-    let head = `release/${release.version}`
-    try {
-      await client.createRef(`refs/heads/${head}`, commit.sha)
-    } catch (e) {
-      if (!(e instanceof GithubError && e.kind === 'exists')) throw e
-      head = `${head}-${now().getTime().toString(36)}`
-      await client.createRef(`refs/heads/${head}`, commit.sha)
-    }
+    const wanted = `release/${release.version}`
+    const made = await client.commitFiles({ parent, message, files, branch: wanted, create: true, fallbackBranch: `${wanted}-${now().getTime().toString(36)}` })
+    const head = made.branch
     const pr = await client.openPull(head, branch, `${release.version} — ${release.title}`, section)
     set('commit', { status: 'done', detail: `${repoName} · ${head} · PR #${pr.number}`, time: seconds(now().getTime() - started) })
     set('build', { status: 'queued', detail: 'Your CI runs on the pull request and again when it merges', time: '—' })
@@ -270,8 +269,9 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
   }
 
   // 2b — straight to the branch: fast-forward only, so a protected or moved branch is refused, not overwritten.
+  let commit: { sha: string; url: string }
   try {
-    await client.moveBranch(branch, commit.sha)
+    commit = await client.commitFiles({ parent, message, files, branch, create: false })
   } catch (e) {
     if (!(e instanceof GithubError && e.kind === 'rejected')) throw e
     set('commit', { status: 'failed', detail: `${repoName} · ${branch} · refused`, time: seconds(now().getTime() - started) })
@@ -279,7 +279,7 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
       landed: false,
       result: {
         outcome: 'push-rejected', steps: [...steps], headline: `Push to ${branch} was rejected`,
-        log: `PATCH refs/heads/${branch} → ${e.status}\n${e.detail || e.message}`,
+        log: `${client.label}: push to ${branch} → ${e.status}\n${e.detail || e.message}`,
         message: `${e.message} Nothing was published. Turn on “Open a pull request” to send it for review instead.`,
       },
     }
@@ -288,7 +288,7 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
   let tagNote = ''
   if (request.options.tag) {
     try {
-      await client.createRef(`refs/tags/${release.version}`, commit.sha)
+      await client.createTag(release.version, commit.sha)
     } catch (e) {
       if (!(e instanceof GithubError && e.kind === 'exists')) throw e
       tagNote = ` The tag ${release.version} already existed, so it was left alone.`
@@ -296,43 +296,43 @@ export async function publishToGithub(input: GithubReleaseInput): Promise<Github
   }
 
   // 3 — follow the CI run the push started.
-  set('build', { status: 'running', detail: 'Waiting for GitHub Actions', time: '…' })
+  set('build', { status: 'running', detail: `Waiting for ${client.ciName}`, time: '…' })
   const watchStart = now().getTime()
   let run: WorkflowRun | undefined
   while (now().getTime() - watchStart < WATCH_MS) {
     run = (await client.runsFor(commit.sha))[0]
     if (run?.status === 'completed') break
     if (!run && now().getTime() - watchStart >= NO_RUN_MS) break
-    if (run) set('build', { status: 'running', detail: `GitHub Actions #${run.run_number} · ${run.name}`, time: '…' })
+    if (run) set('build', { status: 'running', detail: `${runOf(run)} · ${run.name}`, time: '…' })
     await sleep(POLL_MS)
   }
   const pushed = { headline: `${release.version} pushed to ${branch}`, link: commit.url, linkLabel: 'Open commit' }
   if (!run) {
-    set('build', { status: 'queued', detail: 'No GitHub Actions run started for this commit', time: '—' })
+    set('build', { status: 'queued', detail: `No ${client.ciName} run started for this commit`, time: '—' })
     set('deploy', { status: 'queued', detail: 'Nothing to deploy without a workflow', time: '—' })
     const teams = await notify(commit.url, 'Open commit')
     return { landed: true, result: { outcome: 'pushed', steps: [...steps], ...pushed, message: `Committed to ${repo} on ${branch}. No workflow ran for it, so check how your site is built.${tagNote}${teams}` } }
   }
   const took = seconds(now().getTime() - watchStart)
   if (run.status !== 'completed') {
-    set('build', { status: 'running', detail: `GitHub Actions #${run.run_number} · still running`, time: took })
+    set('build', { status: 'running', detail: `${runOf(run)} · still running`, time: took })
     const teams = await notify(run.html_url, 'Follow the run')
-    return { landed: true, result: { outcome: 'pushed', steps: [...steps], ...pushed, link: run.html_url, linkLabel: 'Follow the run', message: `Committed to ${repo} on ${branch}. GitHub Actions run #${run.run_number} is still going; follow it on GitHub.${tagNote}${teams}` } }
+    return { landed: true, result: { outcome: 'pushed', steps: [...steps], ...pushed, link: run.html_url, linkLabel: 'Follow the run', message: `Committed to ${repo} on ${branch}. ${runPhrase(run)} is still going; follow it on ${client.label}.${tagNote}${teams}` } }
   }
   if (run.conclusion !== 'success') {
-    set('build', { status: 'failed', detail: `GitHub Actions #${run.run_number} · ${run.name}`, time: took })
+    set('build', { status: 'failed', detail: `${runOf(run)} · ${run.name}`, time: took })
     const teams = await notify(run.html_url, 'Open the run')
     return {
       landed: true,
       result: {
         outcome: 'build-failed', steps: [...steps], headline: 'Site build failed', link: run.html_url, linkLabel: 'Open the run',
-        log: `${run.name} #${run.run_number}: ${run.conclusion ?? 'failed'}\n${run.html_url}`,
-        message: `${release.version} is committed to ${branch}, but GitHub Actions run #${run.run_number} ended “${run.conclusion}”. Fix the build in the repository; the release itself is recorded.${teams}`,
+        log: `${run.name}${run.run_number ? ` #${run.run_number}` : ''}: ${run.conclusion ?? 'failed'}\n${run.html_url}`,
+        message: `${release.version} is committed to ${branch}, but ${runPhrase(run)} ended “${run.conclusion}”. Fix the build in the repository; the release itself is recorded.${teams}`,
       },
     }
   }
-  set('build', { status: 'done', detail: `GitHub Actions #${run.run_number} · ${run.name}`, time: took })
+  set('build', { status: 'done', detail: `${runOf(run)} · ${run.name}`, time: took })
   set('deploy', { status: 'done', detail: 'Workflow finished — check your site', time: '—' })
   const teams = await notify(run.html_url, 'Open the run')
-  return { landed: true, result: { outcome: 'pushed', steps: [...steps], ...pushed, link: run.html_url, linkLabel: 'Open the run', message: `Committed to ${repo} on ${branch} and GitHub Actions run #${run.run_number} passed.${tagNote}${teams}` } }
+  return { landed: true, result: { outcome: 'pushed', steps: [...steps], ...pushed, link: run.html_url, linkLabel: 'Open the run', message: `Committed to ${repo} on ${branch} and ${runPhrase(run)} passed.${tagNote}${teams}` } }
 }

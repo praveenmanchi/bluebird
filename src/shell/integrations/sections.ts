@@ -7,7 +7,20 @@ import {
   type IntegrationId, type McpScenario,
 } from '@shared/integrations'
 
-export interface TextFieldSpec { kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean }
+export interface TextFieldSpec {
+  kind: 'text'; key: string; label: string; icon: IconName; placeholder: string; helper?: string; secret?: boolean
+  /** The value that says GitHub or Bitbucket for this field (a HostSpec key). */
+  hostKey?: string
+  /** What the field says instead when that host is Bitbucket. */
+  bitbucket?: Partial<Pick<TextFieldSpec, 'label' | 'placeholder' | 'helper'>>
+  /** Shown only when that host is Bitbucket (the Atlassian email a Bitbucket API token signs in with). */
+  onlyBitbucket?: boolean
+}
+/**
+ * "Where's your code?": GitHub or Bitbucket (Figma "Settings · 600 · Code: GitHub or Bitbucket", 40003067:23087).
+ * Switching clears `clears` (the token and sign-in), so a GitHub token is never sent to Bitbucket or the other way round.
+ */
+export interface HostSpec { kind: 'host'; key: string; label?: string; clears: readonly string[] }
 export interface SelectFieldSpec { kind: 'select'; key: string; label: string; icon: IconName; options: readonly string[] }
 export interface SwitchSpec { kind: 'switch'; key: string; title: string; description: string }
 export interface TextAreaSpec { kind: 'textarea'; key: string; label: string; placeholder: string; helper: string }
@@ -22,12 +35,12 @@ export interface ConnectionSpec { kind: 'connection'; service: 'github' | 'jira'
 /** "Use a company gateway": a switch that shows the gateway's address. Turning it off clears the address. */
 export interface GatewaySpec { kind: 'gateway'; key: string; description: string }
 /** A field that edits values itself: everything but a group. */
-export type LeafFieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec | ConnectionSpec | GatewaySpec
+export type LeafFieldSpec = TextFieldSpec | SelectFieldSpec | SwitchSpec | TextAreaSpec | ProviderSpec | FilesListSpec | ConnectionSpec | GatewaySpec | HostSpec
 
 /** The value keys a Connection card edits. */
 export const CONNECTION_KEYS: Readonly<Record<ConnectionSpec['service'], readonly string[]>> = {
-  github: ['baseUrl', 'method', 'apiKey', 'signinAccount', 'signinExpires'],
-  jira: ['siteUrl', 'baseUrl', 'method', 'apiKey', 'email', 'signinAccount', 'signinExpires'],
+  github: ['baseUrl', 'method', 'apiKey', 'email', 'signinAccount', 'signinExpires'],
+  jira: ['siteUrl', 'baseUrl', 'method', 'apiKey', 'email', 'signinAccount', 'signinExpires', 'cloudId'],
 }
 /**
  * A bordered card of fields with its own status, e.g. one MCP hand-off scenario. `requires` are the
@@ -44,6 +57,8 @@ export interface SectionSpec {
   title: string
   description: string
   logo?: SectionHeaderLogo
+  /** A HostSpec key: the header shows the Bitbucket logo when it says Bitbucket. */
+  logoHostKey?: string
   /** Boolean value driven by the header switch (Figma "Toggle" on the section title). */
   toggleKey?: string
   /** Column template of the rows. */
@@ -62,17 +77,28 @@ const provider = (id: ProviderSpec['provider'], name: string, placeholder: strin
   apiKey: { kind: 'text', key: `${id}Key`, label: `${name} API key`, icon: 'api-key', placeholder, secret: true },
 })
 
-// MCP + code sync: every scenario has the same repository row and token; the keys carry its name.
+/** Bitbucket API tokens sign in with the Atlassian email, so a Bitbucket repository asks for it. */
+const atlassianEmail = (key: string, hostKey: string): TextFieldSpec => ({
+  kind: 'text', key, label: 'Atlassian email', icon: 'message', placeholder: 'you@company.com', hostKey, onlyBitbucket: true,
+  helper: 'Bitbucket API tokens sign in with your Atlassian email, not your Bitbucket username.',
+})
+const REPO_BITBUCKET = { label: 'Repository (workspace/repo)', placeholder: 'workspace/repository' }
+
+// MCP + code sync: every scenario has the same host switch, repository row and token; the keys carry its name.
+const mcpHost = (scenario: McpScenario): HostSpec => ({ kind: 'host', key: `${scenario}Host`, clears: [`${scenario}Token`, `${scenario}Email`] })
 const mcpRepoRow = (scenario: McpScenario): readonly ColumnSpec[] => [
-  { kind: 'text', key: `${scenario}Repo`, label: 'Repository (owner/repo)', icon: 'access', placeholder: 'org/design-system' },
+  { kind: 'text', key: `${scenario}Repo`, label: 'Repository (owner/repo)', icon: 'access', placeholder: 'org/design-system', hostKey: `${scenario}Host`, bitbucket: REPO_BITBUCKET },
   { kind: 'select', key: `${scenario}Branch`, label: 'Base branch', icon: 'branch', options: BRANCHES },
 ]
-const mcpToken = (scenario: McpScenario): TextFieldSpec => (
-  { kind: 'text', key: `${scenario}Token`, label: 'Personal access token', icon: 'api-key', placeholder: 'GitHub token that can read pull requests', secret: true }
-)
-/** The scenarios that write new code: repository + branch, token + framework, then the folder it goes in. */
+const mcpToken = (scenario: McpScenario): TextFieldSpec => ({
+  kind: 'text', key: `${scenario}Token`, label: 'Personal access token', icon: 'api-key', placeholder: 'GitHub token that can read pull requests', secret: true,
+  hostKey: `${scenario}Host`, bitbucket: { label: 'API token', placeholder: 'Atlassian API token with Bitbucket scopes' },
+})
+/** The scenarios that write new code: host, repository + branch, email (Bitbucket), token + framework, then the folder it goes in. */
 const mcpCodeBlocks = (scenario: 'component' | 'screen', folder: string): readonly BlockSpec[] => [
+  mcpHost(scenario),
   mcpRepoRow(scenario),
+  atlassianEmail(`${scenario}Email`, `${scenario}Host`),
   [mcpToken(scenario), { kind: 'select', key: `${scenario}Framework`, label: 'Framework', icon: 'file', options: MCP_FRAMEWORKS }],
   { kind: 'text', key: `${scenario}Folder`, label: 'Output folder', icon: 'folder', placeholder: folder },
 ]
@@ -82,31 +108,34 @@ const mcpGroup = (scenario: McpScenario, blocks: readonly BlockSpec[]): GroupSpe
 
 export const SECTIONS: readonly SectionSpec[] = [
   {
-    id: 'github', logo: 'github', title: 'GitHub output configuration', columns: 'halves',
-    description: 'Configure the GitHub repository where extracted variables will be committed via Pull Request.',
+    id: 'github', logo: 'github', logoHostKey: 'host', title: 'Code repository', columns: 'halves',
+    description: 'Where Publish, Extraction, History and MCP commit: a GitHub or Bitbucket repository.',
     blocks: [
+      { kind: 'host', key: 'host', label: 'Where’s your code?', clears: ['apiKey', 'email', 'signinAccount', 'signinExpires', 'baseUrl'] },
       { kind: 'connection', service: 'github' },
-      { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/repository' },
+      { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/repository', hostKey: 'host', bitbucket: REPO_BITBUCKET },
       [
         { kind: 'select', key: 'branch', label: 'Branch', icon: 'branch', options: BRANCHES },
         { kind: 'select', key: 'tokenPath', label: 'Token storage location (file/folder path)', icon: 'folder', options: ['tokens.json', 'tokens', 'design-tokens.json'] },
       ],
-      { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Publish tab compares local variables against the last pushed version on GitHub, showing what changed.' },
+      { kind: 'switch', key: 'diffComparison', title: 'Enable diff comparison', description: 'When enabled, the Publish tab compares local variables against the last pushed version in the repository, showing what changed.' },
       { kind: 'gateway', key: 'gatewayUrl', description: 'Only if IT runs the Bluebird gateway for a VPN-only GitHub. Sign-in goes through it.' },
     ],
   },
   {
     id: 'storage', logo: 'database', title: 'Storage', columns: 'halves',
-    description: 'Where the team History is kept: a GitHub repository every designer’s plugin writes to and reads from. Extractions, reports, Code Connect templates, MCP pushes and UX AI answers land here, so everyone sees one changelog.',
+    description: 'Where the team History is kept: a GitHub or Bitbucket repository every designer’s plugin writes to and reads from. Extractions, reports, Code Connect templates, MCP pushes and UX AI answers land here, so everyone sees one changelog.',
     blocks: [
-      { kind: 'switch', key: 'sameAsGithub', title: 'Use the GitHub output repository', description: 'When on, History uses the repository, branch and API key from GitHub output configuration above, and the fields below are ignored except the folder.' },
+      { kind: 'switch', key: 'sameAsGithub', title: 'Use the Code repository', description: 'When on, History uses the repository, branch and token from Code repository above, and the fields below are ignored except the folder.' },
+      { kind: 'host', key: 'host', label: 'Where’s this repository?', clears: ['apiKey', 'email'] },
+      atlassianEmail('email', 'host'),
       [
         [
-          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'Personal access token with Contents read and write', secret: true },
+          { kind: 'text', key: 'apiKey', label: 'API key', icon: 'api-key', placeholder: 'Personal access token with Contents read and write', secret: true, hostKey: 'host', bitbucket: { label: 'API token', placeholder: 'Atlassian API token with Repositories write' } },
           { kind: 'text', key: 'branch', label: 'Branch', icon: 'branch', placeholder: 'main' },
         ],
         [
-          { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/design-history' },
+          { kind: 'text', key: 'repo', label: 'Repository (owner/repo)', icon: 'access', placeholder: 'owner/design-history', hostKey: 'host', bitbucket: REPO_BITBUCKET },
           { kind: 'text', key: 'folder', label: 'History folder', icon: 'folder', placeholder: '.bluebird/history', helper: 'One JSON file per day goes here, e.g. .bluebird/history/2026-11-12.json.' },
         ],
       ],
@@ -179,10 +208,12 @@ export const SECTIONS: readonly SectionSpec[] = [
         { kind: 'text', key: 'screenPackage', label: 'Design system package', icon: 'url', placeholder: '@acme/ui', helper: 'Screens import components from this package instead of copying them.' },
       ]),
       mcpGroup('library', [
+        mcpHost('library'),
         mcpRepoRow('library'),
+        atlassianEmail('libraryEmail', 'libraryHost'),
         [mcpToken('library'), { kind: 'select', key: 'libraryPullRequests', label: 'Pull requests', icon: 'file', options: MCP_PULL_REQUESTS }],
       ]),
-      { kind: 'text', key: 'enterpriseUrl', label: 'GitHub Enterprise base URL (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: 'Shared by all three. Without /api/v3. Leave blank for github.com.' },
+      { kind: 'text', key: 'enterpriseUrl', label: 'GitHub Enterprise base URL (optional)', icon: 'url', placeholder: 'https://github.yourcompany.com', helper: 'Shared by the GitHub scenarios. Without /api/v3. Leave blank for github.com; Bitbucket scenarios use bitbucket.org.' },
     ],
   },
   {

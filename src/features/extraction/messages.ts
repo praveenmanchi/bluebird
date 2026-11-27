@@ -20,11 +20,11 @@ export interface BranchInfo {
   latest: ExtractionStamp | null
 }
 
-/** The GitHub connection, read from Settings › GitHub. */
+/** The GitHub connection, read from Settings › Code repository. */
 export interface RepoStatus {
   connected: boolean
   repo: string
-  /** Why it isn't connected, e.g. "Add the access token in Settings › GitHub". */
+  /** Why it isn't connected, e.g. "Add the access token in Settings › Code repository". */
   problem?: string
 }
 

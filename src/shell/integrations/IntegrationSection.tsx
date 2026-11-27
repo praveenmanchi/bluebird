@@ -107,7 +107,7 @@ export function IntegrationSection({ spec, initial, onSave, onTest, locked = [],
         as="h3"
         title={spec.title}
         description={spec.description}
-        logo={spec.logo}
+        logo={spec.logoHostKey && values[spec.logoHostKey] === 'bitbucket' ? 'bitbucket' : spec.logo}
         onClick={() => setOpen((o) => !o)}
         trailing={
           <div class="bb-integrations__trailing">

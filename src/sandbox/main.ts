@@ -36,7 +36,8 @@ async function brandTokens(payload?: { brandId?: string }) {
 
 const coreHandlers: HandlerMap = {
   'brand:tokens': brandTokens,
-  ...createSessionHandlers(config, store),
+  // currentUser throws where the permission is missing; the id only feeds a one-way analytics key.
+  ...createSessionHandlers(config, store, () => { try { return figma.currentUser?.id ?? null } catch { return null } }),
   ...createIntegrationsHandlers(store),
   ...createOnboardingHandlers(store),
   ...createPersonaHandlers(config, store),

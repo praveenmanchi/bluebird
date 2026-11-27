@@ -1,6 +1,6 @@
 // One entry in the team History: something a person did with the plugin
 // (an extraction, a report, a Code Connect template, an MCP push, a UX AI
-// answer). Entries live in the GitHub repository from Settings › GitHub, so
+// answer). Entries live in the GitHub repository from Settings › Code repository, so
 // everyone on the team reads the same list. They come back from GitHub, so
 // every read is validated against this schema.
 import * as z from 'zod/mini'

@@ -85,3 +85,18 @@ describe('MCP + code sync settings', () => {
     expect(mergeIntegrations({}).mcp).toEqual(D)
   })
 })
+
+describe('code host', () => {
+  it('normalises a Bitbucket repository link like a GitHub one, keyed on the chosen host', () => {
+    const bb = normalizeIntegration({ ...DEFAULT_INTEGRATIONS.github, host: 'bitbucket', baseUrl: 'https://bitbucket.org/acme/design-tokens/src/main/' }, 'github')
+    expect(bb).toMatchObject({ baseUrl: '', repo: 'acme/design-tokens' })
+    const dc = normalizeIntegration({ ...DEFAULT_INTEGRATIONS.github, host: 'bitbucket', baseUrl: 'bitbucket.acme.internal' }, 'github')
+    expect(dc.baseUrl).toBe('https://bitbucket.acme.internal')
+  })
+
+  it('reads settings stored before Bitbucket as GitHub', () => {
+    const { host: _h, email: _e, ...old } = DEFAULT_INTEGRATIONS.github
+    expect(mergeIntegrations({ github: { ...old, repo: 'acme/tokens' } }).github).toMatchObject({ host: 'github', email: '', repo: 'acme/tokens' })
+    expect(mergeIntegrations({}).mcp).toMatchObject({ componentHost: 'github', screenHost: 'github', libraryHost: 'github' })
+  })
+})

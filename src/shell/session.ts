@@ -3,7 +3,8 @@
 import type { RpcClient } from '@shared/bridge'
 import { applyTokens, clearTokens, type BrandTokensResult } from '@shared/brand'
 import { config, singleBrand, WINDOW_PRESETS, WINDOW_DEFAULT } from '@shared/config'
-import { ONBOARDING_MSG, PERSONA_MSG, SESSION_MSG, type OnboardingStatus, type PersonaStatus, type Session } from '@shared/session'
+import { ONBOARDING_MSG, PERSONA_MSG, SESSION_MSG, type LoginResult, type OnboardingStatus, type PersonaStatus, type Session } from '@shared/session'
+import { reportLogin } from '@shared/analytics/login'
 import { loadLibraryState } from '@shared/libraries/status'
 import { loadEditorMode } from '@shared/editor'
 import { brandPersonas, brandStatus, changingPersona, replayingTour, screen, session, selectPersona, syncTabs, windowSize } from './state'
@@ -134,8 +135,10 @@ export function replayOnboarding(): void {
 
 /** `onAccepted` fires once the sandbox accepts the code, before the brand loads (the login card's Success state). */
 export async function login(client: RpcClient, code: string, onAccepted?: () => void): Promise<void> {
-  const next = await client.call<Session>(SESSION_MSG.login, { code })
+  const { userKey, ...next } = await client.call<LoginResult>(SESSION_MSG.login, { code })
   onAccepted?.()
+  // Counted once per access-code login, in the background (src/shared/analytics/login.ts).
+  void reportLogin({ brand: next.brandId, userKey: userKey ?? null })
   await enter(client, next)
 }
 

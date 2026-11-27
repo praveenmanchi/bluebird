@@ -10,19 +10,27 @@
 //   CONNECT_ENCRYPTION_KEY  ≥ 32 chars; a throwaway one is made when unset (dev only)
 //   CONNECT_STATE_KEY       ≥ 32 chars; same
 //   CONNECT_FAKE_PROVIDER   "1" serves the fake provider for github, jira and bitbucket (connect:dev sets it;
-//                           off by default, and refused when NODE_ENV=production)
+//                           off by default, and refused unless CONNECT_ENV is development or staging)
+//   GITHUB_APP_CLIENT_ID    Bluebird's GitHub App (roadmap §5 A3). With the secret set, GitHub sign-in is
+//   GITHUB_APP_CLIENT_SECRET  real; the fake stays for the other services. For local runs, add
+//   GITHUB_APP_SLUG           http://localhost:8788/auth/github/callback to the app's callback URLs.
+//   ATLASSIAN_CLIENT_ID     Bluebird's Atlassian 3LO app (§5 A4): Sign in with Atlassian for Jira Cloud.
+//   ATLASSIAN_CLIENT_SECRET   Callback: http://localhost:8788/auth/jira/callback
+//   BITBUCKET_CLIENT_ID     Bluebird's Bitbucket OAuth consumer key + secret (§5 A7).
+//   BITBUCKET_CLIENT_SECRET   Callback: http://localhost:8788/auth/bitbucket/callback
+//   JIRA_RELAY              "off" turns the Jira relay off (on by default: *.atlassian.net only)
+//   JIRA_RELAY_HOSTS        extra Jira Data Center hosts the relay may reach (a gateway's own)
+//                           Put them in .env (git-ignored), never in the repo.
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { createConnect } from './app'
 import { randomKey } from './crypto'
 import { memoryStore } from './store'
-import { fakeProvider } from './providers/fake'
-import { SERVICES, type Provider, type Service } from './providers/types'
+import { describeProviders, jiraRelayFromEnv, providersFromEnv } from './config'
 import buildInfo from '../../build-info.json' with { type: 'json' }
 
 const PORT = Number(process.env.CONNECT_PORT ?? 8788)
 const PUBLIC_URL = process.env.CONNECT_PUBLIC_URL ?? `http://localhost:${PORT}`
-const FAKE = process.env.CONNECT_FAKE_PROVIDER === '1'
-if (FAKE && process.env.NODE_ENV === 'production') throw new Error('The fake provider must never run in production. Unset CONNECT_FAKE_PROVIDER.')
+const LOCAL = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(PUBLIC_URL)
 const MAX_BODY_BYTES = 64_000
 // Both loopbacks: Figma's Chromium resolves localhost to 127.0.0.1, Node may pick ::1 (see tools/relay).
 const LOOPBACKS = ['127.0.0.1', '::1'] as const
@@ -38,9 +46,8 @@ function secret(name: string): string {
   return randomKey()
 }
 
-const providers: Partial<Record<Service, Provider>> = FAKE
-  ? Object.fromEntries(SERVICES.map((s) => [s, fakeProvider(PUBLIC_URL, s)]))
-  : {}
+const providers = providersFromEnv(process.env, PUBLIC_URL)
+const jiraRelay = jiraRelayFromEnv(process.env)
 
 const handle = createConnect({
   publicUrl: PUBLIC_URL,
@@ -51,6 +58,9 @@ const handle = createConnect({
   version: `${buildInfo.version}`,
   // The socket's address, not a header the caller could set.
   clientIp: (req) => req.headers.get('x-connect-remote') ?? 'unknown',
+  // Figma's null origin, plus the plugin dev harness when this broker runs on localhost.
+  allowOrigin: (origin) => origin === 'null' || (LOCAL && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)),
+  jiraRelay,
   log,
 })
 
@@ -95,4 +105,5 @@ for (const host of LOOPBACKS) {
   })
   server.listen(PORT, host, () => log(`listening on http://${host.includes(':') ? `[${host}]` : host}:${PORT}`))
 }
-log(FAKE ? `fake provider on for ${SERVICES.join(', ')}` : 'no providers configured: only /health answers')
+log(describeProviders(providers))
+log(jiraRelay ? `Jira relay on: *.atlassian.net${jiraRelay.extraHosts.length ? `, ${jiraRelay.extraHosts.join(', ')}` : ''}` : 'Jira relay off')

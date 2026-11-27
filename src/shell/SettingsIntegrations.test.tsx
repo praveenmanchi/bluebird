@@ -22,35 +22,35 @@ describe('SettingsIntegrations', () => {
     const { container } = render(<SettingsIntegrations api={fakeApi()} />)
     await section('Jira integration')
     expect([...container.querySelectorAll('.bb-integrations__section')].map((s) => s.getAttribute('aria-label'))).toEqual([
-      'GitHub output configuration', 'Storage', 'Notifications', 'Storybook', 'Zeroheight', 'Dual File Mode', 'AI agent assistance (UXAI)', 'MCP + code sync', 'Jira integration',
+      'Code repository', 'Storage', 'Notifications', 'Storybook', 'Zeroheight', 'Dual File Mode', 'AI agent assistance (UXAI)', 'MCP + code sync', 'Jira integration',
     ])
   })
 
   it('starts collapsed, with each section’s status and an arrow', async () => {
     render(<SettingsIntegrations api={fakeApi({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, apiKey: 'k', repo: 'a/b' } })} />)
-    const github = await screen.findByRole('region', { name: 'GitHub output configuration' })
+    const github = await screen.findByRole('region', { name: 'Code repository' })
     expect(within(github).getByText('Configured')).toBeInTheDocument()
     expect(within(github).queryByLabelText('Repository (owner/repo)')).toBeNull()
-    expect(within(github).getByRole('button', { name: 'Show GitHub output configuration settings' })).toHaveAttribute('aria-expanded', 'false')
+    expect(within(github).getByRole('button', { name: 'Show Code repository settings' })).toHaveAttribute('aria-expanded', 'false')
     expect(within(screen.getByRole('region', { name: 'Storybook' })).getByText('Not configured')).toBeInTheDocument()
     expect(within(screen.getByRole('region', { name: 'Jira integration' })).getByText('Off')).toBeInTheDocument()
   })
 
   it('opens and closes from the arrow or anywhere on the header', async () => {
     render(<SettingsIntegrations api={fakeApi()} />)
-    const github = await screen.findByRole('region', { name: 'GitHub output configuration' })
-    fireEvent.click(within(github).getByRole('button', { name: 'Show GitHub output configuration settings' }))
+    const github = await screen.findByRole('region', { name: 'Code repository' })
+    fireEvent.click(within(github).getByRole('button', { name: 'Show Code repository settings' }))
     expect(await within(github).findByLabelText('Repository (owner/repo)')).toBeInTheDocument()
-    fireEvent.click(within(github).getByRole('heading', { name: 'GitHub output configuration' }))
+    fireEvent.click(within(github).getByRole('heading', { name: 'Code repository' }))
     await waitFor(() => expect(within(github).queryByLabelText('Repository (owner/repo)')).toBeNull())
   })
 
   it('keeps what was typed when a section is closed and reopened', async () => {
     render(<SettingsIntegrations api={fakeApi()} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'a/b' } })
-    fireEvent.click(within(github).getByRole('button', { name: 'Hide GitHub output configuration settings' }))
-    fireEvent.click(await within(github).findByRole('button', { name: 'Show GitHub output configuration settings' }))
+    fireEvent.click(within(github).getByRole('button', { name: 'Hide Code repository settings' }))
+    fireEvent.click(await within(github).findByRole('button', { name: 'Show Code repository settings' }))
     expect((await within(github).findByLabelText('Repository (owner/repo)') as HTMLInputElement).value).toBe('a/b')
   })
 
@@ -87,7 +87,7 @@ describe('SettingsIntegrations', () => {
   it('saves only its own section, with the edited values and switches', async () => {
     const api = fakeApi()
     render(<SettingsIntegrations api={api} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'gap-inc/design-tokens' } })
     fireEvent.click(within(github).getByRole('switch', { name: 'Enable diff comparison' }))
     fireEvent.click(within(github).getByRole('button', { name: 'Save configuration' }))
@@ -99,7 +99,7 @@ describe('SettingsIntegrations', () => {
   it('flags invalid fields inline and does not save', async () => {
     const api = fakeApi()
     render(<SettingsIntegrations api={api} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     const repo = within(github).getByLabelText('Repository (owner/repo)')
     fireEvent.input(repo, { target: { value: 'design-tokens' } })
     fireEvent.click(within(github).getByRole('button', { name: 'Save configuration' }))
@@ -294,7 +294,7 @@ describe('SettingsIntegrations', () => {
   it('trims pasted values before saving and shows what was stored', async () => {
     const api = fakeApi()
     render(<SettingsIntegrations api={api} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     const repo = within(github).getByLabelText('Repository (owner/repo)') as HTMLInputElement
     fireEvent.input(repo, { target: { value: '  gap-inc/design-tokens  ' } })
     fireEvent.click(within(github).getByRole('button', { name: 'Save configuration' }))
@@ -320,7 +320,7 @@ describe('SettingsIntegrations', () => {
   describe('brand-managed sections', () => {
     it('locks the managed fields, keeps keys editable and says who set them', async () => {
       render(<SettingsIntegrations api={fakeApi({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, repo: 'ikea/tokens' } })} managed={{ github: { repo: 'ikea/tokens', baseUrl: '' } }} managedBy="Ikea" />)
-      const github = await section('GitHub output configuration')
+      const github = await section('Code repository')
       expect(within(github).getByText('Set by Ikea')).toBeInTheDocument()
       expect(within(github).getByLabelText('Repository (owner/repo)')).toBeDisabled()
       expect(within(github).getByLabelText('Access token')).not.toBeDisabled()
@@ -361,7 +361,7 @@ describe('SettingsIntegrations · Connection card', () => {
 
   it('asks where GitHub is, names what it found, and offers a token while no broker exists', async () => {
     render(<SettingsIntegrations api={fakeApi()} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     const connection = card(github, 'GitHub connection')
     expect(connection.getByText('GitHub.com')).toBeInTheDocument()
     expect(connection.getByRole('tab', { name: 'Sign in' })).toBeDisabled()
@@ -372,19 +372,28 @@ describe('SettingsIntegrations · Connection card', () => {
   })
 
   it('signs in through the company gateway and saves the sign-in like a token', async () => {
+    // The first poll waits until the test has seen the code, then the sign-in finishes.
+    let finish: () => void = () => {}
+    const signedIn = new Promise<void>((resolve) => { finish = resolve })
     const fetch = vi.fn(async (url: string) => url.endsWith('/keys')
-      ? { status: 200, json: async () => ({ read: 'r'.repeat(32), write: 'w'.repeat(32) }) }
-      : { status: 200, json: async () => ({ accessToken: 'gho_maria', account: '@maria-r', expiresAt: '' }) })
+      ? { status: 200, json: async () => ({ read: 'r'.repeat(32), write: 'w'.repeat(32), code: 'K7Q-X92' }) }
+      : signedIn.then(() => ({ status: 200, json: async () => ({ accessToken: 'gho_maria', account: '@maria-r', expiresAt: '' }) })))
     vi.stubGlobal('fetch', fetch)
     const api = { ...fakeApi(withGithub({ gatewayUrl: 'https://gw.acme.internal', repo: 'acme/tokens' })), openExternal: vi.fn(async () => undefined) }
     try {
       render(<SettingsIntegrations api={api} />)
-      const github = await section('GitHub output configuration')
+      const github = await section('Code repository')
       const connection = card(github, 'GitHub connection')
       fireEvent.click(connection.getByRole('tab', { name: 'Sign in' }))
       fireEvent.click(connection.getByRole('button', { name: 'Sign in with GitHub' }))
+      expect(await connection.findByText('K7Q-X92')).toBeInTheDocument()
+      expect(connection.getByText(/^Type\s+in your browser$/)).toBeInTheDocument()
+      finish()
       expect(await connection.findByText('Connected as @maria-r')).toBeInTheDocument()
       expect(api.openExternal).toHaveBeenCalledWith(`https://gw.acme.internal/auth/github/start?host=github.com&write=${'w'.repeat(32)}`)
+      // A GitHub App only reaches repositories where it's installed: the admin installs it once.
+      fireEvent.click(connection.getByRole('button', { name: 'Install Bluebird on your organisation' }))
+      expect(api.openExternal).toHaveBeenLastCalledWith('https://gw.acme.internal/auth/github/install')
       fireEvent.click(within(github).getByRole('button', { name: 'Save configuration' }))
       await waitFor(() => expect(api.save).toHaveBeenCalledWith('github', expect.objectContaining({ method: 'signin', apiKey: 'gho_maria', signinAccount: '@maria-r' })))
       fireEvent.click(connection.getByRole('button', { name: 'Disconnect' }))
@@ -394,9 +403,16 @@ describe('SettingsIntegrations · Connection card', () => {
     }
   })
 
+  it('offers the install link for GitHub only: Atlassian sign-in reaches every site the person can see', async () => {
+    render(<SettingsIntegrations api={fakeApi(withJira({ siteUrl: 'https://acme.atlassian.net', proxyUrl: 'https://gw.acme.internal', method: 'signin', apiKey: 'tok', signinAccount: 'Maria Rossi' }))} />)
+    const jira = await section('Jira integration')
+    expect(card(jira, 'Jira connection').getByText('Connected as Maria Rossi')).toBeInTheDocument()
+    expect(within(jira).queryByRole('button', { name: /Install Bluebird/ })).toBeNull()
+  })
+
   it('says when a sign-in expired and offers to sign in again', async () => {
     render(<SettingsIntegrations api={fakeApi(withGithub({ gatewayUrl: 'https://gw.acme.internal', method: 'signin', apiKey: 'gho_old', signinAccount: '@maria-r', signinExpires: '2020-01-01T00:00:00Z' }))} />)
-    const github = await section('GitHub output configuration')
+    const github = await section('Code repository')
     expect(within(github).getByText('Your GitHub sign-in expired')).toBeInTheDocument()
     expect(card(github, 'GitHub connection').getByRole('button', { name: 'Sign in again' })).toBeInTheDocument()
   })
@@ -434,5 +450,118 @@ describe('SettingsIntegrations · Connection card', () => {
     expect(within(jira).queryByLabelText('Company gateway URL')).toBeNull()
     fireEvent.click(within(jira).getByRole('button', { name: 'Save configuration' }))
     await waitFor(() => expect(api.save).toHaveBeenCalledWith('jira', expect.objectContaining({ proxyUrl: '' })))
+  })
+})
+
+describe('SettingsIntegrations · GitHub or Bitbucket', () => {
+  const withGithub = (github: Partial<IntegrationSettings['github']>): IntegrationSettings => ({ ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, ...github } })
+
+  it('switches the Code repository to Bitbucket: its address, badge, email + API token, and logo', async () => {
+    const { container } = render(<SettingsIntegrations api={fakeApi(withGithub({ repo: 'acme/tokens', apiKey: 'ghp_old', method: 'token' }))} />)
+    const code = await section('Code repository')
+    fireEvent.click(within(code).getByRole('tab', { name: 'Bitbucket' }))
+    const connection = within(within(code).getByRole('group', { name: 'Bitbucket connection' }))
+    expect(within(code).getByLabelText('Where’s your Bitbucket?')).toBeInTheDocument()
+    expect(connection.getByText('Bitbucket Cloud')).toBeInTheDocument()
+    expect(connection.getByLabelText('Atlassian email')).toBeInTheDocument()
+    // The GitHub token is cleared: it must never be sent to Bitbucket.
+    expect(connection.getByLabelText('API token')).toHaveValue('')
+    expect(within(code).getByLabelText('Repository (workspace/repo)')).toHaveValue('acme/tokens')
+    expect(container.querySelector('[data-logo="bitbucket"]')).not.toBeNull()
+  })
+
+  it('saves the host and the Atlassian email with the section', async () => {
+    const api = fakeApi()
+    render(<SettingsIntegrations api={api} />)
+    const code = await section('Code repository')
+    fireEvent.click(within(code).getByRole('tab', { name: 'Bitbucket' }))
+    fireEvent.input(within(code).getByLabelText('Atlassian email'), { target: { value: 'maria@acme.com' } })
+    fireEvent.input(within(code).getByLabelText('API token'), { target: { value: 'ATATT-tok' } })
+    fireEvent.input(within(code).getByLabelText('Repository (workspace/repo)'), { target: { value: 'acme/tokens' } })
+    fireEvent.click(within(code).getByRole('button', { name: 'Save configuration' }))
+    await waitFor(() => expect(api.save).toHaveBeenCalledWith('github', expect.objectContaining({ host: 'bitbucket', email: 'maria@acme.com', apiKey: 'ATATT-tok', repo: 'acme/tokens' })))
+  })
+
+  it('says Bitbucket Data Center is coming when the address isn’t bitbucket.org', async () => {
+    render(<SettingsIntegrations api={fakeApi(withGithub({ host: 'bitbucket', baseUrl: 'https://bitbucket.acme.internal' }))} />)
+    const code = await section('Code repository')
+    expect(within(code).getByText('Bitbucket Data Center is coming')).toBeInTheDocument()
+    expect(within(within(code).getByRole('group', { name: 'Bitbucket connection' })).getByText('Bitbucket Data Center')).toBeInTheDocument()
+  })
+
+  it('gives each MCP scenario its own host, asking for the Atlassian email only on Bitbucket', async () => {
+    render(<SettingsIntegrations api={fakeApi()} />)
+    const mcp = await section('MCP + code sync')
+    expect(within(mcp).queryByLabelText('Atlassian email')).toBeNull()
+    const screenCard = within(within(mcp).getByRole('group', { name: 'Screen to code' }))
+    fireEvent.click(screenCard.getByRole('button', { name: 'Set up' }))
+    expect(screenCard.queryByLabelText('Atlassian email')).toBeNull()
+    fireEvent.click(screenCard.getByRole('tab', { name: 'Bitbucket' }))
+    expect(screenCard.getByLabelText('Atlassian email')).toBeInTheDocument()
+    expect(screenCard.getByLabelText('API token')).toBeInTheDocument()
+    expect(within(mcp).getAllByLabelText('Atlassian email')).toHaveLength(1)
+  })
+})
+
+describe('SettingsIntegrations · sign in with Atlassian and Bitbucket', () => {
+  const CLOUD = '0a1b2c3d-4e5f-6789-abcd-ef0123456789'
+  /** A broker that finishes the sign-in on the first poll with `result`, recording which service was asked for. */
+  function broker(result: Record<string, unknown>) {
+    const urls: string[] = []
+    const fetch = vi.fn(async (url: string) => {
+      urls.push(url)
+      return url.endsWith('/keys')
+        ? { status: 200, json: async () => ({ read: 'r'.repeat(32), write: 'w'.repeat(32), code: 'K7Q-X92' }) }
+        : { status: 200, json: async () => result }
+    })
+    return { fetch, urls }
+  }
+
+  it('signs in to Jira Cloud and keeps the site’s cloudId with the token', async () => {
+    const b = broker({ accessToken: 'atl_tok', account: 'Maria Rossi', expiresAt: '', site: { cloudId: CLOUD, url: 'https://acme.atlassian.net' } })
+    vi.stubGlobal('fetch', b.fetch)
+    const settings = { ...DEFAULT_INTEGRATIONS, jira: { ...DEFAULT_INTEGRATIONS.jira, enabled: true, siteUrl: 'https://acme.atlassian.net', proxyUrl: 'https://gw.acme.com', projectKey: 'DS' } }
+    const api = { ...fakeApi(settings), openExternal: vi.fn(async () => undefined) }
+    try {
+      render(<SettingsIntegrations api={api} />)
+      const jira = await section('Jira integration')
+      const connection = within(within(jira).getByRole('group', { name: 'Jira connection' }))
+      fireEvent.click(connection.getByRole('tab', { name: 'Sign in' }))
+      fireEvent.click(connection.getByRole('button', { name: 'Sign in with Atlassian' }))
+      expect(await connection.findByText('Connected as Maria Rossi')).toBeInTheDocument()
+      expect(b.urls[0]).toBe('https://gw.acme.com/auth/jira/keys')
+      expect(api.openExternal).toHaveBeenCalledWith(`https://gw.acme.com/auth/jira/start?host=acme.atlassian.net&write=${'w'.repeat(32)}`)
+      fireEvent.click(within(jira).getByRole('button', { name: 'Save configuration' }))
+      await waitFor(() => expect(api.save).toHaveBeenCalledWith('jira', expect.objectContaining({ method: 'signin', apiKey: 'atl_tok', cloudId: CLOUD })))
+      // Disconnect forgets the site id with the token.
+      fireEvent.click(connection.getByRole('button', { name: 'Disconnect' }))
+      fireEvent.click(within(jira).getByRole('button', { name: 'Save configuration' }))
+      await waitFor(() => expect(api.save).toHaveBeenLastCalledWith('jira', expect.objectContaining({ apiKey: '', cloudId: '' })))
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('signs in to Bitbucket through the broker and saves it as a Bearer token (no email)', async () => {
+    const b = broker({ accessToken: 'bb_tok', account: 'Maria Rossi', expiresAt: '2026-11-28T14:00:00Z' })
+    vi.stubGlobal('fetch', b.fetch)
+    const settings = { ...DEFAULT_INTEGRATIONS, github: { ...DEFAULT_INTEGRATIONS.github, host: 'bitbucket', email: 'maria@acme.com', repo: 'acme/tokens', gatewayUrl: 'https://gw.acme.com' } }
+    const api = { ...fakeApi(settings), openExternal: vi.fn(async () => undefined) }
+    try {
+      render(<SettingsIntegrations api={api} />)
+      const code = await section('Code repository')
+      const connection = within(within(code).getByRole('group', { name: 'Bitbucket connection' }))
+      fireEvent.click(connection.getByRole('tab', { name: 'Sign in' }))
+      fireEvent.click(connection.getByRole('button', { name: 'Sign in with Bitbucket' }))
+      expect(await connection.findByText('Connected as Maria Rossi')).toBeInTheDocument()
+      expect(b.urls[0]).toBe('https://gw.acme.com/auth/bitbucket/keys')
+      expect(api.openExternal).toHaveBeenCalledWith(`https://gw.acme.com/auth/bitbucket/start?host=bitbucket.org&write=${'w'.repeat(32)}`)
+      // No GitHub-only install link for Bitbucket.
+      expect(connection.queryByRole('button', { name: /Install Bluebird/ })).toBeNull()
+      fireEvent.click(within(code).getByRole('button', { name: 'Save configuration' }))
+      await waitFor(() => expect(api.save).toHaveBeenCalledWith('github', expect.objectContaining({ host: 'bitbucket', method: 'signin', apiKey: 'bb_tok', email: '', signinAccount: 'Maria Rossi' })))
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })

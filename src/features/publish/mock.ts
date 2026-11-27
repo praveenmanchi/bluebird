@@ -19,7 +19,7 @@ export interface PublishMockOptions {
   scenario?: MockScenario
   /** How the mock publish ends. */
   outcome?: Exclude<PublishOutcome, 'saved'>
-  /** Repository missing in Settings › GitHub. */
+  /** Repository missing in Settings › Code repository. */
   notConnected?: boolean
   /** Teams / Power Automate webhooks in Settings › Notifications (0 disables "Post the changelog to Teams"). */
   webhooks?: number
@@ -113,7 +113,7 @@ export function createMockHandlers(options: PublishMockOptions | MockScenario = 
   return {
     [MSG.status]: async () => status(),
     [MSG.open]: async (payload: { url: string }) => { if (typeof window !== 'undefined' && typeof window.open === 'function') window.open(payload.url, '_blank', 'noopener') },
-    // Settings › GitHub › Test Connection in the dev harness: no network, so it only checks the fields are filled.
+    // Settings › Code repository › Test Connection in the dev harness: no network, so it only checks the fields are filled.
     [testMessage('github')]: async (payload: { repo?: string; apiKey?: string }) => {
       if (!payload?.repo?.trim() || !payload.apiKey?.trim()) throw new Error('Add the repository and access token first.')
       return { message: `Mock: connected as praveenmanchi · can push to ${payload.repo.trim()}. In Figma this asks GitHub.` }

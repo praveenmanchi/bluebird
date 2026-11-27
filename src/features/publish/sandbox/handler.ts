@@ -1,5 +1,5 @@
 // Runs inside Figma: wires the Publish handlers (publish-handlers.ts) to the
-// document, clientStorage (Settings › GitHub), Figma's fetch and the clock.
+// document, clientStorage (Settings › Code repository), Figma's fetch and the clock.
 import type { HandlerMap } from '@shared/bridge'
 import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'
 import { createPublishHandlers } from './publish-handlers'

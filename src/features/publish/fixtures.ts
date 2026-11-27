@@ -68,6 +68,6 @@ export const HISTORY: readonly ReleaseSummary[] = [
 ]
 
 export const SAMPLE_REPO = { connected: true, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', diffComparison: true } as const
-/** Settings › GitHub with no repository: the release is only recorded in the file. */
+/** Settings › Code repository with no repository: the release is only recorded in the file. */
 export const NO_REPO = { connected: false, repo: '', branch: 'main', diffComparison: true } as const
 export const SAMPLE_SITE = 'ds.bridge.design'

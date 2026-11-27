@@ -4,7 +4,7 @@ import { textToAdf } from './adf'
 import { jiraConnection, openTicketsJql, postComment, searchOpenTickets } from './tickets'
 import type { JiraConfig } from './http'
 
-const cloud: JiraConfig = { flavor: 'cloud', site: 'https://acme.atlassian.net', endpoint: 'https://acme.atlassian.net', authorization: 'Basic x', projectKey: 'BB' }
+const cloud: JiraConfig = { flavor: 'cloud', site: 'https://acme.atlassian.net', target: 'https://acme.atlassian.net', endpoint: 'https://acme.atlassian.net', authorization: 'Basic x', projectKey: 'BB' }
 
 describe('shared Jira tickets', () => {
   it('scopes the open tickets to the project, else the person', () => {

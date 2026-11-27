@@ -15,6 +15,7 @@ const labels = (field: LeafFieldSpec): [string, string][] => {
   if (field.kind === 'provider') return [[field.model.key, field.model.label], [field.apiKey.key, field.apiKey.label]]
   if (field.kind === 'connection') return CONNECTION_KEYS[field.service].filter((key) => key in CONNECTION_LABELS).map((key) => [key, CONNECTION_LABELS[key]!])
   if (field.kind === 'gateway') return [[field.key, 'Company gateway']]
+  if (field.kind === 'host') return [[field.key, 'Code host']]
   return [[field.key, field.kind === 'switch' ? field.title : field.label]]
 }
 /** "Repository (owner/repo)" → "Repository": short enough to list three in a row. */

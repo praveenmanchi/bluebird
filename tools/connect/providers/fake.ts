@@ -7,6 +7,8 @@ import type { Provider, Service } from './types'
 
 const HOST = /^[a-z0-9.-]{0,253}(:\d{1,5})?$/i
 const TOKEN_LIFETIME_MS = 8 * 60 * 60_000
+/** The site id the fake Jira sign-in hands out (a real one is a UUID too). */
+export const FAKE_CLOUD_ID = '00000000-0000-4000-8000-00000000f4ce'
 
 export function fakeProvider(publicUrl: string, id: Service, now: () => number = Date.now): Provider {
   const base = publicUrl.replace(/\/+$/, '')
@@ -15,11 +17,13 @@ export function fakeProvider(publicUrl: string, id: Service, now: () => number =
     acceptsHost: (host) => HOST.test(host),
     authorizeUrl: ({ state, redirectUri, codeChallenge }) =>
       `${base}/fake/authorize?state=${encodeURIComponent(state)}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=${encodeURIComponent(codeChallenge)}`,
-    exchange: async ({ code }) => ({
+    exchange: async ({ code, host }) => ({
       accessToken: `fake-${id}-${code.slice(0, 12)}`,
       refreshToken: `fake-refresh-${code.slice(0, 12)}`,
       account: '@fake-user',
       expiresAt: new Date(now() + TOKEN_LIFETIME_MS).toISOString(),
+      // Like real Atlassian sign-in, a Jira sign-in says which site the token is for.
+      ...(id === 'jira' ? { site: { cloudId: FAKE_CLOUD_ID, url: `https://${host}` } } : {}),
     }),
     consentPage: (url) => {
       const state = url.searchParams.get('state') ?? ''

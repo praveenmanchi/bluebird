@@ -1,0 +1,42 @@
+# Bluebird Cloud staging: the sign-in broker on Cloudflare Workers (worker.ts).
+# Deploy: npm run connect:deploy · Local: npm run connect:worker
+# Secrets go in with `npx wrangler secret put <NAME> -c tools/connect/wrangler.toml`, never here.
+name = "bluebird-connect-staging"
+main = "worker.ts"
+compatibility_date = "2026-05-01"
+workers_dev = true
+preview_urls = false
+
+[vars]
+# Staging serves the fake provider until the real GitHub, Atlassian and Bitbucket apps are registered.
+# The fake provider needs CONNECT_ENV = "staging" (or "development"); a production config leaves it out.
+CONNECT_ENV = "staging"
+CONNECT_FAKE_PROVIDER = "1"
+# No plugin flow uses the hosted Jira relay yet; on a public URL it would be an anonymous proxy to *.atlassian.net.
+JIRA_RELAY = "off"
+CONNECT_PUBLIC_URL = "https://bluebird-connect-staging.praveenmanchi.workers.dev"
+
+[[durable_objects.bindings]]
+name = "CONNECT_RECORDS"
+class_name = "ConnectRecord"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ConnectRecord"]
+
+# Access-code logins from the plugin (events.ts). Query with: npm run connect:logins
+[[analytics_engine_datasets]]
+binding = "LOGIN_EVENTS"
+dataset = "bluebird_logins_staging"
+
+[observability]
+enabled = true
+
+# Cloudflare's own per-request log records full URLs, and query strings carry write keys, codes and
+# state. The broker's own log lines (paths only) are kept.
+[observability.logs]
+enabled = true
+invocation_logs = false
+
+[dev]
+port = 8789

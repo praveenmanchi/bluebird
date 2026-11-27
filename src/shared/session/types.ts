@@ -7,6 +7,12 @@ export interface Session {
 
 export interface SessionLoginRequest { code: string }
 
+/** session:login's answer: the Session (which is what gets stored), plus a key for login analytics. */
+export interface LoginResult extends Session {
+  /** userKeyFor(Figma user id), or null when Figma shares no user. Never stored. */
+  userKey: string | null
+}
+
 /** clientStorage key of the signed-in Session. */
 export const SESSION_KEY = 'bluebird:session'
 

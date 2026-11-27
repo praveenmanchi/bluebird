@@ -49,10 +49,10 @@ function StartState({ onExtract, onRetryStatus }: ReviewStepProps) {
   }
   if (!s.repo.connected) {
     const actions: PublishEmptyStateAction[] = [{ label: 'Extract anyway', variant: 'secondary', onClick: onExtract }, { label: 'Connect GitHub', variant: 'primary', onClick: requestSettings }]
-    const body = `${s.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Bluebird commits the tokens, release notes and changelog there and opens a pull request; your CI builds the site.`
+    const body = `${s.repo.problem ?? 'Connect a repository in Settings › Code repository'}. Bluebird commits the tokens, release notes and changelog there and opens a pull request; your CI builds the site.`
     return <PublishEmptyState state="not-connected" body={body} actions={actions} />
   }
-  // With diff comparison on, the repository's copy of the releases counts too (Settings › GitHub).
+  // With diff comparison on, the repository's copy of the releases counts too (Settings › Code repository).
   const remote = s.repo.diffComparison ? ` A newer release on ${s.repo.branch} of ${s.repo.repo.split('/').pop()} is used instead.` : ''
   if (!s.baseline) {
     const body = s.repo.diffComparison

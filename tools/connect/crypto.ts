@@ -37,7 +37,11 @@ export function isKey(value: unknown): value is string {
 }
 
 /** A key for one purpose, derived from a secret with HKDF so each purpose gets its own key. */
-async function deriveKey(secret: string, purpose: string, algorithm: AesKeyGenParams | HmacKeyGenParams, usages: KeyUsage[]): Promise<CryptoKey> {
+// Named through SubtleCrypto so the file type-checks against both the DOM and Workers typings.
+type DeriveAlgorithm = Parameters<SubtleCrypto['deriveKey']>[2]
+type KeyUsages = Parameters<SubtleCrypto['deriveKey']>[4]
+
+async function deriveKey(secret: string, purpose: string, algorithm: DeriveAlgorithm, usages: KeyUsages): Promise<CryptoKey> {
   if (secret.length < MIN_SECRET_CHARS) throw new Error(`Connect secrets must be at least ${MIN_SECRET_CHARS} characters.`)
   const base = await crypto.subtle.importKey('raw', encoder.encode(secret), 'HKDF', false, ['deriveKey'])
   const params = { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: encoder.encode(`bluebird-connect ${purpose}`) }
@@ -96,6 +100,18 @@ export async function createSigner(secret: string): Promise<Signer> {
       // subtle.verify compares in constant time.
       return (await crypto.subtle.verify('HMAC', key, mac, encoder.encode(value))) ? value : null
     },
+  }
+}
+
+/**
+ * Keyed one-way ids for analytics: the same input always gives the same 32 hex chars, and nobody
+ * without the secret can link an id back to its input (events.ts).
+ */
+export async function createPseudonymizer(secret: string): Promise<(value: string) => Promise<string>> {
+  const key = await deriveKey(secret, 'analytics user', { name: 'HMAC', hash: 'SHA-256', length: 256 }, ['sign'])
+  return async (value) => {
+    const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(value)))
+    return [...mac.slice(0, 16)].map((b) => b.toString(16).padStart(2, '0')).join('')
   }
 }
 

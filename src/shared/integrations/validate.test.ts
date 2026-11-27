@@ -70,7 +70,7 @@ describe('validateIntegration', () => {
     })).toEqual({})
     expect(validateIntegration('mcp', { ...mcp, componentRepo: 'design-system', componentToken: 'ghp ab', componentBranch: 'my branch', componentFramework: 'Svelte', componentFolder: '../outside' })).toEqual({
       componentRepo: expect.stringContaining('owner/repository'),
-      componentToken: expect.stringContaining('GitHub token'),
+      componentToken: expect.stringContaining('GitHub or Bitbucket token'),
       componentBranch: expect.stringContaining('spaces'),
       componentFramework: expect.stringContaining('React + TypeScript'),
       componentFolder: expect.stringContaining('folder inside the repository'),
@@ -99,5 +99,15 @@ describe('validateIntegration', () => {
   it('only accepts the offered models', () => {
     expect(validateIntegration('ai', { ...DEFAULT_INTEGRATIONS.ai, openaiModel: 'gpt-2' }).openaiModel).toContain('gpt-4o')
     expect(validateIntegration('ai', { ...DEFAULT_INTEGRATIONS.ai, provider: 'Mistral' }).provider).toContain('Claude, OpenAI, Gemini')
+  })
+})
+
+describe('code host fields', () => {
+  it('accepts GitHub or Bitbucket and an Atlassian email, on every section that has them', () => {
+    const github = { ...DEFAULT_INTEGRATIONS.github, host: 'bitbucket', email: 'maria@acme.com' }
+    expect(validateIntegration('github', github)).toEqual({})
+    expect(validateIntegration('github', { ...github, host: 'gitlab', email: 'maria' })).toEqual({ host: 'Pick GitHub or Bitbucket', email: expect.stringContaining('email') })
+    expect(validateIntegration('storage', { ...DEFAULT_INTEGRATIONS.storage, host: 'svn' })).toEqual({ host: 'Pick GitHub or Bitbucket' })
+    expect(validateIntegration('mcp', { ...DEFAULT_INTEGRATIONS.mcp, screenHost: 'bitbucket', screenEmail: 'nope' })).toEqual({ screenEmail: expect.stringContaining('email') })
   })
 })

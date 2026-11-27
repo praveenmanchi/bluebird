@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { allowedTarget, handleProxyRequest, parseHosts, TARGET_HEADER, trustedCaller, upstreamUrl, type Upstream } from '../../tools/jira-proxy/proxy'
+import { allowedTarget, handleProxyRequest, MAX_RESPONSE_BYTES, parseHosts, TARGET_HEADER, trustedCaller, upstreamUrl, type Upstream } from '../../tools/jira-proxy/proxy'
 
 const ok = (body: string, status = 200): Awaited<ReturnType<Upstream>> => ({ status, headers: { get: () => 'application/json' }, text: async () => body })
 
@@ -12,6 +12,11 @@ describe('jira proxy', () => {
     expect(allowedTarget('https://user:pw@team.atlassian.net', [])).toBeNull()
     expect(allowedTarget('https://jira.acme.com/jira', ['jira.acme.com'])?.pathname).toBe('/jira')
     expect(allowedTarget(undefined, [])).toBeNull()
+    // A sign-in token is used at api.atlassian.com/ex/jira/<cloudId>, and only there.
+    expect(allowedTarget('https://api.atlassian.com/ex/jira/0a1b2c3d-4e5f-6789-abcd-ef0123456789', [])?.pathname).toBe('/ex/jira/0a1b2c3d-4e5f-6789-abcd-ef0123456789')
+    expect(allowedTarget('https://api.atlassian.com/oauth/token', [])).toBeNull()
+    expect(allowedTarget('https://api.atlassian.com/ex/confluence/0a1b2c3d-4e5f-6789-abcd-ef0123456789', [])).toBeNull()
+    expect(allowedTarget('https://api.atlassian.com/ex/jira/not-an-id', [])).toBeNull()
     expect(parseHosts(' jira.acme.com, ,jira.internal ')).toEqual(['jira.acme.com', 'jira.internal'])
   })
 
@@ -81,5 +86,29 @@ describe('jira proxy', () => {
     const res = await handleProxyRequest({ method: 'GET', url: '/rest/api/3/myself', headers: { [TARGET_HEADER]: 'https://team.atlassian.net' } }, [], upstream)
     expect(res.status).toBe(502)
     expect(JSON.parse(res.body).errorMessages[0]).toContain('team.atlassian.net')
+  })
+
+  it('reaches Atlassian Cloud on 443 only, while a company host may use its own port', () => {
+    expect(allowedTarget('https://team.atlassian.net:8443', [])).toBeNull()
+    expect(allowedTarget('https://team.atlassian.net:443', [])?.host).toBe('team.atlassian.net')
+    expect(allowedTarget('https://api.atlassian.com:444/ex/jira/0a1b2c3d-4e5f-6789-abcd-ef0123456789', [])).toBeNull()
+    expect(allowedTarget('https://jira.acme.com:8443', ['jira.acme.com'])?.port).toBe('8443')
+  })
+
+  it('always answers JSON with nosniff, whatever type Jira claims', async () => {
+    const html = vi.fn<Upstream>(async () => ({ status: 200, headers: { get: (n: string) => (n === 'content-type' ? 'text/html' : null) }, text: async () => '<script>x</script>' }))
+    const res = await handleProxyRequest({ method: 'GET', url: '/rest/api/3/myself', headers: { [TARGET_HEADER]: 'https://team.atlassian.net' } }, [], html)
+    expect(res.headers['content-type']).toBe('application/json; charset=utf-8')
+    expect(res.headers['x-content-type-options']).toBe('nosniff')
+  })
+
+  it('refuses to pass on an oversized answer', async () => {
+    const declared = vi.fn<Upstream>(async () => ({ status: 200, headers: { get: (n: string) => (n === 'content-length' ? String(MAX_RESPONSE_BYTES + 1) : null) }, text: async () => '{}' }))
+    const actual = vi.fn<Upstream>(async () => ({ status: 200, headers: { get: () => null }, text: async () => 'x'.repeat(MAX_RESPONSE_BYTES + 1) }))
+    for (const upstream of [declared, actual]) {
+      const res = await handleProxyRequest({ method: 'GET', url: '/rest/api/3/search', headers: { [TARGET_HEADER]: 'https://team.atlassian.net' } }, [], upstream)
+      expect(res.status).toBe(502)
+      expect(JSON.parse(res.body).errorMessages[0]).toMatch(/too large/)
+    }
   })
 })

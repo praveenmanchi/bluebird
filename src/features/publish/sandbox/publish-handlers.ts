@@ -4,13 +4,14 @@
 // The last release lives WITH THE FILE (document plugin data), so every designer
 // who opens the tab diffs against the same release. Plugin data entries are capped
 // at 100 kB, so the JSON is split across numbered chunks. Every release also commits
-// the same store to the repository (.bluebird/releases.json); with Settings › GitHub ›
+// the same store to the repository (.bluebird/releases.json); with Settings › Code repository ›
 // "Enable diff comparison" on, an extract reads it back and compares against whichever
 // copy is newer — the way Tokens Studio treats the repository as the source of truth.
 import * as z from 'zod/mini'
 import type { HandlerContext, HandlerMap } from '@shared/bridge'
 import { normalizeIntegration, sectionSchemas, testMessage, type ConnectionTestResult, type IntegrationValues } from '@shared/integrations'
-import { configFromSettings, createGithubClient, isProblem, type GithubFetch } from '../github/client'
+import type { GithubFetch } from '../github/client'
+import { codeHostConfig, createCodeHost, isProblem } from '@shared/codehost'
 import { CHANGELOG_PATH, STORE_PATH, configuredWebhooks, previewCommit, publishToGithub } from '../github/release'
 import { applyChanges, diffSnapshots } from '../diff'
 import {
@@ -41,7 +42,7 @@ export interface PublishDeps {
   now(): Date
 }
 
-/** Settings › GitHub › Test Connection, answered here because Publish owns the GitHub connection. */
+/** Settings › Code repository › Test Connection, answered here because Publish owns the GitHub connection. */
 export const GITHUB_TEST = testMessage('github')
 
 export const STORE_KEY = 'publish:release'
@@ -99,11 +100,11 @@ export function writeStore(data: DocumentData, store: ReleaseStore): void {
 const FIELD_LABELS: Record<string, string> = { repo: 'Repository', apiKey: 'Access token', baseUrl: 'Base URL', branch: 'Branch', tokenPath: 'Token path' }
 
 function repoStatus(github: IntegrationValues<'github'>): RepoStatus {
-  const config = configFromSettings(github)
+  const config = codeHostConfig(github)
   const repo = github.repo.trim(), branch = github.branch.trim() || 'main', diffComparison = github.diffComparison
   if (!isProblem(config)) return { connected: true, repo, branch, diffComparison }
   const fields = config.fields.map((f) => FIELD_LABELS[f] ?? f).join(' and ')
-  const problem = config.reason === 'incomplete' ? `Add the ${fields.toLowerCase()} in Settings › GitHub` : `Fix the ${fields.toLowerCase()} in Settings › GitHub`
+  const problem = config.reason === 'incomplete' ? `Add the ${fields.toLowerCase()} in Settings › Code repository` : `Fix the ${fields.toLowerCase()} in Settings › Code repository`
   return { connected: false, repo, branch, diffComparison, problem }
 }
 
@@ -113,7 +114,7 @@ const publishedAt = (store: ReleaseStore | null): number => Date.parse(store?.re
 
 /**
  * The baseline to diff against: the file's store, the repository's, or the newer of the two.
- * The repository is only read when Settings › GitHub › "Enable diff comparison" is on and the
+ * The repository is only read when Settings › Code repository › "Enable diff comparison" is on and the
  * connection is complete; a copy that cannot be read never blocks an extract.
  */
 export async function resolveBaseline(
@@ -121,7 +122,7 @@ export async function resolveBaseline(
   github: IntegrationValues<'github'>,
   readRemote: (path: string, branch: string) => Promise<string | null>,
 ): Promise<{ store: ReleaseStore | null; source: BaselineSource; note?: string }> {
-  const config = configFromSettings(github)
+  const config = codeHostConfig(github)
   if (!github.diffComparison || isProblem(config)) return { store: local, source: local ? 'file' : 'none' }
   let remote: ReleaseStore | null = null
   try {
@@ -155,8 +156,8 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
   async function extract(): Promise<ExtractResult> {
     const [snapshot, github] = await Promise.all([deps.readSnapshot(), deps.readGithub()])
     const local = readStore(deps.data)
-    const config = configFromSettings(github)
-    const readRemote = (path: string, branch: string) => isProblem(config) ? Promise.resolve(null) : createGithubClient(config, deps.fetch, deps.sleep).readFile(path, branch)
+    const config = codeHostConfig(github)
+    const readRemote = (path: string, branch: string) => isProblem(config) ? Promise.resolve(null) : createCodeHost(config, deps.fetch, deps.sleep).readFile(path, branch)
     const { store, source, note } = await resolveBaseline(local, github, readRemote)
     // A newer repository copy becomes the file's baseline too, so Publish status and the next extract agree with it.
     if (store && store !== local) writeStore(deps.data, store)
@@ -202,7 +203,7 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
     const req = publishRequestSchema.parse(payload)
     const { reviewed, include, release, baseline, entries, store } = plan(req)
     const [github, notifications] = await Promise.all([deps.readGithub(), deps.readNotifications()])
-    const config = configFromSettings(github)
+    const config = codeHostConfig(github)
     const record = () => {
       writeStore(deps.data, store)
       last = null // the diff it came from is now stale
@@ -218,7 +219,7 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
     ]
 
     if (isProblem(config)) {
-      const why = repoStatus(github).problem ?? 'Connect a repository in Settings › GitHub'
+      const why = repoStatus(github).problem ?? 'Connect a repository in Settings › Code repository'
       for (const s of steps.slice(2)) s.detail = `Not run — ${why.charAt(0).toLowerCase()}${why.slice(1)}`
       ctx.emit(MSG.progress, { steps })
       record()
@@ -230,7 +231,7 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
 
     ctx.emit(MSG.progress, { steps })
     const { result, landed } = await publishToGithub({
-      client: createGithubClient(config, deps.fetch, deps.sleep),
+      client: createCodeHost(config, deps.fetch, deps.sleep),
       request: req, release, snapshot: baseline, entries, store, steps,
       webhooks: configuredWebhooks(notifications),
       emit: (next) => ctx.emit(MSG.progress, { steps: next }),
@@ -241,15 +242,15 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
     return { ...result, release }
   }
 
-  /** Settings › GitHub › Test Connection, with the form's unsaved values. */
+  /** Settings › Code repository › Test Connection, with the form's unsaved values. */
   async function test(payload: unknown): Promise<ConnectionTestResult> {
     const values = z.safeParse(sectionSchemas.github, payload)
-    if (!values.success) throw new Error('Those GitHub settings aren’t complete. Check the fields and try again.')
-    const config = configFromSettings(normalizeIntegration(values.data, 'github'))
+    if (!values.success) throw new Error('Those Code repository settings aren’t complete. Check the fields and try again.')
+    const config = codeHostConfig(normalizeIntegration(values.data, 'github'))
     if (isProblem(config)) throw new Error(`${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${config.fields.map((f) => FIELD_LABELS[f] ?? f).join(' and ').toLowerCase()} first.`)
-    const client = createGithubClient(config, deps.fetch, deps.sleep)
+    const client = createCodeHost(config, deps.fetch, deps.sleep)
     const me = await client.whoAmI()
-    if (!me.canPush) throw new Error(`Signed in as ${me.login}, but this token can’t push to ${config.repo}. Give it Contents and Pull requests write access.`)
+    if (!me.canPush) throw new Error(`Signed in as ${me.login}, but this token can’t push to ${config.repo}. Give it ${client.kind === 'bitbucket' ? 'Repositories' : 'Contents'} and Pull requests write access.`)
     // Like Tokens Studio's startup sync, say what the repository already holds.
     const [store, changelog] = await Promise.all([client.readFile(STORE_PATH).catch(() => null), client.readFile(CHANGELOG_PATH).catch(() => null)])
     const released = parseStore(store)?.releases[0]
@@ -265,10 +266,10 @@ export function createPublishHandlers(deps: PublishDeps): HandlerMap {
     [GITHUB_TEST]: async (payload: unknown) => test(payload),
     [MSG.open]: async (payload: unknown) => {
       const { url } = openRequestSchema.parse(payload)
-      // Only GitHub (or the Enterprise host in Settings): the URL comes from the UI, so it isn't trusted to point anywhere else.
+      // Only GitHub, Bitbucket (or the Enterprise host in Settings): the URL comes from the UI, so it isn't trusted to point anywhere else.
       const base = (await deps.readGithub()).baseUrl.trim().replace(/\/+$/, '')
-      const allowed = ['https://github.com/', ...(base.startsWith('https://') ? [`${base}/`] : [])]
-      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub.')
+      const allowed = ['https://github.com/', 'https://bitbucket.org/', ...(base.startsWith('https://') ? [`${base}/`] : [])]
+      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub or Bitbucket.')
       deps.openExternal(url)
     },
   }

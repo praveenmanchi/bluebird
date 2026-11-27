@@ -18,7 +18,7 @@ const exported = (includeKeys: boolean): ParsedSettingsFile => {
 
 describe('describeFields', () => {
   it('lists the filled-in fields by their short Settings labels', () => {
-    expect(describeFields('github', LEAD.github as never)).toBe('API key, Repository, Branch and 1 more')
+    expect(describeFields('github', LEAD.github as never)).toBe('API key, Repository, Branch and 2 more')
     expect(describeFields('storybook', { baseUrl: 'https://x', linksEnabled: true })).toBe('Base URL')
     expect(describeFields('jira', { enabled: true })).toBe('Switches only')
     expect(sectionTitle('mcp')).toBe('MCP + code sync')
@@ -30,14 +30,14 @@ describe('exportRows', () => {
     const rows = exportRows(LEAD, true)
     expect(rows.map((r) => r.id)).toEqual(['github', 'storage', 'notifications', 'storybook', 'zeroheight', 'dualFile', 'ai', 'mcp', 'jira'])
     const by = Object.fromEntries(rows.map((r) => [r.id, r]))
-    expect(by.github).toMatchObject({ available: true, detail: 'API key, Repository, Branch and 1 more' })
+    expect(by.github).toMatchObject({ available: true, detail: 'API key, Repository, Branch and 2 more' })
     expect(by.zeroheight).toMatchObject({ available: false, detail: 'Not configured yet' })
     expect(by.jira).toMatchObject({ available: false, detail: 'Turned off' })
     expect(by.dualFile?.detail).not.toContain('API key')
   })
 
   it('stops listing keys once they are left out', () => {
-    expect(exportRows(LEAD, false).find((r) => r.id === 'github')?.detail).toBe('Repository, Branch and Token storage location')
+    expect(exportRows(LEAD, false).find((r) => r.id === 'github')?.detail).toBe('Repository, Branch, Token storage location and 1 more')
   })
 })
 

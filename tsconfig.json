@@ -57,5 +57,8 @@
     "vitest.config.ts",
     "eslint.config.js",
     ".storybook"
+  ],
+  "exclude": [
+    "tools/connect/worker.ts"
   ]
 }

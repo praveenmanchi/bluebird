@@ -98,9 +98,9 @@ export const SavedInFile: Story = {
   name: '6 Publish · Saved in this file',
   render: () => preloaded(() => {
     loadExtract(sample()); step.value = 3; publishPhase.value = 'done'
-    const s = STEP_STATES(['done', 'done', 'queued', 'queued', 'queued']).map((x, i) => i > 1 ? { ...x, detail: 'Not run — add the access token in Settings › GitHub' } : x)
+    const s = STEP_STATES(['done', 'done', 'queued', 'queued', 'queued']).map((x, i) => i > 1 ? { ...x, detail: 'Not run — add the access token in Settings › Code repository' } : x)
     steps.value = s
-    publishResult.value = { outcome: 'saved', release, steps: s, headline: 'v4.0.0 saved in this file', message: 'v4.0.0 is recorded as this file’s latest release, so the next extract compares against it. Nothing was sent to GitHub: add the access token in Settings › GitHub to publish there.' }
+    publishResult.value = { outcome: 'saved', release, steps: s, headline: 'v4.0.0 saved in this file', message: 'v4.0.0 is recorded as this file’s latest release, so the next extract compares against it. Nothing was sent to GitHub: add the access token in Settings › Code repository to publish there.' }
   }),
 }
 

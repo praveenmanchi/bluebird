@@ -85,7 +85,7 @@ describe('history handlers', () => {
 
   it('says what is missing when Storage is not set up, without calling GitHub', async () => {
     const t = setup({ connected: false })
-    expect((await t.list()).repo).toMatchObject({ connected: false, problem: expect.stringMatching(/Add the API key in Settings › GitHub/) })
+    expect((await t.list()).repo).toMatchObject({ connected: false, problem: expect.stringMatching(/Add the API key in Settings › Code repository/) })
     expect(await t.check()).toEqual({ connected: false, unseen: 0, by: [] })
     expect(t.requests).toHaveLength(0)
   })
@@ -104,7 +104,7 @@ describe('history handlers', () => {
     const t = setup()
     await t.open('https://github.com/acme/history/pull/1')
     await t.open('https://acme.atlassian.net/browse/BB-330')
-    await expect(t.open('https://evil.example.com/x')).rejects.toThrow(/isn’t on GitHub or your Jira site/)
+    await expect(t.open('https://evil.example.com/x')).rejects.toThrow(/isn’t on GitHub, Bitbucket or your Jira site/)
     expect(t.opened).toHaveLength(2)
   })
 

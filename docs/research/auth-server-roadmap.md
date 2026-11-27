@@ -13,8 +13,9 @@ as a third service, next to GitHub and Jira.
 ```
  Figma plugin (designer's machine, on their VPN)
    │
-   │ 1. POST /auth/{service}/keys ─────────────► Bluebird Connect
+   │ 1. POST /auth/{service}/keys ─────────────► Bluebird Connect   (answers read, write and a code like 34M-7GU)
    │ 2. opens browser: /auth/{service}/start?host=…&write=…
+   │    plugin shows the code                      │ 2b. page shows the same code; the person clicks Continue
    │                                               │ 3. redirects to GitHub / Atlassian / Bitbucket
    │                                               │ 4. provider calls /auth/{service}/callback?code=…
    │                                               │ 5. swaps the code for tokens (client secret lives here),
@@ -108,8 +109,9 @@ choice at the top and the same Connection card under it. Detection (`hosts.ts`) 
 
 | Endpoint | Does | Notes |
 |---|---|---|
-| `POST /auth/{service}/keys` | New read/write key pair | Already in the plugin contract. 16–128 chars `[A-Za-z0-9_-]` |
-| `GET /auth/{service}/start?host&write` | Redirects to the provider's consent page | `state` = signed {write key, host, PKCE verifier ref}; `host` must be one with a registered app |
+| `POST /auth/{service}/keys` | New read/write key pair + confirm code | Keys: 16–128 chars `[A-Za-z0-9_-]`. Code: `XXX-XXX`, derived from the read key |
+| `GET /auth/{service}/start?host&write` | Shows "Connect GitHub to Bluebird?" with the code, sets the browser cookie | Uses up the write key. `host` must be one with a registered app |
+| `POST /auth/{service}/confirm` | Continue → redirects to the provider (303). Cancel → sign-in denied | Same browser only (cookie). `state` = signed nonce; PKCE verifier kept server-side |
 | `GET /auth/{service}/callback` | Code → tokens, then encrypt and park under the read key (5 min TTL) | Shows a "You can go back to Figma" page |
 | `GET /auth/poll?read` | `202` waiting, `200 {accessToken, account, expiresAt, refreshHandle}` once, `404/410` expired | Plugin already handles everything except `refreshHandle` |
 | `POST /auth/refresh {refreshHandle}` | New access token | GitHub App: 8 h tokens. Atlassian: 1 h, rotating refresh tokens. Bitbucket: 2 h |
@@ -142,23 +144,49 @@ were logged verbatim; pages lacked `nosniff`, `frame-ancestors` and HSTS.
 
 **Must land before the first real provider (Phase 2):**
 
-1. **Confirm code on the start page (HIGH).** Today the start link works as a bearer link:
-   an attacker can make keys, send a designer the start link, and receive that designer's
-   token when they approve. Fix: `/keys` also returns a short code derived from the read key
-   (e.g. `K7QX-92`). The plugin shows it in the "Finish signing in in your browser" state.
-   `/start` shows the same code with a Confirm button (same-origin POST) before redirecting,
-   and sets a short-lived `__Host-` cookie that the callback checks. Needs a small plugin
-   change: the waiting state shows the code. The plugin build has 0.1 KB headroom, so the
-   budget goes up.
-2. **Exact host allow-list per provider (CRITICAL once real).** `acceptsHost` must only pass
-   `github.com`, `*.atlassian.net`, `bitbucket.org`, or hosts a company registered. https only,
-   no private IPs. The client secret must never go to any other host.
-3. **Read key out of the URL.** Poll with the read key in a header or POST body, not in the
-   query string, where proxies and access logs keep it. This is a plugin change too.
-4. **Only accept `Origin: null` + a custom header on `POST /keys`**, so a web page can't
-   mint keys against an intranet gateway.
-5. On KV, use a Durable Object or a conditional write for `s:` and `r:`, because KV
-   deletes are eventually consistent.
+1. ~~**Confirm code on the start page (HIGH).**~~ **Done 2026-11-27.** The start link used to
+   work as a bearer link: an attacker could make keys, send a designer the start link, and
+   receive that designer's token when they approved. Now:
+   - `/keys` returns a code like `34M-7GU`, derived from the read key. The plugin shows it
+     under "Finish signing in in your browser".
+   - `/start` shows the same code with Continue / Cancel (a same-origin POST to `/confirm`)
+     and redirects only after Continue. Cancel tells the plugin the sign-in was cancelled.
+   - A browser cookie is set on that page (`__Host-bb_connect` on https, `bb_connect` on
+     localhost; HttpOnly, SameSite=Lax). `/confirm` and the callback both require it, so a
+     sign-in can't be confirmed by another site's form or finished in another browser. One
+     id per browser, so two sign-ins at once still both finish.
+   - The plugin refuses a broker that sends no code. The budget wasn't raised: the
+     build stayed inside 1740 KB after shortening three of the sign-in messages.
+2. **Exact host allow-list per provider.** **GitHub done 2026-11-27:** it accepts `github.com`
+   and nothing else, and `exchange()` refuses before sending the secret anywhere else. Atlassian
+   and Bitbucket need the same when they're built: `*.atlassian.net`, `bitbucket.org`, or hosts a
+   company registered; https only, no private IPs.
+3. ~~**Read key out of the URL.**~~ **Done 2026-11-27.** The plugin polls `GET /auth/poll` with the
+   read key in an `x-connect-read` header. A `?read=` query is refused.
+4. ~~**Only the plugin may call keys and poll.**~~ **Done 2026-11-27.** Both need the
+   `x-connect-client: bluebird` header, which stops plain forms and image requests. They also
+   need Figma's `null` origin (or no origin, from a non-browser client), which stops web pages.
+   The local dev server also allows `http://localhost:*`, for the plugin dev harness.
+5. ~~On KV, use a Durable Object or a conditional write for `s:` and `r:`.~~ **Done 2026-11-27:**
+   Bluebird Cloud doesn't use KV. Every record is its own Durable Object (`tools/connect/durable.ts`),
+   so `take()` reads and deletes in one step, and an alarm clears it at the TTL.
+**Zero-trust review 2026-11-28** (independent read-only review, findings checked in the code):
+- **Done:** the confirm code is typed, not compared: the plugin shows it, the person types it on the
+  browser page, and three wrong tries cancel the sign-in. The page names the site and its CSP lets
+  the form go only to that provider's origin. The fake provider needs `CONNECT_ENV=development|staging`
+  (Workers set no `NODE_ENV`). The hosted Jira relay is off on staging (`JIRA_RELAY=off`). The relay
+  allows only port 443 on Atlassian hosts, caps answers at 10 MB and always answers JSON with `nosniff`.
+  Cloudflare's invocation logs are off (they record query strings). Login analytics accept only the
+  brands in `plugin.config.json`. Atlassian no longer asks for `offline_access`.
+- **The origin check is CSRF hygiene, not access control.** A web page can get a `null` origin from a
+  sandboxed iframe. `keys` and `poll` are safe by key entropy; a Gateway needs a network rule or a
+  company secret in front.
+- **Open:** Cloudflare rate-limit rules keyed by IPv6 /64 (the in-memory limiter is per isolate, and a
+  full table refuses everyone new); deploy from CI with a scoped token, separate staging and production
+  accounts and provider apps; a separate `CONNECT_ANALYTICS_KEY` and a periodic salt for pseudonyms;
+  PKCE for Atlassian and Bitbucket if they add it; warn before applying a gateway URL from a team-setup
+  import.
+
 6. Gateway: a configurable bind address, request timeouts, and a trusted-proxy setting for
    the client IP.
 
@@ -208,8 +236,31 @@ enterprise doc (§5 Phase 0):
   → Sign in → Approve. `localhost:8788` is in `devAllowedDomains`.
 - Poll answers `403` when the person denies, and `502` when the provider swap fails. The
   plugin now says "Sign-in was cancelled in the browser" for 403.
-- Not yet: the staging deploy and `BLUEBIRD_CLOUD_URL` from build config (both wait on D1
-  hosting and D2 domain), the KV store adapter, refresh handles (Phase 5).
+- Not yet: `BLUEBIRD_CLOUD_URL` from build config (waits on D2 domain), refresh handles (Phase 5).
+
+**D1 decided 2026-11-27: Cloudflare Workers.** Staging is live at
+`https://bluebird-connect-staging.praveenmanchi.workers.dev` (fake provider) until D2 picks a domain.
+It's in the manifest's `devAllowedDomains` only. Try it in a dev build: Settings › GitHub › "Use a
+company gateway" → that address → Sign in.
+
+- `tools/connect/worker.ts` (Worker entry + the `ConnectRecord` Durable Object), `durable.ts`
+  (one object per record), `cloud.ts` (reads the Worker's settings; no throwaway keys, because
+  each isolate would make its own), `wrangler.toml` (staging: fake provider on, `NODE_ENV` unset).
+- `npm run connect:worker` runs it locally on `localhost:8789` (secrets in the git-ignored
+  `tools/connect/.dev.vars`). `npm run connect:deploy` deploys it. Secrets only through
+  `npx wrangler secret put <NAME> -c tools/connect/wrangler.toml`.
+- wrangler is pinned to 4.86 because newer versions need Node 22 and the project runs on 20.
+  That caps `compatibility_date` at 2026-05-03.
+- Rate limits still count per isolate. Production adds Cloudflare rate-limit rules (Phase 7).
+- **Login analytics (2026-11-28):** the plugin reports each access-code login to
+  `POST /events/login` (`src/shared/analytics/login.ts`, only in builds with `VITE_LOGIN_ANALYTICS_URL`).
+  The broker writes brand, version, country and a pseudonymous user id to the Analytics Engine
+  dataset `bluebird_logins_staging` (`tools/connect/events.ts`). The sandbox hashes the Figma user id,
+  and the broker HMACs that hash again with its state key. No codes, names, e-mails or IPs are stored.
+  `npm run connect:logins` reads it (needs `CLOUDFLARE_ANALYTICS_TOKEN`, Account Analytics Read).
+  Before production: mention it in the manifest's `networkAccess.reasoning` and in client privacy notes.
+- `worker.ts` has its own `tools/connect/tsconfig.json` (Workers types), and `npm run typecheck`
+  runs both.
 
 ### Phase 2: GitHub sign-in on github.com (≈1 week)
 
@@ -218,6 +269,34 @@ enterprise doc (§5 Phase 0):
 3. Plugin: an "Install on your organisation" link for when the app isn't installed on the repo's org.
 
 **Exit:** a github.com account connects in two clicks. Publish opens a PR with the sign-in token.
+
+**Built 2026-11-27 (branch `feat/connect-server`), waiting on the GitHub App (§5 A2/A3):**
+
+- `tools/connect/providers/github.ts`:
+  - Authorize URL with S256 PKCE and `allow_signup=false`.
+  - The code swap posts the secret and verifier to `github.com/login/oauth/access_token`.
+    GitHub answers 200 with `{ error }` when it refuses, and that is handled.
+  - `GET api.github.com/user` (with a User-Agent) for `@login`. `expiresAt` comes from
+    `expires_in` (8 h with token expiry on).
+  - It keeps the refresh token for Phase 5.
+  - Failures become a `ProviderError`, whose code is safe to log (`bad_verification_code`,
+    `user_401`, `network`…). GitHub's free-text error is never logged.
+- `tools/connect/config.ts` picks the providers from the environment:
+  - `GITHUB_APP_CLIENT_ID`, `GITHUB_APP_CLIENT_SECRET` and `GITHUB_APP_SLUG` turn real GitHub
+    sign-in on. The other services stay fake when `CONNECT_FAKE_PROVIDER=1`.
+  - `npm run connect:dev` reads `.env` (git-ignored).
+  - For local runs, add `http://localhost:8788/auth/github/callback` to the app's callback URLs
+    (a GitHub App takes up to 10).
+- Security items 2–4 above are done.
+- Size budget raised to 1745 KB, your call on 2026-11-27.
+- **"Install Bluebird on your organisation"** (built the same day): after a GitHub sign-in, the
+  connected row in Settings has this link. It opens `{broker}/auth/github/install`, which redirects
+  to `github.com/apps/<slug>/installations/new`. So the install page is set in one place, the
+  broker's `GITHUB_APP_SLUG`, and the plugin stores nothing new. A broker without an install
+  step says "There's nothing to install". Jira doesn't show the link.
+- **Not done yet:**
+  - Trying it against the real app.
+  - Drawing the install link in Figma (the Settings "Sign-in or token" section).
 
 ### Phase 3: Jira Cloud: relay + Atlassian sign-in (≈1.5 weeks)
 
@@ -230,6 +309,49 @@ enterprise doc (§5 Phase 0):
 
 **Exit:** a Jira Cloud site connects with either a token or sign-in. The Jira tab and
 Changelog's Jira comment work.
+
+**Server side built 2026-11-27 (branch `feat/connect-server`):**
+
+- **Relay:** Connect answers `/rest/…` with the same contract as the local Jira proxy (the
+  `x-jira-target` header). So the plugin's Jira gateway field can point at Connect with no plugin
+  change. The forwarding code is shared with `tools/jira-proxy` (`forwardToJira`, now
+  Workers-safe: no `Buffer`).
+  - It reaches only `*.atlassian.net`, plus `JIRA_RELAY_HOSTS` on a gateway.
+  - It accepts Figma's origin only, is limited to 600 requests a minute per IP, and logs paths
+    only.
+  - It's on by default; `JIRA_RELAY=off` turns it off. Tried against a real Atlassian site:
+    `serverInfo` 200 through the relay, a non-Atlassian host 400, a web page 403.
+- **Sign in with Atlassian** (`providers/atlassian.ts`):
+  - The authorize URL uses audience `api.atlassian.com`, scopes `read:jira-work write:jira-work
+    read:jira-user read:me offline_access`, and `prompt=consent`.
+  - The code swap posts JSON to `auth.atlassian.com/oauth/token`.
+  - `accessible-resources` must include the site the person pasted (else `site_not_granted`).
+    The result carries `site: { cloudId, url }` to the plugin.
+  - The name comes from `/me`.
+  - PKCE isn't documented for 3LO, so none is sent. The confirm code, browser cookie and
+    signed state still guard the flow.
+- `ATLASSIAN_CLIENT_ID` / `ATLASSIAN_CLIENT_SECRET` in `.env` turn it on.
+- **Step 3, plugin side (built 2026-11-28).**
+  - After "Sign in with Atlassian", Settings keeps the site's `cloudId` (a personal field, like
+    the account name). Disconnect clears it.
+  - `JiraConfig.target` is what's called: `https://api.atlassian.com/ex/jira/<cloudId>` for a
+    signed-in Jira Cloud connection, otherwise the site. `site` stays the real site, so issue
+    links still open on it.
+  - Requests go through the gateway relay with that target. The relay (and the local
+    `jira:proxy`) accept `api.atlassian.com` only at exactly `/ex/jira/<uuid>`.
+    `api.atlassian.com` gave a plugin-style request no CORS headers, so it isn't called
+    directly.
+  - A sign-in from before the cloudId was kept reads as "Jira sign-in" missing, so it is done
+    again.
+  - Checked live against the local server: a fake Jira sign-in returns the site, and a
+    signed-in call through the relay reaches `api.atlassian.com` (its own 404 for the fake
+    site id).
+- **Bitbucket sign-in in the plugin (built 2026-11-28):** "Sign in with Bitbucket" in Code
+  repository goes through the broker. The token is used as Bearer: a leftover Atlassian email is
+  cleared on sign-in and ignored by `codeHostConfig` when the method is sign-in. There's no
+  install link, which is a GitHub-only step.
+- **Not done:** trying both with real apps (Atlassian A4, Bitbucket A7), and refresh
+  (Phase 5). Atlassian tokens last about an hour and Bitbucket's 2 hours.
 
 ### Phase 4: Bitbucket (≈3 weeks; the plugin work is most of it)
 
@@ -244,6 +366,51 @@ Changelog's Jira comment work.
    request" on both. MCP's "Actions run" becomes "Checks".
 
 **Exit:** a Bitbucket Cloud workspace connects with a token or sign-in, and Publish opens a PR there.
+
+**Server side built 2026-11-27 (step 4 without refresh):** `providers/bitbucket.ts`.
+
+- It accepts `bitbucket.org` only.
+- The authorize URL carries `client_id`, `response_type=code` and `state`. Scopes and the
+  callback live on the consumer, so neither is sent.
+- The code swap sends Basic `key:secret` and a form body to
+  `bitbucket.org/site/oauth2/access_token`.
+- The name comes from `api.bitbucket.org/2.0/user` (`display_name`, then `nickname`).
+- `BITBUCKET_CLIENT_ID` / `BITBUCKET_CLIENT_SECRET` in `.env` turn it on.
+
+**Plugin side built 2026-11-27 (steps 1–3 and 5).** Designed first in Figma: section "Settings ·
+600 · Code: GitHub or Bitbucket" (40003067:23087) in the backup file.
+
+- **`@shared/codehost`:** one `CodeHost` interface used by Publish, Extraction, History,
+  Changelog and MCP.
+  - `githubCodeHost` wraps the existing client and makes the same requests in the same order;
+    the existing GitHub tests pass unchanged.
+  - `bitbucketCodeHost` talks to Bitbucket Cloud's 2.0 API:
+    - A commit goes straight onto a branch: `POST /src` as a form with one field per file, then
+      the hash is read back from the branch.
+    - Optimistic writes send the branch head as `parents`; a branch that moved on (409) is a
+      refusal.
+    - Pull requests and commit statuses (shown as "Bitbucket Pipelines") are covered.
+    - Errors come back as readable messages, and 5xx answers are retried.
+  - Bitbucket Cloud answers plugin requests directly (`Access-Control-Allow-Origin: *`, checked
+    2026-11-27), so no relay is needed. `api.bitbucket.org` is in the manifest.
+- **Settings:**
+  - The GitHub section is now **Code repository**. It has a "Where's your code?" GitHub /
+    Bitbucket switch, and the Bitbucket logo shows in the header when Bitbucket is picked.
+  - Bitbucket shows: "Where's your Bitbucket?", a "Bitbucket Cloud" badge, an **Atlassian email**
+    and an API token (Basic auth), or sign-in through the broker (Bearer).
+  - Switching hosts clears the token and sign-in, so a GitHub token is never sent to Bitbucket.
+  - Storage and each MCP scenario have their own switch and email field.
+  - "Settings › GitHub" is now "Settings › Code repository" in every message.
+- **Settings data:** `host` + `email` on `github` and `storage`, and `<scenario>Host` /
+  `<scenario>Email` on `mcp`. Older stored settings read as GitHub. The email is personal: it is
+  never written to a team setup file.
+- **Links:** History, Extraction and Publish now open `bitbucket.org` links (commit and PR pages).
+- **Not done yet:**
+  - Bitbucket Data Center: Settings shows "coming", and the adapter refuses with a clear message.
+    It needs its own adapter (REST 1.0, one file per commit) and a gateway relay.
+  - Trying it against a real Bitbucket workspace. In particular, whether `POST /src` refuses a
+    stale `parents`, and whether it accepts file field names without a leading slash.
+  - Refresh (Phase 5): Bitbucket sign-in tokens last 2 hours.
 
 ### Phase 5: Refresh + Disconnect for all three (≈1 week)
 
@@ -299,10 +466,10 @@ need the non-secret IDs.
 | A1 | Hosting account (from D1) + DNS access for D2 | Cloudflare or Vercel | Phase 1 | Account/team name; you add me as a member or run the deploy command I give you |
 | A2 | **GitHub org** for Bluebird + a test repo | github.com | Phase 2 | Org name |
 | A3 | **GitHub App** in that org. Callback `https://connect…/auth/github/callback`; "Expire user authorization tokens" on; permissions: Contents R/W, Pull requests R/W, Actions R, Metadata R; "Any account" can install | GitHub › Org settings › Developer settings › GitHub Apps | Phase 2 | App ID, client ID, app slug. **Client secret + private key → hosting secrets** |
-| A4 | **Atlassian developer app**, OAuth 2.0 (3LO). Callback `…/auth/jira/callback`; scopes `read:jira-work`, `write:jira-work`, `read:jira-user`, `offline_access` | developer.atlassian.com › Developer console | Phase 3 | Client ID. **Secret → hosting secrets** |
+| A4 | **Atlassian developer app**, OAuth 2.0 (3LO). Callback `…/auth/jira/callback` (and `http://localhost:8788/auth/jira/callback` for local runs). APIs: **Jira API** with `read:jira-work`, `write:jira-work`, `read:jira-user`, and **User Identity API** with `read:me`. `offline_access` is asked for in the URL | developer.atlassian.com › Developer console | Phase 3 | Client ID. **Secret → hosting secrets** |
 | A5 | Free **Jira Cloud** test site | atlassian.com (free plan) | Phase 0 | Site URL + a test project key |
 | A6 | **Bitbucket workspace** for Bluebird + a test repo | bitbucket.org (free) | Phase 0 / 4 | Workspace + repo slug |
-| A7 | **Bitbucket OAuth consumer** in that workspace. Callback `…/auth/bitbucket/callback`; permissions Account Read, Repositories Write, Pull requests Write, Pipelines Read; "private consumer" off | Bitbucket › Workspace settings › OAuth consumers | Phase 4 | Key. **Secret → hosting secrets** |
+| A7 | **Bitbucket OAuth consumer** in that workspace. Callback `…/auth/bitbucket/callback` (Bitbucket allows one: `http://localhost:8788/auth/bitbucket/callback` while testing locally). Permissions Account Read, Repositories Write, Pull requests Write, Pipelines Read; "This is a private consumer" off | Bitbucket › Workspace settings › OAuth consumers | Phase 4 | Key. **Secret → hosting secrets** |
 | A8 | **Privacy policy + terms** URL | Your site | Phase 3 (Atlassian Sharing) + Phase 7 | URLs. I can draft the text |
 
 ### For the Gateway (Phase 6 only; skip until a company needs it)

@@ -5,7 +5,7 @@ import { gitPill, mcpPill, uxaiPill } from './footerStatus'
 describe('footer status pills', () => {
   it('Git needs the GitHub repository and API key', () => {
     const gh = DEFAULT_INTEGRATIONS.github
-    expect(gitPill(gh)).toEqual({ label: 'Git', status: 'issue', title: 'Add the repository and API key in Settings › GitHub output configuration.' })
+    expect(gitPill(gh)).toEqual({ label: 'Git', status: 'issue', title: 'Add the repository and API key in Settings › Code repository.' })
     expect(gitPill({ ...gh, repo: 'gap-inc/design-tokens', apiKey: 'ghp_test' })).toEqual({ label: 'Git', status: 'good', title: 'Commits to gap-inc/design-tokens (main). The key isn’t tested yet.' })
     expect(gitPill({ ...gh, repo: 'a/b', apiKey: 'k', baseUrl: 'https://github.acme.com' }).title).toContain('on github.acme.com')
     expect(gitPill(undefined).status).toBe('retry')

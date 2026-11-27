@@ -10,11 +10,11 @@ import type { FooterPill } from '@shared/ui'
 /** Settings › Integrations as last loaded or saved; null until signed in and read. */
 export const integrationSettings = signal<IntegrationSettings | null>(null)
 
-/** Settings › GitHub Output Configuration: where extracted variables are committed. */
+/** Settings › Code repository: where extracted variables are committed. */
 export function gitPill(github: IntegrationValues<'github'> | undefined): FooterPill {
   if (!github) return { label: 'Git', status: 'retry', title: 'Reading Settings…' }
   const missing = [...(github.repo.trim() ? [] : ['repository']), ...(github.apiKey.trim() ? [] : ['API key'])]
-  if (missing.length) return { label: 'Git', status: 'issue', title: `Add the ${missing.join(' and ')} in Settings › GitHub output configuration.` }
+  if (missing.length) return { label: 'Git', status: 'issue', title: `Add the ${missing.join(' and ')} in Settings › Code repository.` }
   const host = github.baseUrl.trim() ? ` on ${github.baseUrl.trim().replace(/^https?:\/\//, '')}` : ''
   return { label: 'Git', status: 'good', title: `Commits to ${github.repo} (${github.branch})${host}. The key isn’t tested yet.` }
 }

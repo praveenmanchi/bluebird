@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { createSessionHandlers, brandForCode, SESSION_KEY, type SessionStore } from './session'
 import { loadConfig } from '@shared/config'
-import { hashAccessCode, SESSION_MSG } from '@shared/session'
+import { hashAccessCode, SESSION_MSG, userKeyFor } from '@shared/session'
 
 const config = loadConfig({
   brand: { active: 'a', brands: {
@@ -39,6 +39,22 @@ describe('session handlers', () => {
     const h = createSessionHandlers(config, memoryStore())
     await expect(call(h, SESSION_MSG.login, { code: '' })).rejects.toThrow(/Enter the access code/)
     await expect(call(h, SESSION_MSG.login, { code: 'wrong' })).rejects.toThrow(/not recognised/)
+  })
+  it('answers a one-way key of the Figma user for login analytics, and never stores it', async () => {
+    const store = memoryStore()
+    const h = createSessionHandlers(config, store, () => '1234567890')
+    const result = await call(h, SESSION_MSG.login, { code: 'A-CODE' }) as { brandId: string; userKey: string | null }
+    expect(result.userKey).toBe(userKeyFor('1234567890'))
+    expect(result.userKey).toMatch(/^[0-9a-f]{64}$/)
+    expect(result.userKey).not.toContain('1234567890')
+    expect(store.data.get(SESSION_KEY)).not.toHaveProperty('userKey')
+    expect(await call(h, SESSION_MSG.status)).not.toHaveProperty('userKey')
+  })
+  it('answers a null user key when Figma shares no user', async () => {
+    const none = await call(createSessionHandlers(config, memoryStore(), () => null), SESSION_MSG.login, { code: 'A-CODE' }) as { userKey: string | null }
+    expect(none.userKey).toBeNull()
+    const unset = await call(createSessionHandlers(config, memoryStore()), SESSION_MSG.login, { code: 'A-CODE' }) as { userKey: string | null }
+    expect(unset.userKey).toBeNull()
   })
   it('reset clears every bluebird key and ignores stale brands', async () => {
     const store = memoryStore()

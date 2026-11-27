@@ -11,6 +11,8 @@ export interface TokenSet {
   account: string
   /** ISO date, or '' when the token doesn't expire. */
   expiresAt: string
+  /** Jira Cloud sign-in: the site the token is for. API calls go to api.atlassian.com/ex/jira/{cloudId}. */
+  site?: { cloudId: string; url: string }
 }
 
 export interface AuthorizeInput {
@@ -33,6 +35,25 @@ export interface Provider {
   acceptsHost(host: string): boolean
   authorizeUrl(input: AuthorizeInput): string
   exchange(input: ExchangeInput): Promise<TokenSet>
+  /** Where an admin installs the app on their organisation (GitHub Apps); absent when there's no such step. */
+  installUrl?: string
   /** Only the fake provider serves its own consent page. */
   consentPage?: (url: URL) => Response
+}
+
+const SAFE_CODE = /^[a-z0-9_]{1,40}$/
+
+/**
+ * A provider said no, or couldn't be reached. `code` is safe to log: one of our own words, or the
+ * provider's error code when it's a plain snake_case word (never its free text, which can echo
+ * codes or tokens).
+ */
+export class ProviderError extends Error {
+  readonly code: string
+  constructor(code: string) {
+    const safe = SAFE_CODE.test(code) ? code : 'unknown'
+    super(`provider error: ${safe}`)
+    this.name = 'ProviderError'
+    this.code = safe
+  }
 }

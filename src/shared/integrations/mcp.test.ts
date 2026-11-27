@@ -12,15 +12,23 @@ const ALL = {
 
 describe('mcpTarget', () => {
   it('reads each scenario from its own keys, trimmed', () => {
-    expect(mcpTarget(ALL, 'component')).toEqual({ scenario: 'component', repo: 'acme/design-system', branch: 'develop', token: 'ghp_c', framework: 'Vue + TypeScript', folder: 'packages/ui', designPackage: '', pullRequests: '' })
-    expect(mcpTarget(ALL, 'screen')).toEqual({ scenario: 'screen', repo: 'acme/web', branch: 'main', token: 'ghp_s', framework: 'React + TypeScript', folder: 'src/pages', designPackage: '@acme/ui', pullRequests: '' })
-    expect(mcpTarget(ALL, 'library')).toEqual({ scenario: 'library', repo: 'acme/app', branch: 'main', token: 'ghp_l', framework: '', folder: '', designPackage: '', pullRequests: 'One for all screens' })
+    expect(mcpTarget(ALL, 'component')).toEqual({ scenario: 'component', repo: 'acme/design-system', branch: 'develop', token: 'ghp_c', framework: 'Vue + TypeScript', folder: 'packages/ui', designPackage: '', pullRequests: '', host: 'github', email: '' })
+    expect(mcpTarget(ALL, 'screen')).toEqual({ scenario: 'screen', repo: 'acme/web', branch: 'main', token: 'ghp_s', framework: 'React + TypeScript', folder: 'src/pages', designPackage: '@acme/ui', pullRequests: '', host: 'github', email: '' })
+    expect(mcpTarget(ALL, 'library')).toEqual({ scenario: 'library', repo: 'acme/app', branch: 'main', token: 'ghp_l', framework: '', folder: '', designPackage: '', pullRequests: 'One for all screens', host: 'github', email: '' })
+  })
+
+  it('reads each scenario’s own code host and Atlassian email', () => {
+    const mixed = { ...ALL, screenHost: 'bitbucket', screenEmail: ' maria@acme.com ', libraryHost: 'gitlab' }
+    expect(mcpTarget(mixed, 'screen')).toMatchObject({ host: 'bitbucket', email: 'maria@acme.com' })
+    expect(mcpTarget(mixed, 'component')).toMatchObject({ host: 'github', email: '' })
+    // Anything that isn't Bitbucket is GitHub, as stored before Bitbucket existed.
+    expect(mcpTarget(mixed, 'library').host).toBe('github')
   })
 
   it('falls back to main when the branch is blank, and to empty text for a key an old store never had', () => {
     expect(mcpTarget({ ...D, componentBranch: '   ' }, 'component').branch).toBe('main')
     const sparse = { enabled: true } as unknown as typeof D
-    expect(mcpTarget(sparse, 'library')).toEqual({ scenario: 'library', repo: '', branch: 'main', token: '', framework: '', folder: '', designPackage: '', pullRequests: '' })
+    expect(mcpTarget(sparse, 'library')).toEqual({ scenario: 'library', repo: '', branch: 'main', token: '', framework: '', folder: '', designPackage: '', pullRequests: '', host: 'github', email: '' })
   })
 })
 
@@ -48,9 +56,9 @@ describe('mcpTargetState and connectedScenarios', () => {
 
 describe('mcpScenarioKeys', () => {
   it('gives the stored keys of one scenario and none of another’s', () => {
-    expect(mcpScenarioKeys(D, 'component')).toEqual(['componentRepo', 'componentBranch', 'componentToken', 'componentFramework', 'componentFolder'])
-    expect(mcpScenarioKeys(D, 'screen')).toEqual(['screenRepo', 'screenBranch', 'screenToken', 'screenFramework', 'screenFolder', 'screenPackage'])
-    expect(mcpScenarioKeys(D, 'library')).toEqual(['libraryRepo', 'libraryBranch', 'libraryToken', 'libraryPullRequests'])
+    expect(mcpScenarioKeys(D, 'component')).toEqual(['componentRepo', 'componentBranch', 'componentToken', 'componentFramework', 'componentFolder', 'componentHost', 'componentEmail'])
+    expect(mcpScenarioKeys(D, 'screen')).toEqual(['screenRepo', 'screenBranch', 'screenToken', 'screenFramework', 'screenFolder', 'screenPackage', 'screenHost', 'screenEmail'])
+    expect(mcpScenarioKeys(D, 'library')).toEqual(['libraryRepo', 'libraryBranch', 'libraryToken', 'libraryPullRequests', 'libraryHost', 'libraryEmail'])
   })
 })
 

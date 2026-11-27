@@ -54,7 +54,8 @@ describe('persona features', () => {
 
 describe('managed sections', () => {
   it('start from the defaults without keys or tokens', () => {
-    expect(managedDefaults('github')).toEqual({ repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '' })
+    // A brand can preset the code host (a Bitbucket-only company); the Atlassian email is personal, so it isn't here.
+    expect(managedDefaults('github')).toEqual({ repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '', host: 'github' })
   })
 
   it('report field errors but not the missing keys each person adds', () => {
