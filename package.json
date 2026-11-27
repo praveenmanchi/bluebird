@@ -34,6 +34,7 @@
     "figma:visual": "node --env-file-if-exists=.env --import tsx scripts/figma-visual.ts",
     "figma:diff": "node --env-file-if-exists=.env --import tsx scripts/figma-diff.ts",
     "jira:proxy": "tsx tools/jira-proxy/server.ts",
+    "connect:dev": "CONNECT_FAKE_PROVIDER=1 tsx tools/connect/server.ts",
     "figma:sync": "node --env-file-if-exists=.env --import tsx scripts/figma-sync.ts",
     "figma:sync:schedule": "tsx scripts/figma-sync-schedule.ts",
     "figma:pull": "node --env-file-if-exists=.env --import tsx scripts/figma-pull.ts",

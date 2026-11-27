@@ -91,7 +91,7 @@ const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, 
 
 /**
  * Polls the broker until the sign-in finishes. 200 = done (the broker deletes the record), 202 / 204 = still
- * waiting, 404 / 410 = the key expired. Rejects with SignInError (or an AbortError when `signal` fires).
+ * waiting, 403 = cancelled in the browser, 404 / 410 = the key expired. Rejects with SignInError (or an AbortError when `signal` fires).
  */
 export async function pollSignIn(broker: string, readKey: string, options: PollOptions = {}): Promise<SignInResult> {
   const { fetch: get = fetch as unknown as Fetch, signal, intervalMs = POLL_INTERVAL_MS, timeoutMs = POLL_TIMEOUT_MS, sleep = wait, now = Date.now } = options
@@ -112,6 +112,7 @@ export async function pollSignIn(broker: string, readKey: string, options: PollO
       return parsed.data
     }
     if (res.status === 404 || res.status === 410) throw new SignInError('That sign-in expired. Start it again.')
+    if (res.status === 403) throw new SignInError(`Sign-in was cancelled in the browser.${RETRY}`)
     if (res.status !== 202 && res.status !== 204) throw answered(res.status)
     await sleep(intervalMs)
   }

@@ -29,6 +29,15 @@
         "jira:proxy"
       ],
       "port": 8787
+    },
+    {
+      "name": "connect",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "connect:dev"
+      ],
+      "port": 8788
     }
   ]
 }

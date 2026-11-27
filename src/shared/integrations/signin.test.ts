@@ -48,6 +48,7 @@ describe('pollSignIn', () => {
 
   it('says when the key expired, the answer is unreadable, or it took too long', async () => {
     await expect(pollSignIn('https://gw', KEYS.read, { fetch: fakeFetch([{ status: 410 }]).fetch, sleep: noSleep })).rejects.toThrow('expired')
+    await expect(pollSignIn('https://gw', KEYS.read, { fetch: fakeFetch([{ status: 403 }]).fetch, sleep: noSleep })).rejects.toThrow('cancelled')
     await expect(pollSignIn('https://gw', KEYS.read, { fetch: fakeFetch([{ status: 200, body: { accessToken: '' } }]).fetch, sleep: noSleep })).rejects.toThrow('can’t read')
     let t = 0
     const pending = fakeFetch(Array.from({ length: 10 }, () => ({ status: 202 })))
