@@ -15,3 +15,7 @@ figma/visual
 .env.local
 test-results
 playwright-report
+
+# Cloudflare Workers (tools/connect)
+.wrangler
+.dev.vars

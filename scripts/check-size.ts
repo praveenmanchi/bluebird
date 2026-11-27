@@ -121,7 +121,12 @@ import { resolve } from 'node:path'
 // [data-brand] with Brand UI aliases kept as var(), so each brand file holds only its own values (~2 KB
 // instead of ~41 KB): brand CSS went from ~330 KB for 8 brands to ~116 KB for 40. The 37 logos add
 // ~175 KB; build 1728.5 KB.
-const BUDGET_KB = 1740
+// 2026-11-27 (sign-in confirm code + Phase 2): user raised the budget to 1745 KB. The confirm code in
+// the waiting row (three sign-in messages were shortened to fit it at 1740.0) plus the plugin headers
+// on keys and poll took the build 61 bytes over; ~5 KB left for Jira sign-in and Bitbucket.
+// 2026-11-28 (access-code login analytics + Bitbucket code host + typed confirm code): user raised the
+// budget to 1750 KB. The build came to 1745.6 KB; the login report (src/shared/analytics) is ~0.5 KB of it.
+const BUDGET_KB = 1750
 const file = resolve(import.meta.dirname, '../dist/index.html')
 const kb = statSync(file).size / 1024
 const status = kb <= BUDGET_KB ? 'OK' : 'OVER BUDGET'

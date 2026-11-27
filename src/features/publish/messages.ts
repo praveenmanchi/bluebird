@@ -16,15 +16,15 @@ export const MSG = {
 
 export const openRequestSchema = z.object({ url: z.string().check(z.regex(/^https:\/\/[^\s]+$/), z.maxLength(2048)) })
 
-/** Where the release goes, read from Settings › GitHub. */
+/** Where the release goes, read from Settings › Code repository. */
 export interface RepoStatus {
   /** Repository and access token are set and pass the Settings rules. */
   connected: boolean
   repo: string
   branch: string
-  /** Settings › GitHub › "Enable diff comparison": extracts also read the repository's release store. */
+  /** Settings › Code repository › "Enable diff comparison": extracts also read the repository's release store. */
   diffComparison: boolean
-  /** Why it isn't connected, e.g. "Add an access token in Settings › GitHub". */
+  /** Why it isn't connected, e.g. "Add an access token in Settings › Code repository". */
   problem?: string
 }
 
@@ -46,7 +46,7 @@ export interface StatusResult {
 /**
  * Where the baseline the diff compares against came from.
  * - `file`: the release stored in this Figma file.
- * - `github`: `.bluebird/releases.json` on the branch in Settings › GitHub was newer (or the file had none) — Settings › GitHub › "Enable diff comparison".
+ * - `github`: `.bluebird/releases.json` on the branch in Settings › Code repository was newer (or the file had none) — Settings › Code repository › "Enable diff comparison".
  * - `none`: first release.
  */
 export type BaselineSource = 'file' | 'github' | 'none'
@@ -118,7 +118,7 @@ export interface PublishProgress {
  * - `pr-opened`: committed on a release branch with a pull request; merging it publishes.
  * - `pushed`: committed straight to the branch; `link` is the commit or the CI run.
  * - `live`: pushed, built and deployed (the mock's docs-site flow).
- * - `saved`: recorded in this file only — no repository or token in Settings › GitHub.
+ * - `saved`: recorded in this file only — no repository or token in Settings › Code repository.
  * - `push-rejected`: GitHub refused the branch update; nothing was published.
  * - `build-failed`: committed, but the CI run failed.
  */

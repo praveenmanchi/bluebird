@@ -5,7 +5,7 @@
 import * as z from 'zod/mini'
 import type { HandlerMap } from '@shared/bridge'
 import { normalizeIntegration, refreshMs, sectionSchemas, testMessage, type ConnectionTestResult, type IntegrationValues } from '@shared/integrations'
-import { createGithubClient, type GithubFetch } from '@shared/github/client'
+import { createCodeHost, type HostFetch as GithubFetch } from '@shared/codehost'
 import { isStorageProblem, resolveStorage, type HistoryStorage } from '@shared/history/config'
 import { listEntries, type DayCache } from '@shared/history/github'
 import { HISTORY_CHECK, type HistoryCheckResult } from '@shared/history/watch'
@@ -51,7 +51,7 @@ export function createHistoryHandlers(deps: HistoryDeps): HandlerMap {
   }
 
   async function read(where: HistoryStorage, days: number): Promise<HistoryEntry[]> {
-    const client = createGithubClient(where.config, deps.fetch, deps.sleep)
+    const client = createCodeHost(where.config, deps.fetch, deps.sleep)
     return (await listEntries(client, where.config.branch, where.folder, days, deps.now(), cacheFor(where))).entries
   }
 
@@ -83,9 +83,9 @@ export function createHistoryHandlers(deps: HistoryDeps): HandlerMap {
     if (!values.success) throw new Error('Those Storage settings aren’t complete. Check the fields and try again.')
     const where = resolveStorage(normalizeIntegration(values.data, 'storage'), await deps.readGithub())
     if (isStorageProblem(where)) throw new Error(`${where.problem}.`)
-    const client = createGithubClient(where.config, deps.fetch, deps.sleep)
+    const client = createCodeHost(where.config, deps.fetch, deps.sleep)
     const me = await client.whoAmI()
-    if (!me.canPush) throw new Error(`Signed in as ${me.login}, but this key can’t write to ${where.config.repo}. History needs Contents write access.`)
+    if (!me.canPush) throw new Error(`Signed in as ${me.login}, but this key can’t write to ${where.config.repo}. History needs ${client.kind === 'bitbucket' ? 'Repositories' : 'Contents'} write access.`)
     const days = (await client.listFolder(where.folder, where.config.branch)).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f.name)).length
     return { message: `Connected as ${me.login} · can write to ${where.config.repo} on ${where.config.branch}. ${where.folder} ${days ? `holds ${days} ${days === 1 ? 'day' : 'days'} of history` : 'is empty — the first extraction or report starts it'}.` }
   }
@@ -97,12 +97,12 @@ export function createHistoryHandlers(deps: HistoryDeps): HandlerMap {
     [MSG.open]: async (payload: unknown) => {
       const { url } = openRequestSchema.parse(payload)
       // Entries come from a shared repository, so their links are not trusted:
-      // only GitHub, the Enterprise hosts in Settings and the Jira site open.
+      // only GitHub, Bitbucket, the Enterprise hosts in Settings and the Jira site open.
       const [github, store, jira] = await Promise.all([deps.readGithub(), deps.readStorage(), deps.readJira()])
       const hosts = [github.baseUrl, store.baseUrl].map((b) => b.trim().replace(/\/+$/, '')).filter((b) => b.startsWith('https://')).map((b) => `${b}/`)
       const site = jiraSite(jira)
-      const allowed = ['https://github.com/', ...hosts, ...(site ? [`${site}/`] : [])]
-      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub or your Jira site.')
+      const allowed = ['https://github.com/', 'https://bitbucket.org/', ...hosts, ...(site ? [`${site}/`] : [])]
+      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub, Bitbucket or your Jira site.')
       deps.openExternal(url)
     },
   }

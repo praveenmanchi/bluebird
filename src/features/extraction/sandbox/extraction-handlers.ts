@@ -2,13 +2,13 @@
 // they run the same in Figma (handler.ts), in tests and with fixtures.
 //
 // Nothing is stored in the Figma file: every branch of the repository in
-// Settings › GitHub holds its own extractions (see model.ts), so the whole team
+// Settings › Code repository holds its own extractions (see model.ts), so the whole team
 // compares against the same files.
 import type { HandlerMap } from '@shared/bridge'
 import type { IntegrationValues } from '@shared/integrations'
 import { allowedWebhook, normalizeWebhook } from '@shared/integrations/webhooks'
 import { cardPayload, type CardFacts, type CardInput } from '@shared/integrations/card'
-import { GithubError, configFromSettings, createGithubClient, isProblem, type GithubClient, type GithubFetch } from '@shared/github/client'
+import { CodeHostError as GithubError, codeHostConfig, createCodeHost, isProblem, type CodeHost, type HostFetch as GithubFetch } from '@shared/codehost'
 import type { Change, Snapshot } from '@shared/design/types'
 import { recordHistory } from '@shared/history/record'
 import { extractionEntry } from '../history'
@@ -46,10 +46,10 @@ export const MAX_STAMPED_BRANCHES = 30
 const FIELD_LABELS: Record<string, string> = { repo: 'repository', apiKey: 'access token', baseUrl: 'base URL', branch: 'branch', tokenPath: 'token path' }
 
 function problemOf(github: IntegrationValues<'github'>): string | null {
-  const config = configFromSettings(github)
+  const config = codeHostConfig(github)
   if (!isProblem(config)) return null
   const fields = config.fields.map((f) => FIELD_LABELS[f] ?? f.toLowerCase()).join(' and ')
-  return `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${fields} in Settings › GitHub`
+  return `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${fields} in Settings › Code repository`
 }
 
 /** The Teams / Power Automate message for a pushed extraction: prose plus the counts and table rows a flow reads. */
@@ -61,11 +61,11 @@ export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
   /** The extraction behind the last compare; a push must name it so it never sends something the designer did not see. */
   let last: { id: string; file: ExtractionFile; changes: readonly Change[]; impacted: readonly ImpactedComponent[]; comparedWith: string | null } | null = null
 
-  async function connect(): Promise<GithubClient> {
+  async function connect(): Promise<CodeHost> {
     const github = await deps.readGithub()
-    const config = configFromSettings(github)
+    const config = codeHostConfig(github)
     if (isProblem(config)) throw new Error(`${problemOf(github)}.`)
-    return createGithubClient(config, deps.fetch, deps.sleep)
+    return createCodeHost(config, deps.fetch, deps.sleep)
   }
 
   async function status(): Promise<StatusResult> {
@@ -169,19 +169,20 @@ export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
     let commitUrl = ''
     try {
       if (emptyRepo) {
-        // The Git Data API can't write to an empty repository; one Contents call makes the first commit and the branch.
+        // A one-file write is the only kind that works on an empty repository: it makes the first commit and the branch.
         await gh.putFile(INDEX_PATH, `${JSON.stringify(nextIndex(null, entry), null, 2)}\n`, message, req.target)
       }
       const parent = await gh.branchHead(emptyRepo ? req.target : from)
       const previous = emptyRepo ? null : parseIndex(await gh.readFile(INDEX_PATH, from).catch(() => null))
-      const made = await gh.commit(parent, message, [
-        { path, content: body },
-        { path: LATEST_PATH, content: body },
-        { path: INDEX_PATH, content: `${JSON.stringify(nextIndex(previous, entry), null, 2)}\n` },
-      ])
+      const made = await gh.commitFiles({
+        parent, message, branch: req.target, create: req.create && !emptyRepo,
+        files: [
+          { path, content: body },
+          { path: LATEST_PATH, content: body },
+          { path: INDEX_PATH, content: `${JSON.stringify(nextIndex(previous, entry), null, 2)}\n` },
+        ],
+      })
       commitUrl = made.url
-      if (req.create && !emptyRepo) await gh.createRef(`refs/heads/${req.target}`, made.sha)
-      else await gh.moveBranch(req.target, made.sha)
     } catch (e) {
       if (e instanceof GithubError && e.kind === 'rejected') {
         const rejected: PushResult = { outcome: 'rejected', headline: `Push to ${req.target} was rejected`, message: `${e.message} Nothing was pushed and nobody was notified. Push to a new branch instead.` }
@@ -227,10 +228,10 @@ export function createExtractionHandlers(deps: ExtractionDeps): HandlerMap {
     [MSG.push]: async (payload: unknown) => push(payload),
     [MSG.open]: async (payload: unknown) => {
       const { url } = openRequestSchema.parse(payload)
-      // Only GitHub (or the Enterprise host in Settings): the URL comes from the UI, so it isn't trusted to point anywhere else.
+      // Only GitHub, Bitbucket (or the Enterprise host in Settings): the URL comes from the UI, so it isn't trusted to point anywhere else.
       const base = (await deps.readGithub()).baseUrl.trim().replace(/\/+$/, '')
-      const allowed = ['https://github.com/', ...(base.startsWith('https://') ? [`${base}/`] : [])]
-      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub.')
+      const allowed = ['https://github.com/', 'https://bitbucket.org/', ...(base.startsWith('https://') ? [`${base}/`] : [])]
+      if (!allowed.some((prefix) => url.startsWith(prefix))) throw new Error('That link isn’t on GitHub or Bitbucket.')
       deps.openExternal(url)
     },
   }

@@ -25,7 +25,7 @@ function Body({ onExtract, onRetry, onPush, onRefresh }: { onExtract: () => void
       <PublishEmptyState
         state="not-connected"
         title="GitHub is not connected"
-        body={`${s.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Extractions are saved to that repository so everyone compares against the same files.`}
+        body={`${s.repo.problem ?? 'Connect a repository in Settings › Code repository'}. Extractions are saved to that repository so everyone compares against the same files.`}
         actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]}
       />
     )

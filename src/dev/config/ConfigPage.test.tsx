@@ -39,7 +39,7 @@ describe('ConfigPage', () => {
     render(<ConfigPage brandId="ikea" onBrand={() => undefined} onPreview={() => undefined} />)
     fireEvent.click(await screen.findByRole('switch', { name: 'Show Jira board' }))
     fireEvent.click(screen.getByRole('button', { name: 'Move Publish up' }))
-    const github = screen.getByRole('region', { name: 'GitHub output configuration' })
+    const github = screen.getByRole('region', { name: 'Code repository' })
     fireEvent.click(within(github).getByText('Set here'))
     fireEvent.input(within(github).getByLabelText('Repository (owner/repo)'), { target: { value: 'ikea/tokens' } })
     expect(within(github).getByLabelText('Access token')).toBeDisabled()

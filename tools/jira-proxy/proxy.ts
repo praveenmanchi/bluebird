@@ -20,6 +20,10 @@ export const MAX_BODY_BYTES = 1_000_000
 const LOOPBACK = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i
 const LOCAL_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i
 const UPSTREAM_TIMEOUT_MS = 20_000
+/** Jira's biggest REST answers (search pages, changelogs) stay well under this. */
+export const MAX_RESPONSE_BYTES = 10_000_000
+// Every answer is JSON, and browsers mustn't guess otherwise: the hosted relay shares an origin with the sign-in pages.
+const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8', 'x-content-type-options': 'nosniff' } as const
 
 export const CORS_HEADERS: Readonly<Record<string, string>> = {
   'access-control-allow-origin': '*',
@@ -53,8 +57,12 @@ export function allowedTarget(raw: string | undefined, extraHosts: readonly stri
   try { target = new URL(raw) } catch { return null }
   if (target.protocol !== 'https:' || target.username || target.password || target.search || target.hash) return null
   const host = target.hostname.toLowerCase()
-  const allowed = host.endsWith('.atlassian.net') || extraHosts.some((h) => h.toLowerCase() === host)
-  return allowed ? target : null
+  // A company's own Jira Data Center may use any port; Atlassian Cloud is on 443 only.
+  if (extraHosts.some((h) => h.toLowerCase() === host)) return target
+  if (target.port !== '') return null
+  // A Jira Cloud sign-in token works only at api.atlassian.com/ex/jira/<cloudId>: that exact path, nothing else there.
+  const signedInCloud = host === 'api.atlassian.com' && /^\/ex\/jira\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(target.pathname)
+  return host.endsWith('.atlassian.net') || signedInCloud ? target : null
 }
 
 /** Hosts from JIRA_PROXY_HOSTS ("jira.acme.com, jira.internal"). */
@@ -78,7 +86,7 @@ export function trustedCaller(headers: ProxyRequest['headers']): boolean {
 }
 
 function json(status: number, payload: unknown): ProxyResponse {
-  return { status, headers: { ...CORS_HEADERS, 'content-type': 'application/json' }, body: JSON.stringify(payload) }
+  return { status, headers: { ...CORS_HEADERS, ...JSON_HEADERS }, body: JSON.stringify(payload) }
 }
 
 /** One request through the proxy. Never throws: upstream failures become 502 / 504 JSON. */
@@ -86,6 +94,14 @@ export async function handleProxyRequest(req: ProxyRequest, extraHosts: readonly
   if (!trustedCaller(req.headers)) return json(403, { errorMessages: ['The Jira proxy only answers Figma and localhost pages.'] })
   if (req.method === 'OPTIONS') return { status: 204, headers: { ...CORS_HEADERS }, body: '' }
   if (req.method === 'GET' && (req.url === '/' || req.url === '/health')) return json(200, { ok: true, service: 'bluebird-jira-proxy' })
+  return forwardToJira(req, extraHosts, upstream)
+}
+
+/**
+ * The forwarding itself, shared with Bluebird Connect's hosted relay (tools/connect/app.ts), which
+ * does its own caller checks. Never throws. Runtime-neutral: runs on Node and Cloudflare Workers.
+ */
+export async function forwardToJira(req: ProxyRequest, extraHosts: readonly string[], upstream: Upstream): Promise<ProxyResponse> {
   if (!FORWARDED_METHODS.has(req.method)) return json(405, { errorMessages: ['The proxy forwards GET, POST, PUT and DELETE only.'] })
   if (!req.url.startsWith('/rest/')) return json(404, { errorMessages: ['The proxy only forwards Jira REST paths (/rest/…).'] })
 
@@ -93,7 +109,7 @@ export async function handleProxyRequest(req: ProxyRequest, extraHosts: readonly
   if (!target) {
     return json(400, { errorMessages: [`Set ${TARGET_HEADER} to your https Jira site (*.atlassian.net, or a host listed in JIRA_PROXY_HOSTS).`] })
   }
-  if (req.body && Buffer.byteLength(req.body) > MAX_BODY_BYTES) return json(413, { errorMessages: ['Request body is too large.'] })
+  if (req.body && new TextEncoder().encode(req.body).length > MAX_BODY_BYTES) return json(413, { errorMessages: ['Request body is too large.'] })
 
   const headers: Record<string, string> = { 'x-atlassian-token': 'no-check' }
   for (const name of FORWARDED_HEADERS) {
@@ -108,8 +124,11 @@ export async function handleProxyRequest(req: ProxyRequest, extraHosts: readonly
     const res = await upstream(url, { method: req.method, headers, body: req.body || undefined, signal: controller.signal, redirect: 'manual' })
     // A redirect would leave the allow-listed host; surface it instead of following it.
     if (res.status >= 300 && res.status < 400) return json(502, { errorMessages: [`Jira redirected the request (${res.status}). Check the Site URL.`] })
+    const tooBig = json(502, { errorMessages: ['Jira’s answer was too large to pass on.'] })
+    if (Number(res.headers.get('content-length') ?? 0) > MAX_RESPONSE_BYTES) return tooBig
     const body = await res.text()
-    return { status: res.status, headers: { ...CORS_HEADERS, 'content-type': res.headers.get('content-type') ?? 'application/json' }, body }
+    if (body.length > MAX_RESPONSE_BYTES) return tooBig
+    return { status: res.status, headers: { ...CORS_HEADERS, ...JSON_HEADERS }, body }
   } catch (error: unknown) {
     const timedOut = error instanceof Error && error.name === 'AbortError'
     return json(timedOut ? 504 : 502, { errorMessages: [timedOut ? 'Jira did not answer in time.' : `Could not reach ${target.host}.`] })

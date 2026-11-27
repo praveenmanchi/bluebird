@@ -51,7 +51,7 @@ export function createMockHandlers(options: McpMockOptions = {}): HandlerMap {
       return state === 'waiting' ? { state, repo, branch } : { state, repo, branch, ...SAMPLE_PULL }
     },
     [MSG.releases]: async (): Promise<ReleasesResult> => noHistory
-      ? { releases: [], problem: 'Add the repository and API key in Settings › GitHub output configuration. Library releases come from the team History.' }
+      ? { releases: [], problem: 'Add the repository and API key in Settings › Code repository. Library releases come from the team History.' }
       : { releases: SAMPLE_RELEASES },
     [MSG.impact]: async (payload: unknown): Promise<ImpactResult> => {
       const { components } = impactRequestSchema.parse(payload)

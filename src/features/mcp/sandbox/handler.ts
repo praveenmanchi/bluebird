@@ -4,11 +4,13 @@
 // request exists yet. Nothing is pushed from here: Claude Code or Cursor
 // writes the code and opens the pull request from the prompt the tab copies.
 import type { HandlerMap } from '@shared/bridge'
-import { MCP_SCENARIOS, MCP_SCENARIO_LABEL, githubHost, mcpTarget, mcpTargetProblem, type IntegrationValues, type McpScenario } from '@shared/integrations'
+import { MCP_SCENARIOS, MCP_SCENARIO_LABEL, mcpTarget, mcpTargetProblem, type IntegrationValues, type McpScenario } from '@shared/integrations'
 import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'
 import { isStorageProblem, resolveStorage } from '@shared/history/config'
 import { listEntries } from '@shared/history/github'
-import { GithubError, RECENT_PULLS, createGithubClient, type GithubFetch } from '@shared/github/client'
+import { RECENT_PULLS } from '@shared/github/client'
+import { CodeHostError as GithubError, createCodeHost, mcpCodeHostConfig, type HostFetch as GithubFetch } from '@shared/codehost'
+import { BITBUCKET_PAGE } from '@shared/codehost/bitbucket'
 import { MSG, checkRequestSchema, focusRequestSchema, impactRequestSchema, openRequestSchema, trackRequestSchema, type CheckResult, type ImpactResult, type McpStatus, type ReleasesResult, type TargetStatus, type TrackedPull, type TrackResult } from '../messages'
 import { combinedState, releasesFrom } from '../library'
 import { findImpact } from './impact'
@@ -67,7 +69,7 @@ export async function releases(deps: ReleaseDeps): Promise<ReleasesResult> {
   const [github, storage] = await Promise.all([deps.readGithub(), deps.readStorage()])
   const where = resolveStorage(storage, github)
   if (isStorageProblem(where)) return { releases: [], problem: `${where.problem} Library releases come from the team History.` }
-  const client = createGithubClient(where.config, deps.fetch)
+  const client = createCodeHost(where.config, deps.fetch)
   const { entries } = await listEntries(client, where.config.branch, where.folder, RELEASE_DAYS, deps.now())
   return { releases: releasesFrom(entries) }
 }
@@ -77,13 +79,13 @@ async function impact(payload: unknown): Promise<ImpactResult> {
   return findImpact(components)
 }
 
-/** The client's messages point at Settings › GitHub and ask for write access; this lookup uses the scenario's own token and only reads. */
-function trackError(error: unknown, scenario: McpScenario, repo: string): Error {
-  if (!(error instanceof GithubError)) return error instanceof Error ? error : new Error('GitHub could not be reached')
+/** The client's messages point at Settings › Code repository and ask for write access; this lookup uses the scenario's own token and only reads. */
+function trackError(error: unknown, scenario: McpScenario, repo: string, host: string): Error {
+  if (!(error instanceof GithubError)) return error instanceof Error ? error : new Error(`${host} could not be reached`)
   const label = MCP_SCENARIO_LABEL[scenario]
-  if (error.kind === 'auth') return new Error(`GitHub rejected the token for ${label}. Paste a new one in Settings › MCP + code sync.`)
+  if (error.kind === 'auth') return new Error(`${host} rejected the token for ${label}. Paste a new one in Settings › MCP + code sync.`)
   if (error.kind === 'access') return new Error(`The ${label} token can’t read pull requests in ${repo}. Give it read access to pull requests.`)
-  if (error.kind === 'not-found') return new Error(`GitHub can’t find ${repo}. Check the ${label} repository in Settings › MCP + code sync, and that its token can see it.`)
+  if (error.kind === 'not-found') return new Error(`${host} can’t find ${repo}. Check the ${label} repository in Settings › MCP + code sync, and that its token can see it.`)
   return error
 }
 
@@ -94,21 +96,21 @@ export async function track(payload: unknown, deps: TrackDeps): Promise<TrackRes
   const problem = mcpTargetProblem(mcp, scenario)
   if (problem) throw new Error(problem)
   const target = mcpTarget(mcp, scenario)
-  const client = createGithubClient({ api: githubHost(mcp.enterpriseUrl).api, token: target.token, repo: target.repo, branch: target.branch, tokenPath: '' }, deps.fetch)
+  const client = createCodeHost(mcpCodeHostConfig(target, mcp.enterpriseUrl), deps.fetch)
   if (branches) {
-    const fail = (error: unknown): never => { throw trackError(error, scenario, target.repo) }
+    const fail = (error: unknown): never => { throw trackError(error, scenario, target.repo, client.label) }
     const recent = await client.recentPulls(target.branch).catch(fail)
     // Only pull requests from this repository count: a fork can have a branch with the same name.
     const own = recent.filter((p) => p.headRepo.toLowerCase() === target.repo.toLowerCase())
     // On a busy repository an older pull request can fall out of the newest page: ask for those branches one by one.
-    const full = recent.length >= RECENT_PULLS
+    const full = recent.length >= (client.kind === 'bitbucket' ? BITBUCKET_PAGE : RECENT_PULLS)
     const pulls: TrackedPull[] = await Promise.all(branches.map(async (b): Promise<TrackedPull> => {
       const pr = own.find((p) => p.head === b) ?? (full ? await client.findPull(b).catch(fail) : null)
       return pr ? { branch: b, state: pr.state, number: pr.number, url: pr.url, title: pr.title } : { branch: b, state: 'waiting' }
     }))
     return { state: combinedState(pulls), repo: target.repo, branch, pulls }
   }
-  const pull = await client.findPull(branch).catch((error: unknown) => { throw trackError(error, scenario, target.repo) })
+  const pull = await client.findPull(branch).catch((error: unknown) => { throw trackError(error, scenario, target.repo, client.label) })
   if (!pull) return { state: 'waiting', repo: target.repo, branch }
   return { state: pull.state, repo: target.repo, branch, number: pull.number, url: pull.url, title: pull.title }
 }

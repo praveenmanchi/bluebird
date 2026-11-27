@@ -4,7 +4,7 @@ import { Toggle } from '../Toggle/Toggle'
 import './SectionHeader.css'
 
 /** Integration logos available for the Figma "Settings brands" instance (226:3580, property Brands). */
-export type SectionHeaderLogo = 'github' | 'storybook' | 'teams' | 'zeroheight' | 'dual-file' | 'ai' | 'mcp' | 'jira' | 'database'
+export type SectionHeaderLogo = 'github' | 'bitbucket' | 'storybook' | 'teams' | 'zeroheight' | 'dual-file' | 'ai' | 'mcp' | 'jira' | 'database'
 
 export interface SectionHeaderProps extends Omit<JSX.HTMLAttributes<HTMLElement>, 'title' | 'onToggle'> {
   /** Figma "Title" text (+ "Title2" boolean when set). Omit to hide the title line. */

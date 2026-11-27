@@ -13,8 +13,13 @@ export interface JiraConfig {
   flavor: 'cloud' | 'server'
   /** Jira base the requests address, no trailing slash. */
   site: string
-  /** Where requests are sent: the proxy when set, else the site itself. */
+  /** Where requests are sent: the proxy when set, else `target` itself. */
   endpoint: string
+  /**
+   * The Jira the requests are for (the proxy's x-jira-target): the site, or for a Jira Cloud sign-in
+   * api.atlassian.com/ex/jira/<cloudId>, where its token is valid. `site` stays the site, for links.
+   */
+  target: string
   authorization: string
   /** Optional JQL project filter ("DS"). */
   projectKey: string
@@ -44,9 +49,10 @@ export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | S
   const server = hasBase && !isCloudHost(s.baseUrl)
   // A sign-in leaves an OAuth bearer token in apiKey, so it needs no email.
   const signedIn = s.method === 'signin'
+  const cloudId = (s.cloudId ?? '').trim()
   const missing = [
     ...(hasBase || s.siteUrl.trim() ? [] : ['Jira address']),
-    ...(s.apiKey.trim() ? [] : [signedIn ? 'Jira sign-in' : 'API token']),
+    ...(s.apiKey.trim() && (!signedIn || server || cloudId) ? [] : [signedIn ? 'Jira sign-in' : 'API token']),
     ...(server || signedIn || s.email.trim() ? [] : ['email']),
   ]
   if (missing.length) return { reason: 'incomplete', missing }
@@ -56,7 +62,8 @@ export function configFromSettings(s: IntegrationValues<'jira'>): JiraConfig | S
   const site = trimSlash(hasBase ? s.baseUrl : s.siteUrl)
   // Sign-in tokens and Server / DC personal access tokens are bearer tokens; Cloud API tokens are basic auth with the email.
   const authorization = !signedIn && s.email.trim() ? `Basic ${base64(`${s.email.trim()}:${s.apiKey.trim()}`)}` : `Bearer ${s.apiKey.trim()}`
-  return { flavor: server ? 'server' : 'cloud', site, endpoint: trimSlash(s.proxyUrl) || site, authorization, projectKey: s.projectKey.trim() }
+  const target = signedIn && !server ? `https://api.atlassian.com/ex/jira/${cloudId}` : site
+  return { flavor: server ? 'server' : 'cloud', site, target, endpoint: trimSlash(s.proxyUrl) || target, authorization, projectKey: s.projectKey.trim() }
 }
 
 export function isConfig(value: JiraConfig | SettingsProblem): value is JiraConfig {
@@ -147,11 +154,11 @@ export type JiraRequest = <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: s
 /** A request function bound to one connection. `path` starts at the API root, e.g. `/myself`. */
 export function createRequest(config: JiraConfig, fetchImpl: HttpFetch): JiraRequest {
   const version = config.flavor === 'cloud' ? '3' : '2'
-  const viaProxy = config.endpoint !== config.site
+  const viaProxy = config.endpoint !== config.target
   return async <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, body?: unknown): Promise<T> => {
     const headers: Record<string, string> = { authorization: config.authorization, accept: 'application/json' }
     if (body !== undefined) headers['content-type'] = 'application/json'
-    if (viaProxy) headers[TARGET_HEADER] = config.site
+    if (viaProxy) headers[TARGET_HEADER] = config.target
     let res: { status: number; text(): Promise<string> }
     try {
       res = await fetchImpl(`${config.endpoint}/rest/api/${version}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) })

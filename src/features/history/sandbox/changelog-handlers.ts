@@ -10,7 +10,7 @@ import type { IntegrationValues } from '@shared/integrations'
 import { diffSnapshots } from '@shared/design/diff'
 import type { Change, Snapshot } from '@shared/design/types'
 import { readBranchInfo, readMainSnapshot } from '@shared/figma/branch'
-import { GithubError, createGithubClient, type GithubClient, type GithubFetch } from '@shared/github/client'
+import { CodeHostError as GithubError, createCodeHost, type CodeHost, type HostFetch as GithubFetch } from '@shared/codehost'
 import { isStorageProblem, resolveStorage, type HistoryStorage } from '@shared/history/config'
 import { APPEND_ATTEMPTS, appendEntry } from '@shared/history/github'
 import { dayOf, newEntryId, parseDay } from '@shared/history/store'
@@ -107,11 +107,11 @@ export function createChangelogHandlers(deps: ChangelogDeps): HandlerMap {
     return { draftId: id, context: where.context, title: draftTitle(changes, where.context.file), changes, warnings, branch: where.branch ?? '' }
   }
 
-  async function storage(): Promise<{ where: HistoryStorage; client: GithubClient }> {
+  async function storage(): Promise<{ where: HistoryStorage; client: CodeHost }> {
     const [github, store] = await Promise.all([deps.readGithub(), deps.readStorage()])
     const where = resolveStorage(store, github)
     if (isStorageProblem(where)) throw new Error(`${where.problem}. The changelog is saved there for the team to review.`)
-    return { where, client: createGithubClient(where.config, deps.fetch, deps.sleep) }
+    return { where, client: createCodeHost(where.config, deps.fetch, deps.sleep) }
   }
 
   async function tickets(): Promise<TicketsResult> {
@@ -169,7 +169,7 @@ export function createChangelogHandlers(deps: ChangelogDeps): HandlerMap {
   }
 
   /** Puts the entry on top of the shared changelog file; retried when a teammate wrote it first. */
-  async function publish(client: GithubClient, where: HistoryStorage, entry: HistoryEntry): Promise<string> {
+  async function publish(client: CodeHost, where: HistoryStorage, entry: HistoryEntry): Promise<string> {
     const path = changelogPath(where.folder)
     for (let attempt = 1; ; attempt++) {
       const current = await client.readFileWithSha(path, where.config.branch)
@@ -191,8 +191,8 @@ export function createChangelogHandlers(deps: ChangelogDeps): HandlerMap {
     if (!entry) throw new Error('That changelog is no longer in the team history. Refresh and try again.')
     if (!isPending(entry)) throw new Error(entry.review ? `${entry.review.by} already approved this changelog.` : 'This entry is not waiting for review.')
     const by = deps.user()
-    // github.com only: an Enterprise host's web address isn't known here, so the entry goes without a link.
-    const web = where.config.api === 'https://api.github.com' ? `https://github.com/${where.config.repo}/blob/${encodeURIComponent(where.config.branch)}/${changelogPath(where.folder).split('/').map(encodeURIComponent).join('/')}` : ''
+    // The changelog file's page on whichever host the team uses (GitHub, an Enterprise host, or Bitbucket).
+    const web = client.fileUrl(changelogPath(where.folder), where.config.branch)
     const approved = approveEntry(entry, { by, at: deps.now().toISOString(), ...(web ? { link: { url: web, label: 'Open the changelog' } } : {}) })
     // The changelog file first: if it fails, the entry stays under review and Approve can be pressed again.
     const path = await publish(client, where, approved)

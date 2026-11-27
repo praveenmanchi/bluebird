@@ -1,10 +1,10 @@
 // Which repository, branch and folder the team History uses: Settings ›
-// Storage, or — with "Use the GitHub output repository" on — the GitHub
+// Storage, or — with "Use the Code repository" on — the GitHub
 // section's repository and token with Storage's own folder.
 import { DEFAULT_INTEGRATIONS, validateIntegration, type IntegrationValues } from '@shared/integrations'
-import { configFromSettings, isProblem, type GithubConfig } from '@shared/github/client'
+import { codeHostConfig, isProblem, type CodeHostConfig } from '@shared/codehost'
 
-export interface HistoryStorage { config: GithubConfig; folder: string }
+export interface HistoryStorage { config: CodeHostConfig; folder: string }
 export interface StorageProblem { problem: string }
 
 const LABELS: Record<string, string> = { Repository: 'repository', 'Access token': 'API key', repo: 'repository', apiKey: 'API key', baseUrl: 'base URL', branch: 'branch', folder: 'history folder' }
@@ -15,15 +15,15 @@ export function resolveStorage(storage: IntegrationValues<'storage'> | undefined
   const folder = s.folder.trim().replace(/\/+$/, '') || DEFAULT_INTEGRATIONS.storage.folder
   const bad = Object.keys(validateIntegration('storage', { ...s, folder }))
   if (s.sameAsGithub) {
-    const config = configFromSettings(github)
-    if (isProblem(config)) return { problem: `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${listOf(config.fields)} in Settings › GitHub, or turn off “Use the GitHub output repository” in Settings › Storage` }
+    const config = codeHostConfig(github)
+    if (isProblem(config)) return { problem: `${config.reason === 'incomplete' ? 'Add' : 'Fix'} the ${listOf(config.fields)} in Settings › Code repository, or turn off “Use the Code repository” in Settings › Storage` }
     if (bad.includes('folder')) return { problem: 'Fix the history folder in Settings › Storage' }
     return { config, folder }
   }
   const missing = [...(s.repo.trim() ? [] : ['repo']), ...(s.apiKey.trim() ? [] : ['apiKey'])]
   if (missing.length) return { problem: `Add the ${listOf(missing)} in Settings › Storage` }
   if (bad.length) return { problem: `Fix the ${listOf(bad)} in Settings › Storage` }
-  const config = configFromSettings({ ...DEFAULT_INTEGRATIONS.github, apiKey: s.apiKey, repo: s.repo, branch: s.branch, baseUrl: s.baseUrl })
+  const config = codeHostConfig({ ...DEFAULT_INTEGRATIONS.github, apiKey: s.apiKey, repo: s.repo, branch: s.branch, baseUrl: s.baseUrl, host: s.host, email: s.email })
   if (isProblem(config)) return { problem: `Fix the ${listOf(config.fields)} in Settings › Storage` }
   return { config, folder }
 }

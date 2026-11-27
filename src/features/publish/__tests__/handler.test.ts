@@ -12,7 +12,7 @@ function memoryData(): DocumentData & { raw: Map<string, string> } {
   return { raw, get: (k) => raw.get(k) ?? '', set: (k, v) => { if (v) raw.set(k, v); else raw.delete(k) } }
 }
 
-/** Settings › GitHub with a repository but no token: everything stays in the file. */
+/** Settings › Code repository with a repository but no token: everything stays in the file. */
 function setup(snapshot: Snapshot = CURRENT, repo = 'praveenmanchi/bridge-ds-site') {
   const data = memoryData()
   let current = snapshot
@@ -72,7 +72,7 @@ describe('chunked document data', () => {
 describe('publish handlers', () => {
   it('reports a first release when the file was never published', async () => {
     const t = setup()
-    expect(await t.status()).toEqual({ repo: { connected: false, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', diffComparison: true, problem: 'Add the access token in Settings › GitHub' }, baseline: null, history: [], notify: { webhooks: 0 } })
+    expect(await t.status()).toEqual({ repo: { connected: false, repo: 'praveenmanchi/bridge-ds-site', branch: 'main', diffComparison: true, problem: 'Add the access token in Settings › Code repository' }, baseline: null, history: [], notify: { webhooks: 0 } })
     const x = await t.extract()
     expect(x.baseline).toBeNull()
     expect(x.baselineSource).toBe('none') // no token, so the repository is never asked
@@ -86,9 +86,9 @@ describe('publish handlers', () => {
     const saved = await t.publish(request(first, { version: 'v3.0.0', title: 'Baseline' }))
     expect(saved.outcome).toBe('saved')
     expect(saved.headline).toBe('v3.0.0 saved in this file')
-    expect(saved.message).toContain('Nothing was sent to GitHub: add the access token in Settings › GitHub to publish there.')
+    expect(saved.message).toContain('Nothing was sent to GitHub: add the access token in Settings › Code repository to publish there.')
     expect(saved.steps.map((s) => s.status)).toEqual(['done', 'done', 'queued', 'queued', 'queued'])
-    expect(saved.steps[2]!.detail).toBe('Not run — add the access token in Settings › GitHub')
+    expect(saved.steps[2]!.detail).toBe('Not run — add the access token in Settings › Code repository')
     expect(t.events.some((e) => e.type === MSG.progress)).toBe(true)
 
     t.setSnapshot(CURRENT)
@@ -121,7 +121,7 @@ describe('publish handlers', () => {
 
   it('reports the repository as not connected when Settings has none', async () => {
     const t = setup(CURRENT, '  ')
-    expect((await t.status()).repo).toEqual({ connected: false, repo: '', branch: 'main', diffComparison: true, problem: 'Add the repository and access token in Settings › GitHub' })
+    expect((await t.status()).repo).toEqual({ connected: false, repo: '', branch: 'main', diffComparison: true, problem: 'Add the repository and access token in Settings › Code repository' })
     const res = await t.publish(request(await t.extract()))
     expect(res.outcome).toBe('saved')
   })

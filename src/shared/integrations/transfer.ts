@@ -21,8 +21,11 @@ export const MAX_SETTINGS_FILE_BYTES = 256 * 1024
 export const PERSONAL_FIELDS: { readonly [K in IntegrationId]?: readonly string[] } = {
   dualFile: ['token'],
   // Who signed in, and until when: a sign-in belongs to the person.
-  github: ['signinAccount', 'signinExpires'],
-  jira: ['signinAccount', 'signinExpires'],
+  github: ['signinAccount', 'signinExpires', 'email'],
+  jira: ['signinAccount', 'signinExpires', 'cloudId'],
+  // The Atlassian email a Bitbucket API token signs in with is the person's too.
+  storage: ['email'],
+  mcp: ['componentEmail', 'screenEmail', 'libraryEmail'],
 }
 
 /** A signed-in section's apiKey holds that person's sign-in token, so it never goes in a file, even with keys included. */

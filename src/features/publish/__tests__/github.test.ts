@@ -94,7 +94,7 @@ function fakeGithub(opts: FakeOptions = {}) {
 }
 
 interface SetupOptions {
-  /** Settings › GitHub › "Enable diff comparison" (on by default, as in Settings). */
+  /** Settings › Code repository › "Enable diff comparison" (on by default, as in Settings). */
   diffComparison?: boolean
   /** Settings › Notifications webhooks. */
   webhooks?: string[]
@@ -287,7 +287,7 @@ describe('retrying transient GitHub failures', () => {
   })
 })
 
-describe('the repository as baseline (Settings › GitHub › diff comparison)', () => {
+describe('the repository as baseline (Settings › Code repository › diff comparison)', () => {
   /** v3.0.0 pushed to main by one designer; `fresh` is another copy of the file with no release in it. */
   async function published() {
     const github = fakeGithub()
@@ -454,7 +454,7 @@ describe('posting the changelog to Teams', () => {
   })
 })
 
-describe('Settings › GitHub › Test connection', () => {
+describe('Settings › Code repository › Test connection', () => {
   const form = { ...DEFAULT_INTEGRATIONS.github, repo: REPO, apiKey: TOKEN }
   it('names the account, confirms it can push and says what the branch holds', async () => {
     expect((await setup().test(form)).message).toBe(`Connected as designer · can push to ${REPO} (default branch main). main has no Bluebird release yet.`)
@@ -474,7 +474,8 @@ describe('publish:open', () => {
     const t = setup()
     await t.open(`https://github.com/${REPO}/pull/62`)
     expect(t.opened).toEqual([`https://github.com/${REPO}/pull/62`])
-    await expect(t.open('https://evil.example/phish')).rejects.toThrow('That link isn’t on GitHub.')
+    await expect(t.open('https://evil.example/phish')).rejects.toThrow('That link isn’t on GitHub or Bitbucket.')
+    await expect(t.open('https://bitbucket.org/acme/tokens/pull-requests/7')).resolves.not.toThrow()
     await expect(t.open('javascript:alert(1)')).rejects.toThrow()
   })
 })

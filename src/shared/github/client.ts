@@ -1,4 +1,4 @@
-// GitHub REST transport for the Publish tab. Turns Settings › GitHub into an
+// GitHub REST transport for the Publish tab. Turns Settings › Code repository into an
 // API base + token and wraps the handful of calls a release needs. Runs in the
 // Figma sandbox (no URL, btoa or TextEncoder there): bodies are JSON strings and
 // files are sent as tree `content`, so nothing needs base64.
@@ -20,7 +20,7 @@ export interface GithubConfig {
 
 export type GithubProblem = { reason: 'incomplete' | 'invalid'; fields: string[] }
 
-/** The connection Settings › GitHub describes, or why there is none. */
+/** The connection Settings › Code repository describes, or why there is none. */
 export function configFromSettings(s: IntegrationValues<'github'>): GithubConfig | GithubProblem {
   const missing = [...(s.repo.trim() ? [] : ['Repository']), ...(s.apiKey.trim() ? [] : ['Access token'])]
   if (missing.length) return { reason: 'incomplete', fields: missing }
@@ -59,9 +59,9 @@ function kindOf(status: number, body: string): GithubErrorKind {
 
 function sentence(kind: GithubErrorKind, repo: string, apiMessage: string): string {
   switch (kind) {
-    case 'auth': return 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › GitHub.'
+    case 'auth': return 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › Code repository.'
     case 'access': return `The access token can’t write to ${repo}. It needs Contents and Pull requests write access (or the repo scope).`
-    case 'not-found': return `GitHub can’t find ${repo}, or the token can’t see it. Check the repository in Settings › GitHub.`
+    case 'not-found': return `GitHub can’t find ${repo}, or the token can’t see it. Check the repository in Settings › Code repository.`
     case 'rejected': return `GitHub refused the update: ${apiMessage || 'the branch is protected'}.`
     case 'exists': return apiMessage || 'That already exists on GitHub.'
     default: return `GitHub answered ${apiMessage || 'with an error'}. Try again in a minute.`

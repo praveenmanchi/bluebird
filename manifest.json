@@ -30,6 +30,7 @@
       "https://api.openai.com",
       "https://generativelanguage.googleapis.com",
       "https://api.github.com",
+      "https://api.bitbucket.org",
       "https://github.gapinc.com",
       "https://*.webhook.office.com",
       "https://*.logic.azure.com",
@@ -38,8 +39,10 @@
     "devAllowedDomains": [
       "http://localhost:5173",
       "ws://localhost:4001",
-      "http://localhost:8787"
+      "http://localhost:8787",
+      "http://localhost:8788",
+      "https://bluebird-connect-staging.praveenmanchi.workers.dev"
     ],
-    "reasoning": "Loads the Noto Sans web font for the brand type ramp. Dual File Mode reads the library files the user configures from the Figma REST API. UX AI and its agents send questions, reviewed layer text and matching library context to the provider picked in Settings (api.anthropic.com, api.openai.com or generativelanguage.googleapis.com) with the user’s own API key. Publish, Extraction and History commit to and read from the GitHub repository the user configures, open pull requests and follow Actions runs, with the user’s own token on api.github.com or the Enterprise host set in Settings (github.gapinc.com). When the user asks, they post a change summary to the Teams webhook (*.webhook.office.com) or Power Automate trigger (*.logic.azure.com, *.environment.api.powerplatform.com) set in Settings › Notifications. In development the Jira tab calls the local Jira proxy on localhost:8787."
+    "reasoning": "Loads the Noto Sans web font for the brand type ramp. Dual File Mode reads the library files the user configures from the Figma REST API. UX AI and its agents send questions, reviewed layer text and matching library context to the provider picked in Settings (api.anthropic.com, api.openai.com or generativelanguage.googleapis.com) with the user’s own API key. Publish, Extraction and History commit to and read from the GitHub or Bitbucket repo the user configures, open pull requests and follow Actions runs, with the user’s own token on api.github.com, api.bitbucket.org or the Enterprise host set in Settings (github.gapinc.com). When the user asks, they post a change summary to the Teams webhook (*.webhook.office.com) or Power Automate trigger (*.logic.azure.com, *.environment.api.powerplatform.com) set in Settings › Notifications. In development the Jira tab calls the local Jira proxy on localhost:8787, and sign-in can go through Bluebird Connect on localhost:8788 or its staging copy."
   }
 }

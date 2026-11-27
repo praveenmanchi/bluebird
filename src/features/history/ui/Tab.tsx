@@ -142,7 +142,7 @@ export function HistoryTab({ preloaded = false, now = () => new Date() }: Histor
       ) : !r ? (
         <div class="bb-history__loading"><Spinner tone="accent" size="lg" label="Reading the team history" /></div>
       ) : !connected ? (
-        <PublishEmptyState state="not-connected" title="Connect the history repository" body={`${r.repo.problem ?? 'Connect a repository in Settings › GitHub'}. Everyone who uses the same repository sees the same history.`} actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]} />
+        <PublishEmptyState state="not-connected" title="Connect the history repository" body={`${r.repo.problem ?? 'Connect a repository in Settings › Code repository'}. Everyone who uses the same repository sees the same history.`} actions={[{ label: 'Open Settings', variant: 'primary', onClick: requestSettings }]} />
       ) : versioning ? (
         <VersionsView now={now()} />
       ) : searchMatches.value ? (

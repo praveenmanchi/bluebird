@@ -18,7 +18,7 @@
     "check:size": "tsx scripts/check-size.ts",
     "package": "npm run build && tsx scripts/package-plugin.ts",
     "check:manifest": "tsx scripts/check-manifest.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tools/connect/tsconfig.json",
     "lint": "eslint . --ignore-pattern '.claude/**'",
     "lint:fix": "eslint . --ignore-pattern '.claude/**' --fix",
     "test": "vitest run",
@@ -34,6 +34,10 @@
     "figma:visual": "node --env-file-if-exists=.env --import tsx scripts/figma-visual.ts",
     "figma:diff": "node --env-file-if-exists=.env --import tsx scripts/figma-diff.ts",
     "jira:proxy": "tsx tools/jira-proxy/server.ts",
+    "connect:worker": "wrangler dev -c tools/connect/wrangler.toml",
+    "connect:deploy": "wrangler deploy -c tools/connect/wrangler.toml",
+    "connect:logins": "node --env-file-if-exists=.env --import tsx tools/connect/logins.ts",
+    "connect:dev": "CONNECT_ENV=development CONNECT_FAKE_PROVIDER=1 node --env-file-if-exists=.env --import tsx tools/connect/server.ts",
     "figma:sync": "node --env-file-if-exists=.env --import tsx scripts/figma-sync.ts",
     "figma:sync:schedule": "tsx scripts/figma-sync-schedule.ts",
     "figma:pull": "node --env-file-if-exists=.env --import tsx scripts/figma-pull.ts",
@@ -49,6 +53,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@eslint/js": "^9.39.4",
     "@figma/eslint-plugin-figma-plugins": "*",
     "@figma/plugin-typings": "*",
@@ -77,6 +82,7 @@
     "vite": "^7.0.0",
     "vite-plugin-singlefile": "^2.3.0",
     "vitest": "^3.2.0",
+    "wrangler": "^4.86.0",
     "ws": "^8.18.0"
   }
 }

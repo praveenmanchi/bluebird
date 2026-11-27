@@ -50,7 +50,7 @@ export function createJiraHandlers(deps: JiraSandboxDeps): HandlerMap {
     const config = configForTest(payload)
     const user = await createJiraClient(config, deps.fetch, now).me()
     const host = config.site.replace(/^https:\/\//, '')
-    const via = config.endpoint === config.site ? '' : ' through the proxy'
+    const via = config.endpoint === config.target ? '' : ' through the proxy'
     return { message: `Connected to ${host}${via} as ${user.displayName || 'your Jira account'}.` }
   }
 

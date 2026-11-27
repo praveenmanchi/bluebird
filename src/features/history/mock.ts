@@ -27,7 +27,7 @@ export interface HistoryMockOptions {
   notBranch?: boolean
 }
 
-export const LIST_FAILED_MESSAGE = 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › GitHub.'
+export const LIST_FAILED_MESSAGE = 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › Code repository.'
 
 const wait = (ms: number) => ms > 0 ? new Promise((r) => setTimeout(r, ms)) : Promise.resolve()
 

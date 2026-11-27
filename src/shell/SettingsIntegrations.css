@@ -252,6 +252,13 @@
 .bb-connection__head { justify-content: space-between; }
 /* Full width, like the two items of the Figma card's switch. */
 .bb-connection__method .bb-segmented-control__segment { flex: 1 1 0; justify-content: center; }
+/* "Where's your code?": label over a full-width GitHub / Bitbucket switch (Figma "Code host"). */
+.bb-integrations__host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-dimension-space-8);
+}
+.bb-integrations__host .bb-segmented-control__segment { flex: 1 1 0; justify-content: center; }
 .bb-connection__caption {
   margin: 0;
   font: var(--bb-font-weight-regular) var(--bb-font-size-caption) / var(--bb-font-line-caption) var(--bb-font-family-ui);

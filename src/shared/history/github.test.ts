@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createGithubClient } from '@shared/github/client'
+import { githubCodeHost } from '@shared/codehost/github'
 import { APPEND_ATTEMPTS, appendEntry, listEntries, type DayCache } from './github'
 import type { HistoryEntry } from './types'
 
@@ -32,7 +32,7 @@ function fakeRepo() {
     files.set(path, Buffer.from(body.content, 'base64').toString('utf8'))
     return reply(200, {})
   }
-  const client = createGithubClient({ api: 'https://api.github.com', token: 't', repo: 'acme/history', branch: 'main', tokenPath: 'tokens.json' }, fetch, async () => undefined)
+  const client = githubCodeHost({ kind: 'github', api: 'https://api.github.com', web: 'https://github.com', email: '', token: 't', repo: 'acme/history', branch: 'main', tokenPath: 'tokens.json' }, fetch, async () => undefined)
   return { files, client, reads, race: (fn: () => void) => { racer = fn } }
 }
 

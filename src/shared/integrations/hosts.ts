@@ -26,7 +26,7 @@ export function hostOf(value: string): string {
 const isGithubCom = (host: string): boolean => host === 'github.com' || host === 'www.github.com' || host === 'api.github.com'
 
 /**
- * Settings › GitHub "Where's your GitHub?" as stored: '' for github.com, else https://<host>[:port] with
+ * Settings › Code repository "Where's your GitHub?" as stored: '' for github.com, else https://<host>[:port] with
  * no path. A repository link ("github.acme.com/acme/tokens") keeps only its host; a bare host gets https://.
  */
 export function normalizeGithubAddress(value: string): string {
@@ -54,6 +54,35 @@ export function githubHost(baseUrl: string): GithubHost {
   return { flavor: 'server', label: 'GitHub Enterprise Server', web: base, api: `${base}/api/v3` }
 }
 
+export type BitbucketFlavor = 'cloud' | 'datacenter'
+
+export interface BitbucketHost {
+  flavor: BitbucketFlavor
+  label: string
+  /** Web root, e.g. https://bitbucket.org. */
+  web: string
+  /** REST root without trailing slash: api.bitbucket.org/2.0 (Cloud) or <host>/rest/api/1.0 (Data Center). */
+  api: string
+}
+
+const isBitbucketOrg = (host: string): boolean => host === 'bitbucket.org' || host === 'www.bitbucket.org' || host === 'api.bitbucket.org'
+
+/** "Where's your Bitbucket?" as stored: '' for bitbucket.org, else https://<host>[:port] with no path. */
+export function normalizeBitbucketAddress(value: string): string {
+  const host = hostOf(value)
+  if (!host || isBitbucketOrg(host)) return ''
+  const scheme = /^http:\/\//i.test(value.trim()) ? 'http' : 'https'
+  return `${scheme}://${host}`
+}
+
+/** The Bitbucket a stored base URL means: Cloud for '' or bitbucket.org, Data Center for anything else. */
+export function bitbucketHost(baseUrl: string): BitbucketHost {
+  const base = trimSlash(baseUrl)
+  const host = hostOf(base)
+  if (!host || isBitbucketOrg(host)) return { flavor: 'cloud', label: 'Bitbucket Cloud', web: 'https://bitbucket.org', api: 'https://api.bitbucket.org/2.0' }
+  return { flavor: 'datacenter', label: 'Bitbucket Data Center', web: base, api: `${base}/rest/api/1.0` }
+}
+
 /** Jira Cloud lives on *.atlassian.net; anything else is Server / Data Center. */
 export const isAtlassianCloud = (value: string): boolean => hostOf(value).endsWith('.atlassian.net')
 
@@ -75,7 +104,8 @@ export function jiraHost(siteUrl: string, baseUrl: string): JiraHost | null {
 }
 
 /** Where a person creates the token the Token option asks for. */
-export function tokenHelpUrl(service: 'github' | 'jira', web: string, jiraFlavor?: JiraFlavor): string {
+export function tokenHelpUrl(service: 'github' | 'jira' | 'bitbucket', web: string, jiraFlavor?: JiraFlavor): string {
   if (service === 'github') return `${trimSlash(web)}/settings/tokens`
+  if (service === 'bitbucket') return web === 'https://bitbucket.org' ? 'https://id.atlassian.com/manage-profile/security/api-tokens' : `${trimSlash(web)}/plugins/servlet/access-tokens/manage`
   return jiraFlavor === 'datacenter' ? `${trimSlash(web)}/secure/ViewProfile.jspa` : 'https://id.atlassian.com/manage-profile/security/api-tokens'
 }

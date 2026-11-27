@@ -14,7 +14,7 @@ export type MockScenario = 'default' | 'empty' | 'many' | 'slow' | 'error'
 
 export interface ExtractionMockOptions {
   scenario?: MockScenario
-  /** Repository or token missing in Settings › GitHub. */
+  /** Repository or token missing in Settings › Code repository. */
   notConnected?: boolean
   /** How the mock push ends. */
   outcome?: PushOutcome
@@ -24,7 +24,7 @@ export interface ExtractionMockOptions {
   delayMs?: number
 }
 
-export const EXTRACT_FAILED_MESSAGE = 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › GitHub.'
+export const EXTRACT_FAILED_MESSAGE = 'GitHub didn’t accept the access token. Create a new one and paste it in Settings › Code repository.'
 
 const wait = (ms: number) => ms > 0 ? new Promise((r) => setTimeout(r, ms)) : Promise.resolve()
 
@@ -34,7 +34,7 @@ export function createMockHandlers(options: ExtractionMockOptions | MockScenario
   const current = scenario === 'empty' ? BASELINE : CURRENT
 
   async function status(): Promise<StatusResult> {
-    if (notConnected) return { repo: { connected: false, repo: '', problem: 'Add the repository and access token in Settings › GitHub' }, branches: [], defaultBranch: '', channels }
+    if (notConnected) return { repo: { connected: false, repo: '', problem: 'Add the repository and access token in Settings › Code repository' }, branches: [], defaultBranch: '', channels }
     return { repo: { connected: true, repo: SAMPLE_REPO }, branches: noBranches ? [] : BRANCHES, defaultBranch: noBranches ? '' : 'main', channels }
   }
 

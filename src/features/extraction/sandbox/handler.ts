@@ -1,5 +1,5 @@
 // Runs inside Figma: wires the Extraction handlers (extraction-handlers.ts) to
-// the document, clientStorage (Settings › GitHub and Notifications), Figma's
+// the document, clientStorage (Settings › Code repository and Notifications), Figma's
 // fetch and the clock.
 import type { HandlerMap } from '@shared/bridge'
 import { clientStorageRead, readIntegrations } from '@shared/integrations/effective'

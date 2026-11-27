@@ -40,7 +40,7 @@ describe('TeamSetup export', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
     menu('Export settings')
     expect(screen.getByRole('dialog', { name: 'Export settings' })).toBeInTheDocument()
-    expect(screen.getByRole('checkbox', { name: 'GitHub output configuration' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Code repository' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Zeroheight' })).toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Jira integration' })).toBeDisabled()
     expect(screen.getByRole('switch', { name: 'Include API keys and tokens' })).toBeChecked()

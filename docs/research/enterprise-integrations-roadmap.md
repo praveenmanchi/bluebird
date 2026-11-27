@@ -296,8 +296,11 @@ Jira uses the same layout: **Sign in with Atlassian** / **Use an API token** (Cl
   (`api.<tenant>.ghe.com`, used by the GitHub and MCP clients).
 - `src/shared/integrations/signin.ts`: the broker client. **Broker contract** (what Bluebird
   Cloud and the gateway must serve):
-  - `POST {broker}/auth/{github|jira}/keys` → `200 { read, write }` (16–128 chars, `[A-Za-z0-9_-]`)
-  - browser opens `GET {broker}/auth/{service}/start?host=<host>&write=<write>`
+  - `POST {broker}/auth/{github|jira}/keys` → `200 { read, write, code }` (keys 16–128 chars,
+    `[A-Za-z0-9_-]`; code `XXX-XXX`, shown in the plugin while it waits)
+  - browser opens `GET {broker}/auth/{service}/start?host=<host>&write=<write>`, which shows the
+    same code and goes on to the provider only after the person clicks Continue
+    (see auth-server-roadmap.md §3.3)
   - plugin polls `GET {broker}/auth/poll?read=<read>` every 2 s for up to 5 min:
     `202/204` pending, `200 { accessToken, account, expiresAt }` done (then deleted),
     `404/410` expired.

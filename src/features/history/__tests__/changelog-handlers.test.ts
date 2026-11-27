@@ -136,7 +136,7 @@ describe('changelog handlers', () => {
     await expect(t.submit()).rejects.toThrow(/Generate the changelog again/)
     await expect(t.submit({ ticket: 'not a key' })).rejects.toThrow()
     const off = setup({ storage: false })
-    await expect(off.submit({ draftId: (await off.generate()).draftId })).rejects.toThrow(/Settings › GitHub/)
+    await expect(off.submit({ draftId: (await off.generate()).draftId })).rejects.toThrow(/Settings › Code repository/)
   })
 
   it('approves: the entry is done and the shared changelog file gets it on top', async () => {

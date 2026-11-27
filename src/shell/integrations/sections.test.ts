@@ -30,9 +30,9 @@ describe('sectionFieldKeys', () => {
   it('gives the MCP section its switch, then each scenario’s keys, then the shared Enterprise URL', () => {
     expect(sectionFieldKeys(spec('mcp'))).toEqual([
       'enabled',
-      'componentRepo', 'componentBranch', 'componentToken', 'componentFramework', 'componentFolder',
-      'screenRepo', 'screenBranch', 'screenToken', 'screenFramework', 'screenFolder', 'screenPackage',
-      'libraryRepo', 'libraryBranch', 'libraryToken', 'libraryPullRequests',
+      'componentHost', 'componentRepo', 'componentBranch', 'componentEmail', 'componentToken', 'componentFramework', 'componentFolder',
+      'screenHost', 'screenRepo', 'screenBranch', 'screenEmail', 'screenToken', 'screenFramework', 'screenFolder', 'screenPackage',
+      'libraryHost', 'libraryRepo', 'libraryBranch', 'libraryEmail', 'libraryToken', 'libraryPullRequests',
       'enterpriseUrl',
     ])
   })

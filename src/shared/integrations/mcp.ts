@@ -1,7 +1,7 @@
 // Settings › MCP + code sync, one scenario at a time. Each MCP hand-off scenario has its own
 // repository, base branch and token, so a team connects only the scenario it works on; this
 // module is the one place that knows which stored key belongs to which scenario.
-import { MCP_SCENARIOS, type IntegrationValues, type McpScenario } from './schema'
+import { MCP_SCENARIOS, type CodeHostKind, type IntegrationValues, type McpScenario } from './schema'
 import { validateIntegration } from './validate'
 
 type Mcp = IntegrationValues<'mcp'>
@@ -25,6 +25,10 @@ export interface McpTarget {
   designPackage: string
   /** Library scenario only: one pull request per screen, or one for all. */
   pullRequests: string
+  /** GitHub or Bitbucket. */
+  host: CodeHostKind
+  /** Bitbucket API token: the Atlassian email it signs in with; '' otherwise. */
+  email: string
 }
 
 /** `connected`: repository and token are both filled in. `incomplete`: only one of them. */
@@ -32,14 +36,17 @@ export type McpTargetState = 'connected' | 'incomplete' | 'empty'
 
 const t = (v: string | undefined) => (v ?? '').trim()
 
+const hostOf = (v: string | undefined): CodeHostKind => (t(v) === 'bitbucket' ? 'bitbucket' : 'github')
+
 export function mcpTarget(mcp: Mcp, scenario: McpScenario): McpTarget {
+  const where = { host: hostOf(mcp[`${scenario}Host`]), email: t(mcp[`${scenario}Email`]) }
   if (scenario === 'component') {
-    return { scenario, repo: t(mcp.componentRepo), branch: t(mcp.componentBranch) || 'main', token: t(mcp.componentToken), framework: t(mcp.componentFramework), folder: t(mcp.componentFolder), designPackage: '', pullRequests: '' }
+    return { scenario, repo: t(mcp.componentRepo), branch: t(mcp.componentBranch) || 'main', token: t(mcp.componentToken), framework: t(mcp.componentFramework), folder: t(mcp.componentFolder), designPackage: '', pullRequests: '', ...where }
   }
   if (scenario === 'screen') {
-    return { scenario, repo: t(mcp.screenRepo), branch: t(mcp.screenBranch) || 'main', token: t(mcp.screenToken), framework: t(mcp.screenFramework), folder: t(mcp.screenFolder), designPackage: t(mcp.screenPackage), pullRequests: '' }
+    return { scenario, repo: t(mcp.screenRepo), branch: t(mcp.screenBranch) || 'main', token: t(mcp.screenToken), framework: t(mcp.screenFramework), folder: t(mcp.screenFolder), designPackage: t(mcp.screenPackage), pullRequests: '', ...where }
   }
-  return { scenario, repo: t(mcp.libraryRepo), branch: t(mcp.libraryBranch) || 'main', token: t(mcp.libraryToken), framework: '', folder: '', designPackage: '', pullRequests: t(mcp.libraryPullRequests) }
+  return { scenario, repo: t(mcp.libraryRepo), branch: t(mcp.libraryBranch) || 'main', token: t(mcp.libraryToken), framework: '', folder: '', designPackage: '', pullRequests: t(mcp.libraryPullRequests), ...where }
 }
 
 export function mcpTargetState(mcp: Mcp, scenario: McpScenario): McpTargetState {

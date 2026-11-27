@@ -12,7 +12,7 @@ import * as z from 'zod/mini'
  */
 export const BLUEBIRD_CLOUD_URL = ''
 
-export type SignInService = 'github' | 'jira'
+export type SignInService = 'github' | 'jira' | 'bitbucket'
 
 export interface SignInResult {
   /** Goes in the section's apiKey. */
@@ -21,12 +21,15 @@ export interface SignInResult {
   account: string
   /** ISO date the token stops working; '' when it doesn't expire. */
   expiresAt: string
+  /** Jira Cloud sign-in: the site the token is for (its calls go to api.atlassian.com/ex/jira/<cloudId>). */
+  site?: { cloudId: string; url: string }
 }
 
 const resultSchema = z.object({
   accessToken: z.string().check(z.minLength(1), z.maxLength(4096)),
   account: z.string().check(z.maxLength(200)),
   expiresAt: z._default(z.string().check(z.maxLength(40)), ''),
+  site: z.optional(z.object({ cloudId: z.string().check(z.regex(/^[\w-]{1,64}$/)), url: z.string().check(z.maxLength(200)) })),
 })
 
 const trimSlash = (s: string): string => s.trim().replace(/\/+$/, '')
@@ -48,23 +51,28 @@ export class SignInError extends Error {
   }
 }
 
-type Fetch = (url: string, init: { method: string; signal?: AbortSignal }) => Promise<{ status: number; json(): Promise<unknown> }>
+type Fetch = (url: string, init: { method: string; headers: Record<string, string>; signal?: AbortSignal }) => Promise<{ status: number; json(): Promise<unknown> }>
+
+// The broker answers keys and poll only with this header (tools/connect/app.ts); the read key rides in
+// a header too, so it never sits in a URL or a proxy's access log.
+const CLIENT = { 'x-connect-client': 'bluebird' }
 
 const KEY = z.string().check(z.regex(/^[A-Za-z0-9_-]{16,128}$/))
-const keysSchema = z.object({ read: KEY, write: KEY })
-export interface SignInKeys { read: string; write: string }
+// The confirm code: the broker's start page shows the same one, and the person checks they match.
+const keysSchema = z.object({ read: KEY, write: KEY, code: z.string().check(z.regex(/^\w{3}-\w{3}$/)) })
+export interface SignInKeys { read: string; write: string; code: string }
 
 const RETRY = ' Try again, or use a token.'
 const unreadable = () => new SignInError(`The sign-in service sent something Bluebird can’t read.${RETRY}`)
 const answered = (status: number) => new SignInError(`The sign-in service answered ${status}.${RETRY}`)
-const unreachable = () => new SignInError('Couldn’t reach the sign-in service. Check you’re online (and on the VPN), then try again.')
+const unreachable = () => new SignInError('Couldn’t reach the sign-in service. Check you’re online (and on the VPN).')
 
 /** Asks the broker for a fresh read/write pair: the write key goes to the browser, the read key stays here. */
 export async function requestKeys(broker: string, service: SignInService, options: { fetch?: Fetch; signal?: AbortSignal } = {}): Promise<SignInKeys> {
   const get = options.fetch ?? (fetch as unknown as Fetch)
   let res: { status: number; json(): Promise<unknown> }
   try {
-    res = await get(`${trimSlash(broker)}/auth/${service}/keys`, { method: 'POST', signal: options.signal })
+    res = await get(`${trimSlash(broker)}/auth/${service}/keys`, { method: 'POST', headers: CLIENT, signal: options.signal })
   } catch (error: unknown) {
     if (options.signal?.aborted) throw error
     throw unreachable()
@@ -91,17 +99,18 @@ const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, 
 
 /**
  * Polls the broker until the sign-in finishes. 200 = done (the broker deletes the record), 202 / 204 = still
- * waiting, 404 / 410 = the key expired. Rejects with SignInError (or an AbortError when `signal` fires).
+ * waiting, 403 = cancelled in the browser, 404 / 410 = the key expired. Rejects with SignInError (or an AbortError when `signal` fires).
  */
 export async function pollSignIn(broker: string, readKey: string, options: PollOptions = {}): Promise<SignInResult> {
   const { fetch: get = fetch as unknown as Fetch, signal, intervalMs = POLL_INTERVAL_MS, timeoutMs = POLL_TIMEOUT_MS, sleep = wait, now = Date.now } = options
-  const url = `${trimSlash(broker)}/auth/poll?read=${readKey}`
+  const url = `${trimSlash(broker)}/auth/poll`
+  const headers = { ...CLIENT, 'x-connect-read': readKey }
   const deadline = now() + timeoutMs
   while (now() < deadline) {
     signal?.throwIfAborted()
     let res: { status: number; json(): Promise<unknown> }
     try {
-      res = await get(url, { method: 'GET', signal })
+      res = await get(url, { method: 'GET', headers, signal })
     } catch (error: unknown) {
       if (signal?.aborted) throw error
       throw unreachable()
@@ -112,10 +121,11 @@ export async function pollSignIn(broker: string, readKey: string, options: PollO
       return parsed.data
     }
     if (res.status === 404 || res.status === 410) throw new SignInError('That sign-in expired. Start it again.')
+    if (res.status === 403) throw new SignInError(`Sign-in was cancelled in the browser.${RETRY}`)
     if (res.status !== 202 && res.status !== 204) throw answered(res.status)
     await sleep(intervalMs)
   }
-  throw new SignInError('Sign-in took too long. Start it again when you’re ready.')
+  throw new SignInError('Sign-in took too long. Start it again.')
 }
 
 /** True when a stored sign-in has passed its expiry. */

@@ -127,7 +127,7 @@ describe('extraction handlers', () => {
   it('reports a missing token without calling GitHub', async () => {
     const t = setup({ connected: false })
     const s = await t.status()
-    expect(s.repo).toMatchObject({ connected: false, problem: 'Add the access token in Settings › GitHub' })
+    expect(s.repo).toMatchObject({ connected: false, problem: 'Add the access token in Settings › Code repository' })
     expect(t.github.requests).toHaveLength(0)
   })
 

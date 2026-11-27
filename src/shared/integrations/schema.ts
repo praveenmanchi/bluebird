@@ -2,7 +2,7 @@
 // shell screen and the mock. Values live in figma.clientStorage under one
 // `bluebird:` key, so "Reset all Settings" already clears them.
 import * as z from 'zod/mini'
-import { normalizeGithubAddress, normalizeJiraAddress, repoFromLink } from './hosts'
+import { normalizeBitbucketAddress, normalizeGithubAddress, normalizeJiraAddress, repoFromLink } from './hosts'
 
 export const INTEGRATIONS_MSG = {
   get: 'integrations:get',
@@ -86,6 +86,10 @@ export const MCP_PULL_REQUESTS = ['One per screen', 'One for all screens'] as co
 export const CONNECT_METHODS = ['token', 'signin'] as const
 export type ConnectMethod = (typeof CONNECT_METHODS)[number]
 
+/** Where code lives (Settings › Code repository, Storage, each MCP scenario): the person picks one. */
+export const CODE_HOSTS = ['github', 'bitbucket'] as const
+export type CodeHostKind = (typeof CODE_HOSTS)[number]
+
 export const sectionSchemas = {
   github: z.object({
     apiKey: text(), repo: text(), branch: text(), tokenPath: text(), baseUrl: text(), diffComparison: z.boolean(),
@@ -96,6 +100,10 @@ export const sectionSchemas = {
     /** Who signed in ("@maria-r") and when that sign-in expires (ISO); both empty for a pasted token. */
     signinAccount: z._default(text(), ''),
     signinExpires: z._default(text(), ''),
+    /** One of CODE_HOSTS; absent in settings stored before Bitbucket (2026-11-27) → github. */
+    host: z._default(text(), 'github'),
+    /** Bitbucket API tokens sign in with the person's Atlassian email (Basic auth); empty = a Bearer token. */
+    email: z._default(text(), ''),
   }),
   notifications: z.object({ designSystemWebhook: text(), devTeamWebhook: text(), outlookWebhook: text(), emails: text() }),
   storybook: z.object({ baseUrl: text(), storyPathTemplate: text(), indexUrl: text(), linksEnabled: z.boolean() }),
@@ -122,7 +130,12 @@ export const sectionSchemas = {
     componentRepo: text(), componentBranch: text(), componentToken: text(), componentFramework: text(), componentFolder: text(),
     screenRepo: text(), screenBranch: text(), screenToken: text(), screenFramework: text(), screenFolder: text(), screenPackage: text(),
     libraryRepo: text(), libraryBranch: text(), libraryToken: text(), libraryPullRequests: text(),
+    /** The self-hosted GitHub Enterprise or Bitbucket Data Center address, shared by the scenarios. */
     enterpriseUrl: text(),
+    /** Each scenario's code host (CODE_HOSTS) and, for a Bitbucket API token, the Atlassian email. */
+    componentHost: z._default(text(), 'github'), componentEmail: z._default(text(), ''),
+    screenHost: z._default(text(), 'github'), screenEmail: z._default(text(), ''),
+    libraryHost: z._default(text(), 'github'), libraryEmail: z._default(text(), ''),
   }),
   /** `proxyUrl` is the company gateway (Settings › Use a company gateway), or the local proxy in development. */
   jira: z.object({
@@ -130,12 +143,18 @@ export const sectionSchemas = {
     method: z._default(text(), 'token'),
     signinAccount: z._default(text(), ''),
     signinExpires: z._default(text(), ''),
+    /** Jira Cloud sign-in: the site's id at api.atlassian.com, where its token is used (…/ex/jira/<cloudId>). */
+    cloudId: z._default(text(), ''),
   }),
   /**
    * Where the team History lives: a GitHub repository every designer's plugin reads and writes.
    * `sameAsGithub` borrows the repository and token from the GitHub section; the folder is its own.
    */
-  storage: z.object({ sameAsGithub: z.boolean(), apiKey: text(), repo: text(), branch: text(), baseUrl: text(), folder: text(), refresh: text() }),
+  storage: z.object({
+    sameAsGithub: z.boolean(), apiKey: text(), repo: text(), branch: text(), baseUrl: text(), folder: text(), refresh: text(),
+    /** A repository of its own (sameAsGithub off) can be on GitHub or Bitbucket. */
+    host: z._default(text(), 'github'), email: z._default(text(), ''),
+  }),
 }
 
 export type IntegrationId = keyof typeof sectionSchemas
@@ -181,7 +200,7 @@ export function applyManaged(settings: IntegrationSettings, managed: ManagedInte
 
 /** First-run values: switches as the Figma screen shows them, selects on the Figma value, text empty. */
 export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
-  github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '', signinAccount: '', signinExpires: '' },
+  github: { apiKey: '', repo: '', branch: 'main', tokenPath: 'tokens.json', baseUrl: '', diffComparison: true, method: 'token', gatewayUrl: '', signinAccount: '', signinExpires: '', host: 'github', email: '' },
   notifications: { designSystemWebhook: '', devTeamWebhook: '', outlookWebhook: '', emails: '' },
   storybook: { baseUrl: '', storyPathTemplate: '', indexUrl: '', linksEnabled: true },
   zeroheight: { apiKey: '', styleguideId: '', publicBaseUrl: '', linksEnabled: true },
@@ -193,9 +212,10 @@ export const DEFAULT_INTEGRATIONS: IntegrationSettings = {
     screenRepo: '', screenBranch: 'main', screenToken: '', screenFramework: 'React + TypeScript', screenFolder: 'src/pages', screenPackage: '',
     libraryRepo: '', libraryBranch: 'main', libraryToken: '', libraryPullRequests: 'One per screen',
     enterpriseUrl: '',
+    componentHost: 'github', componentEmail: '', screenHost: 'github', screenEmail: '', libraryHost: 'github', libraryEmail: '',
   },
-  jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '', method: 'token', signinAccount: '', signinExpires: '' },
-  storage: { sameAsGithub: true, apiKey: '', repo: '', branch: 'main', baseUrl: '', folder: '.bluebird/history', refresh: 'Every minute' },
+  jira: { enabled: false, projectKey: '', apiKey: '', email: '', siteUrl: '', baseUrl: '', proxyUrl: '', method: 'token', signinAccount: '', signinExpires: '', cloudId: '' },
+  storage: { sameAsGithub: true, apiKey: '', repo: '', branch: 'main', baseUrl: '', folder: '.bluebird/history', refresh: 'Every minute', host: 'github', email: '' },
 }
 
 export const saveRequestSchema = z.object({ section: z.enum(INTEGRATION_IDS as [IntegrationId, ...IntegrationId[]]), values: z.unknown() })
@@ -234,12 +254,16 @@ export function normalizeIntegration<K extends IntegrationId>(values: Integratio
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '')
 
-/** "Where's your GitHub?" takes a bare host or a repository link: it keeps the host, and fills an empty repository from the link. */
+/**
+ * "Where's your GitHub / Bitbucket?" takes a bare host or a repository link: it keeps the host (github.com and
+ * bitbucket.org are stored as ''), and fills an empty repository from the link.
+ */
 function normalizeGithub(v: Record<string, unknown>): Record<string, unknown> {
   const typed = str(v.baseUrl)
   if (!typed) return v
   const repo = str(v.repo) || repoFromLink(typed) || ''
-  return { ...v, baseUrl: normalizeGithubAddress(typed), repo }
+  const baseUrl = v.host === 'bitbucket' ? normalizeBitbucketAddress(typed) : normalizeGithubAddress(typed)
+  return { ...v, baseUrl, repo }
 }
 
 /** Jira addresses lose any path and gain https:// when typed bare ("acme.atlassian.net"). */

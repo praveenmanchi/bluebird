@@ -1,6 +1,6 @@
 // Reads and writes History entries in the Storage repository (see config.ts).
 // Runs in the sandbox, the only side with the token.
-import { GithubError, type GithubClient } from '@shared/github/client'
+import { CodeHostError as GithubError, type CodeHost } from '@shared/codehost'
 import { appendToDay, dayOf, daysInRange, parseDay } from './store'
 import type { HistoryEntry } from './types'
 
@@ -11,7 +11,7 @@ const PARALLEL = 6
 
 const dayFile = (folder: string, iso: string) => `${folder}/${dayOf(iso)}.json`
 
-export async function appendEntry(client: GithubClient, branch: string, folder: string, entry: HistoryEntry): Promise<void> {
+export async function appendEntry(client: CodeHost, branch: string, folder: string, entry: HistoryEntry): Promise<void> {
   const path = dayFile(folder, entry.at)
   for (let attempt = 1; ; attempt++) {
     const current = await client.readFileWithSha(path, branch)
@@ -30,7 +30,7 @@ export async function appendEntry(client: GithubClient, branch: string, folder: 
 export type DayCache = Map<string, { sha: string; entries: HistoryEntry[] }>
 
 /** Every entry from `days` days ago (UTC) until now, newest first. */
-export async function listEntries(client: GithubClient, branch: string, folder: string, days: number, now: Date, cache: DayCache = new Map()): Promise<{ entries: HistoryEntry[]; fetched: number }> {
+export async function listEntries(client: CodeHost, branch: string, folder: string, days: number, now: Date, cache: DayCache = new Map()): Promise<{ entries: HistoryEntry[]; fetched: number }> {
   const since = dayOf(new Date(now.getTime() - (days - 1) * 86_400_000).toISOString())
   const listing = await client.listFolder(folder, branch)
   const shaOf = new Map(listing.map((f) => [f.name, f.sha]))

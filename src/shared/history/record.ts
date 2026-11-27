@@ -2,7 +2,7 @@
 // History is a side effect: it never throws, so a GitHub hiccup can't fail the
 // push or report that triggered it — the caller just learns it wasn't recorded.
 import type { IntegrationValues } from '@shared/integrations'
-import { createGithubClient, type GithubFetch } from '@shared/github/client'
+import { createCodeHost, type HostFetch as GithubFetch } from '@shared/codehost'
 import { isStorageProblem, resolveStorage } from './config'
 import { appendEntry } from './github'
 import { newEntryId } from './store'
@@ -24,7 +24,7 @@ export async function recordHistory(deps: RecordDeps, entry: NewHistoryEntry): P
     const [github, storage] = await Promise.all([deps.readGithub(), deps.readStorage?.()])
     const where = resolveStorage(storage, github)
     if (isStorageProblem(where)) return { recorded: false, reason: where.problem }
-    const client = createGithubClient(where.config, deps.fetch, deps.sleep)
+    const client = createCodeHost(where.config, deps.fetch, deps.sleep)
     const now = deps.now()
     await appendEntry(client, where.config.branch, where.folder, { ...entry, schema: 1, id: newEntryId(now), at: entry.at ?? now.toISOString() })
     return { recorded: true }

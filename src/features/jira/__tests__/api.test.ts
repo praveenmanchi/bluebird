@@ -73,9 +73,14 @@ describe('jira api · settings and transport', () => {
     expect(configFromSettings(jira({ siteUrl: 'https://evil.example.com' }))).toEqual({ reason: 'invalid', missing: ['Jira address'] })
     expect(configFromSettings(jira({ proxyUrl: 'http://proxy.example.com' }))).toEqual({ reason: 'invalid', missing: ['company gateway URL'] })
     expect(configFromSettings(jira({ projectKey: 'ds" OR 1=1' }))).toEqual({ reason: 'invalid', missing: ['project key'] })
-    // A sign-in token is a bearer token and needs no email.
-    const signedIn = configFromSettings(jira({ method: 'signin', email: '' }))
-    expect(isConfig(signedIn) && signedIn.authorization).toBe('Bearer tok')
+    // A sign-in token is a bearer token and needs no email. It is for api.atlassian.com, not the site, so
+    // Jira Cloud calls go to the site's cloudId there (through the gateway); links still use the site.
+    const signedIn = configFromSettings(jira({ method: 'signin', email: '', cloudId: '0a1b2c3d-4e5f-6789-abcd-ef0123456789' }))
+    expect(isConfig(signedIn) && signedIn).toMatchObject({
+      authorization: 'Bearer tok', site: 'https://team.atlassian.net', target: 'https://api.atlassian.com/ex/jira/0a1b2c3d-4e5f-6789-abcd-ef0123456789', endpoint: 'http://localhost:8787',
+    })
+    // A sign-in from before the cloudId was kept has to be redone.
+    expect(configFromSettings(jira({ method: 'signin', email: '' }))).toEqual({ reason: 'incomplete', missing: ['Jira sign-in'] })
     const server = configFromSettings(jira({ baseUrl: 'https://jira.acme.com', email: '', proxyUrl: '' }))
     expect(isConfig(server) && server).toMatchObject({ flavor: 'server', site: 'https://jira.acme.com', endpoint: 'https://jira.acme.com', authorization: 'Bearer tok' })
   })
@@ -280,3 +285,19 @@ describe('jira sandbox handlers (live wiring)', () => {
     await expect(call(h, MSG.comment, { key: 'DS-7', body: '   ' })).rejects.toThrow()
   })
 })
+
+describe('signed-in Jira Cloud requests', () => {
+  it('go to api.atlassian.com/ex/jira/<cloudId> through the gateway, with the bearer token', async () => {
+    const calls: { url: string; headers: Record<string, string> }[] = []
+    const fetchImpl: HttpFetch = async (url, init) => { calls.push({ url, headers: init.headers }); return { status: 200, text: async () => '{"accountId":"5b10"}' } }
+    const config = configFromSettings(jira({ method: 'signin', email: '', cloudId: '0a1b2c3d-4e5f-6789-abcd-ef0123456789', proxyUrl: 'https://gw.acme.com' }))
+    if (!isConfig(config)) throw new Error('expected a config')
+    await createRequest(config, fetchImpl)('GET', '/myself')
+    expect(calls[0]).toEqual({ url: 'https://gw.acme.com/rest/api/3/myself', headers: expect.objectContaining({ authorization: 'Bearer tok', [TARGET_HEADER]: 'https://api.atlassian.com/ex/jira/0a1b2c3d-4e5f-6789-abcd-ef0123456789' }) })
+  })
+
+  it('refuses a cloudId that could change the path', () => {
+    expect(configFromSettings(jira({ method: 'signin', email: '', cloudId: '../../admin' }))).toEqual({ reason: 'invalid', missing: ['cloudId'] })
+  })
+})
+

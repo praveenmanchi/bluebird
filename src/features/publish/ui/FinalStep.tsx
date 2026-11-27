@@ -73,7 +73,7 @@ export function FinalStep({ onPublish }: FinalStepProps) {
           <div class="bb-publish__list">
             {repo?.connected
               ? <ConnectionRow status="good" name="GitHub repository" detail={`${repo.repo} · ${repo.branch}`} showAction={false} />
-              : <ConnectionRow status="error" name="GitHub repository" detail={repo?.problem ?? 'Not connected — add it in Settings › GitHub'} showAction actionLabel="Connect" onAction={requestSettings} />}
+              : <ConnectionRow status="error" name="GitHub repository" detail={repo?.problem ?? 'Not connected — add it in Settings › Code repository'} showAction actionLabel="Connect" onAction={requestSettings} />}
             <ConnectionRow status={repo?.connected ? 'good' : 'issue'} name="Docs site" detail="Built by the repository’s CI when the release lands" showAction={false} />
             <ConnectionRow
               status={teams ? 'good' : 'issue'}
